@@ -45,13 +45,13 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         
         switch result {
         case .cancelled:
-            print("キャンセルしました")
+            print("cancel")
         case .saved:
-            print("セーブしました")
+            print("save")
         case .sent:
-            print("送信しました")
+            print("send")
         case .failed:
-            print("失敗しました。")
+            print("fail")
         }
         self.dismiss(animated: true, completion: nil)
     }

@@ -41,7 +41,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("\(String(describing: flatWidthinput.text))")
+ //       print("\(String(describing: flatWidthinput.text))")
         return true
     }
 //    @IBAction func tapWhite(_ sender: Any) {

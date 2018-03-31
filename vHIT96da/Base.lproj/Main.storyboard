@@ -62,7 +62,7 @@
                                     <bool key="isElement" value="NO"/>
                                 </accessibility>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <state key="normal" title="画像のクリックで送信できます" backgroundImage="btnb">
+                                <state key="normal" title="click the image to mail it" backgroundImage="btnb">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                             </button>

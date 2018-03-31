@@ -304,7 +304,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
         
         let rectEyeb = getWiderect(rect: REye, dx: 10, dy: CGFloat(eyeBorder))//3
-        let rectFacb = getWiderect(rect: RFace, dx:20, dy: CGFloat(faceBorder))//5
+        let rectFacb = getWiderect(rect: RFace, dx:CGFloat(faceBorder*4), dy: CGFloat(faceBorder))//5
         let rectOutb = getWiderect(rect: ROuter, dx:40, dy: CGFloat(outerBorder))//10
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
@@ -325,7 +325,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.01))
         }
-        print(count)
+ //       print(count)
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             while let sample = readerOutput.copyNextSampleBuffer() {
                 
