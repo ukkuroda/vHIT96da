@@ -185,6 +185,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBAction func stopCalc(_ sender: Any) {
         
         calcFlag = false
+        UIApplication.shared.isIdleTimerDisabled = false
+
         listButton.isEnabled = true
         paraButton.isEnabled = true
         saveButton.isEnabled = true
