@@ -218,7 +218,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func vHITcalc_sub(){
-        print(slowVideoCnt)
         stopButton.isHidden = false
         calcButton.isHidden = true
         calcFlag = true
@@ -254,7 +253,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #endif
             return
         }
-        
         
         let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
@@ -327,6 +325,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.01))
         }
+        print(count)
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             while let sample = readerOutput.copyNextSampleBuffer() {
                 
