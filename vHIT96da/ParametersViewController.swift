@@ -1,0 +1,168 @@
+//
+//  ParametersViewController.swift
+//  vHIT96da
+//
+//  Created by kuroda tatsuaki on 2018/02/11.
+//  Copyright © 2018年 tatsuaki.kuroda. All rights reserved.
+//
+
+import UIKit
+
+class ParametersViewController: UIViewController, UITextFieldDelegate {
+    
+    var flatWidth:Int = 0
+    var flatsumLimit:Int = 0
+    var waveWidth:Int = 0
+    var wavePeak:Int = 0
+    var updownPgap:Int = 0
+    var peakWidth:Int = 0
+     var rectEye = CGRect(x:0,y:0,width:0,height:0)
+    var rectFace = CGRect(x:0,y:0,width:0,height:0)
+    var rectOuter = CGRect(x:0,y:0,width:0,height:0)
+    
+    @IBOutlet weak var keyDown: UIButton!
+    @IBOutlet weak var labelEye: UILabel!
+    @IBOutlet weak var labelFace: UILabel!
+    @IBOutlet weak var labelOuter: UILabel!
+    @IBOutlet weak var flatWidthinput: UITextField!
+    @IBOutlet weak var flatSuminput: UITextField!
+    @IBOutlet weak var waveWidthinput: UITextField!
+    @IBOutlet weak var wavePeakinput: UITextField!
+    @IBOutlet weak var updownPointinput: UITextField!
+    @IBOutlet weak var peakWidthinput: UITextField!
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        print("\(String(describing: flatWidthinput.text))")
+        return true
+    }
+//    @IBAction func tapWhite(_ sender: Any) {
+//        print("背景あたり？がタップされました")
+//        flatWidthinput.endEditing(true)
+//        flatSuminput.endEditing(true)
+//        waveWidthinput.endEditing(true)
+//        wavePeakinput.endEditing(true)
+//        updownPointinput.endEditing(true)
+//        peakWidthinput.endEditing(true)
+//        //       keyDown.isHidden = false
+//        keyDown.isHidden = true
+//    }
+    
+    @IBAction func numpadOff(_ sender: Any) {
+        flatWidthinput.endEditing(true)
+        flatSuminput.endEditing(true)
+        waveWidthinput.endEditing(true)
+        wavePeakinput.endEditing(true)
+        updownPointinput.endEditing(true)
+        peakWidthinput.endEditing(true)
+        keyDown.isHidden = true
+    }
+    @IBAction func flatwidthDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    @IBAction func flatsumDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    
+    @IBAction func wavewidthDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    
+    @IBAction func wavepeakDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    
+    @IBAction func updownDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    
+    @IBAction func peakwidthDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    @IBAction func setDefault(_ sender: Any) {
+        //上手く働かない
+        flatWidth = 28
+        flatsumLimit = 24
+        waveWidth = 40
+        wavePeak = 15
+        updownPgap = 4
+        peakWidth = 23
+        self.rectEye = CGRect(x:97,y:143,width:209,height:10)
+        self.rectFace = CGRect(x:167,y:328,width:77,height:27)
+        self.rectOuter = CGRect(x:163,y:508,width:53,height:36)
+        dispParam()
+        
+    }
+    func Field2value(field:UITextField) -> Int {
+        if field.text?.count != 0 {
+            return Int(field.text!)!
+        }else{
+            return 0
+        }
+    }
+    @IBAction func flatWidthButton(_ sender: Any) {
+        print("*******flatwidthbutton button")
+        flatWidth = Field2value(field: flatWidthinput)
+    }
+    @IBAction func flatSumButton(_ sender: Any) {
+        flatsumLimit = Field2value(field:flatSuminput)
+    }
+    @IBAction func waveWidthButton(_ sender: Any) {
+        waveWidth = Field2value(field: waveWidthinput)
+    }
+    @IBAction func wavePeakButton(_ sender: Any) {
+        wavePeak = Field2value(field: wavePeakinput)
+    }
+    @IBAction func updownPointButton(_ sender: Any) {
+        updownPgap = Field2value(field: updownPointinput)
+    }
+    @IBAction func peakWidthButton(_ sender: Any) {
+        peakWidth = Field2value(field: peakWidthinput)
+    }
+    func dispParam(){
+        var x = 0
+        var y = 0
+        var width = 0
+        var height = 0
+        self.flatWidthinput.text = "\(flatWidth)"
+        self.flatSuminput.text = "\(flatsumLimit)"
+        self.waveWidthinput.text = "\(waveWidth)"
+        self.wavePeakinput.text = "\(wavePeak)"
+        self.updownPointinput.text = "\(updownPgap)"
+        self.peakWidthinput.text = "\(peakWidth)"
+        x = Int(rectEye.origin.x)
+        y = Int(rectEye.origin.y)
+        width = Int(rectEye.size.width)
+        height = Int(rectEye.size.height)
+        self.labelEye.text = "\(String(format:"%04d,%04d,%04d,%04d eye",x,y,width,height))"
+        x = Int(rectFace.origin.x)
+        y = Int(rectFace.origin.y)
+        width = Int(rectFace.size.width)
+        height = Int(rectFace.size.height)
+        self.labelFace.text = "\(String(format:"%04d,%04d,%04d,%04d face",x,y,width,height))"
+        x = Int(rectOuter.origin.x)
+        y = Int(rectOuter.origin.y)
+        width = Int(rectOuter.size.width)
+        height = Int(rectOuter.size.height)
+        self.labelOuter.text = "\(String(format:"%04d,%04d,%04d,%04d outer",x,y,width,height))"
+        
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        flatWidthinput.delegate = self
+        flatSuminput.delegate = self
+        //入力を数字入力キーボードとする
+        self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
+        self.flatSuminput.keyboardType = UIKeyboardType.numberPad
+        self.waveWidthinput.keyboardType = UIKeyboardType.numberPad
+        self.wavePeakinput.keyboardType = UIKeyboardType.numberPad
+        self.updownPointinput.keyboardType = UIKeyboardType.numberPad
+        self.peakWidthinput.keyboardType = UIKeyboardType.numberPad
+        dispParam()
+        keyDown.isHidden = true
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+}
+
