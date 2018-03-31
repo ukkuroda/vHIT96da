@@ -16,7 +16,10 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     var wavePeak:Int = 0
     var updownPgap:Int = 0
     var peakWidth:Int = 0
-     var rectEye = CGRect(x:0,y:0,width:0,height:0)
+    var eyeBorder:Int = 0
+    var faceBorder:Int = 0
+    var outerBorder:Int = 0
+    var rectEye = CGRect(x:0,y:0,width:0,height:0)
     var rectFace = CGRect(x:0,y:0,width:0,height:0)
     var rectOuter = CGRect(x:0,y:0,width:0,height:0)
     
@@ -30,6 +33,13 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var wavePeakinput: UITextField!
     @IBOutlet weak var updownPointinput: UITextField!
     @IBOutlet weak var peakWidthinput: UITextField!
+    
+    @IBOutlet weak var eyeBinput: UITextField!
+    @IBOutlet weak var faceBinput: UITextField!
+    @IBOutlet weak var outerBinput: UITextField!
+    
+    
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         print("\(String(describing: flatWidthinput.text))")
         return true
@@ -53,6 +63,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         wavePeakinput.endEditing(true)
         updownPointinput.endEditing(true)
         peakWidthinput.endEditing(true)
+        eyeBinput.endEditing(true)
+        faceBinput.endEditing(true)
+        outerBinput.endEditing(true)
         keyDown.isHidden = true
     }
     @IBAction func flatwidthDown(_ sender: Any) {
@@ -61,22 +74,31 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func flatsumDown(_ sender: Any) {
         keyDown.isHidden = false
     }
-    
     @IBAction func wavewidthDown(_ sender: Any) {
         keyDown.isHidden = false
     }
-    
     @IBAction func wavepeakDown(_ sender: Any) {
         keyDown.isHidden = false
     }
-    
     @IBAction func updownDown(_ sender: Any) {
         keyDown.isHidden = false
     }
-    
     @IBAction func peakwidthDown(_ sender: Any) {
         keyDown.isHidden = false
     }
+    @IBAction func eyeBorderDown(_ sender: Any) {
+        keyDown.isHidden = false
+   }
+    
+    @IBAction func faceBorderDown(_ sender: Any) {
+        keyDown.isHidden = false
+    }
+    
+    @IBAction func outerBorderDown(_ sender: Any) {
+        keyDown.isHidden = false
+   }
+    
+    
     @IBAction func setDefault(_ sender: Any) {
         //上手く働かない
         flatWidth = 28
@@ -85,6 +107,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         wavePeak = 15
         updownPgap = 4
         peakWidth = 23
+        eyeBorder = 3
+        faceBorder = 5
+        outerBorder = 10
         self.rectEye = CGRect(x:97,y:143,width:209,height:10)
         self.rectFace = CGRect(x:167,y:328,width:77,height:27)
         self.rectOuter = CGRect(x:163,y:508,width:53,height:36)
@@ -99,7 +124,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         }
     }
     @IBAction func flatWidthButton(_ sender: Any) {
-        print("*******flatwidthbutton button")
+   //     print("*******flatwidthbutton button")
         flatWidth = Field2value(field: flatWidthinput)
     }
     @IBAction func flatSumButton(_ sender: Any) {
@@ -117,6 +142,18 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func peakWidthButton(_ sender: Any) {
         peakWidth = Field2value(field: peakWidthinput)
     }
+    
+    @IBAction func eyeBorderButton(_ sender: Any) {
+        eyeBorder = Field2value(field: eyeBinput)
+    }
+    @IBAction func faceBorderButton(_ sender: Any) {
+        faceBorder = Field2value(field: faceBinput)
+    }
+    @IBAction func outerBorderButton(_ sender: Any) {
+        outerBorder = Field2value(field: outerBinput)
+    }
+    
+    
     func dispParam(){
         var x = 0
         var y = 0
@@ -128,6 +165,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.wavePeakinput.text = "\(wavePeak)"
         self.updownPointinput.text = "\(updownPgap)"
         self.peakWidthinput.text = "\(peakWidth)"
+        self.eyeBinput.text = "\(eyeBorder)"
+        self.faceBinput.text = "\(faceBorder)"
+        self.outerBinput.text = "\(outerBorder)"
         x = Int(rectEye.origin.x)
         y = Int(rectEye.origin.y)
         width = Int(rectEye.size.width)
@@ -156,6 +196,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.wavePeakinput.keyboardType = UIKeyboardType.numberPad
         self.updownPointinput.keyboardType = UIKeyboardType.numberPad
         self.peakWidthinput.keyboardType = UIKeyboardType.numberPad
+        self.eyeBinput.keyboardType = UIKeyboardType.numberPad
+        self.faceBinput.keyboardType = UIKeyboardType.numberPad
+        self.outerBinput.keyboardType = UIKeyboardType.numberPad
         dispParam()
         keyDown.isHidden = true
     }

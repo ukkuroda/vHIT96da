@@ -113,6 +113,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var waveWidth:Int = 0
     var wavePeak:Int = 0
     var peakWidth:Int = 0
+    var eyeBorder:Int = 3
+    var faceBorder:Int = 5
+    var outerBorder:Int = 10
+    
     
     //解析結果保存用配列
     //    var vHITarr = Array<String>()
@@ -191,7 +195,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcButton.isHidden = false
     }
     @IBAction func vHITcalc(_ sender: Any) {
-        if slowVideoCnt < 1{
+          if slowVideoCnt < 1{
             return
         }
         if calcedFlag == true {
@@ -214,6 +218,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func vHITcalc_sub(){
+        print(slowVideoCnt)
         stopButton.isHidden = false
         calcButton.isHidden = true
         calcFlag = true
@@ -300,10 +305,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
         
-        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 2)//
-        let rectFacb = getWiderect(rect: RFace, dx:20, dy:5)
-        let rectOutb = getWiderect(rect: ROuter, dx:40, dy:10)
- 
+        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: CGFloat(eyeBorder))//3
+        let rectFacb = getWiderect(rect: RFace, dx:20, dy: CGFloat(faceBorder))//5
+        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: CGFloat(outerBorder))//10
+//        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
+//        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
+//        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
+
         eyeCropView.frame=rectEye
         faceCropView.frame=rectFace
         outerCropView.frame=rectOuter
@@ -321,10 +329,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             while let sample = readerOutput.copyNextSampleBuffer() {
+                
                 if self.calcFlag == false {
                     break
                 }
-                //              autoreleasepool(invoking: ({() -> () in
+                 //              autoreleasepool(invoking: ({() -> () in
                 // サンプルバッファからピクセルバッファを取り出す
                 let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!
                 let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
@@ -380,7 +389,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }
             self.calcFlag = false
-            UIApplication.shared.isIdleTimerDisabled = false
+ //           UIApplication.shared.isIdleTimerDisabled = false
             if self.getLines() > 0{
                 self.calcedFlag = true
             }
@@ -478,6 +487,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //      if timer?.isValid == true {
                     timer.invalidate()
               //  }
+            UIApplication.shared.isIdleTimerDisabled = false
         }
  
         drawRealwave()
@@ -658,6 +668,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
         updownPgap = getUserDefault(str: "updownPgap", ret: 4)
         peakWidth = getUserDefault(str: "peakWidth", ret: 23)
+        eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
+        faceBorder = getUserDefault(str: "faceBorder", ret: 5)
+        outerBorder = getUserDefault(str: "outerBorder", ret: 10)
+
         rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: 97))
         rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: 143))
         rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: 209))
@@ -679,6 +693,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //3個続けて増加し、波幅の3/4ほど先が3個続けて減少（updownP_gap:増減閾値)
         UserDefaults.standard.set(updownPgap, forKey: "updownPgap")
         UserDefaults.standard.set(peakWidth, forKey: "peakWidth")
+        UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
+        UserDefaults.standard.set(faceBorder, forKey: "faceBorder")
+        UserDefaults.standard.set(outerBorder, forKey: "outerBorder")
+
+        
         UserDefaults.standard.set(Int(rectEye.origin.x), forKey: "rectEye_x")
         UserDefaults.standard.set(Int(rectEye.origin.y), forKey: "rectEye_y")
         UserDefaults.standard.set(Int(rectEye.size.width), forKey: "rectEye_w")
@@ -998,6 +1017,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             ParametersViewController.rectEye = rectEye
             ParametersViewController.rectFace = rectFace
             ParametersViewController.rectOuter = rectOuter
+            ParametersViewController.eyeBorder = eyeBorder
+            ParametersViewController.faceBorder = faceBorder
+            ParametersViewController.outerBorder = outerBorder
+
             #if DEBUG
             print("prepare para")
             #endif
@@ -1027,7 +1050,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             rectEye = ParametersViewController.rectEye
             rectFace = ParametersViewController.rectFace
             rectOuter = ParametersViewController.rectOuter
-            setUserDefaults()
+            eyeBorder = ParametersViewController.eyeBorder
+            faceBorder = ParametersViewController.faceBorder
+            outerBorder = ParametersViewController.outerBorder
+          setUserDefaults()
             if vHITouter.count > 500{//データがありそうな時は表示
                 drawBoxies()
                 dispWaves()
