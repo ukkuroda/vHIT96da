@@ -230,6 +230,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITeye.removeAll()
         timercnt = 0
         UIApplication.shared.isIdleTimerDisabled = true
+        let eyedx:CGFloat = 4 * CGFloat(eyeBorder)
+        let eyedy:CGFloat = CGFloat(eyeBorder)
+        let facedx:CGFloat = 4 * CGFloat(faceBorder)
+        let facedy:CGFloat = CGFloat(faceBorder)
+        let outerdx:CGFloat = 4 * CGFloat(outerBorder)
+        let outerdy:CGFloat = CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         drawBoxies()
@@ -305,9 +311,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
         
-        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: CGFloat(eyeBorder))//3
-        let rectFacb = getWiderect(rect: RFace, dx:CGFloat(faceBorder*4), dy: CGFloat(faceBorder))//5
-        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: CGFloat(outerBorder))//10
+        let rectEyeb = getWiderect(rect: REye, dx: eyedx, dy: eyedy)//3
+        let rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//5
+        let rectOutb = getWiderect(rect: ROuter, dx: outerdx, dy: outerdy)//10
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
 //        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
@@ -327,7 +333,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.01))
         }
- //       print(count)
+ 
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             while let sample = readerOutput.copyNextSampleBuffer() {
                 
@@ -342,13 +348,24 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //画像を縦横変換するならこの位置でCIImage.oriented()を使う？
                 //ciimageからcrop
                 CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//REyeWithBorder)!
-                CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
-                CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
                 //UIImageに変換
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)
+                if facedx == 0{
+                  //  CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
+                    UIFaceWithBorder = UIFace//UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+
+                }else{
+                CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
                 UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+                }
+                if outerdx == 0{
+                    //CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
+                    UIOuterWithBorder = UIOuter//Image.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
+
+                }else{
+                CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
                 UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
-                //matching
+                }//matching
                 //                self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
                 //                self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                 //                self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
@@ -1210,12 +1227,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }else if slowVideoCnt > 1{
                  if leftrightFlag == true{
                     self.slowImage.frame.origin.x = move.x
-                    if move.x > self.view.bounds.width/2 {//}&& (NSDate().timeIntervalSince1970 - startTime) < 1{
+                    if move.x > self.view.bounds.width/3 {//}&& (NSDate().timeIntervalSince1970 - startTime) < 1{
                         //print("right")
                         showNextvideo(direction: 0)
                         leftrightFlag = false
                         self.slowImage.frame.origin.x = 0
-                    }else if move.x < -self.view.bounds.width/2 {//}&& (NSDate().timeIntervalSince1970 - startTime) < 1{
+                    }else if move.x < -self.view.bounds.width/3 {//}&& (NSDate().timeIntervalSince1970 - startTime) < 1{
                         //print("left")
                         showNextvideo(direction: 1)
                         self.slowImage.frame.origin.x = 0
