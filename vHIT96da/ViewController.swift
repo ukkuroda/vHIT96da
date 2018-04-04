@@ -231,10 +231,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         timercnt = 0
         UIApplication.shared.isIdleTimerDisabled = true
         let eyedx:CGFloat = 4 * CGFloat(eyeBorder)
+        let eyedxInt:Int = Int(eyedx)
         let eyedy:CGFloat = CGFloat(eyeBorder)
         let facedx:CGFloat = 4 * CGFloat(faceBorder)
+        let facedxInt:Int = Int(facedx)
         let facedy:CGFloat = CGFloat(faceBorder)
         let outerdx:CGFloat = 4 * CGFloat(outerBorder)
+        let outerdxInt:Int = Int(outerdx)
         let outerdy:CGFloat = CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -385,13 +388,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
                 UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                let fy = Int(fY.pointee) - 20
+                let fy = Int(fY.pointee) - facedxInt
                 #if DEBUG
                     print(Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                     print(count)
                 #endif
-                self.vHITeye.append(Int(eY.pointee) - 10 - fy)
-                self.vHITouter.append(Int(oY.pointee) - 40 - fy)
+                self.vHITeye.append(Int(eY.pointee) - eyedxInt - fy)
+                self.vHITouter.append(Int(oY.pointee) - outerdxInt - fy)
                 
                 count += 1
                 //                }))
@@ -416,6 +419,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        viewDidLoad()        
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
