@@ -243,7 +243,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         drawBoxies()
         startTimer()//resizerectのチェックの時はここをコメントアウト*********************
-        
+        //        if let bundlePath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV") {
+  //      let bundlePath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")
+  //      let fileURL = URL(fileURLWithPath: bundlePath!)
         let fileURL = URL(fileURLWithPath: slowvideoPath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
         let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
@@ -599,21 +601,66 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     var retImage:UIImage!
     func getSlowimg(num:Int) ->UIImage{
-        //ビデオがあるかどうか事前にチェックして呼ぶこと
-       // スロービデオのアルバムを取得
-        let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
-        let assetCollection = result.firstObject;
-        // アルバムからアセット一覧を取得
-        let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
-         let asset = fetchAssets.object(at: num)
-        let manager = PHImageManager.default()
-        
-        manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
-            self.retImage = image
-          }
-        return self.retImage
+         if num == 0{
+            let fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!)
+            let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
+            let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
+            calcDate = videoDate.text!
+            var reader: AVAssetReader! = nil
+            do {
+                reader = try AVAssetReader(asset: avAsset)
+            } catch {
+                #if DEBUG
+                print("could not initialize reader.")
+                #endif
+                return nil!
+            }
+            
+            guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+                #if DEBUG
+                print("could not retrieve the video track.")
+                #endif
+                return nil!
+            }
+            
+            let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+            let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+            reader.add(readerOutput)
+            reader.startReading()
+            
+            let context:CIContext = CIContext.init(options: nil)
+            let orientation = UIImageOrientation.right
+            
+            let sample = readerOutput.copyNextSampleBuffer()
+            let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+            return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+
+        }else{
+            //ビデオがあるかどうか事前にチェックして呼ぶこと
+            
+            // スロービデオのアルバムを取得
+            let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
+            let assetCollection = result.firstObject;
+            // アルバムからアセット一覧を取得
+            let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
+            
+            let asset  = fetchAssets.object(at: num)
+            
+            let manager = PHImageManager.default()
+            
+            manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
+                self.retImage = image
+            }
+            return self.retImage
+        }
      }
     func getSlowvideo(num:Int){
+        if num == -1{
+            slowvideoPath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
+            return
+        }
         // スロービデオのアルバムを取得
         let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
         let assetCollection = result.firstObject;
@@ -846,7 +893,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     @IBAction func saveResult(_ sender: Any) {
-        //        let gray_img : UIImage!
+           //        let gray_img : UIImage!
         //        gray_img  = openCV.toGray(slowImage.image)
         //        slowImage.image = gray_img
         //        return
@@ -996,27 +1043,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         #if DEBUG
         print(slowVideoCnt)
         #endif
-        if slowVideoCnt != 0 {//countが０でなければ最後のビデオを選択する
+ //       if slowVideoCnt != 0 {//countが０でなければ最後のビデオを選択する
             slowvideoNum = slowVideoCnt - 1
-             getSlowvideo(num: slowvideoNum)
-            
- //           slowImage.image?.resize(size: CGSize(width:(slowImage.image?.size.width)!*2 ,height:(slowImage.image?.size.height)!))
-//            if slowVideoCnt>1{
-//            backImage.
-       //     slowImage.image=retImage
-            //let retImage0 = retImage
-   //         backImage.image = getSlowimg(num: slowvideoNum)
-            //let image2 = retImage
-            //getSlowimg(num: slowvideoNum - 1)//retImageに前のサムネイルを得る
-            //backImage.image=
-            //let image2 = retImage
-            //var image3:UIImage!
-            //backImage.image?.ComposeUIImage(UIImageArray: [retImage!,image2!], width: 300, height: 300)
-            //backImage.image = image3
-//                let img0 = slowImage.image
-//                img0 = retImage
-//            }
-        }
+             getSlowvideo(num: slowvideoNum)//slowvideoPathをセット
+ //       }else{
+ //           slowvideoPath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
+ //       }
+        slowImage.image = getSlowimg(num: 0)
     }
     
     override func didReceiveMemoryWarning() {
@@ -1194,7 +1227,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let move:CGPoint = sender.translation(in: self.view)
         let pos = sender.location(in: self.view)
         if sender.state == .began {
-            if slowVideoCnt > 1{
+            if slowVideoCnt > 0{//1個でもあれば
                 var backNum = slowvideoNum + 1
                 if backNum >  slowVideoCnt - 1 {
                     backNum = 0
@@ -1204,7 +1237,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 backImage2.image = backimg2.cropping(to: backrect)
                 backNum = slowvideoNum - 1
                 if backNum < 0 {
-                    backNum = slowVideoCnt - 1
+                    backNum = slowVideoCnt
                 }
                 backImage.image = self.getSlowimg(num: backNum)
                 leftrightFlag = true
@@ -1228,7 +1261,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectFace.origin.y+rectFace.height + 20,lowpo:self.view.bounds.height - 30)
                 }
                 dispWakus()
-            }else if slowVideoCnt > 1{
+            }else if slowVideoCnt > 0{
                  if leftrightFlag == true{
                     self.slowImage.frame.origin.x = move.x
                     if move.x > self.view.bounds.width/3 {//}&& (NSDate().timeIntervalSince1970 - startTime) < 1{
