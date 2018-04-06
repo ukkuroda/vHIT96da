@@ -80,9 +80,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
     
     var slowVideoCurrent:Int = 0
-    var slowPaths = Array<String>()
-    var slowDates = Array<String>()
-    var slowImgs = Array<UIImage>()
+//    var slowPaths = Array<String>()
+//    var slowDates = Array<String>()
+//    var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
     var calcFlag:Bool = false
     var calcedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
@@ -424,6 +424,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+  //      print("willappear")
         //viewDidLoad()
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -431,6 +432,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if timer?.isValid == true {
             timer.invalidate()
         }
+ //       print("willdisappear")
     }
     
     func makeBox(width w:CGFloat,height h:CGFloat) -> UIImage{
@@ -543,7 +545,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         #if DEBUG
             print("video_num:"+"\(slowVideoCurrent)")
         #endif
-        setslowVideoPath(num: slowVideoCurrent)
+        setVideoPathDate(num: slowVideoCurrent)
         slowImage.image = getSlowimg(num: slowVideoCurrent)
     }
     
@@ -665,15 +667,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return self.retImage
         }
      }
-    var tempPath:String = ""
-    var tempDate:String = ""
-    func setslowVideoPath(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
+//    var tempPath:String = ""
+//    var tempDate:String = ""
+    func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
         if num == 0{
             slowvideoPath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
      //       slowPaths.append(slowvideoPath)
-            tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
+      //      tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
             videoDate.text = "vHIT sample video"
-            tempDate = "vHIT sample video"
+        //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
             return
         }
@@ -697,14 +699,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str2 = str1[1].components(separatedBy: " ")
         //        slowvideoDate = str2[0] + " " + str2[1]
         videoDate.text = str2[0] + " " + str2[1] + "  (\(num))"
-        tempDate = str2[0] + " " + str2[1] + "  (\(num))"
+   //     tempDate = str2[0] + " " + str2[1] + "  (\(num))"
   //      slowDates.append(tempDate)
 
-  //      let manager = PHImageManager.default()
- //       manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
+        let manager = PHImageManager.default()
+        manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
             // imageをセットする
-   //         self.slowImage.image = image
-     //   }
+            self.slowImage.image = image
+        }
         
         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
@@ -714,7 +716,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
                                                         // tokenKeysの中にパスなどの情報が入っている
                                                         self.slowvideoPath = tokenKeys[8]
-                                                        self.tempPath = tokenKeys[8]
+                                                        //self.tempPath = tokenKeys[8]
                                                        // self.slowPaths.append(tokenKeys[8])
                                                         //  print(self.path)
                                                         //  self.urlpath = NSURL(fileURLWithPath:self.path)
@@ -916,14 +918,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
     @IBAction func saveResult(_ sender: Any) {
-        print(tempnum,slowPaths.count)
-        slowImage.image = slowImgs[tempnum]
-        videoDate.text = slowDates[tempnum]
-        tempnum += 1
-        if tempnum > slowVideoCnt{
-            tempnum = 0
-        }
-        return
+//        print(tempnum,slowPaths.count)
+//        slowImage.image = slowImgs[tempnum]
+//        videoDate.text = slowDates[tempnum]
+//        tempnum += 1
+//        if tempnum > slowVideoCnt{
+//            tempnum = 0
+//        }
+//        return
         //        let gray_img : UIImage!
         //        gray_img  = openCV.toGray(slowImage.image)
         //        slowImage.image = gray_img
@@ -1074,37 +1076,45 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
        #if DEBUG
         print(slowVideoCnt)
         #endif
-        initSlowdata()
-   //      setslowVideoPath(num: slowVideoCurrent)////0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
+   //     initSlowdata()
+        setVideoPathDate(num: slowVideoCurrent)////0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
     }
 //    var tempPath:String = ""
 //    var tempDate:String = ""
 //    func setslowVideoPath(num:Int)
-    func initSlowdata()
-    {
-        slowPaths.removeAll()
-        slowDates.removeAll()
-        slowImgs.removeAll()
-        for i in 0...slowVideoCnt{
-            print (i)
-            usleep(2)
-            setslowVideoPath(num: i)
-      
-            usleep(2)
-
-            slowPaths.append(tempPath)
-            slowDates.append(tempDate)
-            print(i,tempPath,tempDate)
-            slowImgs.append(getSlowimg(path:tempPath))
-     //       slowPaths.insert(tempPath, at: 0)//<#T##Int#>)(tempPath)
-     //       slowDates.insert(tempDate, at: 0)
-     //       slowImgs.insert(getSlowimg(path:tempPath), at: 0)
-        }
-        print(slowPaths.count,slowDates.count)
-        for i in 0...slowVideoCnt{
-            print(slowPaths[i],slowDates[i])
-        }
-    }
+//    func initSlowdata()
+//    {
+//        slowPaths.removeAll()
+//        slowDates.removeAll()
+//        slowImgs.removeAll()
+//        
+//        slowPaths.append(Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!)
+//        slowDates.append("vHIT sample video")
+//            //            tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
+//            //            videoDate.text =
+//            //            tempDate = "vHIT sample video"
+//            //       //     slowDates.append(tempDate)
+//
+//        for i in 0...(slowVideoCnt-1){
+//
+//            usleep(2)
+//            setslowVideoPath(num: i)
+//      
+//            usleep(2)
+//
+//            slowPaths.append(tempPath)
+//            slowDates.append(tempDate)
+//            print(i,tempPath,tempDate)
+//            slowImgs.append(getSlowimg(num:i))
+//     //       slowPaths.insert(tempPath, at: 0)//<#T##Int#>)(tempPath)
+//     //       slowDates.insert(tempDate, at: 0)
+//     //       slowImgs.insert(getSlowimg(path:tempPath), at: 0)
+//        }
+//        print(slowPaths.count,slowDates.count)
+//        for i in 0...slowVideoCnt{
+//            print(slowPaths[i],slowDates[i])
+//        }
+//    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -1282,14 +1292,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let move:CGPoint = sender.translation(in: self.view)
         let pos = sender.location(in: self.view)
         if sender.state == .began {
+            slowVideoCnt = getslowVideoNum()//
+
             if slowVideoCnt > 0{//2こ以上あった時
                 var backNum = slowVideoCurrent - 1
                 if backNum < 0 {
                     backNum = slowVideoCnt
                 }
                 print("left",backNum)
-                let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
- //               let backimg2 = getSlowimg(num: backNum)//老番のサムネールをゲット
+  //              let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
+                let backimg2 = getSlowimg(num: backNum)//老番のサムネールをゲット
                 let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
                 backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
                 backNum = slowVideoCurrent + 1
@@ -1298,8 +1310,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 print("right",backNum)
                 print("current",slowVideoCurrent)
-                backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
- //               backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
+ //               backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
+                backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
                 leftrightFlag = true
             }
             rectType = checkWaks(po: pos)//枠設定かどうか
