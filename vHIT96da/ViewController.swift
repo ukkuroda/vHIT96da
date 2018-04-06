@@ -226,9 +226,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcButton.isHidden = false
     }
     @IBAction func vHITcalc(_ sender: Any) {
-          if slowVideoCnt < 1{
-            return
-        }
+ //         if slowVideoCnt < 1{
+   //         return
+     //   }
         if calcedFlag == true {
             let alert = UIAlertController(
                 title: "vHIT Data is",
