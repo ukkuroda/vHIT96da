@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8E08E1C12046906400FFB255 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */; };
-		8E1B2F442075DA510048F0A6 /* vhit.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E1B2F432075DA510048F0A6 /* vhit.png */; };
 		8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E495CC5202FE7880030748C /* ParametersViewController.swift */; };
 		8EA77A4C207440B70071B3D8 /* IMG_2425.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 8EA77A4B207440B60071B3D8 /* IMG_2425.MOV */; };
 		8EA90BE32038208200D042D0 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EA90BE22038208200D042D0 /* opencv2.framework */; };
@@ -22,7 +21,6 @@
 
 /* Begin PBXFileReference section */
 		8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
-		8E1B2F432075DA510048F0A6 /* vhit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vhit.png; sourceTree = "<group>"; };
 		8E495CC5202FE7880030748C /* ParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParametersViewController.swift; sourceTree = "<group>"; };
 		8EA77A4B207440B60071B3D8 /* IMG_2425.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = IMG_2425.MOV; sourceTree = "<group>"; };
 		8EA90BE22038208200D042D0 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
@@ -71,7 +69,6 @@
 			isa = PBXGroup;
 			children = (
 				8EA77A4B207440B60071B3D8 /* IMG_2425.MOV */,
-				8E1B2F432075DA510048F0A6 /* vhit.png */,
 				8EE2C01C202F32440064ED6F /* AppDelegate.swift */,
 				8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */,
 				8EE2C01E202F32440064ED6F /* ViewController.swift */,
@@ -148,7 +145,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EE2C027202F32440064ED6F /* LaunchScreen.storyboard in Resources */,
-				8E1B2F442075DA510048F0A6 /* vhit.png in Resources */,
 				8EA77A4C207440B70071B3D8 /* IMG_2425.MOV in Resources */,
 				8EE2C024202F32440064ED6F /* Assets.xcassets in Resources */,
 				8EE2C022202F32440064ED6F /* Main.storyboard in Resources */,
