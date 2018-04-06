@@ -106,28 +106,57 @@
                                 <rect key="frame" x="0.0" y="20" width="187" height="647"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="vHITvideo" translatesAutoresizingMaskIntoConstraints="NO" id="9Q7-F1-xlh">
+                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9Q7-F1-xlh">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="3Kf-6x-a2U" appends="YES" id="X5s-n6-Uhf"/>
                                 </connections>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Afb-7h-V8u">
-                                <rect key="frame" x="10" y="617" width="80" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q2m-D3-Mdm">
+                                <rect key="frame" x="65" y="617" width="50" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="hKn-Zd-afr"/>
-                                    <constraint firstAttribute="width" constant="80" id="vzT-Kp-gj3"/>
+                                    <constraint firstAttribute="height" constant="40" id="4Np-vo-dW2"/>
+                                    <constraint firstAttribute="width" constant="50" id="dEH-nb-zqn"/>
+                                </constraints>
+                                <state key="normal" title="wave" backgroundImage="btn"/>
+                                <connections>
+                                    <action selector="showWave:" destination="BYZ-38-t0r" eventType="touchUpInside" id="a15-x5-hPb"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4bc-dn-f4s">
+                                <rect key="frame" x="215" y="617" width="50" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="KhD-lV-SM7"/>
+                                    <constraint firstAttribute="width" constant="50" id="xEr-qM-rTA"/>
+                                </constraints>
+                                <state key="normal" title="play" backgroundImage="btn"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Afb-7h-V8u">
+                                <rect key="frame" x="10" y="617" width="50" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="Kd1-l0-2gE"/>
+                                    <constraint firstAttribute="height" constant="40" id="Tyj-Qe-6WU"/>
                                 </constraints>
                                 <state key="normal" title="list" backgroundImage="btn"/>
                                 <connections>
                                     <segue destination="dfx-rB-Lsf" kind="show" id="pmn-9f-ieK"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-CJ-Yxe">
-                                <rect key="frame" x="100" y="617" width="125" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqt-I0-fRF">
+                                <rect key="frame" x="120" y="617" width="90" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="57d-iI-jIa"/>
+                                    <constraint firstAttribute="height" constant="40" id="J5w-bS-u6U"/>
+                                </constraints>
+                                <state key="normal" title="stop calc" backgroundImage="btn"/>
+                                <connections>
+                                    <action selector="stopCalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZYP-2r-Mah"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-CJ-Yxe">
+                                <rect key="frame" x="120" y="617" width="90" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="xv0-9g-XRU"/>
                                 </constraints>
                                 <state key="normal" title="calc" backgroundImage="btn"/>
                                 <connections>
@@ -140,16 +169,16 @@
                                     <constraint firstAttribute="height" constant="40" id="XSv-Sg-XXb"/>
                                     <constraint firstAttribute="width" constant="40" id="ndJ-Ga-64l"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="setting1"/>
+                                <state key="normal" image="setting1" backgroundImage="btnb"/>
                                 <connections>
                                     <segue destination="jFt-gZ-HXu" kind="show" id="FWs-Tm-kkb"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldV-kl-ghp">
-                                <rect key="frame" x="235" y="617" width="80" height="40"/>
+                                <rect key="frame" x="270" y="617" width="50" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="RWq-Mj-uc5"/>
-                                    <constraint firstAttribute="height" constant="40" id="o6z-Qs-iGs"/>
+                                    <constraint firstAttribute="width" constant="50" id="L9N-OH-tkt"/>
+                                    <constraint firstAttribute="height" constant="40" id="hjn-UP-Zb2"/>
                                 </constraints>
                                 <state key="normal" title="save" backgroundImage="btn"/>
                                 <connections>
@@ -189,39 +218,33 @@
                                 <rect key="frame" x="16" y="226" width="103" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqt-I0-fRF">
-                                <rect key="frame" x="100" y="617" width="125" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="JzS-h7-PQk"/>
-                                </constraints>
-                                <state key="normal" title="stop calc" backgroundImage="btn"/>
-                                <connections>
-                                    <action selector="stopCalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZYP-2r-Mah"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="ldV-kl-ghp" firstAttribute="leading" secondItem="4bc-dn-f4s" secondAttribute="trailing" constant="5" id="0ua-NJ-Gdx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ldV-kl-ghp" secondAttribute="bottom" constant="10" id="1Ob-Wm-oex"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1Rs-5e-QIV"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sqt-I0-fRF" secondAttribute="bottom" constant="10" id="CG4-Dh-2Gh"/>
-                            <constraint firstItem="ldV-kl-ghp" firstAttribute="leading" secondItem="sZn-CJ-Yxe" secondAttribute="trailing" constant="10" id="DQ2-lU-4sB"/>
-                            <constraint firstItem="Afb-7h-V8u" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="Frx-0y-qcf"/>
-                            <constraint firstItem="ldV-kl-ghp" firstAttribute="leading" secondItem="sqt-I0-fRF" secondAttribute="trailing" constant="10" id="G8g-x0-oCt"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sZn-CJ-Yxe" secondAttribute="bottom" constant="10" id="GRQ-1h-IDL"/>
+                            <constraint firstItem="Afb-7h-V8u" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="1iH-Xi-op9"/>
+                            <constraint firstItem="4bc-dn-f4s" firstAttribute="leading" secondItem="sqt-I0-fRF" secondAttribute="trailing" constant="5" id="2tT-8s-JiE"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Q2m-D3-Mdm" secondAttribute="bottom" constant="10" id="HtC-ZX-653"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="JA9-Tm-hVC"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sZn-CJ-Yxe" secondAttribute="bottom" constant="10" id="NMk-9d-OyG"/>
+                            <constraint firstItem="sZn-CJ-Yxe" firstAttribute="leading" secondItem="Q2m-D3-Mdm" secondAttribute="trailing" constant="5" id="Nnj-s0-fa7"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ST5-jh-Ekt"/>
-                            <constraint firstItem="nHY-L8-P6Q" firstAttribute="leading" secondItem="ldV-kl-ghp" secondAttribute="trailing" constant="10" id="U45-WI-BRb"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="5" id="Vbt-ge-8hs"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Afb-7h-V8u" secondAttribute="bottom" constant="10" id="Wta-6P-hyM"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sqt-I0-fRF" secondAttribute="bottom" constant="10" id="Xhb-H3-lpp"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Afb-7h-V8u" secondAttribute="bottom" constant="10" id="YVD-BK-IrQ"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="aGg-qH-zlC"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="aZd-EJ-iYv"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="nHY-L8-P6Q" secondAttribute="trailing" constant="10" id="aa1-vI-YBL"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ldV-kl-ghp" secondAttribute="bottom" constant="10" id="ctR-hK-7D0"/>
-                            <constraint firstItem="sqt-I0-fRF" firstAttribute="leading" secondItem="Afb-7h-V8u" secondAttribute="trailing" constant="10" id="g0e-f5-WBN"/>
+                            <constraint firstItem="nHY-L8-P6Q" firstAttribute="leading" secondItem="ldV-kl-ghp" secondAttribute="trailing" constant="5" id="gXM-Wi-Bhq"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ggC-et-dyX"/>
-                            <constraint firstItem="sZn-CJ-Yxe" firstAttribute="leading" secondItem="Afb-7h-V8u" secondAttribute="trailing" constant="10" id="kkT-ye-BOI"/>
+                            <constraint firstItem="Q2m-D3-Mdm" firstAttribute="leading" secondItem="Afb-7h-V8u" secondAttribute="trailing" constant="5" id="r5W-2y-zhU"/>
+                            <constraint firstItem="sqt-I0-fRF" firstAttribute="leading" secondItem="Q2m-D3-Mdm" secondAttribute="trailing" constant="5" id="rP8-hh-WS7"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="nHY-L8-P6Q" secondAttribute="bottom" constant="10" id="vxR-Cx-tVH"/>
+                            <constraint firstItem="4bc-dn-f4s" firstAttribute="leading" secondItem="sZn-CJ-Yxe" secondAttribute="trailing" constant="5" id="yvZ-A7-xp3"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="4bc-dn-f4s" secondAttribute="bottom" constant="10" id="zJc-bM-EJI"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <connections>
@@ -240,10 +263,12 @@
                         <outlet property="outerCropView" destination="jkT-Yy-LdU" id="Ghq-az-2e9"/>
                         <outlet property="outerWaku" destination="iBQ-1O-1BP" id="FFv-O8-Sac"/>
                         <outlet property="paraButton" destination="nHY-L8-P6Q" id="Sqr-vl-7wU"/>
+                        <outlet property="playButton" destination="4bc-dn-f4s" id="bzE-g7-4XG"/>
                         <outlet property="saveButton" destination="ldV-kl-ghp" id="ocV-PC-sYh"/>
                         <outlet property="slowImage" destination="9Q7-F1-xlh" id="rqH-qI-NIk"/>
                         <outlet property="stopButton" destination="sqt-I0-fRF" id="uIR-70-WpH"/>
                         <outlet property="videoDate" destination="0q7-O3-Ich" id="Lv3-7t-LiK"/>
+                        <outlet property="waveButton" destination="Q2m-D3-Mdm" id="hsZ-Du-slr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -637,7 +662,6 @@
         <image name="btn" width="300" height="40"/>
         <image name="btnb" width="300" height="40"/>
         <image name="setting1" width="40" height="40"/>
-        <image name="vHITvideo" width="720" height="1280"/>
         <image name="vHITwave" width="720" height="360"/>
     </resources>
 </document>

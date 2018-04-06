@@ -87,6 +87,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var calcFlag:Bool = false
     var calcedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     
+    @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var waveButton: UIButton!
     @IBOutlet weak var stopButton: UIButton!
     @IBOutlet weak var listButton: UIButton!
     @IBOutlet weak var calcButton: UIButton!
@@ -166,6 +168,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     
+    @IBAction func showWave(_ sender: Any) {
+        if calcFlag == true{
+            return
+        }
+  //      if getLines() < 1 {
+  //          return
+  //      }
+  //      let pos = sender.location(in: view)
+  //      if checkWaks(po: pos)<0 && sender.state == .began{
+            if vHITboxView?.isHidden == true{
+                vHITboxView?.isHidden = false
+                boxView?.isHidden = false
+                vHITlineView?.isHidden = false
+                lineView?.isHidden = false//: UIImageView? // <- 追加
+            }else{
+                vHITboxView?.isHidden = true
+                boxView?.isHidden = true
+                vHITlineView?.isHidden = true
+                lineView?.isHidden = true
+            }
+    //    }
+    }
     @IBAction func longPress(_ sender: UILongPressGestureRecognizer){//Any) {
         if calcFlag == true{
             return
@@ -193,6 +217,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         listButton.isEnabled = true
         paraButton.isEnabled = true
         saveButton.isEnabled = true
+        waveButton.isEnabled = true
+        playButton.isEnabled = true
         if timer?.isValid == true {
             timer.invalidate()
         }
@@ -229,6 +255,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         listButton.isEnabled = false
         paraButton.isEnabled = false
         saveButton.isEnabled = false
+        waveButton.isEnabled = false
+        playButton.isEnabled = false
         vHITouter.removeAll()
         vHITeye.removeAll()
         timercnt = 0
@@ -513,6 +541,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             saveButton.isEnabled = true
             calcButton.isHidden = false
             stopButton.isHidden = true
+            waveButton.isEnabled = true
+            playButton.isEnabled = true
+  
             //      if timer?.isValid == true {
                     timer.invalidate()
               //  }
