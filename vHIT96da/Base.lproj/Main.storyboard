@@ -128,6 +128,9 @@
                                     <constraint firstAttribute="width" constant="50" id="xEr-qM-rTA"/>
                                 </constraints>
                                 <state key="normal" title="play" backgroundImage="btn"/>
+                                <connections>
+                                    <segue destination="iop-07-P89" kind="show" id="5vC-FG-4j6"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Afb-7h-V8u">
                                 <rect key="frame" x="10" y="617" width="50" height="40"/>
@@ -276,6 +279,49 @@
                 </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-410.39999999999998" y="-115.59220389805098"/>
+        </scene>
+        <!--Play Video View Controller-->
+        <scene sceneID="G5l-6e-XyB">
+            <objects>
+                <viewController id="iop-07-P89" customClass="PlayVideoViewController" customModule="vHIT96da" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="waR-mR-wSk">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q3d-Jq-FYa">
+                                <rect key="frame" x="305" y="617" width="60" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="3zl-1A-HmQ"/>
+                                    <constraint firstAttribute="height" constant="40" id="xmm-gt-xAs"/>
+                                </constraints>
+                                <state key="normal" title="exit" backgroundImage="btn"/>
+                                <connections>
+                                    <segue destination="fg6-Ey-mWf" kind="unwind" unwindAction="unwind:" id="wHm-Gb-DdX"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tye-VD-IIQ">
+                                <rect key="frame" x="41" y="68" width="244" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Vos-UF-Z1Y" firstAttribute="trailing" secondItem="q3d-Jq-FYa" secondAttribute="trailing" constant="10" id="jfY-x6-4cu"/>
+                            <constraint firstItem="Vos-UF-Z1Y" firstAttribute="bottom" secondItem="q3d-Jq-FYa" secondAttribute="bottom" constant="10" id="z89-dE-umk"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Vos-UF-Z1Y"/>
+                    </view>
+                    <connections>
+                        <outlet property="pathLabel" destination="tye-VD-IIQ" id="pig-hz-cB3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gOE-ms-WRT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="fg6-Ey-mWf" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="-410.39999999999998" y="658.92053973013503"/>
         </scene>
         <!--Parameters View Controller-->
         <scene sceneID="IwN-dE-AWL">

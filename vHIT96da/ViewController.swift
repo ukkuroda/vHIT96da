@@ -1173,6 +1173,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("prepare para")
             #endif
+        }else if let vc = segue.destination as? PlayVideoViewController{
+            let Controller:PlayVideoViewController = vc
+            Controller.videoPath = slowvideoPath
         }else{
             #if DEBUG
             print("prepare list")
@@ -1212,6 +1215,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             dispWakus()
             #if DEBUG
             print("TATSUAKI-unwind from para")
+            #endif
+        }else if let vc = segue.source as? PlayVideoViewController{
+            #if DEBUG
+            print("tatsuaki-unwind from playvideo")
             #endif
         }else{
             #if DEBUG
