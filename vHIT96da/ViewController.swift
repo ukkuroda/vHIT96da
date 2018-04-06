@@ -706,8 +706,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
      //       slowPaths.append(slowvideoPath)
       //      tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
             videoDate.text = "vHIT sample video"
+            slowImage.image = getSlowimg(num: 0)
         //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
+            print(slowvideoPath)
             return
         }
         // スロービデオのアルバムを取得
