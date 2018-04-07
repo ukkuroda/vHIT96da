@@ -548,6 +548,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     timer.invalidate()
               //  }
             UIApplication.shared.isIdleTimerDisabled = false
+            drawBoxies()
+            dispWaves()
         }
  
         drawRealwave()
@@ -640,7 +642,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func getSlowimg(num:Int) ->UIImage{
         var fileURL:URL
          if num == 0{
-            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!)
+            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vHITsample", ofType: "MOV")!)
   //       }else{
     //       fileURL = URL(fileURLWithPath: slowvideoPath)
       //  }
@@ -702,10 +704,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //    var tempDate:String = ""
     func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
         if num == 0{
-            slowvideoPath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
+            slowvideoPath = Bundle.main.path(forResource: "vHITsample", ofType: "MOV")!
      //       slowPaths.append(slowvideoPath)
       //      tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
-            videoDate.text = "vHIT sample video"
+            videoDate.text = "vHIT video : sample"
             slowImage.image = getSlowimg(num: 0)
         //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
@@ -1053,8 +1055,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         var riln = draw1(rl:0,eyeouter:0,pt:0,color:UIColor.blue)
         riln = draw1(rl:0,eyeouter:1,pt:0,color:UIColor.black)
-        var leln = draw1(rl:1,eyeouter:0,pt:250,color:UIColor.red)
-        leln = draw1(rl:1,eyeouter:1,pt:250,color:UIColor.black)
+        var leln = draw1(rl:1,eyeouter:0,pt:260,color:UIColor.red)
+        leln = draw1(rl:1,eyeouter:1,pt:260,color:UIColor.black)
         
         "\(riln)".draw(at: CGPoint(x: 3, y: 0), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
@@ -1178,6 +1180,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }else if let vc = segue.destination as? PlayVideoViewController{
             let Controller:PlayVideoViewController = vc
             Controller.videoPath = slowvideoPath
+            Controller.videoDate = videoDate.text!
         }else{
             #if DEBUG
             print("prepare list")
@@ -1207,8 +1210,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             eyeBorder = ParametersViewController.eyeBorder
             faceBorder = ParametersViewController.faceBorder
             outerBorder = ParametersViewController.outerBorder
-          setUserDefaults()
-            if vHITouter.count > 500{//データがありそうな時は表示
+            setUserDefaults()
+            if vHITouter.count > 400{//データがありそうな時は表示
                 drawBoxies()
                 dispWaves()
             }else{
@@ -1482,16 +1485,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         let vHITcnt = self.vHITouter.count
-        if vHITcnt < 500 {
+        if vHITcnt < 400 {
             return
         }
         //var vcnt:Int = 0
-        var skipFlagcnt = 0
-        for vcnt in 0..<(vHITcnt - 400) {//
-            if skipFlagcnt > 0{
-                skipFlagcnt -= 1
+        var skipCnt = 0
+        for vcnt in 0..<(vHITcnt - 120) {//
+            if skipCnt > 0{
+                skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
-                skipFlagcnt = 120
+                skipCnt = 120
             }
         }
         drawVHITwaves()

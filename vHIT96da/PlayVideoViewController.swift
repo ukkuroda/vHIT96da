@@ -10,7 +10,7 @@ import UIKit
 
 class PlayVideoViewController: UIViewController {
     var videoPath:String = ""
-    
+    var videoDate:String = ""
     @IBOutlet weak var pathLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
