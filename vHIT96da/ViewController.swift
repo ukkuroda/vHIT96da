@@ -799,19 +799,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
         outerBorder = getUserDefault(str: "outerBorder", ret: 10)
+        //samplevideoでデフォルト値で上手く解析できるように、6s,7,8と7plus,8plus,xでデフォルト値を合わせる。
+        let ratioW = self.view.bounds.width/375.0//6s
+        let ratioH = self.view.bounds.height/667.0//6s
 
-        rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: 97))
-        rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: 143))
-        rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: 209))
-        rectEye.size.height = CGFloat(getUserDefault(str: "rectEye_h", ret: 10))
-        rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: 107))
-        rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: 328))
-        rectFace.size.width = CGFloat(getUserDefault(str: "rectFace_w", ret: 77))
-        rectFace.size.height = CGFloat(getUserDefault(str: "rectFace_h", ret: 27))
-        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: 163))
-        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: 508))
-        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: 53))
-        rectOuter.size.height = CGFloat(getUserDefault(str: "rectOuter_h", ret: 36))
+        rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: Int(97*ratioW)))
+        rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: Int(143*ratioH)))
+        rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: Int(209*ratioW)))
+        rectEye.size.height = CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
+        rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(167*ratioW)))
+        rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
+        rectFace.size.width = CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
+        rectFace.size.height = CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
+        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(163*ratioW)))
+        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(508*ratioH)))
+        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(53*ratioW)))
+        rectOuter.size.height = CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(36*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
         UserDefaults.standard.set(flatWidth, forKey: "flatWidth")
@@ -953,18 +956,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
     @IBAction func saveResult(_ sender: Any) {
-//        print(tempnum,slowPaths.count)
-//        slowImage.image = slowImgs[tempnum]
-//        videoDate.text = slowDates[tempnum]
-//        tempnum += 1
-//        if tempnum > slowVideoCnt{
-//            tempnum = 0
-//        }
-//        return
-        //        let gray_img : UIImage!
-        //        gray_img  = openCV.toGray(slowImage.image)
-        //        slowImage.image = gray_img
-        //        return
         #if DEBUG
         print("kuroda-debug" + "\(getLines())")
         #endif
@@ -1072,26 +1063,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
     
-    //    func csvToArray () {
-    //        if let csvPath = Bundle.main.path(forResource: "VhitData", ofType: "txt") {
-    //            do {
-    //                let csvStr = try String(contentsOfFile:csvPath, encoding:String.Encoding.utf8)
-    //                vHITarr = csvStr.components(separatedBy: "\r\n")
-    //                 var n3 = Array<String>()
-    //                for n in vHITarr {//vHITarr ["000,000,000", "001,003,002", "002,001,005",
-    //                    if n.count > 4 {
-    //                        n3 = n.components(separatedBy: ",")
-    //                         vHITeye.append(Int(n3[1])!)
-    //                        vHITouter.append(Int(n3[2])!)
-    //                    }
-    //                }
-    //            } catch let error as NSError {
-    //                print(error.localizedDescription)
-    //            }
-    //        } else {
-    //            print("vhit read error")
-    //        }
-    //    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -1114,42 +1085,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
    //     initSlowdata()
         setVideoPathDate(num: slowVideoCurrent)////0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
     }
-//    var tempPath:String = ""
-//    var tempDate:String = ""
-//    func setslowVideoPath(num:Int)
-//    func initSlowdata()
-//    {
-//        slowPaths.removeAll()
-//        slowDates.removeAll()
-//        slowImgs.removeAll()
-//        
-//        slowPaths.append(Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!)
-//        slowDates.append("vHIT sample video")
-//            //            tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
-//            //            videoDate.text =
-//            //            tempDate = "vHIT sample video"
-//            //       //     slowDates.append(tempDate)
-//
-//        for i in 0...(slowVideoCnt-1){
-//
-//            usleep(2)
-//            setslowVideoPath(num: i)
-//      
-//            usleep(2)
-//
-//            slowPaths.append(tempPath)
-//            slowDates.append(tempDate)
-//            print(i,tempPath,tempDate)
-//            slowImgs.append(getSlowimg(num:i))
-//     //       slowPaths.insert(tempPath, at: 0)//<#T##Int#>)(tempPath)
-//     //       slowDates.insert(tempDate, at: 0)
-//     //       slowImgs.insert(getSlowimg(path:tempPath), at: 0)
-//        }
-//        print(slowPaths.count,slowDates.count)
-//        for i in 0...slowVideoCnt{
-//            print(slowPaths[i],slowDates[i])
-//        }
-//    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

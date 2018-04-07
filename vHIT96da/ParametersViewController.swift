@@ -110,11 +110,13 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         eyeBorder = 3
         faceBorder = 5
         outerBorder = 10
-        self.rectEye = CGRect(x:97,y:143,width:209,height:10)
-        self.rectFace = CGRect(x:167,y:328,width:77,height:27)
-        self.rectOuter = CGRect(x:163,y:508,width:53,height:36)
+        let ratioW = self.view.bounds.width/375.0//6s
+        let ratioH = self.view.bounds.height/667.0//6s
+        self.rectEye = CGRect(x:97*ratioW,y:143*ratioH,width:209*ratioW,height:10*ratioH)
+        self.rectFace = CGRect(x:167*ratioW,y:328*ratioH,width:77*ratioW,height:27*ratioH)
+        self.rectOuter = CGRect(x:163*ratioW,y:508*ratioH,width:53*ratioW,height:36*ratioH)
         dispParam()
-        
+
     }
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
