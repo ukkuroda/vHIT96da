@@ -11,9 +11,11 @@ import UIKit
 class PlayVideoViewController: UIViewController {
     var videoPath:String = ""
     var videoDate:String = ""
-    @IBOutlet weak var pathLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    //   @IBOutlet weak var pathLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
+        dateLabel.text = videoDate
         print(videoPath)
         // Do any additional setup after loading the view.
     }
