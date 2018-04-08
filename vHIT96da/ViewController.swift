@@ -717,7 +717,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             slowImage.image = slowImgs[0]//getSlowimg(num: 0)
         //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
-            print(slowvideoPath)
+        //    print(slowvideoPath)
             return
         }
         // スロービデオのアルバムを取得
@@ -743,11 +743,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
    //     tempDate = str2[0] + " " + str2[1] + "  (\(num))"
   //      slowDates.append(tempDate)
 
-        let manager = PHImageManager.default()
-        manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
+   //     let manager = PHImageManager.default()
+  //      manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
             // imageをセットする
-            self.slowImage.image = image
-        }
+    //        self.slowImage.image = image
+      //  }
         
         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
@@ -1079,14 +1079,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @objc func viewWillEnterForeground(_ notification: Notification?) {
         if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
             setslowImgs()
+            if slowVideoCurrent > slowVideoCnt{
+                slowVideoCurrent = slowVideoCnt
+            }
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
-
-        
         
         // Do any additional setup after loading the view, typically from a nib.
         stopButton.isHidden = true
@@ -1106,7 +1107,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         print("count",slowVideoCnt)
         #endif
    //     initSlowdata()
-        setVideoPathDate(num: slowVideoCurrent)////0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
+        setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+        slowImage.image = slowImgs[slowVideoCurrent]
     }
 
     override func didReceiveMemoryWarning() {
