@@ -727,7 +727,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
         //      print(fetchAssets.count)
         if num > fetchAssets.count {//その番号のビデオがないとき
-            print("count error ビデオなし")
+  //          print("count error ビデオなし")
             return
         }
         // 先頭のアセットを取得
@@ -1303,7 +1303,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if backNum < 0 {
                     backNum = slowVideoCnt
                 }
-                print("left",backNum)
+      //          print("left",backNum)
                 let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
   //              let backimg2 = getSlowimg(num: backNum)//老番のサムネールをゲット
                 let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
@@ -1312,8 +1312,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if backNum >  slowVideoCnt {
                     backNum = 0
                 }
-                print("right",backNum)
-                print("current",slowVideoCurrent)
+   //             print("right",backNum)
+     //           print("current",slowVideoCurrent)
                 backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
  //               backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
                 leftrightFlag = true
