@@ -11,13 +11,13 @@ import AVKit
 
 
 class PlayVideoViewController: UIViewController {
-    var videoPath:String = ""//無駄だった
-    var videoDate:String = ""//無駄だった
-    @IBOutlet weak var dateLabel: UILabel!
+    var videoPath:String = ""
+ //   var videoDate:String = ""//無駄だった
+ //   @IBOutlet weak var dateLabel: UILabel!
     //   @IBOutlet weak var pathLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        dateLabel.text = videoDate
+ //       dateLabel.text = videoDate
         // Do any additional setup after loading the view, typically from a nib.
         //let path = Bundle.main.path(forResource: "movie.mp4", ofType: nil)
         

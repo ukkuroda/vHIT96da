@@ -84,8 +84,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //    var slowDates = Array<String>()
 //    var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
-    var calcFlag:Bool = false
-    var calcedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
+    var calcFlag:Bool = false//calc中かどうか
+    var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
+    var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
     
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var waveButton: UIButton!
@@ -226,10 +227,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcButton.isHidden = false
     }
     @IBAction func vHITcalc(_ sender: Any) {
- //         if slowVideoCnt < 1{
-   //         return
-     //   }
-        if calcedFlag == true {
+         if nonsavedFlag == true && getLines() > 0{
             let alert = UIAlertController(
                 title: "vHIT Data is",
                 message: "erase OK?",
@@ -260,6 +258,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITouter.removeAll()
         vHITeye.removeAll()
         timercnt = 0
+        openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
         let eyedx:CGFloat = 4 * CGFloat(eyeBorder)
         let eyedxInt:Int = Int(eyedx)
@@ -426,6 +425,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     print(Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                     print(count)
                 #endif
+                while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
+                        usleep(1)
+                }
                 self.vHITeye.append(Int(eY.pointee) - eyedxInt - fy)
                 self.vHITouter.append(Int(oY.pointee) - outerdxInt - fy)
                 
@@ -445,7 +447,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             self.calcFlag = false
  //           UIApplication.shared.isIdleTimerDisabled = false
             if self.getLines() > 0{
-                self.calcedFlag = true
+                self.nonsavedFlag = true
             }
         }
     }
@@ -544,12 +546,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = true
             playButton.isEnabled = true
   
-            //      if timer?.isValid == true {
-                    timer.invalidate()
-              //  }
+            //if timer?.isValid == true {
+            timer.invalidate()
+            //  }
             UIApplication.shared.isIdleTimerDisabled = false
             drawBoxies()
-            dispWaves()
+            calcDrawVHIT()//終わり直前で認識されたvhitdataが認識されないこともあるかもしれないので、駄目押し。だめ押し用のcalcdrawvhitは別に作る必要があるかもしれない。
+            if self.getLines() > 0{
+                self.nonsavedFlag = true
+            }
         }
  
         drawRealwave()
@@ -559,7 +564,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         #endif
         if timercnt % 10 == 0{
             dispWakus()
-            dispWaves()
+            calcDrawVHIT()
         }
     }
     func showNextvideo(direction: Int){
@@ -980,7 +985,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             // イメージビューに設定する
             UIImageWriteToSavedPhotosAlbum(drawImage, nil, nil, nil)
             //self.drawVHITwaves()
-            self.calcedFlag = false //解析結果がsaveされたのでfalse
+            self.nonsavedFlag = false //解析結果がsaveされたのでfalse
             #if DEBUG
             print(self.getLines())
             #endif
@@ -1080,7 +1085,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         slowVideoCnt = getslowVideoNum()
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
        #if DEBUG
-        print(slowVideoCnt)
+        print("count",slowVideoCnt)
         #endif
    //     initSlowdata()
         setVideoPathDate(num: slowVideoCurrent)////0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
@@ -1116,7 +1121,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }else if let vc = segue.destination as? PlayVideoViewController{
             let Controller:PlayVideoViewController = vc
             Controller.videoPath = slowvideoPath
-            Controller.videoDate = videoDate.text!
+       //     Controller.videoDate = videoDate.text!
         }else{
             #if DEBUG
             print("prepare list")
@@ -1149,7 +1154,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             setUserDefaults()
             if vHITouter.count > 400{//データがありそうな時は表示
                 drawBoxies()
-                dispWaves()
+                calcDrawVHIT()
             }else{
                 removeBoxies()
             }
@@ -1392,9 +1397,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func Get5(num:Int) -> Int {
         //int i, sum = 0;
+   //     let cnt = vHITouter.count
         var sum:Int = 0
         for i  in 0..<5 {
+       //     if cnt != 100000{//< cnt{//let c = vHITouter.count
             sum += vHITouter[num + i]
+     //       }
         }
         return sum
     }
@@ -1406,8 +1414,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return -1
         }
         var sum:Int = 0
+    //    let cnt = vHITouter.count
         for i in 0..<flatWidth {//width*100/24 ms動かない処を探す
+    //        if cnt != 100000{//}< num + i{
             sum += vHITouter[num + i]
+      //      }
             if sum > flatsumLimit || sum < -flatsumLimit {
                 //               print("\(num), \(sum), \(flatWidth), \(flatsumLimit) ")
                 return -1
@@ -1417,9 +1428,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        print("flat found \(num), \(sum), \(flatWidth), \(flatsumLimit) ")
         return updownp(n: num + flatWidth - 4, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
-    func dispWaves(){
+    func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+        openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
             return
@@ -1427,12 +1439,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //var vcnt:Int = 0
         var skipCnt = 0
         for vcnt in 0..<(vHITcnt - 120) {//
-            if skipCnt > 0{
+             if skipCnt > 0{
                 skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
-                skipCnt = 120
+                skipCnt = 30
             }
         }
+        openCVstopFlag = false
         drawVHITwaves()
     }
     func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波

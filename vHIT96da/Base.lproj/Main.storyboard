@@ -316,9 +316,6 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Vos-UF-Z1Y"/>
                     </view>
-                    <connections>
-                        <outlet property="dateLabel" destination="tye-VD-IIQ" id="37E-G5-j2v"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gOE-ms-WRT" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="fg6-Ey-mWf" userLabel="Exit" sceneMemberID="exit"/>
