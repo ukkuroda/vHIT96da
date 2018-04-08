@@ -986,6 +986,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             UIImageWriteToSavedPhotosAlbum(drawImage, nil, nil, nil)
             //self.drawVHITwaves()
             self.nonsavedFlag = false //解析結果がsaveされたのでfalse
+            self.calcDrawVHIT()
             #if DEBUG
             print(self.getLines())
             #endif
