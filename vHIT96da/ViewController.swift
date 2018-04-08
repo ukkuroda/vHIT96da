@@ -584,7 +584,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("video_num:"+"\(slowVideoCurrent)")
         #endif
         setVideoPathDate(num: slowVideoCurrent)
-        slowImage.image = getSlowimg(num: slowVideoCurrent)
+        slowImage.image = slowImgs[slowVideoCurrent]//getSlowimg(num: slowVideoCurrent)
     }
     
     func Field2value(field:UITextField) -> Int {
@@ -606,8 +606,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return 0
     }
+  
     var retImage:UIImage!
-    func getSlowimg(path:String) ->UIImage{
+  /*  func getSlowimg(path:String) ->UIImage{
         var fileURL:URL
         fileURL = URL(fileURLWithPath: path)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
@@ -643,7 +644,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
         return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
     }
-            
+*/
     func getSlowimg(num:Int) ->UIImage{
         var fileURL:URL
          if num == 0{
@@ -713,7 +714,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
      //       slowPaths.append(slowvideoPath)
       //      tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
             videoDate.text = "vHIT video : sample"
-            slowImage.image = getSlowimg(num: 0)
+            slowImage.image = slowImgs[0]//getSlowimg(num: 0)
         //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
             print(slowvideoPath)
@@ -1068,14 +1069,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
+    func setslowImgs(){
+        slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
+        slowImgs.removeAll()
+        for i in 0...slowVideoCnt{
+            slowImgs.append(getSlowimg(num: i))
+        }
+    }
     @objc func viewWillEnterForeground(_ notification: Notification?) {
-        if (self.isViewLoaded && (self.view.window != nil)) {
-            slowVideoCnt = getslowVideoNum()//
-            slowImgs.removeAll()
-            for i in 0...slowVideoCnt{
-                slowImgs.append(getSlowimg(num: i))
-            }
-  //          print("フォアグラウンド")
+        if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
+            setslowImgs()
         }
     }
     override func viewDidLoad() {
@@ -1097,11 +1100,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         #endif
         
         dispWakus()
-        slowVideoCnt = getslowVideoNum()
-        slowImgs.removeAll()
-        for i in 0...slowVideoCnt{
-            slowImgs.append(getSlowimg(num: i))
-        }
+        setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
        #if DEBUG
         print("count",slowVideoCnt)
