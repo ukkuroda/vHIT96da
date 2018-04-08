@@ -82,7 +82,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var slowVideoCurrent:Int = 0
 //    var slowPaths = Array<String>()
 //    var slowDates = Array<String>()
-//    var slowImgs = Array<UIImage>()
+    var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
@@ -1068,9 +1068,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    
+    @objc func viewWillEnterForeground(_ notification: Notification?) {
+        if (self.isViewLoaded && (self.view.window != nil)) {
+            slowVideoCnt = getslowVideoNum()//
+            slowImgs.removeAll()
+            for i in 0...slowVideoCnt{
+                slowImgs.append(getSlowimg(num: i))
+            }
+  //          print("フォアグラウンド")
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
         stopButton.isHidden = true
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
@@ -1084,6 +1098,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         dispWakus()
         slowVideoCnt = getslowVideoNum()
+        slowImgs.removeAll()
+        for i in 0...slowVideoCnt{
+            slowImgs.append(getSlowimg(num: i))
+        }
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
        #if DEBUG
         print("count",slowVideoCnt)
@@ -1277,7 +1295,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let move:CGPoint = sender.translation(in: self.view)
         let pos = sender.location(in: self.view)
         if sender.state == .began {
-            slowVideoCnt = getslowVideoNum()//
+  //          slowVideoCnt = getslowVideoNum()//
 
             if slowVideoCnt > 0{//2こ以上あった時
                 var backNum = slowVideoCurrent - 1
@@ -1285,8 +1303,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     backNum = slowVideoCnt
                 }
                 print("left",backNum)
-  //              let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
-                let backimg2 = getSlowimg(num: backNum)//老番のサムネールをゲット
+                let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
+  //              let backimg2 = getSlowimg(num: backNum)//老番のサムネールをゲット
                 let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
                 backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
                 backNum = slowVideoCurrent + 1
@@ -1295,8 +1313,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 print("right",backNum)
                 print("current",slowVideoCurrent)
- //               backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
-                backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
+                backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
+ //               backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
                 leftrightFlag = true
             }
             rectType = checkWaks(po: pos)//枠設定かどうか
@@ -1435,9 +1453,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
-            return
+            openCVstopFlag = false
+           return
         }
-        //var vcnt:Int = 0
+         //var vcnt:Int = 0
         var skipCnt = 0
         for vcnt in 0..<(vHITcnt - 120) {//
              if skipCnt > 0{
