@@ -191,25 +191,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
     //    }
     }
-//    @IBAction func longPress(_ sender: UILongPressGestureRecognizer){//Any) {
-//        if calcFlag == true{
-//            return
-//        }
-//        let pos = sender.location(in: view)
-//        if checkWaks(po: pos)<0 && sender.state == .began{
-//            if vHITboxView?.isHidden == true{
-//                vHITboxView?.isHidden = false
-//                boxView?.isHidden = false
-//                vHITlineView?.isHidden = false
-//                lineView?.isHidden = false//: UIImageView? // <- 追加
-//            }else{
-//                vHITboxView?.isHidden = true
-//                boxView?.isHidden = true
-//                vHITlineView?.isHidden = true
-//                lineView?.isHidden = true
-//            }
-//        }
-//    }
+
     @IBAction func stopCalc(_ sender: Any) {
         
         calcFlag = false
@@ -258,6 +240,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITouter.removeAll()
         vHITeye.removeAll()
         timercnt = 0
+        if lineView != nil{//これが無いとエラーがでる。
+            lineView?.removeFromSuperview()//realwaveを消す
+        }
+
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
         let eyedx:CGFloat = 4 * CGFloat(eyeBorder)
