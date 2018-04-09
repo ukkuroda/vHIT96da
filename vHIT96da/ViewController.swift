@@ -906,9 +906,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // 線を描く
         drawPath.stroke()
         drawPath2.stroke()
-        "\(vHITeye.count)f/\((timercnt+1)*2)s".draw(at: CGPoint(x: 3, y: 3), withAttributes: [
+        let timetxt:String = String(format: "%df(%.1fs) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,(timercnt+1)*2)
+        //print(timetxt)
+        timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 13, weight: UIFont.Weight.regular)])// イメージコンテキストからUIImageを作る
+            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 13, weight: UIFont.Weight.regular)])
+        
+        //イメージコンテキストからUIImageを作る
         let image = UIGraphicsGetImageFromCurrentImageContext()
         // イメージ処理の終了
         UIGraphicsEndImageContext()
