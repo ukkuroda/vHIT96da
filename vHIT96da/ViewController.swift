@@ -991,10 +991,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         alert.addTextField { (textField:UITextField!) -> Void in
             textField.keyboardType = UIKeyboardType.numberPad
         }
-        
-        alert.addAction(saveAction)
         alert.addAction(cancelAction)
-        present(alert, animated: true, completion: nil)
+
+        alert.addAction(saveAction)
+         present(alert, animated: true, completion: nil)
         
     }
     func drawWaves(width w:CGFloat,height h:CGFloat) -> UIImage {

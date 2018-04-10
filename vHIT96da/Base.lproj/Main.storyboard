@@ -116,6 +116,7 @@
                                     <constraint firstAttribute="width" constant="55" id="Jfv-t0-kTg"/>
                                     <constraint firstAttribute="height" constant="40" id="hOV-3c-qjO"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <state key="normal" title="disp" backgroundImage="btn"/>
                                 <connections>
                                     <action selector="showWave:" destination="BYZ-38-t0r" eventType="touchUpInside" id="a15-x5-hPb"/>
@@ -127,6 +128,7 @@
                                     <constraint firstAttribute="width" constant="55" id="Ij1-B5-cqM"/>
                                     <constraint firstAttribute="height" constant="40" id="NZN-Of-kJ3"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <state key="normal" title="play" backgroundImage="btn"/>
                                 <connections>
                                     <segue destination="iop-07-P89" kind="show" id="5vC-FG-4j6"/>
@@ -138,6 +140,7 @@
                                     <constraint firstAttribute="width" constant="55" id="WIv-i8-Oh5"/>
                                     <constraint firstAttribute="height" constant="40" id="rdZ-eA-rp5"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <state key="normal" title="list" backgroundImage="btn"/>
                                 <connections>
                                     <segue destination="dfx-rB-Lsf" kind="show" id="pmn-9f-ieK"/>
@@ -172,6 +175,7 @@
                                     <constraint firstAttribute="height" constant="40" id="48Z-Lt-Bye"/>
                                     <constraint firstAttribute="width" constant="55" id="caJ-Tu-0uc"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <state key="normal" title="save" backgroundImage="btn"/>
                                 <connections>
                                     <action selector="saveResult:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kSQ-NG-BhZ"/>

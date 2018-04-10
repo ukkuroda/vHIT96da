@@ -17,7 +17,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.1</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.1</string>
+	<string>1.0.5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -28,7 +28,12 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
+		<string>telephony</string>
+		<string>front-facing-camera</string>
+		<string>video-camera</string>
+		<string>gyroscope</string>
+		<string>magnetometer</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
