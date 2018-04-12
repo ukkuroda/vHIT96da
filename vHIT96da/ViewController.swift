@@ -991,8 +991,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         alert.addTextField { (textField:UITextField!) -> Void in
             textField.keyboardType = UIKeyboardType.numberPad
         }
-        alert.addAction(cancelAction)
-
+        alert.addAction(cancelAction)//この行と下の行の並びを変えるとCancelとOKの左右が入れ替わる。
         alert.addAction(saveAction)
          present(alert, animated: true, completion: nil)
         
