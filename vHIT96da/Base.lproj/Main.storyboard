@@ -152,7 +152,7 @@
                                     <constraint firstAttribute="height" constant="40" id="XP7-tN-kl4"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="stop" backgroundImage="btn"/>
+                                <state key="normal" image="stop3"/>
                                 <connections>
                                     <action selector="stopCalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZYP-2r-Mah"/>
                                 </connections>
@@ -220,7 +220,7 @@
                                     <constraint firstAttribute="height" constant="40" id="AlX-VH-fQF"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="start" backgroundImage="btn"/>
+                                <state key="normal" image="start3"/>
                                 <connections>
                                     <action selector="vHITcalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1P8-eL-Cbp"/>
                                 </connections>
@@ -706,6 +706,8 @@
         <image name="btn" width="300" height="40"/>
         <image name="btnb" width="300" height="40"/>
         <image name="setting1" width="40" height="40"/>
+        <image name="start3" width="299" height="123"/>
+        <image name="stop3" width="299" height="123"/>
         <image name="vHITwave" width="720" height="360"/>
     </resources>
 </document>

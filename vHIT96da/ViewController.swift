@@ -684,11 +684,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             
             let asset  = fetchAssets.object(at: number)
             
-            let manager = PHImageManager.default()
+            let manager = PHImageManager()//.default()
             
-            manager.requestImage(for: asset, targetSize: CGSize(width: 720, height: 1280), contentMode: .aspectFill, options: nil) { (image, info) in
+  //以下を設定してもぼける
+ //           let requestOptions = PHImageRequestOptions()
+ //           requestOptions.resizeMode = .exact
+//            requestOptions.deliveryMode = .highQualityFormat;
+
+            manager.requestImage (for: asset, targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.aspectFill, options: nil) { (image, info) in
                 self.retImage = image
             }
+        
             return self.retImage
         }
      }
