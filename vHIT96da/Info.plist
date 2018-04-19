@@ -21,7 +21,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>YES</string>
+	<string>this application uses the slow motion videos of your photo library</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
