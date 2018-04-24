@@ -520,7 +520,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // イメージビューに設定する
         lineView = UIImageView(image: drawImage)
  //       lineView?.center = self.view.center
-        lineView?.center = CGPoint(x:view.bounds.width/2,y:340)
+        lineView?.center = CGPoint(x:view.bounds.width/2,y:340)//ここらあたりを変更se~7plusの大きさにも対応できた。
         view.addSubview(lineView!)
     }
     //var wpSleep:Int = 0
