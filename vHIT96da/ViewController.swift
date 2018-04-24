@@ -88,6 +88,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
     
+    @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var waveButton: UIButton!
     @IBOutlet weak var stopButton: UIButton!
@@ -206,7 +207,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             timer.invalidate()
         }
         stopButton.isHidden = true
-        calcButton.isHidden = false
+        calcButton.isEnabled = true
     }
     @IBAction func vHITcalc(_ sender: Any) {
          if nonsavedFlag == true && getLines() > 0{
@@ -230,7 +231,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func vHITcalc_sub(){
         stopButton.isHidden = false
-        calcButton.isHidden = true
+        stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
+        stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
+        stopButton.frame.size.width = calcButton.frame.size.width
+        stopButton.frame.size.height = calcButton.frame.size.height
+ //       calcButton.isHidden = true
+        calcButton.isEnabled = false
         calcFlag = true
         listButton.isEnabled = false
         paraButton.isEnabled = false
@@ -480,7 +486,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if boxView == nil {
             let boxImage1 = makeBox(width: self.view.bounds.width, height: 180)
             boxView = UIImageView(image: boxImage1)
-            boxView?.center = self.view.center//CGPoint(x:view.bounds.width/2,y:330)
+  //          boxView?.center = self.view.center//CGPoint(x:view.bounds.width/2,y:330)
+            boxView?.center = CGPoint(x:view.bounds.width/2,y:340)
             view.addSubview(boxView!)
         }
         vHITboxView?.isHidden = false
@@ -512,7 +519,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let drawImage = drawLine(num:startcnt,width:self.view.bounds.width,height:180)
         // イメージビューに設定する
         lineView = UIImageView(image: drawImage)
-        lineView?.center = self.view.center
+ //       lineView?.center = self.view.center
+        lineView?.center = CGPoint(x:view.bounds.width/2,y:340)
         view.addSubview(lineView!)
     }
     //var wpSleep:Int = 0
@@ -527,7 +535,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             listButton.isEnabled = true
             paraButton.isEnabled = true
             saveButton.isEnabled = true
-            calcButton.isHidden = false
+            calcButton.isEnabled = true
             stopButton.isHidden = true
             waveButton.isEnabled = true
             playButton.isEnabled = true
