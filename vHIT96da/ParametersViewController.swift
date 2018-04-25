@@ -56,9 +56,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
 //        keyDown.isHidden = true
 //    }
   
-    @IBAction func tapBack(_ sender: Any) {
-        numpadOff(0)
-    }
+  
     @IBAction func numpadOff(_ sender: Any) {
         flatWidthinput.endEditing(true)
         flatSuminput.endEditing(true)
