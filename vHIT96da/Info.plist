@@ -17,13 +17,13 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.1</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.9</string>
+	<string>1.0.10</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>this application uses the slow motion videos of your photo library</string>
+	<string>this application analyzes the slow motion videos for vHIT in your photo library and gets vHIT</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
