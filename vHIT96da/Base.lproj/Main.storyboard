@@ -506,12 +506,9 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMb-F1-KQb">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMb-F1-KQb">
                                 <rect key="frame" x="260" y="341.5" width="115" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="115" id="dol-7v-IcL"/>
-                                    <constraint firstAttribute="height" constant="40" id="wzs-Q4-xHF"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="NumPad OFF" backgroundImage="btnb"/>
                                 <connections>
                                     <action selector="numpadOff:" destination="jFt-gZ-HXu" eventType="touchUpInside" id="L6q-yK-h1D"/>
@@ -618,13 +615,11 @@
                             <constraint firstItem="Kvx-6t-tgf" firstAttribute="top" secondItem="EJg-35-yLr" secondAttribute="bottom" id="PG7-9c-het"/>
                             <constraint firstItem="Pqs-uv-FDI" firstAttribute="top" secondItem="Xto-R9-s0K" secondAttribute="bottom" constant="5" id="Qpz-ez-4Qs"/>
                             <constraint firstItem="NMH-1D-eWf" firstAttribute="leading" secondItem="clc-JS-Bam" secondAttribute="trailing" constant="5" id="Sdz-8Y-l5V"/>
-                            <constraint firstItem="pMb-F1-KQb" firstAttribute="top" secondItem="qsU-FA-btD" secondAttribute="bottom" id="TMK-KN-Vev"/>
                             <constraint firstItem="8cN-2j-pVR" firstAttribute="top" secondItem="NMH-1D-eWf" secondAttribute="bottom" constant="5" id="TSb-qw-0ux"/>
                             <constraint firstItem="BdK-VW-JAk" firstAttribute="trailing" secondItem="Xto-R9-s0K" secondAttribute="trailing" constant="5" id="V2U-Pa-d8n"/>
                             <constraint firstItem="BdK-VW-JAk" firstAttribute="bottom" secondItem="ut3-ve-Fe7" secondAttribute="bottom" constant="10" id="Wt2-sW-X1r"/>
                             <constraint firstItem="yIp-mP-SHA" firstAttribute="top" secondItem="O7P-AP-fl8" secondAttribute="bottom" constant="5" id="cHM-tg-Xns"/>
                             <constraint firstItem="BdK-VW-JAk" firstAttribute="trailing" secondItem="Pqs-uv-FDI" secondAttribute="trailing" constant="5" id="dtf-Dl-lah"/>
-                            <constraint firstItem="BdK-VW-JAk" firstAttribute="trailing" secondItem="pMb-F1-KQb" secondAttribute="trailing" id="e3o-ML-KMT"/>
                             <constraint firstItem="s5L-uX-evv" firstAttribute="top" secondItem="EJg-35-yLr" secondAttribute="bottom" id="gIH-oP-wZy"/>
                             <constraint firstItem="O7P-AP-fl8" firstAttribute="top" secondItem="Kvx-6t-tgf" secondAttribute="bottom" constant="5" id="hiN-GW-7Ox"/>
                             <constraint firstItem="FSt-pQ-nLm" firstAttribute="leading" secondItem="9oE-gN-h2Z" secondAttribute="trailing" constant="5" id="ibj-bg-9I8"/>

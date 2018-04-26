@@ -70,32 +70,41 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         keyDown.isHidden = true
     }
     @IBAction func flatwidthDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
     }
     @IBAction func flatsumDown(_ sender: Any) {
-        keyDown.isHidden = false
+        setKeydown()
+      keyDown.isHidden = false
     }
     @IBAction func wavewidthDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
     }
     @IBAction func wavepeakDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
     }
     @IBAction func updownDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
     }
     @IBAction func peakwidthDown(_ sender: Any) {
-        keyDown.isHidden = false
+        setKeydown()
+       keyDown.isHidden = false
     }
     @IBAction func eyeBorderDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
    }
     
     @IBAction func faceBorderDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
     }
     
     @IBAction func outerBorderDown(_ sender: Any) {
+        setKeydown()
         keyDown.isHidden = false
    }
     
@@ -204,8 +213,20 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.outerBinput.keyboardType = UIKeyboardType.numberPad
         dispParam()
         keyDown.isHidden = true
+        setKeydown()
     }
-    
+    func setKeydown(){
+        //se:640(568) 6s:750(667) 7plus:1080(736) x:1125(812)
+        self.keyDown.frame.origin.x = view.bounds.width*2/3
+        print(view.bounds.height)
+        if view.bounds.height>810 {//X
+            self.keyDown.frame.origin.y = view.bounds.height - 255 - 75
+        }else{
+            self.keyDown.frame.origin.y = view.bounds.height - 255
+        }
+        self.keyDown.frame.size.width = view.bounds.width/3
+        self.keyDown.frame.size.height = 40
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
