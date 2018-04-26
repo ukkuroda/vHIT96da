@@ -218,7 +218,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     func setKeydown(){
         //se:640(568) 6s:750(667) 7plus:1080(736) x:1125(812)
         self.keyDown.frame.origin.x = view.bounds.width*2/3
-        print(view.bounds.height)
+        //print(view.bounds.height)
         if view.bounds.height>810 {//X
             self.keyDown.frame.origin.y = view.bounds.height - 255 - 75
         }else{

@@ -1185,7 +1185,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
-        }else if let vc = segue.source as? PlayVideoViewController{
+        }else if segue.source is PlayVideoViewController{
             #if DEBUG
             print("tatsuaki-unwind from playvideo")
             #endif
