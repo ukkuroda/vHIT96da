@@ -70,42 +70,42 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         keyDown.isHidden = true
     }
     @IBAction func flatwidthDown(_ sender: Any) {
-  //     keyDown.isHidden = false
-        setKeydown()
+       keyDown.isHidden = false
+  //      setKeydown()
    }
     @IBAction func flatsumDown(_ sender: Any) {
-    //   keyDown.isHidden = false
-        setKeydown()
+       keyDown.isHidden = false
+    ///    setKeydown()
   }
     @IBAction func wavewidthDown(_ sender: Any) {
-      // keyDown.isHidden = false
-        setKeydown()
+       keyDown.isHidden = false
+    //    setKeydown()
     }
     @IBAction func wavepeakDown(_ sender: Any) {
-        // keyDown.isHidden = false
-        setKeydown()
+         keyDown.isHidden = false
+      //  setKeydown()
     }
     @IBAction func updownDown(_ sender: Any) {
-    //   keyDown.isHidden = false
-        setKeydown()
+       keyDown.isHidden = false
+    //    setKeydown()
    }
     @IBAction func peakwidthDown(_ sender: Any) {
-      // keyDown.isHidden = false
-        setKeydown()
+       keyDown.isHidden = false
+        //setKeydown()
   }
     @IBAction func eyeBorderDown(_ sender: Any) {
-        //keyDown.isHidden = false
-        setKeydown()
+        keyDown.isHidden = false
+        //setKeydown()
     }
     
     @IBAction func faceBorderDown(_ sender: Any) {
         keyDown.isHidden = false
-        setKeydown()
+        //setKeydown()
     }
     
     @IBAction func outerBorderDown(_ sender: Any) {
          keyDown.isHidden = false
-        setKeydown()
+      //  setKeydown()
     }
     
     
@@ -201,7 +201,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         flatWidthinput.delegate = self
         flatSuminput.delegate = self
-   //     setKeydown()
+        setKeydown()
       //入力を数字入力キーボードとする
         self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
         self.flatSuminput.keyboardType = UIKeyboardType.numberPad
@@ -213,7 +213,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.faceBinput.keyboardType = UIKeyboardType.numberPad
         self.outerBinput.keyboardType = UIKeyboardType.numberPad
         dispParam()
-        setKeydown()
+//        setKeydown()//駄目押し
         keyDown.isHidden = true
     }
     func setKeydown(){
@@ -229,7 +229,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         }
         self.keyDown.frame.size.width = view.bounds.width/3
         self.keyDown.frame.size.height = 40
-        keyDown.isHidden = false//ここにおくと良いみたい
+    //    keyDown.isHidden = false//ここにおくと良いみたい
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
