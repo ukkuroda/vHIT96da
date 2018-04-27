@@ -330,7 +330,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="flatSumButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="sOJ-nz-JGJ"/>
-                                    <action selector="flatsumDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="87J-df-EkC"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yIp-mP-SHA">
@@ -344,7 +343,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="waveWidthButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="b2G-Ax-Cu3"/>
-                                    <action selector="wavewidthDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="jHj-YZ-kLc"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qd9-uN-Ocb">
@@ -358,7 +356,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="wavePeakButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="YBL-ci-2sf"/>
-                                    <action selector="wavepeakDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="TS8-DS-SKq"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BtS-x5-rPf">
@@ -371,7 +368,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
-                                    <action selector="updownDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="tTG-mT-gM7"/>
                                     <action selector="updownPointButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="4Kp-a2-NPd"/>
                                 </connections>
                             </textField>
@@ -386,7 +382,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="peakWidthButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="e2L-km-zOw"/>
-                                    <action selector="peakwidthDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="cUc-nc-avf"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Kvx-6t-tgf">
@@ -400,7 +395,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="flatWidthButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="IM2-tb-IIX"/>
-                                    <action selector="flatwidthDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="z1I-3G-EyC"/>
                                 </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(1)flatWidth" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5nN-rh-ghQ">
@@ -525,7 +519,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="eyeBorderButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="ctn-pq-KZt"/>
-                                    <action selector="eyeBorderDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="d6W-j0-ckD"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="clc-JS-Bam">
@@ -539,7 +532,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="faceBorderButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="ZJl-ml-jQ6"/>
-                                    <action selector="faceBorderDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="mxc-4f-odD"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FSt-pQ-nLm">
@@ -553,7 +545,6 @@
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="outerBorderButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="fcc-4p-nBt"/>
-                                    <action selector="outerBorderDown:" destination="jFt-gZ-HXu" eventType="touchDown" id="PW2-Eq-ocR"/>
                                 </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="eye border" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s5L-uX-evv">
@@ -667,7 +658,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1AC-gX-BZk" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="LGJ-5M-CKr" userLabel="Exit" sceneMemberID="exit"/>
-                <tapGestureRecognizer id="snI-Mg-Q8t"/>
+                <tapGestureRecognizer id="snI-Mg-Q8t">
+                    <connections>
+                        <action selector="tapBack:" destination="jFt-gZ-HXu" id="lqO-z1-sDr"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="765.60000000000002" y="74.212893553223395"/>
         </scene>

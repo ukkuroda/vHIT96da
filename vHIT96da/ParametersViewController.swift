@@ -39,24 +39,19 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var outerBinput: UITextField!
     
     
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
- //       print("\(String(describing: flatWidthinput.text))")
-        return true
+    // became first responder
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        keyDown.isHidden = false
     }
-//    @IBAction func tapWhite(_ sender: Any) {
-//        print("背景あたり？がタップされました")
-//        flatWidthinput.endEditing(true)
-//        flatSuminput.endEditing(true)
-//        waveWidthinput.endEditing(true)
-//        wavePeakinput.endEditing(true)
-//        updownPointinput.endEditing(true)
-//        peakWidthinput.endEditing(true)
-//        //       keyDown.isHidden = false
-//        keyDown.isHidden = true
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//   //     print("\(String(describing: flatWidthinput.text))")
+//     //   print("kkkkkkk********")
+//        return true
 //    }
-  
-  
+    @IBAction func tapBack(_ sender: Any) {
+        numpadOff(0)
+    }
+   
     @IBAction func numpadOff(_ sender: Any) {
         flatWidthinput.endEditing(true)
         flatSuminput.endEditing(true)
@@ -69,45 +64,54 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         outerBinput.endEditing(true)
         keyDown.isHidden = true
     }
-    @IBAction func flatwidthDown(_ sender: Any) {
-       keyDown.isHidden = false
-  //      setKeydown()
-   }
-    @IBAction func flatsumDown(_ sender: Any) {
-       keyDown.isHidden = false
-    ///    setKeydown()
-  }
-    @IBAction func wavewidthDown(_ sender: Any) {
-       keyDown.isHidden = false
-    //    setKeydown()
-    }
-    @IBAction func wavepeakDown(_ sender: Any) {
-         keyDown.isHidden = false
-      //  setKeydown()
-    }
-    @IBAction func updownDown(_ sender: Any) {
-       keyDown.isHidden = false
-    //    setKeydown()
-   }
-    @IBAction func peakwidthDown(_ sender: Any) {
-       keyDown.isHidden = false
-        //setKeydown()
-  }
-    @IBAction func eyeBorderDown(_ sender: Any) {
-        keyDown.isHidden = false
-        //setKeydown()
-    }
-    
-    @IBAction func faceBorderDown(_ sender: Any) {
-        keyDown.isHidden = false
-        //setKeydown()
-    }
-    
-    @IBAction func outerBorderDown(_ sender: Any) {
-         keyDown.isHidden = false
-      //  setKeydown()
-    }
-    
+//    @IBAction func flatwidthDown(_ sender: Any) {
+//   //    keyDown.isHidden = false
+//  //      setKeydown()
+//   }
+//    @IBAction func flatsumDown(_ sender: Any) {
+//     //  keyDown.isHidden = false
+//    ///    setKeydown()
+//  }
+//    @IBAction func wavewidthDown(_ sender: Any) {
+//     //  keyDown.isHidden = false
+//    //    setKeydown()
+//    }
+//    @IBAction func wavepeakDown(_ sender: Any) {
+//   //      keyDown.isHidden = false
+//      //  setKeydown()
+//    }
+//
+////    @IBAction func updownUp(_ sender: Any) {
+//  //      keyDown.isHidden = false
+//    //}
+//    @IBAction func updownDown(_ sender: Any) {
+//  //      print("***************:")
+//   //     keyDown.isHidden = false
+//
+//   //     sleep(UInt32(0.1))
+//    //    keyDown.isHidden = false
+//    //    setKeydown()
+//   }
+//
+//    @IBAction func peakwidthDown(_ sender: Any) {
+//   //    keyDown.isHidden = false
+//        //setKeydown()
+//  }
+//    @IBAction func eyeBorderDown(_ sender: Any) {
+//    //    keyDown.isHidden = false
+//        //setKeydown()
+//    }
+//
+//    @IBAction func faceBorderDown(_ sender: Any) {
+//   // keyDown.isHidden = false
+//        //setKeydown()
+//    }
+//
+//    @IBAction func outerBorderDown(_ sender: Any) {
+//      //   keyDown.isHidden = false
+//      //  setKeydown()
+//    }
+//
     
     @IBAction func setDefault(_ sender: Any) {
         //上手く働かない
@@ -200,8 +204,16 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         flatWidthinput.delegate = self
+        //flatWidthinput.delegate = self//これはなんだ？コメントアウトして大丈夫かな？
         flatSuminput.delegate = self
-        setKeydown()
+        waveWidthinput.delegate = self
+        wavePeakinput.delegate = self
+        updownPointinput.delegate = self
+        peakWidthinput.delegate = self
+        eyeBinput.delegate = self
+        faceBinput.delegate = self
+        outerBinput.delegate = self
+    //    setKeydown()
       //入力を数字入力キーボードとする
         self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
         self.flatSuminput.keyboardType = UIKeyboardType.numberPad
@@ -213,7 +225,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.faceBinput.keyboardType = UIKeyboardType.numberPad
         self.outerBinput.keyboardType = UIKeyboardType.numberPad
         dispParam()
-//        setKeydown()//駄目押し
+        setKeydown()
+        
         keyDown.isHidden = true
     }
     func setKeydown(){
