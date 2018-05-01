@@ -923,8 +923,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         for n in 1...(pointCount) {
             if num + n < vHITouter.count {
                 let px = CGFloat(dx * n)
-                let py = CGFloat(vHITouter[num + n]/2 + 120)
-                let py2 = CGFloat(vHITeye[num + n]/2 + 60)
+                let py = CGFloat(vHITouter[num + n]/3 + 120)
+                let py2 = CGFloat(vHITeye[num + n]/3 + 60)
                 let point = CGPoint(x: px, y: py)
                 let point2 = CGPoint(x: px, y: py2)
                 pointList.append(point)
