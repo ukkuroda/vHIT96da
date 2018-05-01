@@ -159,6 +159,44 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       width: rect.height * iw / vw,
                       height: rect.width * ih / vh)
     }
+    
+    let KalQ:Double = 0.0001
+    let KalR:Double = 0.001
+    var KalX:Double = 0.0
+    var KalP:Double = 0.0
+    var KalK:Double = 0.0
+    func KalmeasurementUpdate()
+    {
+        KalK = (KalP + KalQ) / (KalP + KalQ + KalR);
+        KalP = KalR * (KalP + KalQ) / (KalR + KalP + KalQ);
+    }
+    func Kalupdate(measurement:Double) -> Double
+    {
+        KalmeasurementUpdate();
+        let result:Double = KalX + (measurement - KalX) * KalK;
+        KalX = result;
+        return result;
+    }
+    
+    let KalQ1:Double = 0.0001
+    let KalR1:Double = 0.001
+    var KalX1:Double = 0.0
+    var KalP1:Double = 0.0
+    var KalK1:Double = 0.0
+    func KalmeasurementUpdate1()
+    {
+        KalK1 = (KalP1 + KalQ1) / (KalP1 + KalQ1 + KalR1);
+        KalP1 = KalR1 * (KalP1 + KalQ1) / (KalR1 + KalP1 + KalQ1);
+    }
+    func Kalupdate1(measurement:Double) -> Double
+    {
+        KalmeasurementUpdate1();
+        let result:Double = KalX1 + (measurement - KalX1) * KalK1;
+        KalX1 = result;
+        return result;
+    }
+    
+    
     func startTimer() {
         if vHITlineView != nil{
             vHITlineView?.removeFromSuperview()
@@ -420,9 +458,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
-                self.vHITeye.append(Int(eY.pointee) - eyedxInt - fy)
-                self.vHITouter.append(Int(oY.pointee) - outerdxInt - fy)
-                
+ //               self.vHITeye.append(Int(eY.pointee) - eyedxInt - fy)
+ //               self.vHITouter.append(Int(oY.pointee) - outerdxInt - fy)
+                self.vHITeye.append(Int(8*(self.Kalupdate1(measurement: Double(Int(eY.pointee) - eyedxInt - fy)))))
+                self.vHITouter.append(Int(2*(self.Kalupdate(measurement: Double(Int(oY.pointee) - outerdxInt - fy)))))
+
                 count += 1
                 //                }))
                 
@@ -883,8 +923,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         for n in 1...(pointCount) {
             if num + n < vHITouter.count {
                 let px = CGFloat(dx * n)
-                let py = CGFloat(vHITouter[num + n] + 120)
-                let py2 = CGFloat(vHITeye[num + n] + 60)
+                let py = CGFloat(vHITouter[num + n]/2 + 120)
+                let py2 = CGFloat(vHITeye[num + n]/2 + 60)
                 let point = CGPoint(x: px, y: py)
                 let point2 = CGPoint(x: px, y: py2)
                 pointList.append(point)
@@ -937,10 +977,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     {
         var pointList = Array<CGPoint>()
         var ln:Int = 0
+  //      var py:CGFloat = 0
         while wP[rl][ln][0][0] != 9999 {
             for n in 0..<120 {
                 let px = CGFloat(pt + n*2)
-                let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
+  //              if eyeouter == 0 {
+                 let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
+  //              }else{
+  //                  py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
+  //              }
                 let point = CGPoint(x:px,y:py)
                 pointList.append(point)
             }
@@ -1488,10 +1533,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }
             for k1 in ws..<ws + 120{
-                wP[t][ln][0][k1 - ws] = 8 * vHITeye[k1]
+                wP[t][ln][0][k1 - ws] = vHITeye[k1]
             }
             for k2 in ws..<ws + 120{
-                wP[t][ln][1][k2 - ws] = 2 * vHITouter[k2]
+                wP[t][ln][1][k2 - ws] = vHITouter[k2]
             }//ここでエラーが出るようだ？
             wP[t][ln + 1][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
             wP[t][ln + 1][1][0] = 9999
