@@ -852,10 +852,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
         rectFace.size.width = CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
         rectFace.size.height = CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
-        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(163*ratioW)))
-        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(508*ratioH)))
-        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(53*ratioW)))
-        rectOuter.size.height = CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(36*ratioH)))
+        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(140*ratioW)))
+        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(510*ratioH)))
+        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(110*ratioW)))
+        rectOuter.size.height = CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
         UserDefaults.standard.set(flatWidth, forKey: "flatWidth")

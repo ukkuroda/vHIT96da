@@ -128,7 +128,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         let ratioH = self.view.bounds.height/667.0//6s
         self.rectEye = CGRect(x:97*ratioW,y:143*ratioH,width:209*ratioW,height:10*ratioH)
         self.rectFace = CGRect(x:167*ratioW,y:328*ratioH,width:77*ratioW,height:27*ratioH)
-        self.rectOuter = CGRect(x:163*ratioW,y:508*ratioH,width:53*ratioW,height:36*ratioH)
+        self.rectOuter = CGRect(x:140*ratioW,y:510*ratioH,width:110*ratioW,height:10*ratioH)
         dispParam()
 
     }
