@@ -130,6 +130,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //    var vHITarr = Array<String>()
     var vHITeye = Array<Int>()
     var vHITouter = Array<Int>()
+    var vHITeyeOrg = Array<Int>()
+ //   var vHITouterOrg = Array<Int>()
     var timer: Timer!
     var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
     
@@ -284,6 +286,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         playButton.isEnabled = false
         vHITouter.removeAll()
         vHITeye.removeAll()
+        vHITeyeOrg.removeAll()
         timercnt = 0
         if lineView != nil{//これが無いとエラーがでる。
             lineView?.removeFromSuperview()//realwaveを消す
@@ -459,26 +462,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
- //               self.vHITeye.append(Int(eY.pointee) - eyedxInt - fy)
- //               self.vHITouter.append(Int(oY.pointee) - outerdxInt - fy)
+                self.vHITeyeOrg.append(8*(Int(eY.pointee) - eyedxInt - fy))
+//                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
                 self.vHITeye.append(Int(8*(self.Kalupdate1(measurement: Double(Int(eY.pointee) - eyedxInt - fy)))))
                 self.vHITouter.append(Int(2*(self.Kalupdate(measurement: Double(Int(oY.pointee) - outerdxInt - fy)))))
 
                 count += 1
-                //                }))
-                
-//                                if count > 0{//resizerectのチェックの時はここをコメントアウトを外す*********************
-//                                    self.UIEye.image = UIEye
-//                                    self.faceCropview.image = UIFace
-//                                    self.outerCropview.image = UIOuter
-//                                    return
-//                                }
                 while reader.status != AVAssetReaderStatus.reading {
                     sleep(UInt32(0.01))
                 }
             }
             self.calcFlag = false
- //           UIApplication.shared.isIdleTimerDisabled = false
             if self.getLines() > 0{
                 self.nonsavedFlag = true
             }
