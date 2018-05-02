@@ -956,7 +956,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawPath.stroke()
         drawPath2.stroke()
         //print(videoDuration)
-        let timetxt:String = String(format: "%05df(%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,videoDuration,(timercnt+1)*2)
+        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,videoDuration,(timercnt+1)*2)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
