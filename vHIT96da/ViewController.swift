@@ -1126,6 +1126,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if slowVideoCurrent > slowVideoCnt{
                 slowVideoCurrent = slowVideoCnt
             }
+            setVideoPathDate(num: slowVideoCurrent)
         }
     }
     override func viewDidLoad() {
