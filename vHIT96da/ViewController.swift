@@ -110,6 +110,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var slowImage: UIImageView!
     @IBOutlet weak var videoDate: UILabel!
+    var videoDuration:String = ""
     var calcDate:String = ""
     var idNumber:Int = 0
     var vHITtitle:String = ""
@@ -686,7 +687,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
   //       }else{
     //       fileURL = URL(fileURLWithPath: slowvideoPath)
       //  }
-            
+            videoDuration = "2.0s"
             let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
             let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
  //           calcDate = videoDate.text!
@@ -731,7 +732,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
             
             let asset  = fetchAssets.object(at: number)
-            
+  //          print(asset)
             let manager = PHImageManager()//.default()
             
   //以下を設定してもぼける
@@ -754,6 +755,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
      //       slowPaths.append(slowvideoPath)
       //      tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
             videoDate.text = "vHIT video : sample"
+            videoDuration = "2.0s"
             slowImage.image = slowImgs[0]//getSlowimg(num: 0)
         //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
@@ -770,31 +772,24 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
   //          print("count error ビデオなし")
             return
         }
-        // 先頭のアセットを取得
+        // アセットを取得
         let asset = fetchAssets.object(at: num-1)
         let option = PHVideoRequestOptions()
-        let str:String = String(describing: asset)
-        let assetarray = str.components(separatedBy: ",")
-        //assetarray[3]->creationDate=2018-02-17 13:33:37 +0000
-        let str1 = assetarray[3].components(separatedBy: "=")
-        let str2 = str1[1].components(separatedBy: " ")
-        //        slowvideoDate = str2[0] + " " + str2[1]
-        videoDate.text = str2[0] + " " + str2[1] + "  (\(num))"
-   //     tempDate = str2[0] + " " + str2[1] + "  (\(num))"
-  //      slowDates.append(tempDate)
-
-   //     let manager = PHImageManager.default()
-  //      manager.requestImage(for: asset, targetSize: CGSize(width: 140, height: 140), contentMode: .aspectFill, options: nil) { (image, info) in
-            // imageをセットする
-    //        self.slowImage.image = image
-      //  }
-        
+        //print(Int(10*asset.duration))
+        let sec10 = Int(10*asset.duration)
+        videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
+        //print(videoDuration)
+        let str:String = "\(asset.creationDate!)"
+        let assetarray = str.components(separatedBy: " ")
+        videoDate.text = assetarray[0] + " " + assetarray[1] + " (\(num))"
+ 
         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
                                                 options: option,
                                                 resultHandler: { (avAsset, audioMix, info) in
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
+                                                        //print(tokenStr)
                                                         // tokenKeysの中にパスなどの情報が入っている
                                                         self.slowvideoPath = tokenKeys[8]
                                                         //self.tempPath = tokenKeys[8]
@@ -960,7 +955,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // 線を描く
         drawPath.stroke()
         drawPath2.stroke()
-        let timetxt:String = String(format: "%df(%.1fs) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,(timercnt+1)*2)
+        //print(videoDuration)
+        let timetxt:String = String(format: "%05df(%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,videoDuration,(timercnt+1)*2)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
@@ -1157,6 +1153,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
    //     initSlowdata()
         setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
         slowImage.image = slowImgs[slowVideoCurrent]
+    //    setVideoPathDate(num: 1)
+    //    setVideoPathDate(num: 2)
+    //    setVideoPathDate(num: 3)
     }
 
     override func didReceiveMemoryWarning() {
