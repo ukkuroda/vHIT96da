@@ -170,16 +170,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if vHITboxView?.isHidden == true{
             return
         }
-        let po:CGPoint = sender.location(in: self.view)
-        if po.y < 100 {
+//        let po:CGPoint = sender.location(in: self.view)
+//       if po.y < 100 {
             if dispOrgflag == true {
                 dispOrgflag = false
             }else{
                 dispOrgflag = true
             }
-        }else{
-            dispOrgflag = false
-        }
+ //       }else{
+   //         dispOrgflag = false
+     //   }
         calcDrawVHIT()
     }
     let KalQ:CGFloat = 0.0001
