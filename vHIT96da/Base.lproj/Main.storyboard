@@ -114,18 +114,26 @@
                                 </connections>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UsG-5w-jrf">
-                                <rect key="frame" x="20" y="602" width="335" height="50"/>
+                                <rect key="frame" x="20" y="614" width="335" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Afb-7h-V8u">
-                                        <rect key="frame" x="0.0" y="0.0" width="47.5" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="39.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="list" image="mail"/>
                                         <connections>
                                             <segue destination="dfx-rB-Lsf" kind="show" id="pmn-9f-ieK"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldV-kl-ghp">
+                                        <rect key="frame" x="49.5" y="0.0" width="39" height="43"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                        <state key="normal" title="save" image="save"/>
+                                        <connections>
+                                            <action selector="saveResult:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kSQ-NG-BhZ"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q2m-D3-Mdm">
-                                        <rect key="frame" x="57.5" y="0.0" width="47.5" height="50"/>
+                                        <rect key="frame" x="98.5" y="0.0" width="39.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="disp" image="disp"/>
                                         <connections>
@@ -133,7 +141,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-CJ-Yxe">
-                                        <rect key="frame" x="115" y="0.0" width="47.5" height="50"/>
+                                        <rect key="frame" x="148" y="0.0" width="39" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="start"/>
                                         <connections>
@@ -141,23 +149,22 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4bc-dn-f4s">
-                                        <rect key="frame" x="172.5" y="0.0" width="47.5" height="50"/>
+                                        <rect key="frame" x="197" y="0.0" width="39.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="play" image="play"/>
                                         <connections>
                                             <segue destination="iop-07-P89" kind="show" id="5vC-FG-4j6"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldV-kl-ghp">
-                                        <rect key="frame" x="230" y="0.0" width="47.5" height="50"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                        <state key="normal" title="save" image="save"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7OA-cL-B3S">
+                                        <rect key="frame" x="246.5" y="0.0" width="39" height="43"/>
+                                        <state key="normal" title="Button" image="help"/>
                                         <connections>
-                                            <action selector="saveResult:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kSQ-NG-BhZ"/>
+                                            <segue destination="jcX-Lf-HTi" kind="show" id="yrV-wM-iGp"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nHY-L8-P6Q">
-                                        <rect key="frame" x="287.5" y="0.0" width="47.5" height="50"/>
+                                        <rect key="frame" x="295.5" y="0.0" width="39.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="set"/>
                                         <connections>
@@ -166,7 +173,7 @@
                                     </button>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="aJZ-yG-3xd"/>
+                                    <constraint firstAttribute="height" constant="43" id="ChY-Yy-C5l"/>
                                 </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wHm-rN-v50">
@@ -217,14 +224,14 @@
                         <constraints>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1Rs-5e-QIV"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="JA9-Tm-hVC"/>
+                            <constraint firstAttribute="bottom" secondItem="UsG-5w-jrf" secondAttribute="bottom" constant="10" id="P9Q-KY-U46"/>
+                            <constraint firstItem="UsG-5w-jrf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="SGT-Bl-XkR"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ST5-jh-Ekt"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="5" id="Vbt-ge-8hs"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="aGg-qH-zlC"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="aZd-EJ-iYv"/>
-                            <constraint firstAttribute="trailing" secondItem="UsG-5w-jrf" secondAttribute="trailing" constant="20" id="clR-Z7-RLs"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ggC-et-dyX"/>
-                            <constraint firstItem="UsG-5w-jrf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="hZj-zc-O5i"/>
-                            <constraint firstAttribute="bottom" secondItem="UsG-5w-jrf" secondAttribute="bottom" constant="15" id="rod-Cu-Ad1"/>
+                            <constraint firstAttribute="trailing" secondItem="UsG-5w-jrf" secondAttribute="trailing" constant="20" id="v4R-jy-1DV"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <connections>
@@ -240,6 +247,7 @@
                         <outlet property="eyeWaku" destination="wHm-rN-v50" id="KrA-fm-cpK"/>
                         <outlet property="faceCropView" destination="9li-D2-04C" id="1g1-Yi-MLu"/>
                         <outlet property="faceWaku" destination="p79-Uj-48D" id="fZs-Zc-8nC"/>
+                        <outlet property="helpButton" destination="7OA-cL-B3S" id="YzF-8f-1r2"/>
                         <outlet property="listButton" destination="Afb-7h-V8u" id="hfI-Hx-H2E"/>
                         <outlet property="outerCropView" destination="jkT-Yy-LdU" id="Ghq-az-2e9"/>
                         <outlet property="outerWaku" destination="iBQ-1O-1BP" id="FFv-O8-Sac"/>
@@ -674,11 +682,65 @@
             </objects>
             <point key="canvasLocation" x="765.60000000000002" y="74.212893553223395"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="hFD-w5-waW">
+            <objects>
+                <viewController id="jcX-Lf-HTi" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SG3-KA-IYb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goggle_s" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
+                                <rect key="frame" x="60" y="80" width="255" height="306"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="j2D-6T-AEW" secondAttribute="height" multiplier="5:6" id="Ydo-dG-qnz"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt" translatesAutoresizingMaskIntoConstraints="NO" id="k0I-10-EUk">
+                                <rect key="frame" x="40" y="426" width="295" height="165"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="k0I-10-EUk" secondAttribute="height" multiplier="59:33" id="HNR-U2-6r1"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPw-uT-6g8">
+                                <rect key="frame" x="295" y="617" width="70" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="CmL-mS-4tJ"/>
+                                    <constraint firstAttribute="height" constant="40" id="csm-ZE-gBB"/>
+                                </constraints>
+                                <state key="normal" title="Exit" backgroundImage="btn"/>
+                                <connections>
+                                    <segue destination="Qpl-Z7-gTZ" kind="unwind" unwindAction="unwind:" id="PGo-9i-eYW"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="j2D-6T-AEW" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="60" id="1id-AM-zxA"/>
+                            <constraint firstItem="j2D-6T-AEW" firstAttribute="top" secondItem="2Hn-LM-5hZ" secondAttribute="top" constant="60" id="50T-ER-29f"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="fPw-uT-6g8" secondAttribute="trailing" constant="10" id="AEa-JG-qnx"/>
+                            <constraint firstItem="k0I-10-EUk" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="40" id="ClR-rB-xte"/>
+                            <constraint firstAttribute="bottom" secondItem="fPw-uT-6g8" secondAttribute="bottom" constant="10" id="GyR-yl-xQA"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="k0I-10-EUk" secondAttribute="trailing" constant="40" id="YnU-Ly-73l"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="j2D-6T-AEW" secondAttribute="trailing" constant="60" id="fwK-5B-h1B"/>
+                            <constraint firstItem="k0I-10-EUk" firstAttribute="top" secondItem="j2D-6T-AEW" secondAttribute="bottom" constant="40" id="zUn-fa-2QF"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="2Hn-LM-5hZ"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8AV-xf-OhK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Qpl-Z7-gTZ" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1836" y="-34"/>
+        </scene>
     </scenes>
     <resources>
         <image name="btn" width="300" height="40"/>
         <image name="btnb" width="300" height="40"/>
         <image name="disp" width="260" height="260"/>
+        <image name="goggle_s" width="300" height="360"/>
+        <image name="help" width="260" height="260"/>
+        <image name="helptxt" width="1840" height="1031"/>
         <image name="mail" width="260" height="260"/>
         <image name="play" width="260" height="260"/>
         <image name="save" width="260" height="260"/>

@@ -90,6 +90,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var helpButton: UIButton!
     @IBOutlet weak var waveButton: UIButton!
     @IBOutlet weak var stopButton: UIButton!
     @IBOutlet weak var listButton: UIButton!
@@ -257,6 +258,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         paraButton.isEnabled = true
         saveButton.isEnabled = true
         waveButton.isEnabled = true
+        helpButton.isEnabled = true
         playButton.isEnabled = true
         if timer?.isValid == true {
             timer.invalidate()
@@ -297,6 +299,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         paraButton.isEnabled = false
         saveButton.isEnabled = false
         waveButton.isEnabled = false
+        helpButton.isEnabled = false
         playButton.isEnabled = false
         vHITouter.removeAll()
         vHITeye.removeAll()
@@ -587,6 +590,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             calcButton.isEnabled = true
             stopButton.isHidden = true
             waveButton.isEnabled = true
+            helpButton.isEnabled = true
             playButton.isEnabled = true
   
             //if timer?.isValid == true {
