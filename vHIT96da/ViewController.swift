@@ -163,6 +163,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //vHITeyeOrgを表示するかも
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
+        
+        if calcFlag == true{
+            return
+        }
+        if vHITboxView?.isHidden == true{
+            return
+        }
         let po:CGPoint = sender.location(in: self.view)
         if po.y < 100 {
             if dispOrgflag == true {
