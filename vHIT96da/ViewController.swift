@@ -125,12 +125,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var faceBorder:Int = 5
     var outerBorder:Int = 10
     
-    
+    var dispOrgflag:Bool = false
     //解析結果保存用配列
-    //    var vHITarr = Array<String>()
-    var vHITeye = Array<Int>()
-    var vHITouter = Array<Int>()
-    var vHITeyeOrg = Array<Int>()
+    var vHITeye = Array<CGFloat>()
+    var vHITouter = Array<CGFloat>()
+    var vHITeyeOrg = Array<CGFloat>()
  //   var vHITouterOrg = Array<Int>()
     var timer: Timer!
     var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
@@ -162,39 +161,52 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       width: rect.height * iw / vw,
                       height: rect.width * ih / vh)
     }
-    
-    let KalQ:Double = 0.0001
-    let KalR:Double = 0.001
-    var KalX:Double = 0.0
-    var KalP:Double = 0.0
-    var KalK:Double = 0.0
+    //vHITeyeOrgを表示するかも
+    @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
+        let po:CGPoint = sender.location(in: self.view)
+        if po.y < 100 {
+            if dispOrgflag == true {
+                dispOrgflag = false
+            }else{
+                dispOrgflag = true
+            }
+        }else{
+            dispOrgflag = false
+        }
+        calcDrawVHIT()
+    }
+    let KalQ:CGFloat = 0.0001
+    let KalR:CGFloat = 0.001
+    var KalX:CGFloat = 0.0
+    var KalP:CGFloat = 0.0
+    var KalK:CGFloat = 0.0
     func KalmeasurementUpdate()
     {
         KalK = (KalP + KalQ) / (KalP + KalQ + KalR);
         KalP = KalR * (KalP + KalQ) / (KalR + KalP + KalQ);
     }
-    func Kalupdate(measurement:Double) -> Double
+    func Kalupdate(measurement:CGFloat) -> CGFloat
     {
         KalmeasurementUpdate();
-        let result:Double = KalX + (measurement - KalX) * KalK;
+        let result = KalX + (measurement - KalX) * KalK;
         KalX = result;
         return result;
     }
     
-    let KalQ1:Double = 0.0001
-    let KalR1:Double = 0.001
-    var KalX1:Double = 0.0
-    var KalP1:Double = 0.0
-    var KalK1:Double = 0.0
+    let KalQ1:CGFloat = 0.0001
+    let KalR1:CGFloat = 0.001
+    var KalX1:CGFloat = 0.0
+    var KalP1:CGFloat = 0.0
+    var KalK1:CGFloat = 0.0
     func KalmeasurementUpdate1()
     {
         KalK1 = (KalP1 + KalQ1) / (KalP1 + KalQ1 + KalR1);
         KalP1 = KalR1 * (KalP1 + KalQ1) / (KalR1 + KalP1 + KalQ1);
     }
-    func Kalupdate1(measurement:Double) -> Double
+    func Kalupdate1(measurement:CGFloat) -> CGFloat
     {
         KalmeasurementUpdate1();
-        let result:Double = KalX1 + (measurement - KalX1) * KalK1;
+        let result = KalX1 + (measurement - KalX1) * KalK1;
         KalX1 = result;
         return result;
     }
@@ -215,23 +227,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if calcFlag == true{
             return
         }
-  //      if getLines() < 1 {
-  //          return
-  //      }
-  //      let pos = sender.location(in: view)
-  //      if checkWaks(po: pos)<0 && sender.state == .began{
-            if vHITboxView?.isHidden == true{
-                vHITboxView?.isHidden = false
-                boxView?.isHidden = false
-                vHITlineView?.isHidden = false
-                lineView?.isHidden = false//: UIImageView? // <- 追加
-            }else{
-                vHITboxView?.isHidden = true
-                boxView?.isHidden = true
-                vHITlineView?.isHidden = true
-                lineView?.isHidden = true
-            }
-    //    }
+        if vHITboxView?.isHidden == true{
+            vHITboxView?.isHidden = false
+            boxView?.isHidden = false
+            vHITlineView?.isHidden = false
+            lineView?.isHidden = false//: UIImageView? // <- 追加
+        }else{
+            vHITboxView?.isHidden = true
+            boxView?.isHidden = true
+            vHITlineView?.isHidden = true
+            lineView?.isHidden = true
+        }
+        
     }
 
     @IBAction func stopCalc(_ sender: Any) {
@@ -462,10 +469,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
-                self.vHITeyeOrg.append(8*(Int(eY.pointee) - eyedxInt - fy))
+                self.vHITeyeOrg.append(8*CGFloat(Int(eY.pointee) - eyedxInt - fy))
 //                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
-                self.vHITeye.append(Int(8*(self.Kalupdate1(measurement: Double(Int(eY.pointee) - eyedxInt - fy)))))
-                self.vHITouter.append(Int(2*(self.Kalupdate(measurement: Double(Int(oY.pointee) - outerdxInt - fy)))))
+                self.vHITeye.append(8*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
+                self.vHITouter.append(2*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
 
                 count += 1
                 while reader.status != AVAssetReaderStatus.reading {
@@ -912,8 +919,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         for n in 1...(pointCount) {
             if num + n < vHITouter.count {
                 let px = CGFloat(dx * n)
-                let py = CGFloat(vHITouter[num + n]/3 + 120)
-                let py2 = CGFloat(vHITeye[num + n]/3 + 60)
+                let py = vHITouter[num + n]/3 + 120.0
+                let py2 = vHITeye[num + n]/3 + 60.0
                 let point = CGPoint(x: px, y: py)
                 let point2 = CGPoint(x: px, y: py2)
                 pointList.append(point)
@@ -1463,7 +1470,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var sum:Int = 0
         for i  in 0..<5 {
        //     if cnt != 100000{//< cnt{//let c = vHITouter.count
-            sum += vHITouter[num + i]
+            sum += Int(vHITouter[num + i])
      //       }
         }
         return sum
@@ -1479,7 +1486,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //    let cnt = vHITouter.count
         for i in 0..<flatWidth {//width*100/24 ms動かない処を探す
     //        if cnt != 100000{//}< num + i{
-            sum += vHITouter[num + i]
+            sum += Int(vHITouter[num + i])
       //      }
             if sum > flatsumLimit || sum < -flatsumLimit {
                 //               print("\(num), \(sum), \(flatWidth), \(flatsumLimit) ")
@@ -1494,11 +1501,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
+ //       print(dispOrgflag)
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
             openCVstopFlag = false
            return
         }
+ //       print(dispOrgflag)
+
          //var vcnt:Int = 0
         var skipCnt = 0
         for vcnt in 0..<(vHITcnt - 120) {//
@@ -1514,6 +1524,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波
         //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         //       print(number)
+        //print(dispOrgflag)
         let t = Getupdownp(num: number)
         if t != -1 {
             //          print("getupdownp")
@@ -1527,10 +1538,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }
             for k1 in ws..<ws + 120{
-                wP[t][ln][0][k1 - ws] = vHITeye[k1]
+                if dispOrgflag == false {
+                    wP[t][ln][0][k1 - ws] = Int(vHITeye[k1])
+                }else{
+                    wP[t][ln][0][k1 - ws] = Int(vHITeyeOrg[k1])//元波形を表示
+                   // dispOrgflag = false
+                }
             }
             for k2 in ws..<ws + 120{
-                wP[t][ln][1][k2 - ws] = vHITouter[k2]
+                wP[t][ln][1][k2 - ws] = Int(vHITouter[k2])
             }//ここでエラーが出るようだ？
             wP[t][ln + 1][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
             wP[t][ln + 1][1][0] = 9999

@@ -109,6 +109,9 @@
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9Q7-F1-xlh">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="dvP-Cv-tWK" appends="YES" id="dCE-0O-rR8"/>
+                                </connections>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UsG-5w-jrf">
                                 <rect key="frame" x="20" y="602" width="335" height="50"/>
@@ -255,6 +258,11 @@
                         <action selector="panGesture:" destination="BYZ-38-t0r" id="0X5-46-4HI"/>
                     </connections>
                 </panGestureRecognizer>
+                <tapGestureRecognizer id="dvP-Cv-tWK">
+                    <connections>
+                        <action selector="tapFrame:" destination="BYZ-38-t0r" id="6pl-J6-2uu"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-410.39999999999998" y="-115.59220389805098"/>
         </scene>
