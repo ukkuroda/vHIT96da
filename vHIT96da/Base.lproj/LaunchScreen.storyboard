@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,15 +19,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="vHIT96da" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c4v-jJ-c25">
-                                <rect key="frame" x="84" y="309" width="207" height="49"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goggle_s" translatesAutoresizingMaskIntoConstraints="NO" id="Cx8-Zd-Z6A">
+                                <rect key="frame" x="50" y="90" width="275" height="330"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Cx8-Zd-Z6A" secondAttribute="height" multiplier="5:6" id="XgU-mb-B4q"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vHIT96da" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c4v-jJ-c25">
+                                <rect key="frame" x="10" y="430" width="355" height="187"/>
                                 <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="43"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="c4v-jJ-c25" secondAttribute="bottom" constant="50" id="BTe-gG-VPB"/>
+                            <constraint firstItem="c4v-jJ-c25" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="GYj-Kj-qL5"/>
+                            <constraint firstItem="Cx8-Zd-Z6A" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="70" id="Idr-kM-dkw"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="c4v-jJ-c25" secondAttribute="trailing" constant="10" id="NIs-vO-8jH"/>
+                            <constraint firstItem="c4v-jJ-c25" firstAttribute="top" secondItem="Cx8-Zd-Z6A" secondAttribute="bottom" constant="10" id="a3O-gu-Fhh"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Cx8-Zd-Z6A" secondAttribute="trailing" constant="50" id="dJ5-9Y-Rt3"/>
+                            <constraint firstItem="Cx8-Zd-Z6A" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="ihE-1i-rQQ"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
@@ -35,4 +50,7 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="goggle_s" width="300" height="360"/>
+    </resources>
 </document>
