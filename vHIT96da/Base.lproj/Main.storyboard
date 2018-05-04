@@ -690,16 +690,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goggle_s" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
-                                <rect key="frame" x="60" y="80" width="255" height="306"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt126" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
+                                <rect key="frame" x="30" y="40" width="315" height="569.5"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="j2D-6T-AEW" secondAttribute="height" multiplier="5:6" id="Ydo-dG-qnz"/>
-                                </constraints>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt" translatesAutoresizingMaskIntoConstraints="NO" id="k0I-10-EUk">
-                                <rect key="frame" x="40" y="426" width="295" height="165"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="k0I-10-EUk" secondAttribute="height" multiplier="59:33" id="HNR-U2-6r1"/>
+                                    <constraint firstAttribute="width" secondItem="j2D-6T-AEW" secondAttribute="height" multiplier="275:497" id="O3K-30-wcv"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPw-uT-6g8">
@@ -716,14 +710,11 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="j2D-6T-AEW" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="60" id="1id-AM-zxA"/>
-                            <constraint firstItem="j2D-6T-AEW" firstAttribute="top" secondItem="2Hn-LM-5hZ" secondAttribute="top" constant="60" id="50T-ER-29f"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="j2D-6T-AEW" secondAttribute="trailing" constant="30" id="86b-qP-0oy"/>
                             <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="fPw-uT-6g8" secondAttribute="trailing" constant="10" id="AEa-JG-qnx"/>
-                            <constraint firstItem="k0I-10-EUk" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="40" id="ClR-rB-xte"/>
                             <constraint firstAttribute="bottom" secondItem="fPw-uT-6g8" secondAttribute="bottom" constant="10" id="GyR-yl-xQA"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="k0I-10-EUk" secondAttribute="trailing" constant="40" id="YnU-Ly-73l"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="j2D-6T-AEW" secondAttribute="trailing" constant="60" id="fwK-5B-h1B"/>
-                            <constraint firstItem="k0I-10-EUk" firstAttribute="top" secondItem="j2D-6T-AEW" secondAttribute="bottom" constant="40" id="zUn-fa-2QF"/>
+                            <constraint firstItem="j2D-6T-AEW" firstAttribute="top" secondItem="2Hn-LM-5hZ" secondAttribute="top" constant="20" id="cHe-al-8IK"/>
+                            <constraint firstItem="j2D-6T-AEW" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="30" id="wTv-Rp-UaA"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Hn-LM-5hZ"/>
                     </view>
@@ -738,9 +729,8 @@
         <image name="btn" width="300" height="40"/>
         <image name="btnb" width="300" height="40"/>
         <image name="disp" width="260" height="260"/>
-        <image name="goggle_s" width="300" height="360"/>
         <image name="help" width="260" height="260"/>
-        <image name="helptxt" width="1840" height="1031"/>
+        <image name="helptxt126" width="1239" height="2241"/>
         <image name="mail" width="260" height="260"/>
         <image name="play" width="260" height="260"/>
         <image name="save" width="260" height="260"/>
