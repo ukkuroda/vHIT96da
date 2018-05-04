@@ -697,10 +697,10 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPw-uT-6g8">
-                                <rect key="frame" x="295" y="617" width="70" height="40"/>
+                                <rect key="frame" x="10" y="617" width="70" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="70" id="CmL-mS-4tJ"/>
-                                    <constraint firstAttribute="height" constant="40" id="csm-ZE-gBB"/>
+                                    <constraint firstAttribute="height" constant="40" id="jEL-cK-Bfq"/>
+                                    <constraint firstAttribute="width" constant="70" id="pmY-Pk-lcg"/>
                                 </constraints>
                                 <state key="normal" title="Exit" backgroundImage="btn"/>
                                 <connections>
@@ -708,10 +708,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qiw-FJ-LWg">
-                                <rect key="frame" x="10" y="617" width="100" height="40"/>
+                                <rect key="frame" x="265" y="617" width="100" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="H6t-xh-43q"/>
-                                    <constraint firstAttribute="height" constant="40" id="f9M-Gd-gXf"/>
+                                    <constraint firstAttribute="width" constant="100" id="AE8-lL-Wcj"/>
+                                    <constraint firstAttribute="height" constant="40" id="eoj-os-Sr9"/>
                                 </constraints>
                                 <state key="normal" title="japanese" backgroundImage="btn"/>
                                 <connections>
@@ -722,11 +722,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="j2D-6T-AEW" secondAttribute="trailing" constant="30" id="86b-qP-0oy"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="fPw-uT-6g8" secondAttribute="trailing" constant="10" id="AEa-JG-qnx"/>
-                            <constraint firstAttribute="bottom" secondItem="fPw-uT-6g8" secondAttribute="bottom" constant="10" id="GyR-yl-xQA"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="Qiw-FJ-LWg" secondAttribute="bottom" constant="10" id="UeQ-xt-uYw"/>
+                            <constraint firstItem="fPw-uT-6g8" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="10" id="QoD-CQ-7b5"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="Qiw-FJ-LWg" secondAttribute="trailing" constant="10" id="SqR-lE-itJ"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="Qiw-FJ-LWg" secondAttribute="bottom" constant="10" id="VNp-8o-Y2Y"/>
                             <constraint firstItem="j2D-6T-AEW" firstAttribute="top" secondItem="2Hn-LM-5hZ" secondAttribute="top" constant="20" id="cHe-al-8IK"/>
-                            <constraint firstItem="Qiw-FJ-LWg" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="10" id="o02-Fc-ay6"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="fPw-uT-6g8" secondAttribute="bottom" constant="10" id="jM1-U7-gK9"/>
                             <constraint firstItem="j2D-6T-AEW" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="30" id="wTv-Rp-UaA"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Hn-LM-5hZ"/>
