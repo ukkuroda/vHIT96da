@@ -49,34 +49,6 @@
             </objects>
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="6Tp-uw-cCM">
-            <objects>
-                <viewController id="Qhh-rR-Uzt" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FHL-hM-WJu">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goggle_s" translatesAutoresizingMaskIntoConstraints="NO" id="A41-8v-9wM">
-                                <rect key="frame" x="100" y="50" width="175" height="210"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="A41-8v-9wM" secondAttribute="height" multiplier="300:360" id="0qM-xV-1Dd"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="A41-8v-9wM" firstAttribute="leading" secondItem="DcH-jw-vR6" secondAttribute="leading" constant="100" id="0TB-LQ-WUv"/>
-                            <constraint firstItem="A41-8v-9wM" firstAttribute="top" secondItem="DcH-jw-vR6" secondAttribute="top" constant="30" id="5F4-Ps-Vyh"/>
-                            <constraint firstItem="DcH-jw-vR6" firstAttribute="trailing" secondItem="A41-8v-9wM" secondAttribute="trailing" constant="100" id="jlg-fL-tw0"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="DcH-jw-vR6"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mSI-8d-X8e" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="682.39999999999998" y="520.38980509745136"/>
-        </scene>
     </scenes>
     <resources>
         <image name="goggle_s" width="300" height="360"/>

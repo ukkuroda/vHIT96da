@@ -268,7 +268,7 @@
                 </panGestureRecognizer>
                 <tapGestureRecognizer id="dvP-Cv-tWK">
                     <connections>
-                        <action selector="tapFrame:" destination="BYZ-38-t0r" id="6pl-J6-2uu"/>
+                        <action selector="tapFrame:" destination="BYZ-38-t0r" id="RkR-3H-IcK"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

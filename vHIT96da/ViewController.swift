@@ -163,24 +163,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       height: rect.width * ih / vh)
     }
     //vHITeyeOrgを表示するかも
-    @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
-        
-        if calcFlag == true{
+    @IBAction func tapFrame(_ sender: Any) {
+
+        if calcFlag == true || vHITboxView?.isHidden == true{
             return
         }
-        if vHITboxView?.isHidden == true{
-            return
+        if dispOrgflag == true {
+            dispOrgflag = false
+        }else{
+            dispOrgflag = true
         }
-//        let po:CGPoint = sender.location(in: self.view)
-//       if po.y < 100 {
-            if dispOrgflag == true {
-                dispOrgflag = false
-            }else{
-                dispOrgflag = true
-            }
- //       }else{
-   //         dispOrgflag = false
-     //   }
         calcDrawVHIT()
     }
     let KalQ:CGFloat = 0.0001
@@ -287,6 +279,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func vHITcalc_sub(){
+        dispOrgflag = false
         stopButton.isHidden = false
         stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
         stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
@@ -417,7 +410,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
         count = 1
         while reader.status != AVAssetReaderStatus.reading {
-            sleep(UInt32(0.01))
+            sleep(UInt32(0.1))
         }
  
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
@@ -486,7 +479,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
                 count += 1
                 while reader.status != AVAssetReaderStatus.reading {
-                    sleep(UInt32(0.01))
+                    sleep(UInt32(0.1))
                 }
             }
             self.calcFlag = false
@@ -508,7 +501,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
  //       print("willdisappear")
     }
-    
+    //使ってみたが
+//    func removeAllSubviews(parentView: UIView){
+//        let subviews = parentView.subviews
+//        for subview in subviews {
+//            subview.removeFromSuperview()
+//        }
+//    }
     func makeBox(width w:CGFloat,height h:CGFloat) -> UIImage{
         let size = CGSize(width:w, height:h)
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
@@ -529,6 +528,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vHITboxView: UIImageView?
     var vHITlineView: UIImageView?
     func drawBoxies(){
+ //       removeAllSubviews(parentView: self.view)
         if vHITboxView == nil {
             let boxImage = makeBox(width: view.bounds.width, height: view.bounds.width*200/500)
             vHITboxView = UIImageView(image: boxImage)
@@ -544,6 +544,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         vHITboxView?.isHidden = false
         boxView?.isHidden = false
+//        print("count----" + "\(view.subviews.count)")
     }
     func drawVHITwaves(){//解析結果のvHITwavesを表示する
         if vHITlineView != nil{
@@ -574,6 +575,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
  //       lineView?.center = self.view.center
         lineView?.center = CGPoint(x:view.bounds.width/2,y:340)//ここらあたりを変更se~7plusの大きさにも対応できた。
         view.addSubview(lineView!)
+//        print("count----" + "\(view.subviews.count)")
     }
     //var wpSleep:Int = 0
     var timercnt:Int = 0
@@ -1139,6 +1141,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 slowVideoCurrent = slowVideoCnt
             }
             setVideoPathDate(num: slowVideoCurrent)
+            if dispOrgflag == true{
+                dispOrgflag = false//Kalman filtered dataを表示
+                calcDrawVHIT()
+            }
         }
     }
     override func viewDidLoad() {
