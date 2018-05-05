@@ -1528,7 +1528,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
          //var vcnt:Int = 0
         var skipCnt = 0
-        for vcnt in 0..<(vHITcnt - 120) {//
+        for vcnt in 0..<(vHITcnt - 140) {//120だとエラーが出る。実在するvHITouterをアクセスすることがある。
              if skipCnt > 0{
                 skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
@@ -1545,7 +1545,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let t = Getupdownp(num: number)
         if t != -1 {
             //          print("getupdownp")
-            let ws = number + flatWidth - 20;//波表示開始位置 wavestartpoint
+            let ws = number + flatWidth - 17;//波表示開始位置 wavestartpoint
             var ln:Int = 0
             while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
                 ln += 1
@@ -1554,9 +1554,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     return t
                 }
             }
-            for k1 in ws..<ws + 120{
+            //print(ws+120,"--error--",vHITeye.count)
+           for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
-                    wP[t][ln][0][k1 - ws] = Int(vHITeye[k1])
+                     wP[t][ln][0][k1 - ws] = Int(vHITeye[k1])//ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
                 }else{
                     wP[t][ln][0][k1 - ws] = Int(vHITeyeOrg[k1])//元波形を表示
                    // dispOrgflag = false
