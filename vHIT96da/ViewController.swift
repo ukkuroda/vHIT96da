@@ -1494,23 +1494,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func  Getupdownp(num:Int) -> Int {//} n, int width, int sumlimit, int nami, int level) -> Int {
-        //       print(num)
         let t = Get5(num: num + flatWidth + waveWidth / 4)/5
         if t < wavePeak && t > -wavePeak {
             return -1
         }
         var sum:Int = 0
-    //    let cnt = vHITouter.count
         for i in 0..<flatWidth {//width*100/24 ms動かない処を探す
-    //        if cnt != 100000{//}< num + i{
             sum += Int(vHITouter[num + i])
-      //      }
             if sum > flatsumLimit || sum < -flatsumLimit {
-                //               print("\(num), \(sum), \(flatWidth), \(flatsumLimit) ")
                 return -1
             }
         }
-        
         //        print("flat found \(num), \(sum), \(flatWidth), \(flatsumLimit) ")
         return updownp(n: num + flatWidth - 4, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
@@ -1528,7 +1522,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
          //var vcnt:Int = 0
         var skipCnt = 0
-        for vcnt in 0..<(vHITcnt - 140) {//120だとエラーが出る。実在するvHITouterをアクセスすることがある。
+        for vcnt in 0..<(vHITcnt - flatWidth - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
              if skipCnt > 0{
                 skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
