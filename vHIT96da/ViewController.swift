@@ -125,6 +125,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var eyeBorder:Int = 3
     var faceBorder:Int = 5
     var outerBorder:Int = 10
+    var eyeRatio:Int = 100
+    var outerRatio:Int = 100
     
     var dispOrgflag:Bool = false
     //解析結果保存用配列
@@ -261,8 +263,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBAction func vHITcalc(_ sender: Any) {
          if nonsavedFlag == true && getLines() > 0{
             let alert = UIAlertController(
-                title: "vHIT Data is",
-                message: "erase OK?",
+                title: "You are erasing vHIT Data.",
+                message: "OK ?",
                 preferredStyle: .alert)
             
             // アラートにボタンをつける
@@ -474,8 +476,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 self.vHITeyeOrg.append(8*CGFloat(Int(eY.pointee) - eyedxInt - fy))
 //                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
-                self.vHITeye.append(8*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
-                self.vHITouter.append(2*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
+                self.vHITeye.append(CGFloat(self.eyeRatio/8)*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
+                self.vHITouter.append(CGFloat(self.outerRatio/33)*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
 
                 count += 1
                 while reader.status != AVAssetReaderStatus.reading {
@@ -854,6 +856,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
         outerBorder = getUserDefault(str: "outerBorder", ret: 10)
+        eyeRatio = getUserDefault(str: "eyeRatio", ret: 100)
+        outerRatio = getUserDefault(str: "outerRatio", ret: 100)
         //samplevideoでデフォルト値で上手く解析できるように、6s,7,8と7plus,8plus,xでデフォルト値を合わせる。
         let ratioW = self.view.bounds.width/375.0//6s
         let ratioH = self.view.bounds.height/667.0//6s
@@ -882,6 +886,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
         UserDefaults.standard.set(faceBorder, forKey: "faceBorder")
         UserDefaults.standard.set(outerBorder, forKey: "outerBorder")
+        UserDefaults.standard.set(eyeRatio, forKey: "eyeRatio")
+        UserDefaults.standard.set(outerRatio, forKey: "outerRatio")
 
         
         UserDefaults.standard.set(Int(rectEye.origin.x), forKey: "rectEye_x")
@@ -1200,7 +1206,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             ParametersViewController.eyeBorder = eyeBorder
             ParametersViewController.faceBorder = faceBorder
             ParametersViewController.outerBorder = outerBorder
-
+            ParametersViewController.eyeRatio = eyeRatio
+            ParametersViewController.outerRatio = outerRatio
             #if DEBUG
             print("prepare para")
             #endif
@@ -1237,6 +1244,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             eyeBorder = ParametersViewController.eyeBorder
             faceBorder = ParametersViewController.faceBorder
             outerBorder = ParametersViewController.outerBorder
+            eyeRatio = ParametersViewController.eyeRatio
+            outerRatio = ParametersViewController.outerRatio
             setUserDefaults()
             if vHITouter.count > 400{//データがありそうな時は表示
                 drawBoxies()

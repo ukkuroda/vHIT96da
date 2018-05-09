@@ -22,6 +22,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     var rectEye = CGRect(x:0,y:0,width:0,height:0)
     var rectFace = CGRect(x:0,y:0,width:0,height:0)
     var rectOuter = CGRect(x:0,y:0,width:0,height:0)
+    var eyeRatio:Int = 0
+    var outerRatio:Int = 0
     
     @IBOutlet weak var keyDown: UIButton!
     @IBOutlet weak var labelEye: UILabel!
@@ -38,6 +40,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var faceBinput: UITextField!
     @IBOutlet weak var outerBinput: UITextField!
     
+    @IBOutlet weak var eyeRatioinput: UITextField!
+    @IBOutlet weak var outerRatioinput: UITextField!
     
     // became first responder
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -62,6 +66,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         eyeBinput.endEditing(true)
         faceBinput.endEditing(true)
         outerBinput.endEditing(true)
+        eyeRatioinput.endEditing(true)
+        outerRatioinput.endEditing(true)
         keyDown.isHidden = true
     }
 //    @IBAction func flatwidthDown(_ sender: Any) {
@@ -124,6 +130,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         eyeBorder = 3
         faceBorder = 5
         outerBorder = 10
+        eyeRatio = 100
+        outerRatio = 100
         let ratioW = self.view.bounds.width/375.0//6s
         let ratioH = self.view.bounds.height/667.0//6s
         self.rectEye = CGRect(x:97*ratioW,y:143*ratioH,width:209*ratioW,height:10*ratioH)
@@ -168,6 +176,12 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func outerBorderButton(_ sender: Any) {
         outerBorder = Field2value(field: outerBinput)
     }
+    @IBAction func eyeRatioButton(_ sender: Any) {
+        eyeRatio = Field2value(field: eyeRatioinput)
+    }
+    @IBAction func outerRationButton(_ sender: Any) {
+        outerRatio = Field2value(field: outerRatioinput)
+    }
     
     
     func dispParam(){
@@ -184,6 +198,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.eyeBinput.text = "\(eyeBorder)"
         self.faceBinput.text = "\(faceBorder)"
         self.outerBinput.text = "\(outerBorder)"
+        self.eyeRatioinput.text = "\(eyeRatio)"
+        self.outerRatioinput.text = "\(outerRatio)"
         x = Int(rectEye.origin.x)
         y = Int(rectEye.origin.y)
         width = Int(rectEye.size.width)
@@ -213,6 +229,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         eyeBinput.delegate = self
         faceBinput.delegate = self
         outerBinput.delegate = self
+        eyeRatioinput.delegate = self
+        outerRatioinput.delegate = self
     //    setKeydown()
       //入力を数字入力キーボードとする
         self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
@@ -224,6 +242,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.eyeBinput.keyboardType = UIKeyboardType.numberPad
         self.faceBinput.keyboardType = UIKeyboardType.numberPad
         self.outerBinput.keyboardType = UIKeyboardType.numberPad
+        self.eyeRatioinput.keyboardType = UIKeyboardType.numberPad
+        self.outerRatioinput.keyboardType = UIKeyboardType.numberPad
         dispParam()
         setKeydown()
         
