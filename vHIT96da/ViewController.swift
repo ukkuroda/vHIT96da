@@ -307,13 +307,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
         let eyedx:CGFloat = 4 * CGFloat(eyeBorder)
-        let eyedxInt:Int = Int(eyedx)
+    //    let eyedxInt:Int = Int(eyedx)
         let eyedy:CGFloat = CGFloat(eyeBorder)
         let facedx:CGFloat = 4 * CGFloat(faceBorder)
-        let facedxInt:Int = Int(facedx)
+    //    let facedxInt:Int = Int(facedx)
         let facedy:CGFloat = CGFloat(faceBorder)
         let outerdx:CGFloat = 4 * CGFloat(outerBorder)
-        let outerdxInt:Int = Int(outerdx)
+    //    let outerdxInt:Int = Int(outerdx)
         let outerdy:CGFloat = CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -466,7 +466,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
                 UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                let fy = Int(fY.pointee) - facedxInt
+                let fy = CGFloat(fY.pointee)/100.0 - facedx
                 #if DEBUG
                     print(Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                     print(count)
@@ -474,10 +474,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
-                self.vHITeyeOrg.append(8*CGFloat(Int(eY.pointee) - eyedxInt - fy))
+                self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee)/100.0 - eyedx - fy))
 //                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
-                self.vHITeye.append(CGFloat(self.eyeRatio/8)*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
-                self.vHITouter.append(CGFloat(self.outerRatio/33)*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
+                self.vHITeye.append(12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee)/100.0 - eyedx - fy)))
+                self.vHITouter.append(3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee)/100.0 - outerdx - fy)))
+//                self.vHITeye.append(CGFloat(self.eyeRatio/8)*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
+//                self.vHITouter.append(CGFloat(self.outerRatio/33)*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
 
                 count += 1
                 while reader.status != AVAssetReaderStatus.reading {
@@ -938,8 +940,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         for n in 1...(pointCount) {
             if num + n < vHITouter.count {
                 let px = CGFloat(dx * n)
-                let py = vHITouter[num + n]/3 + 120.0
-                let py2 = vHITeye[num + n]/3 + 60.0
+                let py = vHITouter[num + n] * CGFloat(outerRatio)/300.0 + 120.0//高さを3分の１とする
+                let py2 = vHITeye[num + n] * CGFloat(eyeRatio)/300.0 + 60.0
                 let point = CGPoint(x: px, y: py)
                 let point2 = CGPoint(x: px, y: py2)
                 pointList.append(point)
@@ -1560,14 +1562,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //print(ws+120,"--error--",vHITeye.count)
            for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
-                     wP[t][ln][0][k1 - ws] = Int(vHITeye[k1])//ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
+                     wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)//ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
                 }else{
-                    wP[t][ln][0][k1 - ws] = Int(vHITeyeOrg[k1])//元波形を表示
+                    wP[t][ln][0][k1 - ws] = Int(vHITeyeOrg[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
                    // dispOrgflag = false
                 }
             }
             for k2 in ws..<ws + 120{
-                wP[t][ln][1][k2 - ws] = Int(vHITouter[k2])
+                wP[t][ln][1][k2 - ws] = Int(vHITouter[k2]*CGFloat(outerRatio)/100.0)
             }//ここでエラーが出るようだ？
             wP[t][ln + 1][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
             wP[t][ln + 1][1][0] = 9999
