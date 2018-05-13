@@ -133,6 +133,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vHITeye = Array<CGFloat>()
     var vHITouter = Array<CGFloat>()
     var vHITeyeOrg = Array<CGFloat>()
+    var vHITouter5 = Array<CGFloat>()
  //   var vHITouterOrg = Array<Int>()
     var timer: Timer!
     var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
@@ -299,6 +300,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITouter.removeAll()
         vHITeye.removeAll()
         vHITeyeOrg.removeAll()
+        vHITouter5.removeAll()
+        var vHITcnt:Int = 0
         timercnt = 0
         if lineView != nil{//これが無いとエラーがでる。
             lineView?.removeFromSuperview()//realwaveを消す
@@ -355,7 +358,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let oY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         
         // read in samples
-        var count = 0
+ //       var count = 0
         
         var CGEye:CGImage!
         var CGFace:CGImage!
@@ -410,7 +413,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
         UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-        count = 1
+ //       count = 1
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
@@ -468,8 +471,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
                 let fy = CGFloat(fY.pointee)/100.0 - facedx
                 #if DEBUG
-                    print(Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
-                    print(count)
+                    print(vHITcnt,Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                 #endif
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
@@ -477,11 +479,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee)/100.0 - eyedx - fy))
 //                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
                 self.vHITeye.append(12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee)/100.0 - eyedx - fy)))
-                self.vHITouter.append(3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee)/100.0 - outerdx - fy)))
+                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee)/100.0 - outerdx - fy))
+                self.vHITouter.append(outer5)
+                self.vHITouter5.append(outer5)
+                if vHITcnt > 5{
+                    self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
+                }
 //                self.vHITeye.append(CGFloat(self.eyeRatio/8)*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
 //                self.vHITouter.append(CGFloat(self.outerRatio/33)*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
 
-                count += 1
+                vHITcnt += 1
                 while reader.status != AVAssetReaderStatus.reading {
                     sleep(UInt32(0.1))
                 }
