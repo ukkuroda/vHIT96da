@@ -15,7 +15,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     var waveWidth:Int = 0
     var wavePeak:Int = 0
     var updownPgap:Int = 0
-    var peakWidth:Int = 0
+  //  var peakWidth:Int = 0
     var eyeBorder:Int = 0
     var faceBorder:Int = 0
     var outerBorder:Int = 0
@@ -34,7 +34,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var waveWidthinput: UITextField!
     @IBOutlet weak var wavePeakinput: UITextField!
     @IBOutlet weak var updownPointinput: UITextField!
-    @IBOutlet weak var peakWidthinput: UITextField!
+//    @IBOutlet weak var peakWidthinput: UITextField!
     
     @IBOutlet weak var eyeBinput: UITextField!
     @IBOutlet weak var faceBinput: UITextField!
@@ -62,7 +62,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         waveWidthinput.endEditing(true)
         wavePeakinput.endEditing(true)
         updownPointinput.endEditing(true)
-        peakWidthinput.endEditing(true)
+ //       peakWidthinput.endEditing(true)
         eyeBinput.endEditing(true)
         faceBinput.endEditing(true)
         outerBinput.endEditing(true)
@@ -126,7 +126,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         waveWidth = 40
         wavePeak = 15
         updownPgap = 4
-        peakWidth = 23
+ //       peakWidth = 23
         eyeBorder = 3
         faceBorder = 5
         outerBorder = 10
@@ -163,9 +163,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func updownPointButton(_ sender: Any) {
         updownPgap = Field2value(field: updownPointinput)
     }
-    @IBAction func peakWidthButton(_ sender: Any) {
-        peakWidth = Field2value(field: peakWidthinput)
-    }
+//    @IBAction func peakWidthButton(_ sender: Any) {
+//        peakWidth = Field2value(field: peakWidthinput)
+//    }
     
     @IBAction func eyeBorderButton(_ sender: Any) {
         eyeBorder = Field2value(field: eyeBinput)
@@ -194,7 +194,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.waveWidthinput.text = "\(waveWidth)"
         self.wavePeakinput.text = "\(wavePeak)"
         self.updownPointinput.text = "\(updownPgap)"
-        self.peakWidthinput.text = "\(peakWidth)"
+ //       self.peakWidthinput.text = "\(peakWidth)"
         self.eyeBinput.text = "\(eyeBorder)"
         self.faceBinput.text = "\(faceBorder)"
         self.outerBinput.text = "\(outerBorder)"
@@ -225,7 +225,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         waveWidthinput.delegate = self
         wavePeakinput.delegate = self
         updownPointinput.delegate = self
-        peakWidthinput.delegate = self
+ //       peakWidthinput.delegate = self
         eyeBinput.delegate = self
         faceBinput.delegate = self
         outerBinput.delegate = self
@@ -238,7 +238,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.waveWidthinput.keyboardType = UIKeyboardType.numberPad
         self.wavePeakinput.keyboardType = UIKeyboardType.numberPad
         self.updownPointinput.keyboardType = UIKeyboardType.numberPad
-        self.peakWidthinput.keyboardType = UIKeyboardType.numberPad
+  //      self.peakWidthinput.keyboardType = UIKeyboardType.numberPad
         self.eyeBinput.keyboardType = UIKeyboardType.numberPad
         self.faceBinput.keyboardType = UIKeyboardType.numberPad
         self.outerBinput.keyboardType = UIKeyboardType.numberPad

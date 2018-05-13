@@ -121,7 +121,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var updownPgap:Int = 0
     var waveWidth:Int = 0
     var wavePeak:Int = 0
-    var peakWidth:Int = 0
+ //   var peakWidth:Int = 0
     var eyeBorder:Int = 3
     var faceBorder:Int = 5
     var outerBorder:Int = 10
@@ -840,7 +840,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.removeObject(forKey: "waveWidth")
         UserDefaults.standard.removeObject(forKey: "wavePeak")
         UserDefaults.standard.removeObject(forKey:"updownPgap")
-        UserDefaults.standard.removeObject(forKey:"peakWidth")
+  //      UserDefaults.standard.removeObject(forKey:"peakWidth")
         UserDefaults.standard.removeObject(forKey: "rectEye_x")
         UserDefaults.standard.removeObject(forKey: "rectEye_y")
         UserDefaults.standard.removeObject(forKey: "rectEye_w")
@@ -861,7 +861,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
         updownPgap = getUserDefault(str: "updownPgap", ret: 4)
-        peakWidth = getUserDefault(str: "peakWidth", ret: 23)
+  //      peakWidth = getUserDefault(str: "peakWidth", ret: 23)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
         outerBorder = getUserDefault(str: "outerBorder", ret: 10)
@@ -891,7 +891,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
         //3個続けて増加し、波幅の3/4ほど先が3個続けて減少（updownP_gap:増減閾値)
         UserDefaults.standard.set(updownPgap, forKey: "updownPgap")
-        UserDefaults.standard.set(peakWidth, forKey: "peakWidth")
+ //       UserDefaults.standard.set(peakWidth, forKey: "peakWidth")
         UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
         UserDefaults.standard.set(faceBorder, forKey: "faceBorder")
         UserDefaults.standard.set(outerBorder, forKey: "outerBorder")
@@ -1208,7 +1208,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             ParametersViewController.waveWidth = waveWidth
             ParametersViewController.wavePeak = wavePeak
             ParametersViewController.updownPgap = updownPgap
-            ParametersViewController.peakWidth = peakWidth
+   //         ParametersViewController.peakWidth = peakWidth
             ParametersViewController.rectEye = rectEye
             ParametersViewController.rectFace = rectFace
             ParametersViewController.rectOuter = rectOuter
@@ -1246,7 +1246,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             updownPgap = ParametersViewController.updownPgap
             waveWidth = ParametersViewController.waveWidth
             wavePeak = ParametersViewController.wavePeak
-            peakWidth = ParametersViewController.peakWidth
+    //        peakWidth = ParametersViewController.peakWidth
             rectEye = ParametersViewController.rectEye
             rectFace = ParametersViewController.rectFace
             rectOuter = ParametersViewController.rectOuter
