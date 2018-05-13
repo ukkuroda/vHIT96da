@@ -116,7 +116,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var idNumber:Int = 0
     var vHITtitle:String = ""
     var ratioW:Double = 0.0//実際の映像横サイズと表示横サイズの比率
-    var flatWidth:Int = 0
+//    var flatWidth:Int = 0
     var flatsumLimit:Int = 0
     var updownPgap:Int = 0
     var waveWidth:Int = 0
@@ -835,7 +835,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     func clearUserDefaults(){
-        UserDefaults.standard.removeObject(forKey: "flatWidth")
+  //      UserDefaults.standard.removeObject(forKey: "flatWidth")
         UserDefaults.standard.removeObject(forKey: "flatsumLimit")
         UserDefaults.standard.removeObject(forKey: "waveWidth")
         UserDefaults.standard.removeObject(forKey: "wavePeak")
@@ -856,11 +856,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func getUserDefaults(){
-        flatWidth = getUserDefault(str: "flatWidth",ret: 28)//keyが設定してなければretをセット
+  //     flatWidth = getUserDefault(str: "flatWidth",ret: 28)//keyが設定してなければretをセット
         flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 24)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
-        updownPgap = getUserDefault(str: "updownPgap", ret: 4)
+        updownPgap = getUserDefault(str: "updownPgap", ret: 8)
   //      peakWidth = getUserDefault(str: "peakWidth", ret: 23)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
@@ -885,7 +885,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectOuter.size.height = CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
-        UserDefaults.standard.set(flatWidth, forKey: "flatWidth")
+ //      UserDefaults.standard.set(flatWidth, forKey: "flatWidth")
         UserDefaults.standard.set(flatsumLimit, forKey: "flatsumLimit")
         UserDefaults.standard.set(waveWidth, forKey: "waveWidth")
         UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
@@ -1203,7 +1203,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if let vc = segue.destination as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             //      遷移先のParametersViewControllerで宣言している値に代入して渡す
-            ParametersViewController.flatWidth = flatWidth
+   //         ParametersViewController.flatWidth = flatWidth
             ParametersViewController.flatsumLimit = flatsumLimit
             ParametersViewController.waveWidth = waveWidth
             ParametersViewController.wavePeak = wavePeak
@@ -1241,7 +1241,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if let vc = segue.source as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             // segueから遷移先のResultViewControllerを取得する
-            flatWidth = ParametersViewController.flatWidth
+   //         flatWidth = ParametersViewController.flatWidth
             flatsumLimit = ParametersViewController.flatsumLimit
             updownPgap = ParametersViewController.updownPgap
             waveWidth = ParametersViewController.waveWidth
@@ -1475,6 +1475,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func updownp(n:Int,nami:Int) -> Int {
         //yなので、増えると下方向にずれる
+ //       if Int(vHITouter[n]) != wavePeak/6 {
+ //           return -1
+ //       }
         let s = updownPgap //2 よりも 4　で立ち上がりが揃う　5にすると揃うが合致数が減少する
         if Get5(num: n) - s > Get5(num: n + 1) &&//3個続けて減ったら
             Get5(num: n + 1) - s > Get5(num: n + 2) &&
@@ -1512,19 +1515,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func  Getupdownp(num:Int) -> Int {//} n, int width, int sumlimit, int nami, int level) -> Int {
-        let t = Get5(num: num + flatWidth + waveWidth / 4)/5
-        if t < wavePeak && t > -wavePeak {
+        let t = Get5(num: num + waveWidth / 2)/5//240fps 30frame=30*1000ms/240(=125ms)
+        if t < wavePeak && t > -wavePeak {//1波の半分先がwavePeakを超えない
             return -1
         }
-        var sum:Int = 0
-        for i in 0..<flatWidth {//width*100/24 ms動かない処を探す
-            sum += Int(vHITouter[num + i])
-            if sum > flatsumLimit || sum < -flatsumLimit {
-                return -1
-            }
+        let sum = Int(vHITouter[num] + vHITouter[num + 1])
+        if sum > flatsumLimit || sum < -flatsumLimit {//0からのズレがlimitを超える
+            return -1
         }
+ //       }
         //        print("flat found \(num), \(sum), \(flatWidth), \(flatsumLimit) ")
-        return updownp(n: num + flatWidth - 4, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
+        return updownp(n: num , nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
     func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -1540,7 +1541,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
          //var vcnt:Int = 0
         var skipCnt = 0
-        for vcnt in 0..<(vHITcnt - flatWidth - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
+        for vcnt in 0..<(vHITcnt - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
              if skipCnt > 0{
                 skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
@@ -1557,7 +1558,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let t = Getupdownp(num: number)
         if t != -1 {
             //          print("getupdownp")
-            let ws = number + flatWidth - 17;//波表示開始位置 wavestartpoint
+            let ws = number - 15;//波表示開始位置 wavestartpoint
             var ln:Int = 0
             while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
                 ln += 1

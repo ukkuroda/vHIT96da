@@ -10,7 +10,7 @@ import UIKit
 
 class ParametersViewController: UIViewController, UITextFieldDelegate {
     
-    var flatWidth:Int = 0
+ //   var flatWidth:Int = 0
     var flatsumLimit:Int = 0
     var waveWidth:Int = 0
     var wavePeak:Int = 0
@@ -29,7 +29,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var labelEye: UILabel!
     @IBOutlet weak var labelFace: UILabel!
     @IBOutlet weak var labelOuter: UILabel!
-    @IBOutlet weak var flatWidthinput: UITextField!
+ //   @IBOutlet weak var flatWidthinput: UITextField!
     @IBOutlet weak var flatSuminput: UITextField!
     @IBOutlet weak var waveWidthinput: UITextField!
     @IBOutlet weak var wavePeakinput: UITextField!
@@ -57,7 +57,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     }
    
     @IBAction func numpadOff(_ sender: Any) {
-        flatWidthinput.endEditing(true)
+ //       flatWidthinput.endEditing(true)
         flatSuminput.endEditing(true)
         waveWidthinput.endEditing(true)
         wavePeakinput.endEditing(true)
@@ -121,11 +121,11 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func setDefault(_ sender: Any) {
         //上手く働かない
-        flatWidth = 28
+ //       flatWidth = 28
         flatsumLimit = 24
         waveWidth = 40
         wavePeak = 15
-        updownPgap = 4
+        updownPgap = 8
  //       peakWidth = 23
         eyeBorder = 3
         faceBorder = 5
@@ -147,10 +147,10 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             return 0
         }
     }
-    @IBAction func flatWidthButton(_ sender: Any) {
-   //     print("*******flatwidthbutton button")
-        flatWidth = Field2value(field: flatWidthinput)
-    }
+//    @IBAction func flatWidthButton(_ sender: Any) {
+//   //     print("*******flatwidthbutton button")
+//        flatWidth = Field2value(field: flatWidthinput)
+//    }
     @IBAction func flatSumButton(_ sender: Any) {
         flatsumLimit = Field2value(field:flatSuminput)
     }
@@ -189,7 +189,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         var y = 0
         var width = 0
         var height = 0
-        self.flatWidthinput.text = "\(flatWidth)"
+ //       self.flatWidthinput.text = "\(flatWidth)"
         self.flatSuminput.text = "\(flatsumLimit)"
         self.waveWidthinput.text = "\(waveWidth)"
         self.wavePeakinput.text = "\(wavePeak)"
@@ -219,7 +219,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        flatWidthinput.delegate = self
+ //       flatWidthinput.delegate = self
         //flatWidthinput.delegate = self//これはなんだ？コメントアウトして大丈夫かな？
         flatSuminput.delegate = self
         waveWidthinput.delegate = self
@@ -233,7 +233,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         outerRatioinput.delegate = self
     //    setKeydown()
       //入力を数字入力キーボードとする
-        self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
+ //       self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
         self.flatSuminput.keyboardType = UIKeyboardType.numberPad
         self.waveWidthinput.keyboardType = UIKeyboardType.numberPad
         self.wavePeakinput.keyboardType = UIKeyboardType.numberPad
