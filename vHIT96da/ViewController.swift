@@ -310,13 +310,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
         let eyedx:CGFloat = 4 * CGFloat(eyeBorder)
-    //    let eyedxInt:Int = Int(eyedx)
         let eyedy:CGFloat = CGFloat(eyeBorder)
         let facedx:CGFloat = 4 * CGFloat(faceBorder)
-    //    let facedxInt:Int = Int(facedx)
         let facedy:CGFloat = CGFloat(faceBorder)
         let outerdx:CGFloat = 4 * CGFloat(outerBorder)
-    //    let outerdxInt:Int = Int(outerdx)
         let outerdy:CGFloat = CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -359,9 +356,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         // read in samples
  //       var count = 0
-        
         var CGEye:CGImage!
-        var CGFace:CGImage!
+ //       var CGFace:CGImage!
         var CGOuter:CGImage!
         var CGEyeWithBorder:CGImage!
         var CGFaceWithBorder:CGImage!
@@ -369,7 +365,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         var UIEye:UIImage!
         var UIEyeWithBorder:UIImage!
-        var UIFace:UIImage!
+//        var UIFace:UIImage!
+        let UIFace = UIImage(named:"triangle")!//15x10 UIFace
+//        let triAngle = UIImage(named:"triangle")!//15x10 UIFace
+
         var UIFaceWithBorder:UIImage!
         var UIOuter:UIImage!
         var UIOuterWithBorder:UIImage!
@@ -396,7 +395,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
         
         let rectEyeb = getWiderect(rect: REye, dx: eyedx, dy: eyedy)//3
-        let rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//5
+        var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
+        //faceborder=5の時、w:15,h:10   ->   w:30+5*4*2,h:30+5*2 (のりしろw:55/2 h:30/2となるので充分だろう）
+        //faceborder=3の時　-> w:30+3*4*2,h:30+3*2 (のりしろw:39/2 h:26/2となるが、少し狭いか？
+        //faceborder=2の時　-> w:30+2*4*2,h:30+2*2 (のりしろw:31/2 h:24/2となるが、少し狭いか？
         let rectOutb = getWiderect(rect: ROuter, dx: outerdx, dy: outerdy)//10
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
@@ -407,11 +409,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         outerCropView.frame=rectOuter
         
         CGEye = cgImage.cropping(to: REye)
-        CGFace = cgImage.cropping(to: RFace)
+//        CGFace = cgImage.cropping(to: RFace)
         CGOuter = cgImage.cropping(to: ROuter)
         
         UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
-        UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
+//        UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
  //       count = 1
         while reader.status != AVAssetReaderStatus.reading {
@@ -453,6 +455,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //                self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
                 //                self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                 //                self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
+                //UIFace は 15x10
                 self.openCV.matching3(UIEyeWithBorder, n1:UIEye, x1:eX, y1:eY, w2:UIFaceWithBorder, n2:UIFace, x2:fX, y2:fY, w3:UIOuterWithBorder, n3:UIOuter, x3:oX, y3:oY)
                 //３個を１個にまとめても　54秒が53秒になる程度
                 //opencvの中で何もせずreturnさせて見ると、55秒が49秒となる程度
@@ -464,18 +467,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 
                 // crop narrow part
                 CGEye = cgImage.cropping(to: REye)
-                CGFace = cgImage.cropping(to: RFace)
+ //               CGFace = cgImage.cropping(to: RFace)
                 CGOuter = cgImage.cropping(to: ROuter)
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
-                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
+//                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                let fy = CGFloat(fY.pointee)/100.0 - facedx
+                let fy = CGFloat(fY.pointee)/100.0 - facedx//100倍しても関係なさそう。Intっぽい？
+                let fx = CGFloat(fX.pointee)/100.0 - facedy//
                 #if DEBUG
                     print(vHITcnt,Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                 #endif
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
+                rectFacb.origin.x -= fx
+                rectFacb.origin.y -= fy
                 self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee)/100.0 - eyedx - fy))
 //                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
                 self.vHITeye.append(12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee)/100.0 - eyedx - fy)))
@@ -1307,7 +1313,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //movePo 移動したxy値
         let nori:CGFloat = 10
         var dx:CGFloat = movePo.x
-        var dy:CGFloat = movePo.y
+        let dy:CGFloat = movePo.y
         //ここに関しては、移動先が範囲外の場合移動しない、という処理がなされているが、
         //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
         //あと、このアルゴリズムだと各rectが小さくなりすぎた場合に不具合が出る。
@@ -1481,7 +1487,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if rectType == 0 {
                     rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
                 } else if rectType == 1 {
-                    rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
+                    rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:self.view.bounds.height - 20)
                 } else {
                     rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
                 }

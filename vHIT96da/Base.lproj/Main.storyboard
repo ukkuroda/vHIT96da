@@ -692,7 +692,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt126" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
                                 <rect key="frame" x="30" y="40" width="315" height="569.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="j2D-6T-AEW" secondAttribute="height" multiplier="275:497" id="O3K-30-wcv"/>
@@ -747,7 +747,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt126j" translatesAutoresizingMaskIntoConstraints="NO" id="wxg-rm-sQX">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxtj" translatesAutoresizingMaskIntoConstraints="NO" id="wxg-rm-sQX">
                                 <rect key="frame" x="30" y="40" width="315" height="569.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="wxg-rm-sQX" secondAttribute="height" multiplier="275:497" id="PBB-X2-A7o"/>
@@ -787,8 +787,8 @@
         <image name="btnb" width="300" height="40"/>
         <image name="disp" width="260" height="260"/>
         <image name="help" width="260" height="260"/>
-        <image name="helptxt126" width="1239" height="2241"/>
-        <image name="helptxt126j" width="1251" height="2236"/>
+        <image name="helptxt" width="1242" height="2241"/>
+        <image name="helptxtj" width="1251" height="2236"/>
         <image name="mail" width="260" height="260"/>
         <image name="play" width="260" height="260"/>
         <image name="save" width="260" height="260"/>

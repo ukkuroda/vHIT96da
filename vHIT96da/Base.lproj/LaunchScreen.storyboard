@@ -20,13 +20,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goggle_s" translatesAutoresizingMaskIntoConstraints="NO" id="Cx8-Zd-Z6A">
-                                <rect key="frame" x="50" y="90" width="275" height="330"/>
+                                <rect key="frame" x="50" y="90" width="275" height="264"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="Cx8-Zd-Z6A" secondAttribute="height" multiplier="5:6" id="XgU-mb-B4q"/>
+                                    <constraint firstAttribute="width" secondItem="Cx8-Zd-Z6A" secondAttribute="height" multiplier="50:48" id="XgU-mb-B4q"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vHIT96da" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c4v-jJ-c25">
-                                <rect key="frame" x="10" y="430" width="355" height="187"/>
+                                <rect key="frame" x="10" y="364" width="355" height="253"/>
                                 <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="43"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
