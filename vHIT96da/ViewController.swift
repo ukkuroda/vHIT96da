@@ -390,15 +390,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //DropboxやGoogleDriveに動画をアップロードして、それをiPhoneで閲覧しカメラロール(写真ライブラリ)に保存というのが考えられます。
         //それぞれのRectを用意
         //resizeRectが変だけど一番よいような
+        let realrectFace = CGRect(x:self.rectFace.origin.x+8,y:self.rectFace.origin.y+10,width:15,height:10)
+        //realrectFace(x:x+8,y:y+10,w:15,h:10) rectFaceは31*30なので
+        //var newrect:CGRect = CGRect(x:0,y:0,width:0,height:0)
         let REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        //let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        let RFace = resizeRect(realrectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
         
         let rectEyeb = getWiderect(rect: REye, dx: eyedx, dy: eyedy)//3
         var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
-        //faceborder=5の時、w:15,h:10   ->   w:30+5*4*2,h:30+5*2 (のりしろw:55/2 h:30/2となるので充分だろう）
-        //faceborder=3の時　-> w:30+3*4*2,h:30+3*2 (のりしろw:39/2 h:26/2となるが、少し狭いか？
-        //faceborder=2の時　-> w:30+2*4*2,h:30+2*2 (のりしろw:31/2 h:24/2となるが、少し狭いか？
         let rectOutb = getWiderect(rect: ROuter, dx: outerdx, dy: outerdy)//10
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
@@ -441,16 +442,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     UIFaceWithBorder = UIFace//UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
 
                 }else{
-                CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
-                UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+                    CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
+                    UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
                 }
                 if outerdx == 0{
                     //CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
                     UIOuterWithBorder = UIOuter//Image.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
 
                 }else{
-                CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
-                UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
+                    CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
+                    UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
                 }//matching
                 //                self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
                 //                self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
@@ -472,15 +473,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
 //                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                let fy = CGFloat(fY.pointee)/100.0 - facedx//100倍しても関係なさそう。Intっぽい？
-                let fx = CGFloat(fX.pointee)/100.0 - facedy//
+                let fy = CGFloat(fY.pointee)/100.0 - facedx//100倍しても関係なさそう。fYはIntっぽい？
+                let fx = CGFloat(fX.pointee)/100.0 - facedy//fastKumamonで追加した行
+                
+                
                 #if DEBUG
                     print(vHITcnt,Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                 #endif
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
-                rectFacb.origin.x -= fx
+                rectFacb.origin.x -= fx//取り敢えず引いてみたが
                 rectFacb.origin.y -= fy
                 self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee)/100.0 - eyedx - fy))
 //                self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
@@ -883,7 +886,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectEye.size.height = 7//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
         rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(167*ratioW)))
         rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
-        rectFace.size.width = 30//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
+        rectFace.size.width = 31//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
         rectFace.size.height = 30//CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
         rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(140*ratioW)))
         rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(510*ratioH)))
