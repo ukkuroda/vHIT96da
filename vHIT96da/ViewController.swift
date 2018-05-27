@@ -844,15 +844,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.removeObject(forKey: "rectEye_x")
         UserDefaults.standard.removeObject(forKey: "rectEye_y")
         UserDefaults.standard.removeObject(forKey: "rectEye_w")
-        UserDefaults.standard.removeObject(forKey: "rectEye_h")
+  //      UserDefaults.standard.removeObject(forKey: "rectEye_h")
         UserDefaults.standard.removeObject(forKey: "rectFace_x")
         UserDefaults.standard.removeObject(forKey: "rectFace_y")
-        UserDefaults.standard.removeObject(forKey: "rectFace_w")
-        UserDefaults.standard.removeObject(forKey:"rectFace_h")
+  //      UserDefaults.standard.removeObject(forKey: "rectFace_w")
+  //      UserDefaults.standard.removeObject(forKey:"rectFace_h")
         UserDefaults.standard.removeObject(forKey: "rectOuter_x")
         UserDefaults.standard.removeObject(forKey:"rectOuter_y")
         UserDefaults.standard.removeObject(forKey:"rectOuter_w")
-        UserDefaults.standard.removeObject(forKey:"rectOuter_h")
+    //    UserDefaults.standard.removeObject(forKey:"rectOuter_h")
     }
     
     func getUserDefaults(){
@@ -874,15 +874,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: Int(97*ratioW)))
         rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: Int(143*ratioH)))
         rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: Int(209*ratioW)))
-        rectEye.size.height = CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
+        rectEye.size.height = 7//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
         rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(167*ratioW)))
         rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
-        rectFace.size.width = CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
-        rectFace.size.height = CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
+        rectFace.size.width = 30//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
+        rectFace.size.height = 30//CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
         rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(140*ratioW)))
         rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(510*ratioH)))
         rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(110*ratioW)))
-        rectOuter.size.height = CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
+        rectOuter.size.height = 7//CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
  //      UserDefaults.standard.set(flatWidth, forKey: "flatWidth")
@@ -902,15 +902,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(Int(rectEye.origin.x), forKey: "rectEye_x")
         UserDefaults.standard.set(Int(rectEye.origin.y), forKey: "rectEye_y")
         UserDefaults.standard.set(Int(rectEye.size.width), forKey: "rectEye_w")
-        UserDefaults.standard.set(Int(rectEye.size.height), forKey: "rectEye_h")
+        //UserDefaults.standard.set(Int(rectEye.size.height), forKey: "rectEye_h")
         UserDefaults.standard.set(Int(rectFace.origin.x), forKey: "rectFace_x")
         UserDefaults.standard.set(Int(rectFace.origin.y), forKey: "rectFace_y")
-        UserDefaults.standard.set(Int(rectFace.size.width), forKey: "rectFace_w")
-        UserDefaults.standard.set(Int(rectFace.size.height), forKey: "rectFace_h")
+        //UserDefaults.standard.set(Int(rectFace.size.width), forKey: "rectFace_w")
+        //UserDefaults.standard.set(Int(rectFace.size.height), forKey: "rectFace_h")
         UserDefaults.standard.set(Int(rectOuter.origin.x), forKey: "rectOuter_x")
         UserDefaults.standard.set(Int(rectOuter.origin.y), forKey: "rectOuter_y")
         UserDefaults.standard.set(Int(rectOuter.size.width), forKey: "rectOuter_w")
-        UserDefaults.standard.set(Int(rectOuter.size.height), forKey: "rectOuter_h")
+        //UserDefaults.standard.set(Int(rectOuter.size.height), forKey: "rectOuter_h")
     }
     
     func dispWakus(){
@@ -1311,7 +1311,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //ここに関しては、移動先が範囲外の場合移動しない、という処理がなされているが、
         //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
         //あと、このアルゴリズムだと各rectが小さくなりすぎた場合に不具合が出る。
-        if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width) && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
+        if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width){//} && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
             r.origin.x = stRect.origin.x + dx;
             r.origin.y = stRect.origin.y + dy;
             //r.size.width = stRect.size
@@ -1346,23 +1346,88 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             r.size.width = stRect.size.width + dx
         }
-        if stPo.y < stRect.origin.y{
-            if stRect.origin.y + dy < uppo{
-                dy = uppo - stRect.origin.y
-            }else if dy > stRect.size.height - nori{
-                dy = stRect.size.height - nori
-            }
-            r.origin.y = stRect.origin.y + dy
-            r.size.height = stRect.size.height - dy
-        }else if stPo.y > stRect.origin.y + stRect.size.height{
-            if stRect.origin.y + dy + stRect.size.height + nori > lowpo{
-                dy = lowpo - stRect.origin.y - stRect.size.height - nori
-            }else if stRect.size.height + dy < nori {
-                dy = nori - stRect.size.height
-            }
-            r.size.height = stRect.size.height + dy
-        }
+//        if stPo.y < stRect.origin.y{
+//            if stRect.origin.y + dy < uppo{
+//                dy = uppo - stRect.origin.y
+//            }else if dy > stRect.size.height - nori{
+//                dy = stRect.size.height - nori
+//            }
+//            r.origin.y = stRect.origin.y + dy
+//            r.size.height = stRect.size.height - dy
+//        }else if stPo.y > stRect.origin.y + stRect.size.height{
+//            if stRect.origin.y + dy + stRect.size.height + nori > lowpo{
+//                dy = lowpo - stRect.origin.y - stRect.size.height - nori
+//            }else if stRect.size.height + dy < nori {
+//                dy = nori - stRect.size.height
+//            }
+//            r.size.height = stRect.size.height + dy
+//        }
         return r
+    }
+    func setFaceRectparam(rect:CGRect,stRect:CGRect,stPo:CGPoint,movePo:CGPoint,uppo:CGFloat,lowpo:CGFloat) -> CGRect{
+        var r:CGRect
+        r = rect//3種類の枠を代入、変更してreturnで返す
+        //stRect それをタップした時のrect
+        //stPoint タップした位置
+        //movePo 移動したxy値
+        let nori:CGFloat = 10
+        let dx:CGFloat = movePo.x
+        let dy:CGFloat = movePo.y
+        //ここに関しては、移動先が範囲外の場合移動しない、という処理がなされているが、
+        //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
+        //あと、このアルゴリズムだと各rectが小さくなりすぎた場合に不具合が出る。
+ //       if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width) && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
+            r.origin.x = stRect.origin.x + dx;
+            r.origin.y = stRect.origin.y + dy;
+            //r.size.width = stRect.size
+            if r.origin.x < nori {
+                r.origin.x = nori
+            }
+            if (r.origin.x + r.size.width + nori) > self.view.bounds.width{
+                r.origin.x = self.view.bounds.width - r.size.width - nori
+            }
+            if r.origin.y < uppo {
+                r.origin.y = uppo
+            }
+            if (r.origin.y + r.size.height + nori) > lowpo{
+                r.origin.y = lowpo - r.size.height - nori
+            }
+            return r
+ //       }
+//        if stPo.x < stRect.origin.x{
+//            if (stRect.origin.x + dx) < nori {
+//                dx = nori - stRect.origin.x
+//            }
+//            else if dx > stRect.size.width - nori {
+//                dx = stRect.size.width - nori
+//            }
+//            r.origin.x = stRect.origin.x + dx
+//            r.size.width = stRect.size.width - dx
+//        }else if stPo.x > stRect.origin.x + stRect.size.width{
+//            if (stRect.origin.x + stRect.size.width + dx)>self.view.bounds.width - nori{
+//                dx = self.view.bounds.width - nori - stRect.origin.x - stRect.size.width
+//            }else if stRect.size.width + dx < nori {
+//                dx = nori - stRect.size.width
+//            }
+//            r.size.width = stRect.size.width + dx
+//        }
+//        if stPo.y < stRect.origin.y{
+//            if stRect.origin.y + dy < uppo{
+//                dy = uppo - stRect.origin.y
+//            }else if dy > stRect.size.height - nori{
+//                dy = stRect.size.height - nori
+//            }
+//            r.origin.y = stRect.origin.y + dy
+//            r.size.height = stRect.size.height - dy
+//        }else if stPo.y > stRect.origin.y + stRect.size.height{
+//            if stRect.origin.y + dy + stRect.size.height + nori > lowpo{
+//                dy = lowpo - stRect.origin.y - stRect.size.height - nori
+//            }else if stRect.size.height + dy < nori {
+//                dy = nori - stRect.size.height
+//            }
+//            r.size.height = stRect.size.height + dy
+//        }
+ //       return r
     }
     var leftrightFlag:Bool = false
     var rectType:Int = 0//0:eye 1:face 2:outer -1:何も選択されていない
@@ -1414,11 +1479,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         } else if sender.state == .changed {
             if rectType > -1 {//枠の設定の場合
                 if rectType == 0 {
-                    rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectFace.origin.y - 20)
+                    rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
                 } else if rectType == 1 {
-                    rectFace = setRectparams(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:rectOuter.origin.y - 20)
+                    rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
                 } else {
-                    rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectFace.origin.y+rectFace.height + 20,lowpo:self.view.bounds.height - 30)
+                    rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
                 }
                 dispWakus()
             }else{//} if slowVideoCnt > -1{
