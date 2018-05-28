@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8E08E1C12046906400FFB255 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */; };
 		8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E495CC5202FE7880030748C /* ParametersViewController.swift */; };
+		8E6A654E20BC0B7600EE74EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E6A654D20BC0B7600EE74EF /* Images.xcassets */; };
 		8E9AC3AD2077B98C001D366E /* PlayVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */; };
 		8EA90BE32038208200D042D0 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EA90BE22038208200D042D0 /* opencv2.framework */; };
 		8EB6E0F9208E1CB0000A85EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EB6E0F8208E1CAF000A85EB /* Assets.xcassets */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
 		8E495CC5202FE7880030748C /* ParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParametersViewController.swift; sourceTree = "<group>"; };
+		8E6A654D20BC0B7600EE74EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayVideoViewController.swift; sourceTree = "<group>"; };
 		8EA90BE22038208200D042D0 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		8EB6E0F8208E1CAF000A85EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				8ECE3962203802750054AC0C /* opencvWrapper.h */,
 				8ECE3963203802750054AC0C /* opencvWrapper.mm */,
 				8ECE3961203802750054AC0C /* vHIT96da-Bridging-Header.h */,
+				8E6A654D20BC0B7600EE74EF /* Images.xcassets */,
 			);
 			path = vHIT96da;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EE2C027202F32440064ED6F /* LaunchScreen.storyboard in Resources */,
+				8E6A654E20BC0B7600EE74EF /* Images.xcassets in Resources */,
 				8EE2C022202F32440064ED6F /* Main.storyboard in Resources */,
 				8EB6E0F9208E1CB0000A85EB /* Assets.xcassets in Resources */,
 				8EC52946207911A300E420DC /* vHITsample.MOV in Resources */,
@@ -240,7 +244,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -291,7 +295,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -303,6 +307,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -328,6 +333,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
