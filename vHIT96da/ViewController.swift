@@ -395,13 +395,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //var newrect:CGRect = CGRect(x:0,y:0,width:0,height:0)
         var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
         //let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        var RFace = resizeRect(realrectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        let RFace = resizeRect(realrectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
         var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
  //       print(REye,rectEye)
  //       print(RFace,realrectFace)
-        var rectEyeb = getWiderect(rect: REye, dx: eyedx, dy: eyedy)//3
+        //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
+        var rectEyeb = getWiderect(rect: REye, dx: 0*eyedx, dy: eyedy)//3
         var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
-        var rectOutb = getWiderect(rect: ROuter, dx: outerdx, dy: outerdy)//10
+        var rectOutb = getWiderect(rect: ROuter, dx: 0*outerdx, dy: outerdy)//10
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
 //        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
@@ -417,7 +418,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         CGOuter = cgImage.cropping(to: ROuter)
         UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
         UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
-        faceCropView.image=UIFace
+  //      faceCropView.image=UIFace
         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
  //       count = 1
         while reader.status != AVAssetReaderStatus.reading {
@@ -436,32 +437,27 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
                 let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
                 //画像を縦横変換するならこの位置でCIImage.oriented()を使う？
-                //ciimageからcrop
-                CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//REyeWithBorder)!
-                //UIImageに変換
-                UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)
-                if facedx == 0{
-                  //  CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
-                    UIFaceWithBorder = UIFace//UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
-
+                if facedx == 0{//顔の動きをチェックしない
+                      UIFaceWithBorder = UIFace
                 }else{
-                    CGFaceWithBorder = cgImage.cropping(to: rectFacb)!//RFaceWithBorder)!
+                    CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
                 }
-                if outerdx == 0{
-                    //CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
-                    UIOuterWithBorder = UIOuter//Image.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
+                self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
+                let fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
+                let fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
+                rectEyeb.origin.x += fx//ズラしておく
+                rectOutb.origin.x += fx
+                CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
+                UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
+                CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
+                UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
 
-                }else{
-                    CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
-                    UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
-                }//matching
-                //                self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
-                //                self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
-                //                self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
+                self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
+                self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
                 //UIFace は 15x10
-                self.openCV.matching3(UIEyeWithBorder, n1:UIEye, x1:eX, y1:eY, w2:UIFaceWithBorder, n2:UIFace, x2:fX, y2:fY, w3:UIOuterWithBorder, n3:UIOuter, x3:oX, y3:oY)
-                //３個を１個にまとめても　54秒が53秒になる程度
+//                self.openCV.matching3(UIEyeWithBorder, n1:UIEye, x1:eX, y1:eY, w2:UIFaceWithBorder, n2:UIFace, x2:fX, y2:fY, w3:UIOuterWithBorder, n3:UIOuter, x3:oX, y3:oY)
+                //３個を１個にまとめても　54秒が53秒になる程度 3個一緒->110s 1個ずつ->112s
                 //opencvの中で何もせずreturnさせて見ると、55秒が49秒となる程度
                 //ほとんどはUIImageへの変換に用する時間のようだ
                 
@@ -476,8 +472,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //                UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
 ////                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
 //                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                let fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
-                let fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
                 
                 
                 #if DEBUG
@@ -488,12 +482,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 rectFacb.origin.x += fx
                 rectFacb.origin.y += fy
-                print(fx,fy,Int(oY.pointee)-Int(outerdy),Int(eY.pointee)-Int(eyedy))
-                rectEyeb.origin.x += fx
+  //              print(fx,fy,Int(oY.pointee)-Int(outerdy),Int(eY.pointee)-Int(eyedy))
+   //             rectEyeb.origin.x += fx//ずらしすみ
                 rectEyeb.origin.y += fy
                 REye.origin.x += fx
                 REye.origin.y += fy
-                rectOutb.origin.x += fx
+  //              rectOutb.origin.x += fx
                 rectOutb.origin.y += fy
                 ROuter.origin.x += fx
                 ROuter.origin.y += fy
@@ -902,7 +896,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: Int(97*ratioW)))
         rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: Int(143*ratioH)))
         rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: Int(209*ratioW)))
-        rectEye.size.height = 2//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
+        rectEye.size.height = 1//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
         rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(167*ratioW)))
         rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
         rectFace.size.width = 40//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
@@ -910,7 +904,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(140*ratioW)))
         rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(510*ratioH)))
         rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(110*ratioW)))
-        rectOuter.size.height = 2//CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
+        rectOuter.size.height = 1//CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
  //      UserDefaults.standard.set(flatWidth, forKey: "flatWidth")
@@ -1607,18 +1601,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return sum
     }
     
-    func  Getupdownp(num:Int) -> Int {//} n, int width, int sumlimit, int nami, int level) -> Int {
-        let t = Get5(num: num + waveWidth / 2)/5//240fps 30frame=30*1000ms/240(=125ms)
+    func  Getupdownp(num:Int,flatwidth:Int) -> Int {//} n, int width, int sumlimit, int nami, int level) -> Int {
+        //let flatwidth:Int = 10
+        let t = Get5(num: num + flatwidth + waveWidth / 2)/5//240fps 30frame=30*1000ms/240(=125ms)
         if t < wavePeak && t > -wavePeak {//1波の半分先がwavePeakを超えない
             return -1
         }
-        let sum = Int(vHITouter[num] + vHITouter[num + 1])
+        var sum:Int = 0
+        for i in 0..<flatwidth{
+            sum += Int(vHITouter[num+i])
+        }
+//        let sum = Int(vHITouter[num-10] + vHITouter[num] + vHITouter[num + 1])
         if sum > flatsumLimit || sum < -flatsumLimit {//0からのズレがlimitを超える
             return -1
         }
  //       }
         //        print("flat found \(num), \(sum), \(flatWidth), \(flatsumLimit) ")
-        return updownp(n: num , nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
+        return updownp(n: num + flatwidth , nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
     func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -1648,10 +1647,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         //       print(number)
         //print(dispOrgflag)
-        let t = Getupdownp(num: number)
+        let flatwidth:Int = 10
+        let t = Getupdownp(num: number,flatwidth:flatwidth)
         if t != -1 {
             //          print("getupdownp")
-            let ws = number - 15;//波表示開始位置 wavestartpoint
+            let ws = number - flatwidth + 5;//波表示開始位置 wavestartpoint
             var ln:Int = 0
             while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
                 ln += 1
