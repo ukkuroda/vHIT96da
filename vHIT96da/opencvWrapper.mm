@@ -172,8 +172,8 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     cv::Point max_pt;
     double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-    *eX = max_pt.x*100.0;
-    *eY = max_pt.y*100.0;
+    *eX = max_pt.x;
+    *eY = max_pt.y;
     
     UIImageToMat(UIFaceB, wide_mat);
     UIImageToMat(UIFace, narrow_mat);
@@ -183,8 +183,8 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     //    cv::Point max_pt;
     //    double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-    *fX = max_pt.x*100.0;
-    *fY = max_pt.y*100.0;
+    *fX = max_pt.x;
+    *fY = max_pt.y;
     
     UIImageToMat(UIOuterB, wide_mat);
     UIImageToMat(UIOuter, narrow_mat);
@@ -194,8 +194,8 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     //    cv::Point max_pt;
     //    double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-    *oX = max_pt.x*100.0;
-    *oY = max_pt.y*100.0;
+    *oX = max_pt.x;
+    *oY = max_pt.y;
 }
 /*
 cv::Mat eyeold_mat;
