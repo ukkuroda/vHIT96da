@@ -132,7 +132,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //解析結果保存用配列
     var vHITeye = Array<CGFloat>()
     var vHITouter = Array<CGFloat>()
-    var vHITeyeOrg = Array<CGFloat>()
+//    var vHITeyeOrg = Array<CGFloat>()
+    var vHITeye5 = Array<CGFloat>()
     var vHITouter5 = Array<CGFloat>()
  //   var vHITouterOrg = Array<Int>()
     var timer: Timer!
@@ -299,7 +300,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         playButton.isEnabled = false
         vHITouter.removeAll()
         vHITeye.removeAll()
-        vHITeyeOrg.removeAll()
+ //       vHITeyeOrg.removeAll()
+        vHITeye5.removeAll()
         vHITouter5.removeAll()
         var vHITcnt:Int = 0
         timercnt = 0
@@ -446,8 +448,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                 let fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
                 let fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
+                if fY.pointee == 0 || fX.pointee == 0{
+                    self.calcFlag = false
+                }
                 rectEyeb.origin.x += fx//ズラしておく
+                rectEyeb.origin.y += fy
                 rectOutb.origin.x += fx
+                rectOutb.origin.y += fy
                 CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
                 CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
@@ -484,11 +491,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 rectFacb.origin.y += fy
   //              print(fx,fy,Int(oY.pointee)-Int(outerdy),Int(eY.pointee)-Int(eyedy))
    //             rectEyeb.origin.x += fx//ずらしすみ
-                rectEyeb.origin.y += fy
+   //             rectEyeb.origin.y += fy
                 REye.origin.x += fx
                 REye.origin.y += fy
   //              rectOutb.origin.x += fx
-                rectOutb.origin.y += fy
+//                rectOutb.origin.y += fy
                 ROuter.origin.x += fx
                 ROuter.origin.y += fy
                 CGEye = cgImage.cropping(to: REye)
@@ -498,10 +505,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
 
-                self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee) - eyedy - fy))
+                //self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee) - eyedy))// - fy))
                 //self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
-                self.vHITeye.append(12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy - fy)))
-                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy - fy))
+                let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy))
+                self.vHITeye5.append(eye5)
+                self.vHITeye.append(eye5)//12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy)))// - fy)))
+                if vHITcnt > 5{
+                    self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
+                }
+                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy))// - fy))
                 self.vHITouter.append(outer5)
                 self.vHITouter5.append(outer5)
                 if vHITcnt > 5{
@@ -1617,7 +1629,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
  //       }
         //        print("flat found \(num), \(sum), \(flatWidth), \(flatsumLimit) ")
-        return updownp(n: num + flatwidth , nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
+        return updownp(n: num + flatwidth, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
     func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -1651,7 +1663,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let t = Getupdownp(num: number,flatwidth:flatwidth)
         if t != -1 {
             //          print("getupdownp")
-            let ws = number - flatwidth + 5;//波表示開始位置 wavestartpoint
+            let ws = number - flatwidth;//波表示開始位置 wavestartpoint
             var ln:Int = 0
             while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
                 ln += 1
@@ -1665,7 +1677,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if dispOrgflag == false {
                      wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)//ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
                 }else{
-                    wP[t][ln][0][k1 - ws] = Int(vHITeyeOrg[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
+                    wP[t][ln][0][k1 - ws] = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
                    // dispOrgflag = false
                 }
             }
