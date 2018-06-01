@@ -656,10 +656,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         #if DEBUG
         print("debug-update",timercnt)
         #endif
-        if timercnt % 10 == 0{
+  //      if timercnt % 2 == 0{
             dispWakus()
             calcDrawVHIT()
-        }
+  //      }
     }
     func showNextvideo(direction: Int){
         let num = slowVideoCnt
@@ -1124,11 +1124,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        let str1 = videoDate.text?.components(separatedBy: ":")
         let str1 = calcDate.components(separatedBy: ":")
         let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
-        let str3 = "96da Kumamoto Japan"
+        let str3 = "96da Corp. Kumamoto Japan"
         str2.draw(at: CGPoint(x: 5, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
-        str3.draw(at: CGPoint(x: 336, y: 180), withAttributes: [
+        str3.draw(at: CGPoint(x: 295, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
 
@@ -1667,7 +1667,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let t = Getupdownp(num: number,flatwidth:flatwidth)
         if t != -1 {
             //          print("getupdownp")
-            let ws = number - flatwidth;//波表示開始位置 wavestartpoint
+            let ws = number - flatwidth + 5;//波表示開始位置 wavestartpoint
             var ln:Int = 0
             while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
                 ln += 1
