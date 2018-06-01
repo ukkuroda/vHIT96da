@@ -448,7 +448,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                 let fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
                 let fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
-                if fY.pointee == 0 || fX.pointee == 0{
+                if fY.pointee == 0 || fX.pointee == 0{//
                     self.calcFlag = false
                 }
                 rectEyeb.origin.x += fx//ズラしておく
@@ -1124,10 +1124,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        let str1 = videoDate.text?.components(separatedBy: ":")
         let str1 = calcDate.components(separatedBy: ":")
         let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
-        str2.draw(at: CGPoint(x: 130, y: 180), withAttributes: [
+        let str3 = "96da Kumamoto Japan"
+        str2.draw(at: CGPoint(x: 5, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
-        
+        str3.draw(at: CGPoint(x: 336, y: 180), withAttributes: [
+            NSAttributedStringKey.foregroundColor : UIColor.black,
+            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+
         UIColor.black.setStroke()
         var pList = Array<CGPoint>()
         pList.append(CGPoint(x:0,y:0))
