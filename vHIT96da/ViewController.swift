@@ -84,6 +84,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //    var slowDates = Array<String>()
     var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
+ //   var slowvideoUrl:String = ""
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
@@ -223,7 +224,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if timer?.isValid == true {
             timer.invalidate()
         }else{
-            timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
         }
     }
     
@@ -689,8 +690,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     
-    var path:String = ""
-    var urlpath:NSURL!
+  //  var path:String = ""
+ //   var urlpath:NSURL!
     func getslowVideoNum() -> Int{
         let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
         if let assetCollection = result.firstObject{
@@ -854,7 +855,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                         //self.tempPath = tokenKeys[8]
                                                        // self.slowPaths.append(tokenKeys[8])
                                                         //  print(self.path)
-                                                        //  self.urlpath = NSURL(fileURLWithPath:self.path)
+                                                        //self.slowvideoUrl = NSURL(fileURLWithPath:self.path)
                                                         //  print(self.urlpath)
                                                     }
         })
@@ -891,10 +892,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func getUserDefaults(){
   //     flatWidth = getUserDefault(str: "flatWidth",ret: 28)//keyが設定してなければretをセット
-        flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 24)
+        flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
-        updownPgap = getUserDefault(str: "updownPgap", ret: 8)
+        updownPgap = getUserDefault(str: "updownPgap", ret: 5)
   //      peakWidth = getUserDefault(str: "peakWidth", ret: 23)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
@@ -1019,7 +1020,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawPath.stroke()
         drawPath2.stroke()
         //print(videoDuration)
-        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,videoDuration,(timercnt+1)*2)
+        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,videoDuration,timercnt+1)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
