@@ -80,7 +80,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
     
     var slowVideoCurrent:Int = 0
-//    var slowPaths = Array<String>()
+    var slowPaths = Array<String>()
 //    var slowDates = Array<String>()
     var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
@@ -154,7 +154,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //view.boundsとimageをもらうことでその場で縦横の比率を計算してrectに適用する関数
         //getRealrectの代わり
         //＊＊＊＊viewに対してimageは横を向いている前提。返すrectも横を向ける
-        
         //viewの縦横を逆に
         let vw = viewRect.height
         let vh = viewRect.width
