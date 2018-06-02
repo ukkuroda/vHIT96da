@@ -80,7 +80,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
     
     var slowVideoCurrent:Int = 0
-    var slowPaths = Array<String>()
+//    var slowPaths = Array<String>()
 //    var slowDates = Array<String>()
     var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
@@ -795,15 +795,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let manager = PHImageManager()//.default()
             
   //以下を設定してもぼける
- //           let requestOptions = PHImageRequestOptions()
- //           requestOptions.resizeMode = .exact
-//            requestOptions.deliveryMode = .highQualityFormat;
-
-            manager.requestImage (for: asset, targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.aspectFill, options: nil) { (image, info) in
+  //          let requestOptions = PHImageRequestOptions()
+  //          requestOptions.resizeMode = .exact
+  //          requestOptions.deliveryMode = .highQualityFormat;
+            
+            manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode:PHImageContentMode.aspectFill, options:nil) { (image, info) in
                 self.retImage = image
             }
-        
-            return self.retImage
+              return self.retImage
         }
      }
 //    var tempPath:String = ""
