@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -26,16 +26,25 @@
                                 <string key="text">vHIT 
 for
 iPhone</string>
-                                <fontDescription key="fontDescription" name="CourierNewPS-BoldMT" family="Courier New" pointSize="57"/>
+                                <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="57"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="version 1.0.9" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HK7-WL-kmC">
+                                <rect key="frame" x="5" y="481" width="365" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="ETf-Mj-2Z1"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vHIT96da" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HEA-rJ-xd7">
-                                <rect key="frame" x="5" y="467" width="375" height="100"/>
+                                <rect key="frame" x="5" y="396" width="375" height="80"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="vQ7-Li-1BI"/>
+                                    <constraint firstAttribute="height" constant="80" id="IP6-vv-WWv"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="56"/>
+                                <fontDescription key="fontDescription" name="CourierNewPS-BoldMT" family="Courier New" pointSize="55"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -43,18 +52,21 @@ iPhone</string>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="c4v-jJ-c25" secondAttribute="trailing" constant="5" id="15l-Hs-sn4"/>
-                            <constraint firstItem="HEA-rJ-xd7" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="5" id="4OX-VG-x0N"/>
                             <constraint firstItem="c4v-jJ-c25" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="100" id="90w-kx-hDY"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HEA-rJ-xd7" secondAttribute="bottom" constant="100" id="Cqi-Z6-nIe"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HK7-WL-kmC" secondAttribute="bottom" constant="150" id="KLk-rB-pP4"/>
                             <constraint firstItem="c4v-jJ-c25" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="Y3L-SB-2bl"/>
-                            <constraint firstItem="HEA-rJ-xd7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="tUA-vP-qgk"/>
+                            <constraint firstItem="HK7-WL-kmC" firstAttribute="top" secondItem="HEA-rJ-xd7" secondAttribute="bottom" constant="5" id="Ywe-ZW-FxQ"/>
+                            <constraint firstItem="HK7-WL-kmC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="dbu-XB-50S"/>
+                            <constraint firstAttribute="trailing" secondItem="HEA-rJ-xd7" secondAttribute="trailing" constant="-5" id="dqN-F4-UlF"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HK7-WL-kmC" secondAttribute="trailing" constant="5" id="myY-rv-uBS"/>
+                            <constraint firstItem="HEA-rJ-xd7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="ujl-fI-WYE"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
 </document>
