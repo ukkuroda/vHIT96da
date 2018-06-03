@@ -1081,7 +1081,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             // アラートを作成
             let alert = UIAlertController(
                 title: "over 20 trials !",
-                message: "Use another version to save data",
+                message: "Use another vHIT96da to save data",
                 preferredStyle: .alert)
             // アラートにボタンをつける
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in

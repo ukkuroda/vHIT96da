@@ -609,6 +609,16 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vHIT96da" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xas-a8-nr7">
+                                <rect key="frame" x="255" y="40" width="100" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="18" id="UBL-nR-TaE"/>
+                                    <constraint firstAttribute="width" constant="100" id="WJ3-6a-BHn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
@@ -641,6 +651,7 @@
                             <constraint firstItem="EJg-35-yLr" firstAttribute="top" secondItem="BdK-VW-JAk" secondAttribute="top" id="RBY-sr-AC6"/>
                             <constraint firstItem="s5L-uX-evv" firstAttribute="leading" secondItem="wHd-Gu-5nW" secondAttribute="trailing" constant="5" id="THF-t5-iWH"/>
                             <constraint firstItem="PBe-Ga-pXd" firstAttribute="leading" secondItem="BdK-VW-JAk" secondAttribute="leading" constant="175" id="TVU-Po-ygR"/>
+                            <constraint firstItem="xas-a8-nr7" firstAttribute="top" secondItem="BdK-VW-JAk" secondAttribute="top" constant="20" id="V5m-oH-Y1D"/>
                             <constraint firstItem="Wre-qf-59d" firstAttribute="top" secondItem="tWF-A9-5II" secondAttribute="bottom" constant="5" id="Vf5-1f-Lmg"/>
                             <constraint firstItem="BdK-VW-JAk" firstAttribute="bottom" secondItem="ut3-ve-Fe7" secondAttribute="bottom" constant="10" id="Wt2-sW-X1r"/>
                             <constraint firstItem="sxp-7B-zQB" firstAttribute="leading" secondItem="qd9-uN-Ocb" secondAttribute="trailing" constant="5" id="X0t-Yk-Wn0"/>
@@ -664,6 +675,7 @@
                             <constraint firstItem="BdK-VW-JAk" firstAttribute="trailing" secondItem="icf-go-ZXT" secondAttribute="trailing" constant="5" id="wNK-4d-CaZ"/>
                             <constraint firstItem="BtS-x5-rPf" firstAttribute="leading" secondItem="BdK-VW-JAk" secondAttribute="leading" constant="5" id="wot-Jf-Ww4"/>
                             <constraint firstItem="BdK-VW-JAk" firstAttribute="trailing" secondItem="EJg-35-yLr" secondAttribute="trailing" constant="11" id="yDv-Pv-dFM"/>
+                            <constraint firstItem="BdK-VW-JAk" firstAttribute="trailing" secondItem="xas-a8-nr7" secondAttribute="trailing" constant="20" id="yJD-k0-GP4"/>
                             <constraint firstItem="Pqs-uv-FDI" firstAttribute="top" secondItem="Xto-R9-s0K" secondAttribute="bottom" constant="5" id="ytv-pf-oUb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BdK-VW-JAk"/>
