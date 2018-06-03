@@ -265,29 +265,29 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcButton.isEnabled = true
     }
     
-    func outTrial(){
-        // アラートを作成
-        let alert = UIAlertController(
-            title: "アラートのタイトル",
-            message: "アラートの本文",
-            preferredStyle: .alert)
-        
-        // アラートにボタンをつける
-       
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            
-            print("*********")
-        }))
-        // アラート表示
-        self.present(alert, animated: true, completion: nil)
-      }
+//    func outTrial(){
+//        // アラートを作成
+//        let alert = UIAlertController(
+//            title: "アラートのタイトル",
+//            message: "アラートの本文",
+//            preferredStyle: .alert)
+//
+//        // アラートにボタンをつける
+//
+//        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+//
+//            print("*********")
+//        }))
+//        // アラート表示
+//        self.present(alert, animated: true, completion: nil)
+//      }
     
     @IBAction func vHITcalc(_ sender: Any) {
-        if freeCounter > 100{
+        if freeCounter > 20{
               // アラートを作成
             let alert = UIAlertController(
                 title: "",
-                message: "over 100 trials / functions are available",
+                message: "over 20 trials !",
                 preferredStyle: .alert)
             
             // アラートにボタンをつける
@@ -1076,7 +1076,46 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
+//    func saveResult_pre(){
+//        if freeCounter > 20{
+//            // アラートを作成
+//            let alert = UIAlertController(
+//                title: "Use another version",
+//                message: "over 20 trials !",
+//                preferredStyle: .alert)
+//
+//            // アラートにボタンをつける
+//
+//            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+//
+//                self.vHITcalc_pre()
+//            }))
+//            // アラート表示
+//            self.present(alert, animated: true, completion: nil)
+//        }else{
+//            vHITcalc_pre()
+//        }
+//    }
     @IBAction func saveResult(_ sender: Any) {
+        
+        if freeCounter > 20{
+            // アラートを作成
+            let alert = UIAlertController(
+                title: "over 20 trials !",
+                message: "Use another version to save data",
+                preferredStyle: .alert)
+            
+            // アラートにボタンをつける
+            
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                
+                //self.vHITcalc_pre()
+            }))
+            // アラート表示
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+    
         #if DEBUG
         print("kuroda-debug" + "\(getLines())")
         #endif
