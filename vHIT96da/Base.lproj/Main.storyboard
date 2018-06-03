@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -191,6 +191,16 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6oH-Ur-nDk">
+                                <rect key="frame" x="317" y="28" width="50" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="oHK-qk-b3K"/>
+                                    <constraint firstAttribute="width" constant="50" id="rAw-fn-TYn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2018-01-01 00:00:00 (0)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0q7-O3-Ich">
                                 <rect key="frame" x="0.0" y="25" width="375" height="26.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -223,7 +233,9 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1Rs-5e-QIV"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6oH-Ur-nDk" secondAttribute="trailing" constant="8" id="HHS-bP-Hir"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="JA9-Tm-hVC"/>
+                            <constraint firstItem="6oH-Ur-nDk" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="NQb-1R-zRO"/>
                             <constraint firstAttribute="bottom" secondItem="UsG-5w-jrf" secondAttribute="bottom" constant="10" id="P9Q-KY-U46"/>
                             <constraint firstItem="UsG-5w-jrf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="SGT-Bl-XkR"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ST5-jh-Ekt"/>
@@ -247,6 +259,7 @@
                         <outlet property="eyeWaku" destination="wHm-rN-v50" id="KrA-fm-cpK"/>
                         <outlet property="faceCropView" destination="9li-D2-04C" id="1g1-Yi-MLu"/>
                         <outlet property="faceWaku" destination="p79-Uj-48D" id="fZs-Zc-8nC"/>
+                        <outlet property="freecntLabel" destination="6oH-Ur-nDk" id="EUJ-xJ-mml"/>
                         <outlet property="helpButton" destination="7OA-cL-B3S" id="YzF-8f-1r2"/>
                         <outlet property="listButton" destination="Afb-7h-V8u" id="hfI-Hx-H2E"/>
                         <outlet property="outerCropView" destination="jkT-Yy-LdU" id="Ghq-az-2e9"/>

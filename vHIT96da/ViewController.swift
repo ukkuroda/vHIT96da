@@ -78,8 +78,7 @@ extension UIImage {
 
 class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
-    
-    var slowVideoCurrent:Int = 0
+     var slowVideoCurrent:Int = 0
 //    var slowPaths = Array<String>()
 //    var slowDates = Array<String>()
     var slowImgs = Array<UIImage>()
@@ -89,6 +88,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
     
+    @IBOutlet weak var freecntLabel: UILabel!
     @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var helpButton: UIButton!
@@ -118,6 +118,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vHITtitle:String = ""
     var ratioW:Double = 0.0//実際の映像横サイズと表示横サイズの比率
 //    var flatWidth:Int = 0
+    var freeCounter:Int = 0//これが実行毎に減って,0になったら起動できなくする。
+
     var flatsumLimit:Int = 0
     var updownPgap:Int = 0
     var waveWidth:Int = 0
@@ -262,8 +264,46 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         stopButton.isHidden = true
         calcButton.isEnabled = true
     }
+    
+    func outTrial(){
+        // アラートを作成
+        let alert = UIAlertController(
+            title: "アラートのタイトル",
+            message: "アラートの本文",
+            preferredStyle: .alert)
+        
+        // アラートにボタンをつける
+       
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            
+            print("*********")
+        }))
+        // アラート表示
+        self.present(alert, animated: true, completion: nil)
+      }
+    
     @IBAction func vHITcalc(_ sender: Any) {
-         if nonsavedFlag == true && getLines() > 0{
+        if freeCounter > 100{
+              // アラートを作成
+            let alert = UIAlertController(
+                title: "",
+                message: "over 100 trials / functions are available",
+                preferredStyle: .alert)
+            
+            // アラートにボタンをつける
+            
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                
+                self.vHITcalc_pre()
+            }))
+            // アラート表示
+            self.present(alert, animated: true, completion: nil)
+        }else{
+            vHITcalc_pre()
+        }
+    }
+    func vHITcalc_pre(){
+        if nonsavedFlag == true && getLines() > 0{
             let alert = UIAlertController(
                 title: "You are erasing vHIT Data.",
                 message: "OK ?",
@@ -281,7 +321,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             vHITcalc_sub()
         }
     }
-    
     func vHITcalc_sub(){
         dispOrgflag = false
         stopButton.isHidden = false
@@ -702,43 +741,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
   
     var retImage:UIImage!
-  /*  func getSlowimg(path:String) ->UIImage{
-        var fileURL:URL
-        fileURL = URL(fileURLWithPath: path)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
-        let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-        //           calcDate = videoDate.text!
-        var reader: AVAssetReader! = nil
-        do {
-            reader = try AVAssetReader(asset: avAsset)
-        } catch {
-            #if DEBUG
-            print("could not initialize reader.")
-            #endif
-            return nil!
-        }
-        
-        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-            #if DEBUG
-            print("could not retrieve the video track.")
-            #endif
-            return nil!
-        }
-        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-        reader.add(readerOutput)
-        reader.startReading()
-        
-        let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImageOrientation.right
-        
-        let sample = readerOutput.copyNextSampleBuffer()
-        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-    }
-*/
+ 
     func getSlowimg(num:Int) ->UIImage{
         var fileURL:URL
          if num == 0{
@@ -794,11 +797,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
   //          print(asset)
             let manager = PHImageManager()//.default()
             
-  //以下を設定してもぼける
-  //          let requestOptions = PHImageRequestOptions()
-  //          requestOptions.resizeMode = .exact
-  //          requestOptions.deliveryMode = .highQualityFormat;
-            
+  //まず低解像度の画像を送っておいて、おいおい高解像度を渡すようだが、低解像度をもらってしまっているようだ
             manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode:PHImageContentMode.aspectFill, options:nil) { (image, info) in
                 self.retImage = image
             }
@@ -836,9 +835,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //print(Int(10*asset.duration))
         let sec10 = Int(10*asset.duration)
         videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
-        //print(videoDuration)
-
-/////////////////
+ /////////////////
         //let UTCdate:String = "\(asset.creationDate!)"
         let dateFormatter = DateFormatter()
         //To prevent displaying either date or time, set the desired style to NoStyle.
@@ -848,7 +845,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let localDate = dateFormatter.string(from: asset.creationDate!)
         videoDate.text = localDate + " (\(num))"
-        
+ //       print(freeCounter)
+        freecntLabel.text = "\(freeCounter)"
         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
                                                 options: option,
@@ -876,7 +874,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     func clearUserDefaults(){
-  //      UserDefaults.standard.removeObject(forKey: "flatWidth")
+        UserDefaults.standard.removeObject(forKey: "freeCounter")
         UserDefaults.standard.removeObject(forKey: "flatsumLimit")
         UserDefaults.standard.removeObject(forKey: "waveWidth")
         UserDefaults.standard.removeObject(forKey: "wavePeak")
@@ -898,6 +896,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func getUserDefaults(){
   //     flatWidth = getUserDefault(str: "flatWidth",ret: 28)//keyが設定してなければretをセット
+        freeCounter = getUserDefault(str: "freeCounter", ret:0)//100回以上になるとその由のアラームを出す
         flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
@@ -926,7 +925,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectOuter.size.height = 1//CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
- //      UserDefaults.standard.set(flatWidth, forKey: "flatWidth")
+        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
         UserDefaults.standard.set(flatsumLimit, forKey: "flatsumLimit")
         UserDefaults.standard.set(waveWidth, forKey: "waveWidth")
         UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
@@ -1197,6 +1196,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @objc func viewWillEnterForeground(_ notification: Notification?) {
         if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
             setslowImgs()
+            #if DEBUG
+            print(freeCounter,"*************viewWillEnterForeground***********")
+            #endif
+           
+            freeCounter += 1
+            UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+            
             if slowVideoCurrent > slowVideoCnt{
                 slowVideoCurrent = slowVideoCnt
             }
@@ -1221,8 +1227,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         ratioW = 720.0/Double(self.view.bounds.width)
         #if DEBUG
         print(self.view.bounds.width)
+        print(freeCounter,"*************viewDidLoad***********")
         #endif
-        
+       
+        freeCounter += 1
+        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+      
         dispWakus()
         setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる

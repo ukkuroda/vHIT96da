@@ -122,10 +122,10 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func setDefault(_ sender: Any) {
         //上手く働かない
  //       flatWidth = 28
-        flatsumLimit = 24
+        flatsumLimit = 80
         waveWidth = 40
         wavePeak = 15
-        updownPgap = 8
+        updownPgap = 6
  //       peakWidth = 23
         eyeBorder = 3
         faceBorder = 5
