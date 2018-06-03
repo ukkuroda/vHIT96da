@@ -837,10 +837,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let sec10 = Int(10*asset.duration)
         videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
         //print(videoDuration)
-        let str:String = "\(asset.creationDate!)"
-        let assetarray = str.components(separatedBy: " ")
-        videoDate.text = assetarray[0] + " " + assetarray[1] + " (\(num))"
- 
+
+/////////////////
+        //let UTCdate:String = "\(asset.creationDate!)"
+        let dateFormatter = DateFormatter()
+        //To prevent displaying either date or time, set the desired style to NoStyle.
+        dateFormatter.timeStyle = .medium //Set time style
+        dateFormatter.dateStyle = .medium //Set date style
+        dateFormatter.timeZone = NSTimeZone() as TimeZone?//TimeZone(identifier: "ja")
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let localDate = dateFormatter.string(from: asset.creationDate!)
+        videoDate.text = localDate + " (\(num))"
+        
         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
                                                 options: option,
