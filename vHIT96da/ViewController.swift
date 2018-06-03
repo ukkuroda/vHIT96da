@@ -893,7 +893,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
-        updownPgap = getUserDefault(str: "updownPgap", ret: 5)
+        updownPgap = getUserDefault(str: "updownPgap", ret: 6)
   //      peakWidth = getUserDefault(str: "peakWidth", ret: 23)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
