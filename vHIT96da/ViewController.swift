@@ -817,6 +817,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //    tempDate = "vHIT sample video"
        //     slowDates.append(tempDate)
         //    print(slowvideoPath)
+            freecntLabel.text = "\(freeCounter)"
             return
         }
         // スロービデオのアルバムを取得
@@ -1544,12 +1545,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let move:CGPoint = sender.translation(in: self.view)
         let pos = sender.location(in: self.view)
         if sender.state == .began {
-//            //ここでslowvideoを描画してみようか
-//            if lastslowVideo != slowVideoCurrent{
-//                setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
-//                setslowImage()//.image = slowImgs[slowVideoCurrent]
-//                lastslowVideo = slowVideoCurrent
-//            }
+            //ここでslowvideoを描画してみようか
+            if lastslowVideo != slowVideoCurrent{
+                setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+                setslowImage()//.image = slowImgs[slowVideoCurrent]
+                lastslowVideo = slowVideoCurrent
+            }
             if slowVideoCnt > 0{//2こ以上あった時
                 var backNum = slowVideoCurrent - 1
                 if backNum < 0 {
@@ -1572,15 +1573,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             rectType = checkWaks(po: pos)//枠設定かどうか
             stPo = sender.location(in: self.view)
-            if rectType > -1{
-                //ここでslowvideoを描画してみようか
-                if lastslowVideo != slowVideoCurrent{
-                    setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
-                    setslowImage()//.image = slowImgs[slowVideoCurrent]
-                    lastslowVideo = slowVideoCurrent
-                }
-
-            }
             if rectType == 0 {
                 stRect = rectEye
             } else if rectType == 1 {
