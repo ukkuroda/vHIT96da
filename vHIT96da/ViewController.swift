@@ -1473,8 +1473,52 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var changePo:CGPoint = CGPoint(x:0,y:0)
     var endPo:CGPoint = CGPoint(x:0,y:0)
     var slowVideoCnt:Int = 0
-    
-    
+    func setslowImage(){
+        let fileURL = URL(fileURLWithPath: slowvideoPath)
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
+        let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
+        calcDate = videoDate.text!
+        var reader: AVAssetReader! = nil
+        do {
+            reader = try AVAssetReader(asset: avAsset)
+        } catch {
+            #if DEBUG
+            print("could not initialize reader.")
+            #endif
+            return
+        }
+        
+        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+            #if DEBUG
+            print("could not retrieve the video track.")
+            #endif
+            return
+        }
+        
+        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+        reader.add(readerOutput)
+        reader.startReading()
+
+//        var CGEye:CGImage!
+        
+  //      var UIEye:UIImage!
+        
+       
+        let context:CIContext = CIContext.init(options: nil)
+        let orientation = UIImageOrientation.right
+        
+        let sample = readerOutput.copyNextSampleBuffer()
+        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        //おそらくCIImage->CGImageが重いのでCGImageにしてからcropする。
+        //CGImageは中身はただのbitmapなのでcropしても軽いと想定
+        //なのでまず画像全体をCGImageにする。
+        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+ 
+        slowImage.image = UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+    }
+    var lastslowVideo:Int = -2
     @IBAction func panGesture(_ sender: UIPanGestureRecognizer) {
         if calcFlag == true{
             return
@@ -1482,8 +1526,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let move:CGPoint = sender.translation(in: self.view)
         let pos = sender.location(in: self.view)
         if sender.state == .began {
-  //          slowVideoCnt = getslowVideoNum()//
-
+//            //ここでslowvideoを描画してみようか
+//            if lastslowVideo != slowVideoCurrent{
+//                setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+//                setslowImage()//.image = slowImgs[slowVideoCurrent]
+//                lastslowVideo = slowVideoCurrent
+//            }
             if slowVideoCnt > 0{//2こ以上あった時
                 var backNum = slowVideoCurrent - 1
                 if backNum < 0 {
@@ -1506,6 +1554,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             rectType = checkWaks(po: pos)//枠設定かどうか
             stPo = sender.location(in: self.view)
+            if rectType > -1{
+                //ここでslowvideoを描画してみようか
+                if lastslowVideo != slowVideoCurrent{
+                    setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+                    setslowImage()//.image = slowImgs[slowVideoCurrent]
+                    lastslowVideo = slowVideoCurrent
+                }
+
+            }
             if rectType == 0 {
                 stRect = rectEye
             } else if rectType == 1 {
