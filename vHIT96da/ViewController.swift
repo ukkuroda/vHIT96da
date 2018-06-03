@@ -1076,46 +1076,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
-//    func saveResult_pre(){
-//        if freeCounter > 20{
-//            // アラートを作成
-//            let alert = UIAlertController(
-//                title: "Use another version",
-//                message: "over 20 trials !",
-//                preferredStyle: .alert)
-//
-//            // アラートにボタンをつける
-//
-//            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//
-//                self.vHITcalc_pre()
-//            }))
-//            // アラート表示
-//            self.present(alert, animated: true, completion: nil)
-//        }else{
-//            vHITcalc_pre()
-//        }
-//    }
     @IBAction func saveResult(_ sender: Any) {
-        
         if freeCounter > 20{
             // アラートを作成
             let alert = UIAlertController(
                 title: "over 20 trials !",
                 message: "Use another version to save data",
                 preferredStyle: .alert)
-            
             // アラートにボタンをつける
-            
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                
                 //self.vHITcalc_pre()
             }))
             // アラート表示
             self.present(alert, animated: true, completion: nil)
             return
         }
-    
         #if DEBUG
         print("kuroda-debug" + "\(getLines())")
         #endif
@@ -1157,7 +1132,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         alert.addAction(cancelAction)//この行と下の行の並びを変えるとCancelとOKの左右が入れ替わる。
         alert.addAction(saveAction)
-         present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
         
     }
     func drawWaves(width w:CGFloat,height h:CGFloat) -> UIImage {
