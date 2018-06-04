@@ -283,11 +283,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //      }
     
     @IBAction func vHITcalc(_ sender: Any) {
-        if freeCounter > 20{
+        if freeCounter > 50{
               // アラートを作成
             let alert = UIAlertController(
                 title: "",
-                message: "over 20 trials !",
+                message: "over 50 trials !",
                 preferredStyle: .alert)
             
             // アラートにボタンをつける
@@ -897,7 +897,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func getUserDefaults(){
   //     flatWidth = getUserDefault(str: "flatWidth",ret: 28)//keyが設定してなければretをセット
-        freeCounter = getUserDefault(str: "freeCounter", ret:0)//100回以上になるとその由のアラームを出す
+        freeCounter = getUserDefault(str: "freeCounter", ret:0)//50回以上になるとその由のアラームを出す
         flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
@@ -1077,11 +1077,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
     @IBAction func saveResult(_ sender: Any) {
-        if freeCounter > 20{
+        if freeCounter > 50{
             // アラートを作成
             let alert = UIAlertController(
-                title: "over 20 trials !",
-                message: "Use another vHIT96da to save data",
+                title: "over 50 trials !",
+                message: "Get new vHIT96da to save the data.",
                 preferredStyle: .alert)
             // アラートにボタンをつける
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
