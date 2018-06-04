@@ -465,8 +465,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
- 
+        
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
+            var fx:CGFloat = 0
+            var fy:CGFloat = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
                 
                 if self.calcFlag == false {
@@ -479,17 +481,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
                 //画像を縦横変換するならこの位置でCIImage.oriented()を使う？
                 if facedx == 0{//顔の動きをチェックしない
-                      UIFaceWithBorder = UIFace
+                    //  UIFaceWithBorder = UIFace
+                    fx = 0
+                    fy = 0
                 }else{
                     CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+                    self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
+                    fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
+                    fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
+//                    print(fy,fx,fY.pointee,fX.pointee)
+                    if fY.pointee == 0 || fX.pointee == 0{//
+                        self.calcFlag = false
+                        break
+                    }
                 }
-                self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
-                let fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
-                let fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
-                if fY.pointee == 0 || fX.pointee == 0{//
-                    self.calcFlag = false
-                }
+                
                 rectEyeb.origin.x += fx//ズラしておく
                 rectEyeb.origin.y += fy
                 rectOutb.origin.x += fx
