@@ -283,17 +283,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //      }
     
     @IBAction func vHITcalc(_ sender: Any) {
-        if freeCounter > 50{
+        if freeCounter > 999{
               // アラートを作成
             let alert = UIAlertController(
                 title: "",
-                message: "over 50 trials !",
+                message: "over 999 trials !",
                 preferredStyle: .alert)
-            
-            // アラートにボタンをつける
-            
+             // アラートにボタンをつける
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                
                 self.vHITcalc_pre()
             }))
             // アラート表示
@@ -485,16 +482,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     fx = 0
                     fy = 0
                 }else{
+                    if rectFacb.origin.x < 0 || rectFacb.origin.y < 0{//checkはこれだけでいいか？
+                        self.calcFlag = false
+                        break
+                    }
                     CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+                    print(rectFacb)
                     self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                     fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
                     fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
 //                    print(fy,fx,fY.pointee,fX.pointee)
-                    if fY.pointee == 0 || fX.pointee == 0{//
-                        self.calcFlag = false
-                        break
-                    }
+                    //if fY.pointee == 0 || fX.pointee == 0{//
+                    //    self.calcFlag = false
+                    //    break
+                    //}
                 }
                 
                 rectEyeb.origin.x += fx//ズラしておく
@@ -505,7 +507,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
                 CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
                 UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
-
+                print("::::eye&outer**********")
                 self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
                 self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
                 //UIFace は 15x10
@@ -811,19 +813,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
               return self.retImage
         }
      }
-//    var tempPath:String = ""
-//    var tempDate:String = ""
     func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
         if num == 0{
             slowvideoPath = Bundle.main.path(forResource: "vHITsample", ofType: "MOV")!
-     //       slowPaths.append(slowvideoPath)
-      //      tempPath = slowvideoPath//Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")!
             videoDate.text = "vHIT video : sample"
             videoDuration = "2.0s"
             slowImage.image = slowImgs[0]//getSlowimg(num: 0)
-        //    tempDate = "vHIT sample video"
-       //     slowDates.append(tempDate)
-        //    print(slowvideoPath)
             freecntLabel.text = "\(freeCounter)"
             return
         }
@@ -853,7 +848,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let localDate = dateFormatter.string(from: asset.creationDate!)
         videoDate.text = localDate + " (\(num))"
- //       print(freeCounter)
         freecntLabel.text = "\(freeCounter)"
         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
@@ -1084,10 +1078,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
     @IBAction func saveResult(_ sender: Any) {
-        if freeCounter > 50{
+        if freeCounter > 999{
             // アラートを作成
             let alert = UIAlertController(
-                title: "over 50 trials !",
+                title: "over 999 trials !",
                 message: "Get new vHIT96da to save the data.",
                 preferredStyle: .alert)
             // アラートにボタンをつける
@@ -1218,10 +1212,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @objc func viewWillEnterForeground(_ notification: Notification?) {
         if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
             setslowImgs()
-            #if DEBUG
-            print(freeCounter,"*************viewWillEnterForeground***********")
-            #endif
-           
             freeCounter += 1
             UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
             
@@ -1247,26 +1237,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         getUserDefaults()
         //let videoWidth = 720.0
         ratioW = 720.0/Double(self.view.bounds.width)
-        #if DEBUG
-        print(self.view.bounds.width)
-        print(freeCounter,"*************viewDidLoad***********")
-        #endif
-       
         freeCounter += 1
         UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
       
         dispWakus()
         setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
-       #if DEBUG
-        print("count",slowVideoCnt)
-        #endif
-   //     initSlowdata()
+  //       print("count",slowVideoCnt)
         setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
         slowImage.image = slowImgs[slowVideoCurrent]
-    //    setVideoPathDate(num: 1)
-    //    setVideoPathDate(num: 2)
-    //    setVideoPathDate(num: 3)
     }
 
     override func didReceiveMemoryWarning() {
