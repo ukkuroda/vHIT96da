@@ -424,10 +424,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
  //       print(RFace,realrectFace)
         //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
         var rectEyeb = getWiderect(rect: REye, dx: 0*eyedx, dy: eyedy)//3
- //       rectEyeb.size.width=1
+//        rectEyeb.size.width=1
         var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
         var rectOutb = getWiderect(rect: ROuter, dx: 0*outerdx, dy: outerdy)//10
- //       rectOutb.size.width=1
+//        rectOutb.size.width=2
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
 //        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
@@ -468,8 +468,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     fx = 0
                     fy = 0
                 }else{
-            //print("fac***",Int(rectFacb.origin.x),Int(rectFacb.origin.y),Int(rectFacb.origin.x+rectFacb.size.width),Int(rectFacb.origin.y+rectFacb.size.height))
-                   if rectFacb.origin.x < 0 || rectFacb.origin.y < 0 || rectFacb.origin.x + rectFacb.size.width>1280 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
+            print("fac***",Int(rectFacb.origin.x),Int(rectFacb.origin.y),Int(rectFacb.origin.x+rectFacb.size.width),Int(rectFacb.origin.y+rectFacb.size.height))
+        //           if rectFacb.origin.x < 0 || rectFacb.origin.y < 0 || rectFacb.origin.x + rectFacb.size.width>1280 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
+                    if rectFacb.origin.y < 0 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
                         self.calcFlag = false
                         break
                     }
@@ -491,9 +492,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 rectOutb.origin.y += fy
                 CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
-            //print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
-           // print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
-
+            print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
+            print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
+                if rectOutb.origin.x > 1277 {//ここもチェック
+                    self.calcFlag = false
+                    break
+                }
                 CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
                 UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
  //               print("::::eye&outer**********")
