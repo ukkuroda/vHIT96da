@@ -116,7 +116,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var calcDate:String = ""
     var idNumber:Int = 0
     var vHITtitle:String = ""
-    var ratioW:Double = 0.0//実際の映像横サイズと表示横サイズの比率
+//    var ratioW:Double = 0.0//実際の映像横サイズと表示横サイズの比率
 //    var flatWidth:Int = 0
     var freeCounter:Int = 0//これが実行毎に減って,0になったら起動できなくする。
 
@@ -265,24 +265,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcButton.isEnabled = true
     }
     
-//    func outTrial(){
-//        // アラートを作成
-//        let alert = UIAlertController(
-//            title: "アラートのタイトル",
-//            message: "アラートの本文",
-//            preferredStyle: .alert)
-//
-//        // アラートにボタンをつける
-//
-//        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//
-//            print("*********")
-//        }))
-//        // アラート表示
-//        self.present(alert, animated: true, completion: nil)
-//      }
-    
     @IBAction func vHITcalc(_ sender: Any) {
+        setUserDefaults()
         if freeCounter > 999{
               // アラートを作成
             let alert = UIAlertController(
@@ -299,6 +283,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             vHITcalc_pre()
         }
     }
+    
     func vHITcalc_pre(){
         if nonsavedFlag == true && getLines() > 0{
             let alert = UIAlertController(
@@ -439,8 +424,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
  //       print(RFace,realrectFace)
         //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
         var rectEyeb = getWiderect(rect: REye, dx: 0*eyedx, dy: eyedy)//3
+ //       rectEyeb.size.width=1
         var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
         var rectOutb = getWiderect(rect: ROuter, dx: 0*outerdx, dy: outerdy)//10
+ //       rectOutb.size.width=1
 //        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
 //        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
 //        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
@@ -467,7 +454,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             var fx:CGFloat = 0
             var fy:CGFloat = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
-                
                 if self.calcFlag == false {
                     break
                 }
@@ -482,14 +468,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     fx = 0
                     fy = 0
                 }else{
-                    if rectFacb.origin.x < 0 || rectFacb.origin.y < 0{//checkはこれだけでいいか？
+            //print("fac***",Int(rectFacb.origin.x),Int(rectFacb.origin.y),Int(rectFacb.origin.x+rectFacb.size.width),Int(rectFacb.origin.y+rectFacb.size.height))
+                   if rectFacb.origin.x < 0 || rectFacb.origin.y < 0 || rectFacb.origin.x + rectFacb.size.width>1280 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
                         self.calcFlag = false
                         break
                     }
                     CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
-                    print(rectFacb)
-                    self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
+                                    self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                     fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
                     fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
 //                    print(fy,fx,fY.pointee,fX.pointee)
@@ -498,16 +484,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     //    break
                     //}
                 }
-                
+                //1280x720
                 rectEyeb.origin.x += fx//ズラしておく
                 rectEyeb.origin.y += fy
                 rectOutb.origin.x += fx
                 rectOutb.origin.y += fy
                 CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
+            //print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
+           // print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
+
                 CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
                 UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
-                print("::::eye&outer**********")
+ //               print("::::eye&outer**********")
                 self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
                 self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
                 //UIFace は 15x10
@@ -1236,7 +1225,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         getUserDefaults()
         //let videoWidth = 720.0
-        ratioW = 720.0/Double(self.view.bounds.width)
+        //ratioW = 720.0/Double(self.view.bounds.width)
         freeCounter += 1
         UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
       
@@ -1449,41 +1438,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 r.origin.y = lowpo - r.size.height - nori
             }
             return r
- //       }
-//        if stPo.x < stRect.origin.x{
-//            if (stRect.origin.x + dx) < nori {
-//                dx = nori - stRect.origin.x
-//            }
-//            else if dx > stRect.size.width - nori {
-//                dx = stRect.size.width - nori
-//            }
-//            r.origin.x = stRect.origin.x + dx
-//            r.size.width = stRect.size.width - dx
-//        }else if stPo.x > stRect.origin.x + stRect.size.width{
-//            if (stRect.origin.x + stRect.size.width + dx)>self.view.bounds.width - nori{
-//                dx = self.view.bounds.width - nori - stRect.origin.x - stRect.size.width
-//            }else if stRect.size.width + dx < nori {
-//                dx = nori - stRect.size.width
-//            }
-//            r.size.width = stRect.size.width + dx
-//        }
-//        if stPo.y < stRect.origin.y{
-//            if stRect.origin.y + dy < uppo{
-//                dy = uppo - stRect.origin.y
-//            }else if dy > stRect.size.height - nori{
-//                dy = stRect.size.height - nori
-//            }
-//            r.origin.y = stRect.origin.y + dy
-//            r.size.height = stRect.size.height - dy
-//        }else if stPo.y > stRect.origin.y + stRect.size.height{
-//            if stRect.origin.y + dy + stRect.size.height + nori > lowpo{
-//                dy = lowpo - stRect.origin.y - stRect.size.height - nori
-//            }else if stRect.size.height + dy < nori {
-//                dy = nori - stRect.size.height
-//            }
-//            r.size.height = stRect.size.height + dy
-//        }
- //       return r
     }
     var leftrightFlag:Bool = false
     var rectType:Int = 0//0:eye 1:face 2:outer -1:何も選択されていない
@@ -1518,11 +1472,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
         reader.add(readerOutput)
         reader.startReading()
-
-//        var CGEye:CGImage!
-        
-  //      var UIEye:UIImage!
-        
        
         let context:CIContext = CIContext.init(options: nil)
         let orientation = UIImageOrientation.right
