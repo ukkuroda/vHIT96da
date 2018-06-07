@@ -468,7 +468,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     fx = 0
                     fy = 0
                 }else{
-            print("fac***",Int(rectFacb.origin.x),Int(rectFacb.origin.y),Int(rectFacb.origin.x+rectFacb.size.width),Int(rectFacb.origin.y+rectFacb.size.height))
+            //print("fac***",Int(rectFacb.origin.x),Int(rectFacb.origin.y),Int(rectFacb.origin.x+rectFacb.size.width),Int(rectFacb.origin.y+rectFacb.size.height))
         //           if rectFacb.origin.x < 0 || rectFacb.origin.y < 0 || rectFacb.origin.x + rectFacb.size.width>1280 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
                     if rectFacb.origin.y < 0 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
                         self.calcFlag = false
@@ -492,8 +492,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 rectOutb.origin.y += fy
                 CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
-            print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
-            print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
+            //print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
+            //print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
                 if rectOutb.origin.x > 1277 {//ここもチェック
                     self.calcFlag = false
                     break
@@ -1668,7 +1668,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
          //var vcnt:Int = 0
         var skipCnt = 0
-        for vcnt in 0..<(vHITcnt - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
+        for vcnt in 50..<(vHITcnt - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
              if skipCnt > 0{
                 skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
@@ -1698,6 +1698,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //print(ws+120,"--error--",vHITeye.count)
            for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
+ //                   print("vhiteye****",k1,vHITeye.count)
                      wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)//ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
                 }else{
                     wP[t][ln][0][k1 - ws] = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
