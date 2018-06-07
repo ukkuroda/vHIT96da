@@ -1328,7 +1328,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     func checkrect(po:CGPoint, re:CGRect) ->Bool
     {
-        let nori:CGFloat = 20
+        let nori:CGFloat = 50//20 -> 50に広げて見ただけだが随分扱い易い
         if po.x > re.origin.x - nori && po.x<re.origin.x + re.width + nori &&
             po.y>re.origin.y - nori && po.y < re.origin.y + re.height + nori{
             return true
@@ -1395,22 +1395,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             r.size.width = stRect.size.width + dx
         }
-//        if stPo.y < stRect.origin.y{
-//            if stRect.origin.y + dy < uppo{
-//                dy = uppo - stRect.origin.y
-//            }else if dy > stRect.size.height - nori{
-//                dy = stRect.size.height - nori
-//            }
-//            r.origin.y = stRect.origin.y + dy
-//            r.size.height = stRect.size.height - dy
-//        }else if stPo.y > stRect.origin.y + stRect.size.height{
-//            if stRect.origin.y + dy + stRect.size.height + nori > lowpo{
-//                dy = lowpo - stRect.origin.y - stRect.size.height - nori
-//            }else if stRect.size.height + dy < nori {
-//                dy = nori - stRect.size.height
-//            }
-//            r.size.height = stRect.size.height + dy
-//        }
         return r
     }
     func setFaceRectparam(rect:CGRect,stRect:CGRect,stPo:CGPoint,movePo:CGPoint,uppo:CGFloat,lowpo:CGFloat) -> CGRect{
@@ -1425,23 +1409,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //ここに関しては、移動先が範囲外の場合移動しない、という処理がなされているが、
         //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
         //あと、このアルゴリズムだと各rectが小さくなりすぎた場合に不具合が出る。
- //       if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width) && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
-            r.origin.x = stRect.origin.x + dx;
-            r.origin.y = stRect.origin.y + dy;
-            //r.size.width = stRect.size
-            if r.origin.x < nori {
-                r.origin.x = nori
-            }
-            if (r.origin.x + r.size.width + nori) > self.view.bounds.width{
-                r.origin.x = self.view.bounds.width - r.size.width - nori
-            }
-            if r.origin.y < uppo {
-                r.origin.y = uppo
-            }
-            if (r.origin.y + r.size.height + nori) > lowpo{
-                r.origin.y = lowpo - r.size.height - nori
-            }
-            return r
+        //       if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width) && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
+        r.origin.x = stRect.origin.x + dx;
+        r.origin.y = stRect.origin.y + dy;
+        //r.size.width = stRect.size
+        if r.origin.x < nori {
+            r.origin.x = nori
+        }
+        if (r.origin.x + r.size.width + nori) > self.view.bounds.width{
+            r.origin.x = self.view.bounds.width - r.size.width - nori
+        }
+        if r.origin.y < uppo {
+            r.origin.y = uppo
+        }
+        if (r.origin.y + r.size.height + nori) > lowpo{
+            r.origin.y = lowpo - r.size.height - nori
+        }
+        return r
     }
     var leftrightFlag:Bool = false
     var rectType:Int = 0//0:eye 1:face 2:outer -1:何も選択されていない
@@ -1524,10 +1508,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
  //               backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
                 leftrightFlag = true
             }
-            rectType = checkWaks(po: pos)//枠設定かどうか
+            rectType = checkWaks(po: pos)//枠設定かどうか。
             stPo = sender.location(in: self.view)
             if rectType == 0 {
-                stRect = rectEye
+                stRect = rectEye//tapした時の枠をstRectとする
             } else if rectType == 1 {
                 stRect = rectFace
             } else if rectType == 2{
