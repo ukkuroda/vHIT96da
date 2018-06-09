@@ -413,12 +413,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //DropboxやGoogleDriveに動画をアップロードして、それをiPhoneで閲覧しカメラロール(写真ライブラリ)に保存というのが考えられます。
         //それぞれのRectを用意
         //resizeRectが変だけど一番よいような
-        let realrectFace = CGRect(x:self.rectFace.origin.x+10,y:self.rectFace.origin.y+10,width:20,height:20)
-        //realrectFace(x:x+10,y:y+10,w:20,h:20) rectFaceは35*35なので
+  //      let realrectFace = CGRect(x:self.rectFace.origin.x+10,y:self.rectFace.origin.y+10,width:20,height:20)
+        //realrectFace(x:x+10,y:y+10,w:20,h:20) 
         //var newrect:CGRect = CGRect(x:0,y:0,width:0,height:0)
         var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        //let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        let RFace = resizeRect(realrectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
+  //      let RFace = resizeRect(realrectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
         var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
  //       print(REye,rectEye)
  //       print(RFace,realrectFace)
@@ -433,7 +433,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
 
         eyeCropView.frame=rectEye
-        faceCropView.frame=realrectFace
+        faceCropView.frame=rectFace
+//        faceCropView.frame=realrectFace
         outerCropView.frame=rectOuter
  //       var rectE=rectEye
  //       var rectF=rectFace
@@ -912,8 +913,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         rectEye.size.height = 1//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
         rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(167*ratioW)))
         rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
-        rectFace.size.width = 40//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
-        rectFace.size.height = 40//CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
+        rectFace.size.width = 20//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
+        rectFace.size.height = 20//CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
         rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(140*ratioW)))
         rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(510*ratioH)))
         rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(110*ratioW)))
@@ -1330,7 +1331,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     {
         let nori:CGFloat = 50//20 -> 50に広げて見ただけだが随分扱い易い
         if po.x > re.origin.x - nori && po.x<re.origin.x + re.width + nori &&
-            po.y>re.origin.y - nori && po.y < re.origin.y + re.height + nori{
+            po.y>re.origin.y && po.y < re.origin.y + re.height + nori{//上方向にはのりしろを付けない
             return true
         }
         return false
