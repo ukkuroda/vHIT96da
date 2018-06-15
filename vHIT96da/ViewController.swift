@@ -495,7 +495,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
             //print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
             //print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
-                if rectOutb.origin.x > 1277 {//ここもチェック
+                if rectOutb.origin.x > 1277 || rectOutb.origin.y + rectOutb.size.height > 720 {//ここもチェック
                     self.calcFlag = false
                     break
                 }
@@ -540,6 +540,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //                rectOutb.origin.y += fy
                 ROuter.origin.x += fx
                 ROuter.origin.y += fy
+                print("--------",ROuter.origin.x,ROuter.origin.y)
                 CGEye = cgImage.cropping(to: REye)
                 //               CGFace = cgImage.cropping(to: RFace)
                 CGOuter = cgImage.cropping(to: ROuter)
