@@ -748,7 +748,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func getSlowimg(num:Int) ->UIImage{
         var fileURL:URL
          if num == 0{
-            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vHITsample", ofType: "MOV")!)
+            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
   //       }else{
     //       fileURL = URL(fileURLWithPath: slowvideoPath)
       //  }
@@ -809,9 +809,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
      }
     func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
         if num == 0{
-            slowvideoPath = Bundle.main.path(forResource: "vHITsample", ofType: "MOV")!
+            slowvideoPath = Bundle.main.path(forResource: "vhit20", ofType: "mov")!
             videoDate.text = "vHIT video : sample"
-            videoDuration = "2.0s"
+            videoDuration = "2.5s"
             slowImage.image = slowImgs[0]//getSlowimg(num: 0)
             freecntLabel.text = "\(freeCounter)"
             return
@@ -907,17 +907,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let ratioW = self.view.bounds.width/375.0//6s
         let ratioH = self.view.bounds.height/667.0//6s
 
-        rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: Int(97*ratioW)))
-        rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: Int(143*ratioH)))
-        rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: Int(209*ratioW)))
+        rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: Int(114*ratioW)))
+        rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: Int(221*ratioH)))
+        rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: Int(177*ratioW)))
         rectEye.size.height = 1//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
-        rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(167*ratioW)))
-        rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(328*ratioH)))
+        rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(190*ratioW)))
+        rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(296*ratioH)))
         rectFace.size.width = 20//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
         rectFace.size.height = 20//CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
-        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(140*ratioW)))
-        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(510*ratioH)))
-        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(110*ratioW)))
+        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(143*ratioW)))
+        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(538*ratioH)))
+        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(100*ratioW)))
         rectOuter.size.height = 1//CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
     }
     func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
