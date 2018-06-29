@@ -5,7 +5,36 @@
 //  Created by kuroda tatsuaki on 2018/02/10.
 //  Copyright © 2018年 tatsuaki.kuroda. All rights reserved.
 //
-
+/*
+ //写真の位置情報を取得する
+ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:[String: Any]){
+ 
+ 
+ let selected = info[UIImagePickerControllerOriginalImage] as! UIImage
+ 
+ let metadata = info[UIImagePickerControllerMediaMetadata]
+ //        let metadata = info[UIImagePickerControllerMediaMetadata] as? NSDictionary
+ let exif = metadata[kCGImagePropertyExifDictionary]
+ //        let exif: NSMutableDictionary = metadata[kCGImagePropertyExifDictionary]
+ //        let exif = metadata?.objectForKey(kCGImagePropertyExifDictionary)
+ 
+ print(exif)  // nil が表示される
+ 
+ //        if let asset = PHAsset.fetchAssets(withALAssetURLs: [info[UIImagePickerControllerReferenceURL] as! URL], options: nil).firstObject {
+ //            PHImageManager.default().requestImage(for: asset , targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.aspectFill , options: PHFetchOptions) { image, info in
+ //                print(image?.ciImage?.properties)
+ //                print("info", info)
+ //            }
+ //        }
+ 
+ imageView.contentMode = .scaleAspectFit
+ selectedImage = selected
+ imageView.image = selected
+ text.text = "検出中"
+ dismiss(animated: true, completion: nil)
+ 
+ }
+ */
 import UIKit
 import AVFoundation
 //import MobileCoreServices
@@ -267,21 +296,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     @IBAction func vHITcalc(_ sender: Any) {
         setUserDefaults()
-        if freeCounter > 999{
-              // アラートを作成
-            let alert = UIAlertController(
-                title: "",
-                message: "over 999 trials !",
-                preferredStyle: .alert)
-             // アラートにボタンをつける
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                self.vHITcalc_pre()
-            }))
-            // アラート表示
-            self.present(alert, animated: true, completion: nil)
-        }else{
+//        if freeCounter > 999{
+//              // アラートを作成
+//            let alert = UIAlertController(
+//                title: "",
+//                message: "over 999 trials !",
+//                preferredStyle: .alert)
+//             // アラートにボタンをつける
+//            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+//                self.vHITcalc_pre()
+//            }))
+//            // アラート表示
+//            self.present(alert, animated: true, completion: nil)
+//        }else{
             vHITcalc_pre()
-        }
+ //       }
     }
     
     func vHITcalc_pre(){
@@ -540,7 +569,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //                rectOutb.origin.y += fy
                 ROuter.origin.x += fx
                 ROuter.origin.y += fy
+                #if DEBUG
                 print("--------",ROuter.origin.x,ROuter.origin.y)
+                #endif
                 CGEye = cgImage.cropping(to: REye)
                 //               CGFace = cgImage.cropping(to: RFace)
                 CGOuter = cgImage.cropping(to: ROuter)
@@ -831,6 +862,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let asset = fetchAssets.object(at: num-1)
         let option = PHVideoRequestOptions()
         //print(Int(10*asset.duration))
+        //print("-----",asset)
         let sec10 = Int(10*asset.duration)
         videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
  /////////////////
@@ -844,21 +876,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let localDate = dateFormatter.string(from: asset.creationDate!)
         videoDate.text = localDate + " (\(num))"
         freecntLabel.text = "\(freeCounter)"
-        // アセットの情報を取得
+         // アセットの情報を取得
         PHImageManager.default().requestAVAsset(forVideo: asset,
                                                 options: option,
                                                 resultHandler: { (avAsset, audioMix, info) in
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
-                                                        //print(tokenStr)
-                                                        // tokenKeysの中にパスなどの情報が入っている
                                                         self.slowvideoPath = tokenKeys[8]
-                                                        //self.tempPath = tokenKeys[8]
-                                                       // self.slowPaths.append(tokenKeys[8])
-                                                        //  print(self.path)
-                                                        //self.slowvideoUrl = NSURL(fileURLWithPath:self.path)
-                                                        //  print(self.urlpath)
-                                                    }
+//緯度経度は貰えるが、それから住所をもらうときはネットに繋いでいる必要がある。
+//撮影の時もネットに繋いでなければ緯度経度は取れないのか？GPSってなに？
+//                                                        let url = NSURL(fileURLWithPath: tokenKeys[8])
+//                                                        let avasset = AVAsset(url: url as URL)
+//                                                        let metadata0 = avasset.metadata[0].description
+//                                                        let metas = metadata0.components(separatedBy: ",")
+//                                                        print(metas[metas.count - 1])//最後にlocationDataが在る
+                                                        //value=+33.1755+130.4922+013.299/>
+                                                        //locationDataがないときは value=Apple>
+                                                        }
         })
     }
  
@@ -1073,20 +1107,20 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
     @IBAction func saveResult(_ sender: Any) {
-        if freeCounter > 999{
-            // アラートを作成
-            let alert = UIAlertController(
-                title: "over 999 trials !",
-                message: "Get new vHIT96da to save the data.",
-                preferredStyle: .alert)
-            // アラートにボタンをつける
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                //self.vHITcalc_pre()
-            }))
-            // アラート表示
-            self.present(alert, animated: true, completion: nil)
-            return
-        }
+//        if freeCounter > 999{
+//            // アラートを作成
+//            let alert = UIAlertController(
+//                title: "over 999 trials !",
+//                message: "Get new vHIT96da to save the data.",
+//                preferredStyle: .alert)
+//            // アラートにボタンをつける
+//            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+//                //self.vHITcalc_pre()
+//            }))
+//            // アラート表示
+//            self.present(alert, animated: true, completion: nil)
+//            return
+//        }
         #if DEBUG
         print("kuroda-debug" + "\(getLines())")
         #endif
