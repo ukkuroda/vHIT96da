@@ -338,35 +338,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let url = NSURL(fileURLWithPath: slowvideoPath)
         let avasset = AVAsset(url: url as URL)
         let loc = avasset.metadata[0].stringValue!
-        //print(loc)
         //+33.1755+130.4922+013.299/
         //locationDataがないときは Apple
         //print(loc)
         if loc.count > 15 {
-            let loc1 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 0)..<loc.index(loc.startIndex, offsetBy: 7))
-            let loc2 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 8)..<loc.index(loc.startIndex, offsetBy: 15))
-            //print(loc1,loc2)
+            let loc1 = loc[loc.index(loc.startIndex, offsetBy: 0)...loc.index(loc.startIndex, offsetBy: 7)]
+            let loc2 = loc[loc.index(loc.startIndex, offsetBy: 8)...loc.index(loc.startIndex, offsetBy: 15)]
             let geocoder = CLGeocoder()
             let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
             
             geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
                 if let placemarks = placemarks {
                     if let pm = placemarks.first {
-                        
-                        //print("*****name: \(pm.name ?? "")")
-                        // print("isoCountryCode: \(pm.isoCountryCode ?? "")")
-                        // print("country: \(pm.country ?? "")")
-                        // print("postalCode: \(pm.postalCode ?? "")")
-                        //print("administrativeArea: \(pm.administrativeArea ?? "")")
-                        //print("subAdministrativeArea: \(pm.subAdministrativeArea ?? "")")
-                        //print("locality: \(pm.locality ?? "")")
-                        //print("subLocality: \(pm.subLocality ?? "")")
                         if let subl = pm.subLocality {
                             self.slowvideoAdd = subl
-                            //   add = pm.locality!
                         } else {
                             self.slowvideoAdd = pm.locality!
-                            // add = pm.subLocality!
                         }
                     }
                 }
@@ -829,14 +816,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var fileURL:URL
          if num == 0{
             fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
-  //       }else{
-    //       fileURL = URL(fileURLWithPath: slowvideoPath)
-      //  }
-            videoDuration = "2.0s"
+             videoDuration = "2.0s"
             let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
             let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
- //           calcDate = videoDate.text!
-            var reader: AVAssetReader! = nil
+             var reader: AVAssetReader! = nil
             do {
                 reader = try AVAssetReader(asset: avAsset)
             } catch {
@@ -877,7 +860,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
             
             let asset  = fetchAssets.object(at: number)
-  //          print(asset)
             let manager = PHImageManager()//.default()
             
   //まず低解像度の画像を送っておいて、おいおい高解像度を渡すようだが、低解像度をもらってしまっているようだ
@@ -901,20 +883,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let assetCollection = result.firstObject;
         // アルバムからアセット一覧を取得
         let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
-        //      print(fetchAssets.count)
         if num > fetchAssets.count {//その番号のビデオがないとき
-  //          print("count error ビデオなし")
             return
         }
         // アセットを取得
         let asset = fetchAssets.object(at: num-1)
         let option = PHVideoRequestOptions()
         //print(Int(10*asset.duration))
-        //print("-----",asset)
         let sec10 = Int(10*asset.duration)
         videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
- /////////////////
-        //let UTCdate:String = "\(asset.creationDate!)"
         let dateFormatter = DateFormatter()
         //To prevent displaying either date or time, set the desired style to NoStyle.
         dateFormatter.timeStyle = .medium //Set time style
@@ -931,50 +908,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
                                                         self.slowvideoPath = tokenKeys[8]
-//                                                        let url = NSURL(fileURLWithPath: tokenKeys[8])
-//                                                        let avasset = AVAsset(url: url as URL)
-//                                                        let loc = avasset.metadata[0].stringValue!
-//                                                        //print(loc)
-//                                                        //+33.1755+130.4922+013.299/
-//                                                        //locationDataがないときは Apple
-//                                                        if loc.count > 15 {
-//                                                            let loc1 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 0)..<loc.index(loc.startIndex, offsetBy: 7))
-//                                                            let loc2 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 8)..<loc.index(loc.startIndex, offsetBy: 15))
-//                                                            //print(loc1,loc2)
-//                                                            let geocoder = CLGeocoder()
-//                                                            let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
-//
-//                                                            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
-//                                                                if let placemarks = placemarks {
-//                                                                    if let pm = placemarks.first {
-//
-//                                                                        //print("*****name: \(pm.name ?? "")")
-//                                                                        // print("isoCountryCode: \(pm.isoCountryCode ?? "")")
-//                                                                        // print("country: \(pm.country ?? "")")
-//                                                                        // print("postalCode: \(pm.postalCode ?? "")")
-//                                                                        //print("administrativeArea: \(pm.administrativeArea ?? "")")
-//                                                                        //print("subAdministrativeArea: \(pm.subAdministrativeArea ?? "")")
-//                                                                        //print("locality: \(pm.locality ?? "")")
-//                                                                        //print("subLocality: \(pm.subLocality ?? "")")
-//                                                                        if let subl = pm.subLocality {
-//                                                                            self.slowvideoAdd = subl
-//                                                                         //   add = pm.locality!
-//                                                                        } else {
-//                                                                            self.slowvideoAdd = pm.locality!
-//                                                                           // add = pm.subLocality!
-//                                                                        }
-//                                                                    }
-//                                                                }
-//                                                            }
-//
-//                                                            //print(avasset.metadata[0].stringValue!)
-//                                                        }else{
-//                                                            self.slowvideoAdd = " "
-//                                                        }
-//                                                        //print(self.slowvideoAdd)
-////緯度経度は貰えるが、それから住所をもらうときはネットに繋いでいる必要がある。
-////撮影の時もネットに繋いでなければ緯度経度は取れないのか？GPSってなに？
-                                                        }
+                                                    }
         })
     }
  
@@ -1155,15 +1089,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     {
         var pointList = Array<CGPoint>()
         var ln:Int = 0
-  //      var py:CGFloat = 0
         while wP[rl][ln][0][0] != 9999 {
             for n in 0..<120 {
                 let px = CGFloat(pt + n*2)
-  //              if eyeouter == 0 {
-                 let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
-  //              }else{
-  //                  py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
-  //              }
+                let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
                 let point = CGPoint(x:px,y:py)
                 pointList.append(point)
             }
@@ -1618,17 +1547,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
       //          print("left",backNum)
                 let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
-  //              let backimg2 = getSlowimg(num: backNum)//老番のサムネールをゲット
                 let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
                 backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
                 backNum = slowVideoCurrent + 1
                 if backNum >  slowVideoCnt {
                     backNum = 0
                 }
-   //             print("right",backNum)
-     //           print("current",slowVideoCurrent)
-                backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
- //               backImage.image = getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下というか後面
+                 backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下、後面
                 leftrightFlag = true
             }
             rectType = checkWaks(po: pos)//枠設定かどうか。
@@ -1732,13 +1657,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func Get5(num:Int) -> Int {
-        //int i, sum = 0;
-   //     let cnt = vHITouter.count
         var sum:Int = 0
         for i  in 0..<5 {
-       //     if cnt != 100000{//< cnt{//let c = vHITouter.count
             sum += Int(vHITouter[num + i])
-     //       }
         }
         return sum
     }
@@ -1753,28 +1674,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         for i in 0..<flatwidth{
             sum += Int(vHITouter[num+i])
         }
-//        let sum = Int(vHITouter[num-10] + vHITouter[num] + vHITouter[num + 1])
         if sum > flatsumLimit || sum < -flatsumLimit {//0からのズレがlimitを超える
             return -1
         }
- //       }
-        //        print("flat found \(num), \(sum), \(flatWidth), \(flatsumLimit) ")
         return updownp(n: num + flatwidth, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
     func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
- //       print(dispOrgflag)
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
             openCVstopFlag = false
            return
         }
- //       print(dispOrgflag)
-
-         //var vcnt:Int = 0
-        var skipCnt = 0
+         var skipCnt = 0
         for vcnt in 50..<(vHITcnt - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
              if skipCnt > 0{
                 skipCnt -= 1
@@ -1802,11 +1716,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     return t
                 }
             }
-            //print(ws+120,"--error--",vHITeye.count)
-           for k1 in ws..<ws + 120{
+            for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
- //                   print("vhiteye****",k1,vHITeye.count)
-                     wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)//ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
+                     wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
+                    //ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
                 }else{
                     wP[t][ln][0][k1 - ws] = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
                    // dispOrgflag = false
