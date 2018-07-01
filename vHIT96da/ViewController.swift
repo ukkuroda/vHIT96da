@@ -41,7 +41,7 @@ import AVFoundation
 import AssetsLibrary
 import Photos
 import MessageUI
-
+import CoreLocation
 extension UIImage {
     var safeCiImage: CIImage? {
         return self.ciImage ?? CIImage(image: self)
@@ -112,6 +112,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //    var slowDates = Array<String>()
     var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
+    var slowvideoAdd:String = ""
  //   var slowvideoUrl:String = ""
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
@@ -883,15 +884,49 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
                                                         self.slowvideoPath = tokenKeys[8]
+                                                        let url = NSURL(fileURLWithPath: tokenKeys[8])
+                                                        let avasset = AVAsset(url: url as URL)
+                                                        let loc = avasset.metadata[0].stringValue!
+                                                        //print(loc)
+                                                        //+33.1755+130.4922+013.299/
+                                                        //locationDataがないときは Apple
+                                                        if loc.count > 15 {
+                                                            let loc1 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 0)..<loc.index(loc.startIndex, offsetBy: 7))
+                                                            let loc2 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 8)..<loc.index(loc.startIndex, offsetBy: 15))
+                                                            //print(loc1,loc2)
+                                                            let geocoder = CLGeocoder()
+                                                            let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
+                                                            
+                                                            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+                                                                if let placemarks = placemarks {
+                                                                    if let pm = placemarks.first {
+                                                                        
+                                                                        //print("*****name: \(pm.name ?? "")")
+                                                                        // print("isoCountryCode: \(pm.isoCountryCode ?? "")")
+                                                                        // print("country: \(pm.country ?? "")")
+                                                                        // print("postalCode: \(pm.postalCode ?? "")")
+                                                                        //print("administrativeArea: \(pm.administrativeArea ?? "")")
+                                                                        //print("subAdministrativeArea: \(pm.subAdministrativeArea ?? "")")
+                                                                        //print("locality: \(pm.locality ?? "")")
+                                                                        //print("subLocality: \(pm.subLocality ?? "")")
+                                                                        if let subl = pm.subLocality {
+                                                                            self.slowvideoAdd = subl
+                                                                         //   add = pm.locality!
+                                                                        } else {
+                                                                            self.slowvideoAdd = pm.locality!
+                                                                           // add = pm.subLocality!
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            
+                                                            //print(avasset.metadata[0].stringValue!)
+                                                        }else{
+                                                            self.slowvideoAdd = " "
+                                                        }
+                                                        //print(self.slowvideoAdd)
 //緯度経度は貰えるが、それから住所をもらうときはネットに繋いでいる必要がある。
 //撮影の時もネットに繋いでなければ緯度経度は取れないのか？GPSってなに？
-//                                                        let url = NSURL(fileURLWithPath: tokenKeys[8])
-//                                                        let avasset = AVAsset(url: url as URL)
-//                                                        let metadata0 = avasset.metadata[0].description
-//                                                        let metas = metadata0.components(separatedBy: ",")
-//                                                        print(metas[metas.count - 1])//最後にlocationDataが在る
-                                                        //value=+33.1755+130.4922+013.299/>
-                                                        //locationDataがないときは value=Apple>
                                                         }
         })
     }
@@ -1175,11 +1210,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        let str1 = videoDate.text?.components(separatedBy: ":")
         let str1 = calcDate.components(separatedBy: ":")
         let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
-        let str3 = "96da Corp. Kumamoto Japan"
+        let str3 = "96da Corp."
+        let str4 = slowvideoAdd//"96da Corp. Kumamoto Japan"
         str2.draw(at: CGPoint(x: 5, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
-        str3.draw(at: CGPoint(x: 295, y: 180), withAttributes: [
+        str3.draw(at: CGPoint(x: 420, y: 180), withAttributes: [
+            NSAttributedStringKey.foregroundColor : UIColor.black,
+            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+        str4.draw(at: CGPoint(x: 260, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
 
