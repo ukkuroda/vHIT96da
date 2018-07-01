@@ -705,7 +705,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxtj" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
                                 <rect key="frame" x="30" y="40" width="315" height="569.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="j2D-6T-AEW" secondAttribute="height" multiplier="275:497" id="O3K-30-wcv"/>
@@ -717,7 +717,7 @@
                                     <constraint firstAttribute="height" constant="40" id="Gy3-CD-zeG"/>
                                     <constraint firstAttribute="width" constant="100" id="Yas-7O-aXq"/>
                                 </constraints>
-                                <state key="normal" title="Japanese" backgroundImage="btn"/>
+                                <state key="normal" title="English" backgroundImage="btn"/>
                                 <connections>
                                     <segue destination="k5k-lM-qKS" kind="show" id="YhI-5S-pc0"/>
                                 </connections>
@@ -760,7 +760,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxtj" translatesAutoresizingMaskIntoConstraints="NO" id="wxg-rm-sQX">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxt" translatesAutoresizingMaskIntoConstraints="NO" id="wxg-rm-sQX">
                                 <rect key="frame" x="30" y="40" width="315" height="569.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="wxg-rm-sQX" secondAttribute="height" multiplier="275:497" id="PBB-X2-A7o"/>
