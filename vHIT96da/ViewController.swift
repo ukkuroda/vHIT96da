@@ -333,6 +333,50 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             vHITcalc_sub()
         }
     }
+    func getAddress(){
+        //self.slowvideoPath = tokenKeys[8]
+        let url = NSURL(fileURLWithPath: slowvideoPath)
+        let avasset = AVAsset(url: url as URL)
+        let loc = avasset.metadata[0].stringValue!
+        //print(loc)
+        //+33.1755+130.4922+013.299/
+        //locationDataがないときは Apple
+        //print(loc)
+        if loc.count > 15 {
+            let loc1 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 0)..<loc.index(loc.startIndex, offsetBy: 7))
+            let loc2 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 8)..<loc.index(loc.startIndex, offsetBy: 15))
+            //print(loc1,loc2)
+            let geocoder = CLGeocoder()
+            let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
+            
+            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+                if let placemarks = placemarks {
+                    if let pm = placemarks.first {
+                        
+                        //print("*****name: \(pm.name ?? "")")
+                        // print("isoCountryCode: \(pm.isoCountryCode ?? "")")
+                        // print("country: \(pm.country ?? "")")
+                        // print("postalCode: \(pm.postalCode ?? "")")
+                        //print("administrativeArea: \(pm.administrativeArea ?? "")")
+                        //print("subAdministrativeArea: \(pm.subAdministrativeArea ?? "")")
+                        //print("locality: \(pm.locality ?? "")")
+                        //print("subLocality: \(pm.subLocality ?? "")")
+                        if let subl = pm.subLocality {
+                            self.slowvideoAdd = subl
+                            //   add = pm.locality!
+                        } else {
+                            self.slowvideoAdd = pm.locality!
+                            // add = pm.subLocality!
+                        }
+                    }
+                }
+            }
+            
+            //print(avasset.metadata[0].stringValue!)
+        }else{
+            slowvideoAdd = " "
+        }
+    }
     func vHITcalc_sub(){
         dispOrgflag = false
         stopButton.isHidden = false
@@ -376,8 +420,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
   //      let bundlePath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")
   //      let fileURL = URL(fileURLWithPath: bundlePath!)
         let fileURL = URL(fileURLWithPath: slowvideoPath)
+        getAddress()
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
         let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
+        
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
         do {
@@ -753,6 +799,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("video_num:"+"\(slowVideoCurrent)")
         #endif
         setVideoPathDate(num: slowVideoCurrent)
+        //print(slowvideoPath)
         slowImage.image = slowImgs[slowVideoCurrent]//getSlowimg(num: slowVideoCurrent)
     }
     
@@ -884,49 +931,49 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
                                                         self.slowvideoPath = tokenKeys[8]
-                                                        let url = NSURL(fileURLWithPath: tokenKeys[8])
-                                                        let avasset = AVAsset(url: url as URL)
-                                                        let loc = avasset.metadata[0].stringValue!
-                                                        //print(loc)
-                                                        //+33.1755+130.4922+013.299/
-                                                        //locationDataがないときは Apple
-                                                        if loc.count > 15 {
-                                                            let loc1 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 0)..<loc.index(loc.startIndex, offsetBy: 7))
-                                                            let loc2 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 8)..<loc.index(loc.startIndex, offsetBy: 15))
-                                                            //print(loc1,loc2)
-                                                            let geocoder = CLGeocoder()
-                                                            let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
-                                                            
-                                                            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
-                                                                if let placemarks = placemarks {
-                                                                    if let pm = placemarks.first {
-                                                                        
-                                                                        //print("*****name: \(pm.name ?? "")")
-                                                                        // print("isoCountryCode: \(pm.isoCountryCode ?? "")")
-                                                                        // print("country: \(pm.country ?? "")")
-                                                                        // print("postalCode: \(pm.postalCode ?? "")")
-                                                                        //print("administrativeArea: \(pm.administrativeArea ?? "")")
-                                                                        //print("subAdministrativeArea: \(pm.subAdministrativeArea ?? "")")
-                                                                        //print("locality: \(pm.locality ?? "")")
-                                                                        //print("subLocality: \(pm.subLocality ?? "")")
-                                                                        if let subl = pm.subLocality {
-                                                                            self.slowvideoAdd = subl
-                                                                         //   add = pm.locality!
-                                                                        } else {
-                                                                            self.slowvideoAdd = pm.locality!
-                                                                           // add = pm.subLocality!
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                            
-                                                            //print(avasset.metadata[0].stringValue!)
-                                                        }else{
-                                                            self.slowvideoAdd = " "
-                                                        }
-                                                        //print(self.slowvideoAdd)
-//緯度経度は貰えるが、それから住所をもらうときはネットに繋いでいる必要がある。
-//撮影の時もネットに繋いでなければ緯度経度は取れないのか？GPSってなに？
+//                                                        let url = NSURL(fileURLWithPath: tokenKeys[8])
+//                                                        let avasset = AVAsset(url: url as URL)
+//                                                        let loc = avasset.metadata[0].stringValue!
+//                                                        //print(loc)
+//                                                        //+33.1755+130.4922+013.299/
+//                                                        //locationDataがないときは Apple
+//                                                        if loc.count > 15 {
+//                                                            let loc1 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 0)..<loc.index(loc.startIndex, offsetBy: 7))
+//                                                            let loc2 = loc.substring(with: loc.index(loc.startIndex, offsetBy: 8)..<loc.index(loc.startIndex, offsetBy: 15))
+//                                                            //print(loc1,loc2)
+//                                                            let geocoder = CLGeocoder()
+//                                                            let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
+//
+//                                                            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+//                                                                if let placemarks = placemarks {
+//                                                                    if let pm = placemarks.first {
+//
+//                                                                        //print("*****name: \(pm.name ?? "")")
+//                                                                        // print("isoCountryCode: \(pm.isoCountryCode ?? "")")
+//                                                                        // print("country: \(pm.country ?? "")")
+//                                                                        // print("postalCode: \(pm.postalCode ?? "")")
+//                                                                        //print("administrativeArea: \(pm.administrativeArea ?? "")")
+//                                                                        //print("subAdministrativeArea: \(pm.subAdministrativeArea ?? "")")
+//                                                                        //print("locality: \(pm.locality ?? "")")
+//                                                                        //print("subLocality: \(pm.subLocality ?? "")")
+//                                                                        if let subl = pm.subLocality {
+//                                                                            self.slowvideoAdd = subl
+//                                                                         //   add = pm.locality!
+//                                                                        } else {
+//                                                                            self.slowvideoAdd = pm.locality!
+//                                                                           // add = pm.subLocality!
+//                                                                        }
+//                                                                    }
+//                                                                }
+//                                                            }
+//
+//                                                            //print(avasset.metadata[0].stringValue!)
+//                                                        }else{
+//                                                            self.slowvideoAdd = " "
+//                                                        }
+//                                                        //print(self.slowvideoAdd)
+////緯度経度は貰えるが、それから住所をもらうときはネットに繋いでいる必要がある。
+////撮影の時もネットに繋いでなければ緯度経度は取れないのか？GPSってなに？
                                                         }
         })
     }
@@ -1210,12 +1257,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        let str1 = videoDate.text?.components(separatedBy: ":")
         let str1 = calcDate.components(separatedBy: ":")
         let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
-        let str3 = "96da Corp."
+        let str3 = "vHIT96da"
         let str4 = slowvideoAdd//"96da Corp. Kumamoto Japan"
         str2.draw(at: CGPoint(x: 5, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
-        str3.draw(at: CGPoint(x: 420, y: 180), withAttributes: [
+        str3.draw(at: CGPoint(x: 428, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         str4.draw(at: CGPoint(x: 260, y: 180), withAttributes: [
@@ -1562,6 +1609,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
                 setslowImage()//.image = slowImgs[slowVideoCurrent]
                 lastslowVideo = slowVideoCurrent
+         //       print(slowvideoPath)
             }
             if slowVideoCnt > 0{//2こ以上あった時
                 var backNum = slowVideoCurrent - 1
