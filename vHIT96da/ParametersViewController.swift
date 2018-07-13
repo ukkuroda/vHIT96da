@@ -25,6 +25,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     var eyeRatio:Int = 0
     var outerRatio:Int = 0
     
+    @IBOutlet weak var ettButton: UIButton!
+    @IBOutlet weak var vhitButton: UIButton!
     @IBOutlet weak var keyDown: UIButton!
     @IBOutlet weak var labelEye: UILabel!
     @IBOutlet weak var labelFace: UILabel!
@@ -56,6 +58,10 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         numpadOff(0)
     }
    
+    @IBAction func setEtt(_ sender: Any) {
+    }
+    @IBAction func setVhit(_ sender: Any) {
+    }
     @IBAction func numpadOff(_ sender: Any) {
  //       flatWidthinput.endEditing(true)
         flatSuminput.endEditing(true)
