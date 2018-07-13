@@ -920,36 +920,29 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return ret
         }
     }
-    func clearUserDefaults(){
-        UserDefaults.standard.removeObject(forKey: "freeCounter")
-        UserDefaults.standard.removeObject(forKey: "flatsumLimit")
-        UserDefaults.standard.removeObject(forKey: "waveWidth")
-        UserDefaults.standard.removeObject(forKey: "wavePeak")
-        UserDefaults.standard.removeObject(forKey:"updownPgap")
-  //      UserDefaults.standard.removeObject(forKey:"peakWidth")
-        UserDefaults.standard.removeObject(forKey: "rectEye_x")
-        UserDefaults.standard.removeObject(forKey: "rectEye_y")
-        UserDefaults.standard.removeObject(forKey: "rectEye_w")
-  //      UserDefaults.standard.removeObject(forKey: "rectEye_h")
-        UserDefaults.standard.removeObject(forKey: "rectFace_x")
-        UserDefaults.standard.removeObject(forKey: "rectFace_y")
-  //      UserDefaults.standard.removeObject(forKey: "rectFace_w")
-  //      UserDefaults.standard.removeObject(forKey:"rectFace_h")
-        UserDefaults.standard.removeObject(forKey: "rectOuter_x")
-        UserDefaults.standard.removeObject(forKey:"rectOuter_y")
-        UserDefaults.standard.removeObject(forKey:"rectOuter_w")
-    //    UserDefaults.standard.removeObject(forKey:"rectOuter_h")
-    }
+//    func clearUserDefaults(){
+//        UserDefaults.standard.removeObject(forKey: "freeCounter")
+//        UserDefaults.standard.removeObject(forKey: "flatsumLimit")
+//        UserDefaults.standard.removeObject(forKey: "waveWidth")
+//        UserDefaults.standard.removeObject(forKey: "wavePeak")
+//        UserDefaults.standard.removeObject(forKey:"updownPgap")
+//         UserDefaults.standard.removeObject(forKey: "rectEye_x")
+//        UserDefaults.standard.removeObject(forKey: "rectEye_y")
+//        UserDefaults.standard.removeObject(forKey: "rectEye_w")
+//         UserDefaults.standard.removeObject(forKey: "rectFace_x")
+//        UserDefaults.standard.removeObject(forKey: "rectFace_y")
+//        UserDefaults.standard.removeObject(forKey: "rectOuter_x")
+//        UserDefaults.standard.removeObject(forKey:"rectOuter_y")
+//        UserDefaults.standard.removeObject(forKey:"rectOuter_w")
+//     }
     
     func getUserDefaults(){
-  //     flatWidth = getUserDefault(str: "flatWidth",ret: 28)//keyが設定してなければretをセット
-        freeCounter = getUserDefault(str: "freeCounter", ret:0)//50回以上になるとその由のアラームを出す
+         freeCounter = getUserDefault(str: "freeCounter", ret:0)//50回以上になるとその由のアラームを出す
         flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
         wavePeak = getUserDefault(str: "wavePeak", ret: 15)
         updownPgap = getUserDefault(str: "updownPgap", ret: 6)
-  //      peakWidth = getUserDefault(str: "peakWidth", ret: 23)
-        eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
+         eyeBorder = getUserDefault(str: "eyeBorder", ret: 3)
         faceBorder = getUserDefault(str: "faceBorder", ret: 5)
         outerBorder = getUserDefault(str: "outerBorder", ret: 10)
         eyeRatio = getUserDefault(str: "eyeRatio", ret: 100)
@@ -978,7 +971,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
         //3個続けて増加し、波幅の3/4ほど先が3個続けて減少（updownP_gap:増減閾値)
         UserDefaults.standard.set(updownPgap, forKey: "updownPgap")
- //       UserDefaults.standard.set(peakWidth, forKey: "peakWidth")
         UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
         UserDefaults.standard.set(faceBorder, forKey: "faceBorder")
         UserDefaults.standard.set(outerBorder, forKey: "outerBorder")
@@ -989,21 +981,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(Int(rectEye.origin.x), forKey: "rectEye_x")
         UserDefaults.standard.set(Int(rectEye.origin.y), forKey: "rectEye_y")
         UserDefaults.standard.set(Int(rectEye.size.width), forKey: "rectEye_w")
-        //UserDefaults.standard.set(Int(rectEye.size.height), forKey: "rectEye_h")
-        UserDefaults.standard.set(Int(rectFace.origin.x), forKey: "rectFace_x")
+          UserDefaults.standard.set(Int(rectFace.origin.x), forKey: "rectFace_x")
         UserDefaults.standard.set(Int(rectFace.origin.y), forKey: "rectFace_y")
-        //UserDefaults.standard.set(Int(rectFace.size.width), forKey: "rectFace_w")
-        //UserDefaults.standard.set(Int(rectFace.size.height), forKey: "rectFace_h")
-        UserDefaults.standard.set(Int(rectOuter.origin.x), forKey: "rectOuter_x")
+         UserDefaults.standard.set(Int(rectOuter.origin.x), forKey: "rectOuter_x")
         UserDefaults.standard.set(Int(rectOuter.origin.y), forKey: "rectOuter_y")
         UserDefaults.standard.set(Int(rectOuter.size.width), forKey: "rectOuter_w")
-        //UserDefaults.standard.set(Int(rectOuter.size.height), forKey: "rectOuter_h")
     }
     
     func dispWakus(){
-        //       let videoWidth = 720.0
-        //       ratioW = videoWidth/Double(self.view.bounds.width)
-        eyeWaku.layer.borderColor = UIColor.green.cgColor
+         eyeWaku.layer.borderColor = UIColor.green.cgColor
         eyeWaku.layer.borderWidth = 1.0
         eyeWaku.backgroundColor = UIColor.clear
         eyeWaku.frame = rectEye
@@ -1406,12 +1392,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //stPoint タップした位置
         //movePo 移動したxy値
         let nori:CGFloat = 10
+        let minimumWidth:CGFloat = 100
         var dx:CGFloat = movePo.x
         let dy:CGFloat = movePo.y
         //ここに関しては、移動先が範囲外の場合移動しない、という処理がなされているが、
         //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
         //あと、このアルゴリズムだと各rectが小さくなりすぎた場合に不具合が出る。
+        //線の間
         if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width){//} && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
+            
             r.origin.x = stRect.origin.x + dx;
             r.origin.y = stRect.origin.y + dy;
             //r.size.width = stRect.size
@@ -1429,20 +1418,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             return r
         }
+        //線の左
         if stPo.x < stRect.origin.x{
             if (stRect.origin.x + dx) < nori {
                 dx = nori - stRect.origin.x
             }
-            else if dx > stRect.size.width - nori {
-                dx = stRect.size.width - nori
+            else if dx > stRect.size.width - minimumWidth {//
+                dx = stRect.size.width - minimumWidth
             }
             r.origin.x = stRect.origin.x + dx
             r.size.width = stRect.size.width - dx
         }else if stPo.x > stRect.origin.x + stRect.size.width{
             if (stRect.origin.x + stRect.size.width + dx)>self.view.bounds.width - nori{
                 dx = self.view.bounds.width - nori - stRect.origin.x - stRect.size.width
-            }else if stRect.size.width + dx < nori {
-                dx = nori - stRect.size.width
+            }else if stRect.size.width + dx < minimumWidth {
+                dx = minimumWidth - stRect.size.width
             }
             r.size.width = stRect.size.width + dx
         }
