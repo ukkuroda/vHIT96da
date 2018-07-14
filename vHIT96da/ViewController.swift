@@ -939,20 +939,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func dispWakus(){
-         eyeWaku.layer.borderColor = UIColor.green.cgColor
+        let nullRect:CGRect = CGRect(x:0,y:0,width:0,height:0)
+        eyeWaku.layer.borderColor = UIColor.green.cgColor
         eyeWaku.layer.borderWidth = 1.0
         eyeWaku.backgroundColor = UIColor.clear
         eyeWaku.frame = rectEye
+
         faceWaku.layer.borderColor = UIColor.blue.cgColor
         faceWaku.layer.borderWidth = 1.0
         faceWaku.backgroundColor = UIColor.clear
-        faceWaku.frame = rectFace
-        
+        if faceBorder == 0{
+            faceWaku.frame = nullRect
+        }else{
+            faceWaku.frame = rectFace
+        }
         outerWaku.layer.borderColor = UIColor.red.cgColor
         outerWaku.layer.borderWidth = 1.0
         outerWaku.backgroundColor = UIColor.clear
-        outerWaku.frame = rectOuter
-        //       print(ratioW)
+        if outerBorder == 0{
+            outerWaku.frame = nullRect
+        }else{
+            outerWaku.frame = rectOuter
+        }
     }
     
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
@@ -1507,9 +1515,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
  //               stPo = sender.location(in: self.view)
                 if rectType == 0 {
                     stRect = rectEye//tapした時の枠をstRectとする
-                } else if rectType == 1 {
+                } else if rectType == 1 && faceBorder != 0{
                     stRect = rectFace
-                } else if rectType == 2{
+                } else if rectType == 2 && outerBorder != 0{
                     stRect = rectOuter
                 }
             }
@@ -1531,9 +1539,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if rectType > -1 {//枠の設定の場合
                     if rectType == 0 {
                         rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
-                    } else if rectType == 1 {
+                    } else if rectType == 1 && faceBorder != 0{
                         rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:self.view.bounds.height - 20)
-                    } else {
+                    } else if rectType == 2 && outerBorder != 0{
                         rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
                     }
                     dispWakus()
