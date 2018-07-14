@@ -25,8 +25,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     var eyeRatio:Int = 0
     var outerRatio:Int = 0
     
-    @IBOutlet weak var ettButton: UIButton!
-    @IBOutlet weak var vhitButton: UIButton!
+ //   @IBOutlet weak var ettButton: UIButton!
+  //  @IBOutlet weak var vhitButton: UIButton!
     @IBOutlet weak var keyDown: UIButton!
     @IBOutlet weak var labelEye: UILabel!
     @IBOutlet weak var labelFace: UILabel!
@@ -57,10 +57,15 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func tapBack(_ sender: Any) {
         numpadOff(0)
     }
-   
-    @IBAction func setEtt(_ sender: Any) {
+    @IBAction func setVog(_ sender: Any) {
+        faceBorder = 0
+        outerBorder = 0
+        dispParam()
     }
     @IBAction func setVhit(_ sender: Any) {
+        faceBorder = 5
+        outerBorder = 10
+        dispParam()
     }
     @IBAction func numpadOff(_ sender: Any) {
  //       flatWidthinput.endEditing(true)

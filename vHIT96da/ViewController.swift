@@ -107,13 +107,11 @@ extension UIImage {
 
 class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
-     var slowVideoCurrent:Int = 0
-//    var slowPaths = Array<String>()
-//    var slowDates = Array<String>()
+    var slowVideoCurrent:Int = 0
+    var waveCurrpoint:Int = 0//現在表示波形の視点（アレイインデックス）
     var slowImgs = Array<UIImage>()
     var slowvideoPath:String = ""
     var slowvideoAdd:String = ""
- //   var slowvideoUrl:String = ""
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
@@ -293,6 +291,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         stopButton.isHidden = true
         calcButton.isEnabled = true
+        waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
     }
     
     @IBAction func vHITcalc(_ sender: Any) {
@@ -371,7 +370,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
         stopButton.frame.size.width = calcButton.frame.size.width
         stopButton.frame.size.height = calcButton.frame.size.height
- //       calcButton.isHidden = true
         calcButton.isEnabled = false
         calcFlag = true
         listButton.isEnabled = false
@@ -382,7 +380,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         playButton.isEnabled = false
         vHITouter.removeAll()
         vHITeye.removeAll()
- //       vHITeyeOrg.removeAll()
         vHITeye5.removeAll()
         vHITouter5.removeAll()
         var vHITcnt:Int = 0
@@ -390,7 +387,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if lineView != nil{//これが無いとエラーがでる。
             lineView?.removeFromSuperview()//realwaveを消す
         }
-
+        
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
         let eyedx:CGFloat = CGFloat(eyeBorder)
@@ -403,9 +400,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         drawBoxies()
         startTimer()//resizerectのチェックの時はここをコメントアウト*********************
-        //        if let bundlePath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV") {
-  //      let bundlePath = Bundle.main.path(forResource: "IMG_2425", ofType: "MOV")
-  //      let fileURL = URL(fileURLWithPath: bundlePath!)
         let fileURL = URL(fileURLWithPath: slowvideoPath)
         getAddress()
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
@@ -440,9 +434,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let oX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let oY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         
-        // read in samples
- //       var count = 0
-        var CGEye:CGImage!
+         var CGEye:CGImage!
         let CGFace:CGImage!
         var CGOuter:CGImage!
         var CGEyeWithBorder:CGImage!
@@ -452,8 +444,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var UIEye:UIImage!
         var UIEyeWithBorder:UIImage!
         let UIFace:UIImage!
-//        let UIFace = UIImage(named:"triangle")!//15x10 UIFace
-//        let triAngle = UIImage(named:"triangle")!//15x10 UIFace
 
         var UIFaceWithBorder:UIImage!
         var UIOuter:UIImage!
@@ -473,56 +463,33 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         print("image size =",cgImage.width, "x", cgImage.height)
         print("view size =", self.view.bounds.width, "x", self.view.bounds.height)
         #endif
-        //DropboxやGoogleDriveに動画をアップロードして、それをiPhoneで閲覧しカメラロール(写真ライブラリ)に保存というのが考えられます。
-        //それぞれのRectを用意
-        //resizeRectが変だけど一番よいような
-  //      let realrectFace = CGRect(x:self.rectFace.origin.x+10,y:self.rectFace.origin.y+10,width:20,height:20)
-        //realrectFace(x:x+10,y:y+10,w:20,h:20) 
-        //var newrect:CGRect = CGRect(x:0,y:0,width:0,height:0)
-        var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
+         var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
-  //      let RFace = resizeRect(realrectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
- //       print(REye,rectEye)
- //       print(RFace,realrectFace)
-        //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
+          var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
+         //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
         var rectEyeb = getWiderect(rect: REye, dx: 0*eyedx, dy: eyedy)//3
-//        rectEyeb.size.width=1
         var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
         var rectOutb = getWiderect(rect: ROuter, dx: 0*outerdx, dy: outerdy)//10
-//        rectOutb.size.width=2
-//        let rectEyeb = getWiderect(rect: REye, dx: 10, dy: 3)//3
-//        let rectFacb = getWiderect(rect: RFace, dx:20, dy: 5)//5
-//        let rectOutb = getWiderect(rect: ROuter, dx:40, dy: 10)//10ƒ
-
         eyeCropView.frame=rectEye
         faceCropView.frame=rectFace
-//        faceCropView.frame=realrectFace
         outerCropView.frame=rectOuter
- //       var rectE=rectEye
- //       var rectF=rectFace
- //       var rectO=rectOuter
-        CGEye = cgImage.cropping(to: REye)
+         CGEye = cgImage.cropping(to: REye)
         CGFace = cgImage.cropping(to: RFace)
         CGOuter = cgImage.cropping(to: ROuter)
         UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
         UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
-  //      faceCropView.image=UIFace
-        UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
- //       count = 1
-        while reader.status != AVAssetReaderStatus.reading {
+         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
+         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
-        
-        DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
+         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             var fx:CGFloat = 0
             var fy:CGFloat = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
                 if self.calcFlag == false {
                     break
                 }
-                 //              autoreleasepool(invoking: ({() -> () in
-                // サンプルバッファからピクセルバッファを取り出す
+                  // サンプルバッファからピクセルバッファを取り出す
                 let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!
                 let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
                 let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
@@ -532,8 +499,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     fx = 0
                     fy = 0
                 }else{
-            //print("fac***",Int(rectFacb.origin.x),Int(rectFacb.origin.y),Int(rectFacb.origin.x+rectFacb.size.width),Int(rectFacb.origin.y+rectFacb.size.height))
-        //           if rectFacb.origin.x < 0 || rectFacb.origin.y < 0 || rectFacb.origin.x + rectFacb.size.width>1280 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
                     if rectFacb.origin.y < 0 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
                         self.calcFlag = false
                         break
@@ -543,11 +508,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                     self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                     fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
                     fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
-//                    print(fy,fx,fY.pointee,fX.pointee)
-                    //if fY.pointee == 0 || fX.pointee == 0{//
-                    //    self.calcFlag = false
-                    //    break
-                    //}
                 }
                 //1280x720
                 rectEyeb.origin.x += fx//ズラしておく
@@ -556,9 +516,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 rectOutb.origin.y += fy
                 CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
-            //print("out***",Int(rectOutb.origin.x),Int(rectOutb.origin.y),Int(rectOutb.origin.x+rectOutb.size.width),Int(rectOutb.origin.y+rectOutb.size.height))
-            //print("eye***",Int(rectEyeb.origin.x),Int(rectEyeb.origin.y),Int(rectEyeb.origin.x+rectEyeb.size.width),Int(rectEyeb.origin.y+rectEyeb.size.height))
-                if rectOutb.origin.x > 1277 || rectOutb.origin.y + rectOutb.size.height > 720 {//ここもチェック
+                  if rectOutb.origin.x > 1277 || rectOutb.origin.y + rectOutb.size.height > 720 {//ここもチェック
                     self.calcFlag = false
                     break
                 }
@@ -567,25 +525,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
  //               print("::::eye&outer**********")
                 self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
                 self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
-                //UIFace は 15x10
-//                self.openCV.matching3(UIEyeWithBorder, n1:UIEye, x1:eX, y1:eY, w2:UIFaceWithBorder, n2:UIFace, x2:fX, y2:fY, w3:UIOuterWithBorder, n3:UIOuter, x3:oX, y3:oY)
-                //３個を１個にまとめても　54秒が53秒になる程度 3個一緒->110s 1個ずつ->112s
-                //opencvの中で何もせずreturnさせて見ると、55秒が49秒となる程度
-                //ほとんどはUIImageへの変換に用する時間のようだ
-                
-                //print(" eye:", eX.pointee, ",", eY.pointee  )
-                //print("face:", fX.pointee, ",", fY.pointee  )
-                //print(" out:", oX.pointee, ",", oY.pointee  )
-                
-                // crop narrow part
-//                CGEye = cgImage.cropping(to: REye)
-// //               CGFace = cgImage.cropping(to: RFace)
-//                CGOuter = cgImage.cropping(to: ROuter)
-//                UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
-////                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
-//                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                
-                
                 #if DEBUG
                     print(vHITcnt,Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
                 #endif
@@ -594,27 +533,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 rectFacb.origin.x += fx
                 rectFacb.origin.y += fy
-  //              print(fx,fy,Int(oY.pointee)-Int(outerdy),Int(eY.pointee)-Int(eyedy))
-   //             rectEyeb.origin.x += fx//ずらしすみ
-   //             rectEyeb.origin.y += fy
                 REye.origin.x += fx
                 REye.origin.y += fy
-  //              rectOutb.origin.x += fx
-//                rectOutb.origin.y += fy
                 ROuter.origin.x += fx
                 ROuter.origin.y += fy
                 #if DEBUG
                 print("--------",ROuter.origin.x,ROuter.origin.y)
                 #endif
                 CGEye = cgImage.cropping(to: REye)
-                //               CGFace = cgImage.cropping(to: RFace)
                 CGOuter = cgImage.cropping(to: ROuter)
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
-                //                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
-                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-
-                //self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee) - eyedy))// - fy))
-                //self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
+                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
                 let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy))
                 self.vHITeye5.append(eye5)
                 self.vHITeye.append(eye5)//12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy)))// - fy)))
@@ -627,9 +556,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if vHITcnt > 5{
                     self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
                 }
-//                self.vHITeye.append(CGFloat(self.eyeRatio/8)*(self.Kalupdate1(measurement: CGFloat(Int(eY.pointee) - eyedxInt - fy))))
-//                self.vHITouter.append(CGFloat(self.outerRatio/33)*(self.Kalupdate(measurement: CGFloat(Int(oY.pointee) - outerdxInt - fy))))
-
                 vHITcnt += 1
                 while reader.status != AVAssetReaderStatus.reading {
                     sleep(UInt32(0.1))
@@ -730,6 +656,29 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         view.addSubview(lineView!)
 //        print("count----" + "\(view.subviews.count)")
     }
+    func drawOnewave(startcount:Int){
+        var startcnt = startcount
+        if startcnt < 0 {
+            startcnt = 0
+        }
+        if lineView != nil{//これが無いとエラーがでる。
+            lineView?.removeFromSuperview()
+            //            lineView?.isHidden = false
+        }
+        if vHITouter.count < Int(self.view.bounds.width){//横幅以内なら０からそこまで表示
+            startcnt = 0
+        }else if startcnt > vHITouter.count - Int(self.view.bounds.width){
+            startcnt = vHITouter.count - Int(self.view.bounds.width)
+        }
+        //波形を時間軸で表示
+        let drawImage = drawLine(num:startcnt,width:self.view.bounds.width,height:180)
+        // イメージビューに設定する
+        lineView = UIImageView(image: drawImage)
+        //       lineView?.center = self.view.center
+        lineView?.center = CGPoint(x:view.bounds.width/2,y:340)//ここらあたりを変更se~7plusの大きさにも対応できた。
+        view.addSubview(lineView!)
+        //        print("count----" + "\(view.subviews.count)")
+    }
     //var wpSleep:Int = 0
     var timercnt:Int = 0
  //   var lastvHITcnt:Int = 0
@@ -757,6 +706,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if self.getLines() > 0{
                 self.nonsavedFlag = true
             }
+            waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
         }
  
         drawRealwave()
@@ -1103,7 +1053,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
+ //   var cnt:Int = 0
     @IBAction func saveResult(_ sender: Any) {
+//        cnt += 10
+//        drawOnewave(startcount: cnt)
+//        return
 //        if freeCounter > 999{
 //            // アラートを作成
 //            let alert = UIAlertController(
@@ -1516,6 +1470,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         slowImage.image = UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
     }
     var lastslowVideo:Int = -2
+    var lastwavePoint:Int = -2
     @IBAction func panGesture(_ sender: UIPanGestureRecognizer) {
         if calcFlag == true{
             return
@@ -1523,60 +1478,78 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let move:CGPoint = sender.translation(in: self.view)
         let pos = sender.location(in: self.view)
         if sender.state == .began {
-            //ここでslowvideoを描画してみようか
-            if lastslowVideo != slowVideoCurrent{
-                setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
-                setslowImage()//.image = slowImgs[slowVideoCurrent]
-                lastslowVideo = slowVideoCurrent
-         //       print(slowvideoPath)
-            }
-            if slowVideoCnt > 0{//2こ以上あった時
-                var backNum = slowVideoCurrent - 1
-                if backNum < 0 {
-                    backNum = slowVideoCnt
-                }
-      //          print("left",backNum)
-                let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
-                let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
-                backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
-                backNum = slowVideoCurrent + 1
-                if backNum >  slowVideoCnt {
-                    backNum = 0
-                }
-                 backImage.image = self.slowImgs[backNum]// getSlowimg(num: backNum)//若番のサムネールをゲット：こちらが下、後面
-                leftrightFlag = true
-            }
-            rectType = checkWaks(po: pos)//枠設定かどうか。
             stPo = sender.location(in: self.view)
-            if rectType == 0 {
-                stRect = rectEye//tapした時の枠をstRectとする
-            } else if rectType == 1 {
-                stRect = rectFace
-            } else if rectType == 2{
-                stRect = rectOuter
+            if vHITboxView?.isHidden == false{//結果が表示されている時
+
+            }else{
+                //ここでslowvideoを描画してみようか
+                if lastslowVideo != slowVideoCurrent{
+                    setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+                    setslowImage()//.image = slowImgs[slowVideoCurrent]
+                    lastslowVideo = slowVideoCurrent//       print(slowvideoPath)
+                }
+                if slowVideoCnt > 0{//2こ以上あった時
+                    var backNum = slowVideoCurrent - 1
+                    if backNum < 0 {
+                        backNum = slowVideoCnt
+                    }      //          print("left",backNum)
+                    let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
+                    let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
+                    backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
+                    backNum = slowVideoCurrent + 1
+                    if backNum >  slowVideoCnt {
+                        backNum = 0
+                    }
+                    backImage.image = self.slowImgs[backNum]// 若番のサムネールをゲット：こちらが下、後面
+                    leftrightFlag = true
+                }
+                rectType = checkWaks(po: pos)//枠設定かどうか。
+ //               stPo = sender.location(in: self.view)
+                if rectType == 0 {
+                    stRect = rectEye//tapした時の枠をstRectとする
+                } else if rectType == 1 {
+                    stRect = rectFace
+                } else if rectType == 2{
+                    stRect = rectOuter
+                }
             }
         } else if sender.state == .changed {
-            if rectType > -1 {//枠の設定の場合
-                if rectType == 0 {
-                    rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
-                } else if rectType == 1 {
-                    rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:self.view.bounds.height - 20)
-                } else {
-                    rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
+            if vHITboxView?.isHidden == false{//結果が表示されている時
+                let movex = Int(move.x/10.0) - Int(move.x/10.0)%10
+                waveCurrpoint -= movex
+                if waveCurrpoint<0{
+                    waveCurrpoint = 0
+                }else if waveCurrpoint > vHITouter.count - Int(self.view.bounds.width){
+                    waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
                 }
-                dispWakus()
-            }else{//} if slowVideoCnt > -1{
-                if leftrightFlag == true{
-                    self.slowImage.frame.origin.x = move.x
-                    if move.x > self.view.bounds.width/3 {
-                        showNextvideo(direction: 0)
-                        self.slowImage.frame.origin.x = 0
-                        leftrightFlag = false
-                        
-                    }else if move.x < -self.view.bounds.width/3 {
-                        showNextvideo(direction: 1)
-                        self.slowImage.frame.origin.x = 0
-                        leftrightFlag = false
+                if waveCurrpoint != lastwavePoint{
+                    drawOnewave(startcount: waveCurrpoint)
+                    print(movex)
+                    lastwavePoint = waveCurrpoint
+                }
+            }else{
+                if rectType > -1 {//枠の設定の場合
+                    if rectType == 0 {
+                        rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
+                    } else if rectType == 1 {
+                        rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:self.view.bounds.height - 20)
+                    } else {
+                        rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
+                    }
+                    dispWakus()
+                }else{//} if slowVideoCnt > -1{
+                    if leftrightFlag == true{
+                        self.slowImage.frame.origin.x = move.x
+                        if move.x > self.view.bounds.width/3 {
+                            showNextvideo(direction: 0)
+                            self.slowImage.frame.origin.x = 0
+                            leftrightFlag = false
+                            
+                        }else if move.x < -self.view.bounds.width/3 {
+                            showNextvideo(direction: 1)
+                            self.slowImage.frame.origin.x = 0
+                            leftrightFlag = false
+                        }
                     }
                 }
             }
