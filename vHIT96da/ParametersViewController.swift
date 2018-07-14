@@ -62,6 +62,11 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         outerBorder = 0
         dispParam()
     }
+    @IBAction func setVOGb(_ sender: Any) {
+        faceBorder = 5
+        outerBorder = 0
+        dispParam()
+    }
     @IBAction func setVhit(_ sender: Any) {
         faceBorder = 5
         outerBorder = 10
@@ -82,7 +87,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         keyDown.isHidden = true
     }
 //    @IBAction func flatwidthDown(_ sender: Any) {
-//   //    keyDown.isHidden = false
+    //   //    keyDown.isHidden = false
 //  //      setKeydown()
 //   }
 //    @IBAction func flatsumDown(_ sender: Any) {
