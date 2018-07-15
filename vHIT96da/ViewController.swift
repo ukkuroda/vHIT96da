@@ -1523,7 +1523,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         } else if sender.state == .changed {
             if vHITboxView?.isHidden == false{//結果が表示されている時
-                let movex = Int(move.x/10.0) - Int(move.x/10.0)%10
+                let movex = Int(move.x/10.0)
+      //          print("all",move.x,Int(move.x/10.0),movex)
                 waveCurrpoint -= movex
                 if waveCurrpoint<0{
                     waveCurrpoint = 0
@@ -1532,7 +1533,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 if waveCurrpoint != lastwavePoint{
                     drawOnewave(startcount: waveCurrpoint)
-                    print(movex)
                     lastwavePoint = waveCurrpoint
                 }
             }else{
