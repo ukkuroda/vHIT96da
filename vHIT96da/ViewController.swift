@@ -390,11 +390,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
-        let eyedx:CGFloat = CGFloat(eyeBorder)
+  //      let eyedx:CGFloat = 0//CGFloat(eyeBorder)
         let eyedy:CGFloat = 4 * CGFloat(eyeBorder)
         let facedx:CGFloat = CGFloat(faceBorder)
         let facedy:CGFloat = 4 * CGFloat(faceBorder)
-        let outerdx:CGFloat = CGFloat(outerBorder)
+  //      let outerdx:CGFloat = 0//CGFloat(outerBorder)
         let outerdy:CGFloat = 4 * CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -463,26 +463,26 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         print("image size =",cgImage.width, "x", cgImage.height)
         print("view size =", self.view.bounds.width, "x", self.view.bounds.height)
         #endif
-         var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
-          var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
          //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
-        var rectEyeb = getWiderect(rect: REye, dx: 0*eyedx, dy: eyedy)//3
+        var rectEyeb = getWiderect(rect: REye, dx: 0, dy: eyedy)
         var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
-        var rectOutb = getWiderect(rect: ROuter, dx: 0*outerdx, dy: outerdy)//10
+        var rectOutb = getWiderect(rect: ROuter, dx: 0, dy: outerdy)
         eyeCropView.frame=rectEye
         faceCropView.frame=rectFace
         outerCropView.frame=rectOuter
-         CGEye = cgImage.cropping(to: REye)
+        CGEye = cgImage.cropping(to: REye)
         CGFace = cgImage.cropping(to: RFace)
         CGOuter = cgImage.cropping(to: ROuter)
         UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
         UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
-         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-         while reader.status != AVAssetReaderStatus.reading {
+        UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
+        while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
-         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
+        DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             var fx:CGFloat = 0
             var fy:CGFloat = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
@@ -505,7 +505,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
-                                    self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
+                    self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
                     fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
                     fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
                 }
@@ -543,7 +543,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 CGEye = cgImage.cropping(to: REye)
                 CGOuter = cgImage.cropping(to: ROuter)
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
-                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
+                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
                 let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy))
                 self.vHITeye5.append(eye5)
                 self.vHITeye.append(eye5)//12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy)))// - fy)))
