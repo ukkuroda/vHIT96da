@@ -158,6 +158,35 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     *x_ret = max_pt.x;
     *y_ret = max_pt.y;
 }
+
+-(void) matching2:(UIImage *)wide_img n1:(UIImage *)narrow1_img n2:(UIImage *)narrow2_img x:(int *)eX y:(int *)eY
+{
+    //return;
+    cv::Mat wide_mat;
+//    cv::Mat wide_mat2;//念の為
+    cv::Mat narrow1_mat;
+    cv::Mat narrow2_mat;
+    cv::Mat return_mat;
+    UIImageToMat(wide_img, wide_mat);
+    UIImageToMat(narrow1_img, narrow1_mat);
+    UIImageToMat(narrow2_img, narrow2_mat);
+    // テンプレートマッチング
+    cv::matchTemplate(wide_mat, narrow1_mat, return_mat, CV_TM_CCOEFF_NORMED);
+    // 最大のスコアの場所を探す
+    cv::Point max_pt;
+    double maxVal;
+    cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
+ //   *eX = max_pt.x;
+    *eY = max_pt.y;
+    
+    cv::matchTemplate(wide_mat, narrow2_mat, return_mat, CV_TM_CCOEFF_NORMED);
+    cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
+    //  *eX = max_pt.x;
+    *eX = max_pt.y;
+}
+
+
+
 -(void) matching3:(UIImage *)UIEyeB n1:(UIImage *)UIEye x1:(int *)eX y1:(int *)eY w2:(UIImage *)UIFaceB n2:(UIImage *)UIFace x2:(int *)fX y2:(int *)fY w3:(UIImage *)UIOuterB n3:(UIImage *)UIOuter x3:(int *)oX y3:(int *)oY
 {
     //return;

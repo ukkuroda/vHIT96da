@@ -13,6 +13,7 @@
 
 //-(void) matching0:(UIImage *)newimg;
 //-(void) matching1:(UIImage *)newimg x:(int *)x_ret y:(int *)y_ret;
+-(void) matching2:(UIImage *)wide_img n1:(UIImage *)narrow1_img n2:(UIImage *)narrow2_img x:(int *)eX y:(int *)eY;
 -(void) matching_eye:(UIImage *)new_img old:(UIImage *)old_img x:(int *)x_ret y:(int *)y_ret;
 -(void) matching_fac:(UIImage *)new_img old:(UIImage *)old_img x:(int *)x_ret y:(int *)y_ret;
 -(void) matching_out:(UIImage *)new_img old:(UIImage *)old_img x:(int *)x_ret y:(int *)y_ret;

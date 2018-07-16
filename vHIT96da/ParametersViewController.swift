@@ -137,24 +137,24 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func setDefault(_ sender: Any) {
         //上手く働かない
- //       flatWidth = 28
+        //       flatWidth = 28
         flatsumLimit = 80
         waveWidth = 40
         wavePeak = 15
         updownPgap = 6
- //       peakWidth = 23
-        eyeBorder = 3
+        //       peakWidth = 23
+        eyeBorder = 40
         faceBorder = 5
-        outerBorder = 10
+        outerBorder = 40
         eyeRatio = 100
         outerRatio = 100
-//        let ratioW = self.view.bounds.width/375.0//6s
-//        let ratioH = self.view.bounds.height/667.0//6s
-//        self.rectEye = CGRect(x:97*ratioW,y:143*ratioH,width:209*ratioW,height:10*ratioH)
-//        self.rectFace = CGRect(x:167*ratioW,y:328*ratioH,width:77*ratioW,height:27*ratioH)
-//        self.rectOuter = CGRect(x:140*ratioW,y:510*ratioH,width:110*ratioW,height:10*ratioH)
+        //        let ratioW = self.view.bounds.width/375.0//6s
+        //        let ratioH = self.view.bounds.height/667.0//6s
+        //        self.rectEye = CGRect(x:97*ratioW,y:143*ratioH,width:209*ratioW,height:10*ratioH)
+        //        self.rectFace = CGRect(x:167*ratioW,y:328*ratioH,width:77*ratioW,height:27*ratioH)
+        //        self.rectOuter = CGRect(x:140*ratioW,y:510*ratioH,width:110*ratioW,height:10*ratioH)
         dispParam()
-
+        
     }
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
