@@ -526,6 +526,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             var fx:CGFloat = 0
             var fy:CGFloat = 0
+            var eye5:CGFloat = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
                 if self.calcFlag == false {
                     break
@@ -587,8 +588,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 CGOuter = cgImage.cropping(to: ROuter)
                 UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
                 UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                let eye5=2.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - CGFloat(self.eyeBorder) - 20))
-  //              let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eX.pointee) - CGFloat(self.eyeBorder)))
+                if self.outerBorder == 0{
+                    eye5=2.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - CGFloat(self.eyeBorder) - 20))
+                }else{
+                    eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eX.pointee) - CGFloat(self.eyeBorder)))
+                }
                 self.vHITeye5.append(eye5)
                 self.vHITeye.append(eye5)
                 if vHITcnt > 5{
