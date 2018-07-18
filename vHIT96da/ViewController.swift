@@ -391,11 +391,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
   //      let eyedx:CGFloat = 0//CGFloat(eyeBorder)
-  //      let eyedy:CGFloat = CGFloat(eyeBorder)
-        let facedx:CGFloat = CGFloat(faceBorder)
-        let facedy:CGFloat = 4 * CGFloat(faceBorder)
-  //      let outerdx:CGFloat = 0//CGFloat(outerBorder)
-        let outerdy:CGFloat = CGFloat(outerBorder)
+        let eyeborder:CGFloat = CGFloat(eyeBorder)
+        let faceborder:CGFloat = CGFloat(faceBorder)
+  //      let faceborder:CGFloat = 4 * CGFloat(faceBorder)
+ //       let outerdx:CGFloat = 0//CGFloat(outerBorder)
+        let outerborder:CGFloat = CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         drawBoxies()
@@ -456,10 +456,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var UIOuterWithBorder:UIImage!
  
          //rectEyeの左端から左右１０、計２０、右端から左右10計２０、左右１０ずつ合わせたもの->recteyel,recteyer,recteye10
-        let rectEye10 = CGRect(x:rectEye.origin.x - 10,y:rectEye.origin.y,width:rectEye.size.width+20,height:1.0)
+        let rectEye10 = CGRect(x:rectEye.origin.x-10,y:rectEye.origin.y,width:rectEye.size.width+20,height:1.0)
         let rectEyeLorg = CGRect(x:rectEye.origin.x-10,y:rectEye.origin.y,width:20,height:1.0)
         let rectEyeRorg = CGRect(x:rectEye.origin.x+rectEye.size.width-10,y:rectEye.origin.y,width:20,height:1.0)
-        let rectEye10org = CGRect(x:rectEye.origin.x - 10,y:rectEye.origin.y,width:rectEye.size.width+20,height:1.0)
+        let rectEye10org = CGRect(x:rectEye.origin.x-10,y:rectEye.origin.y,width:rectEye.size.width+20,height:1.0)
+        let rectEyeb = CGRect(x:rectEye.origin.x-eyeborder,y:rectEye.origin.y,width:rectEye.size.width+2*eyeborder,height:1.0)
+        let rectFaceb = CGRect(x:rectFace.origin.x-4*faceborder,y:rectFace.origin.y-faceborder,width:rectFace.size.width+8*faceborder,height:rectFace.size.height+2*faceborder)
+        let rectOutb = CGRect(x:rectOuter.origin.x-outerborder,y:rectOuter.origin.y,width:rectOuter.size.width+2*outerborder,height:1.0)
         //黒眼（角膜）部分を緑色水平線で選択し、その両サイド１０ピクセルを含めてレクトを設定。
 
         let context:CIContext = CIContext.init(options: nil)
@@ -480,17 +483,24 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let REyeLorg = resizeRect(rectEyeLorg, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let REyeRorg = resizeRect(rectEyeRorg, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let REye10org = resizeRect(rectEye10org, onViewBounds:self.slowImage.frame, toImage:cgImage)
-  //      print(rectEye,rectEyeL,rectEyeR)
+//        print("*****",REye10,REyeLorg,REyeRorg)
+//        print("*****",rectEye10,rectEyeLorg,rectEyeRorg)
         
         let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
         var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
-         //imageをx軸方向のずれを修正して、x軸のボーダーは0でマッチング
- //       var rectEyeb = getWiderect(rect: REye, dx: 0, dy: eyedy)
-        var rectEyeb = getWiderect(rect: REye10, dx: 0, dy: CGFloat(eyeBorder))//初期値50とする
-   //     print (rectEyeb,REye)
-        var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
-        //var rectFacb = getWiderect(rect: RFace, dx: CGFloat(faceBorder), dy: CGFloat(faceBorder) * 4.0)//facedx=20(faceborder*4) facedy=5(faceborder)
-        var rectOutb = getWiderect(rect: ROuter, dx: 0, dy: outerdy)
+        var REyeb = resizeRect(rectEyeb, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        var RFacb = resizeRect(rectFaceb, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        var ROutb = resizeRect(rectOutb, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        let offsetEye = (REyeb.size.height-REye10.size.height)/2
+        let offsetOut = (ROutb.size.height-ROuter.size.height)/2
+  //      print (offsetEye,offsetOut)
+ //       printRect(r1:rectFace,r2:rectFaceb)
+ //       printRect(r1:rectEye10,r2:rectEyeb)
+//      printRect(r1: rectOuter, r2: rectOutb)
+//      printRect(r1:RFace,r2:RFacb)
+//        printRect(r1:REye10,r2:REyeb)
+//        printRect(r1: ROuter, r2: ROutb)
+
         CGEye10 = cgImage.cropping(to: REye10)
         CGEyeLorg = cgImage.cropping(to: REyeLorg)
         CGEyeRorg = cgImage.cropping(to: REyeRorg)
@@ -503,14 +513,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIEye10org = UIImage.init(cgImage: CGEye10org, scale:1.0, orientation:orientation)
         UIFaceorg = UIImage.init(cgImage: CGFaceorg, scale:1.0, orientation:orientation)
         UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-        
-//        eyeCropView.frame=REye
+//        eyeCropView.frame=REye10
 //        eyeCropView.frame.origin.x=30
 //        eyeCropView.frame.origin.y=40
 //        var k=eyeCropView.frame.size.width
 //        eyeCropView.frame.size.width=eyeCropView.frame.size.height
 //        eyeCropView.frame.size.height=k
-//        eyeCropView.image=UIEye
+//        eyeCropView.image=UIEye10
 //        outerCropView.frame=REyeL
 //        outerCropView.frame.origin.x=30
 //        outerCropView.frame.origin.y=30
@@ -520,7 +529,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        outerCropView.image=UIEyeL
         var eyePlast:CGFloat=0//の目位置
  //       vHITeyePos.append(0.0)//setしとく
-       while reader.status != AVAssetReaderStatus.reading {
+        while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
@@ -536,35 +545,38 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
                 let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
                 //画像を縦横変換するならこの位置でCIImage.oriented()を使う？
-                if facedx == 0{//顔の動きをチェックしない
+                if faceborder == 0{//顔の動きをチェックしない
                     //  UIFaceWithBorder = UIFace
                     fx = 0
                     fy = 0
                 }else{
-                    if rectFacb.origin.y < 0 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
+                    if RFacb.origin.y < 0 || RFacb.origin.y + RFacb.size.height>720 {//checkはこれだけでいいか？
                         self.calcFlag = false
                         break
                     }
-                    CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
+                    CGFaceWithBorder = cgImage.cropping(to: RFacb)!
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
                     self.openCV.matching(UIFaceWithBorder, narrow:UIFaceorg, x:fX, y:fY)
-                    fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
-                    fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
+                    //self.printRect(r1: RFacb, r2: RFace)
+                    //ここでは帰ってくる値はresizeする前のサイズのようだが、eyeのところではresizeしたサイズで帰ってくる？？？
+                    fy = CGFloat(fY.pointee) - 4*faceborder//100倍しても関係なさそう。fYはIntっぽい？
+                    fx = CGFloat(fX.pointee) - faceborder//fastKumamonで追加した行
+  //                  print(fX.pointee,fY.pointee)
                 }
-                //1280x720
-                rectEyeb.origin.x += fx//ズラしておく
-                rectEyeb.origin.y += fy
-                rectOutb.origin.x += fx
-                rectOutb.origin.y += fy
-                CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
+                    //1280x720
+                REyeb.origin.x += fx//ズラしておく
+                REyeb.origin.y += fy
+                ROutb.origin.x += fx
+                ROutb.origin.y += fy
+                CGEyeWithBorder = cgImage.cropping(to: REyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
-                if rectOutb.origin.x > 1277 || rectOutb.origin.y + rectOutb.size.height > 720 {//ここもチェック
+                if ROutb.origin.x > 1277 || ROutb.origin.y + ROutb.size.height > 720 {//ここもチェック
                     self.calcFlag = false
                     break
                 }
-                if outerdy != 0{
+                if outerborder != 0{
                     self.openCV.matching(UIEyeWithBorder, narrow: UIEye10, x: eX, y: eY)
-                    CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
+                    CGOuterWithBorder = cgImage.cropping(to: ROutb)!//ROuterWithBorder)!
                     UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
                     self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
                 }else{
@@ -576,8 +588,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                         usleep(1)
                 }
-                rectFacb.origin.x += fx
-                rectFacb.origin.y += fy
+                RFacb.origin.x += fx
+                RFacb.origin.y += fy
                 REye10.origin.x += fx
                 REye10.origin.y += fy
                 ROuter.origin.x += fx
@@ -585,7 +597,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 #if DEBUG
                 print("--------",ROuter.origin.x,ROuter.origin.y)
                 #endif
-                if outerdy != 0{//vHITならクロップして置く。そのレクトのイメージを得る。
+                if outerborder != 0{//vHITならクロップして置く。そのレクトのイメージを得る。
                     CGEye10 = cgImage.cropping(to: REye10)
                     UIEye10 = UIImage.init(cgImage: CGEye10, scale:1.0, orientation:orientation)
                     CGOuter = cgImage.cropping(to: ROuter)
@@ -593,39 +605,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 let eyeP=CGFloat(eY.pointee) - CGFloat(self.eyeBorder) + 10
                 self.vHITeyePos.append(eyeP)
-                if outerdy == 0{
-                    eye5=2.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - CGFloat(self.eyeBorder) + 10))
+                if outerborder == 0{
+                    eye5=2.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - offsetEye))
+                    //print(eY.pointee)
                 }else{
-                    eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - CGFloat(self.eyeBorder) + 10))
+                    eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - offsetEye))
+                    //print(eY.pointee) 77
                 }
+                //
+                //print(eY.pointee,self.eyeBorder)
                 self.vHITeye5.append(eye5)
                 self.vHITeye.append(eye5)
                 if vHITcnt > 5{
                     self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
                 }
                 
-//                UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
-//                //                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
-//                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-//                
-//                //self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee) - eyedy))// - fy))
-//                //self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
-//                let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy))
-//                self.vHITeye5.append(eye5)
-//                self.vHITeye.append(eye5)//12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy)))// - fy)))
-//                if vHITcnt > 5{
-//                    self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
-//                }
-//                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy))// - fy))
-//                self.vHITouter.append(outer5)
-//                self.vHITouter5.append(outer5)
-//                if vHITcnt > 5{
-//                    self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
-//                }
-                
-                
-                if outerdy != 0{
-                    let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy))
+                if outerborder != 0{
+                    let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - offsetOut))
                     self.vHITouter.append(outer5)
                     self.vHITouter5.append(outer5)
                     if vHITcnt > 5{
@@ -651,7 +647,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
     }
-    
+    func printRect(r1 :CGRect,r2:CGRect){
+        print(Int(r1.origin.x),Int(r1.origin.y),Int(r1.size.width),Int(r1.size.height),",",Int(r2.origin.x),Int(r2.origin.y),Int(r2.size.width),Int(r2.size.height))
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
   //      print("willappear")
