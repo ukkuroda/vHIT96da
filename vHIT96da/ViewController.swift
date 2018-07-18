@@ -603,6 +603,27 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if vHITcnt > 5{
                     self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
                 }
+                
+//                UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
+//                //                UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
+//                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
+//                
+//                //self.vHITeyeOrg.append(12.0*(CGFloat(eY.pointee) - eyedy))// - fy))
+//                //self.vHITouterOrg.append(Int(oY.pointee) - outerdxInt - fy)
+//                let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy))
+//                self.vHITeye5.append(eye5)
+//                self.vHITeye.append(eye5)//12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy)))// - fy)))
+//                if vHITcnt > 5{
+//                    self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
+//                }
+//                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy))// - fy))
+//                self.vHITouter.append(outer5)
+//                self.vHITouter5.append(outer5)
+//                if vHITcnt > 5{
+//                    self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
+//                }
+                
+                
                 if outerdy != 0{
                     let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy))
                     self.vHITouter.append(outer5)
