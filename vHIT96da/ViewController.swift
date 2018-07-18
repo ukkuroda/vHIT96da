@@ -390,11 +390,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
-  //      let eyedx:CGFloat = 0//CGFloat(eyeBorder)
         let eyeborder:CGFloat = CGFloat(eyeBorder)
         let faceborder:CGFloat = CGFloat(faceBorder)
-  //      let faceborder:CGFloat = 4 * CGFloat(faceBorder)
- //       let outerdx:CGFloat = 0//CGFloat(outerBorder)
         let outerborder:CGFloat = CGFloat(outerBorder)
         self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
@@ -491,8 +488,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var REyeb = resizeRect(rectEyeb, onViewBounds:self.slowImage.frame, toImage:cgImage)
         var RFacb = resizeRect(rectFaceb, onViewBounds:self.slowImage.frame, toImage:cgImage)
         var ROutb = resizeRect(rectOutb, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        let offsetEye = (REyeb.size.height-REye10.size.height)/2
-        let offsetOut = (ROutb.size.height-ROuter.size.height)/2
+        let offsetEye = CGFloat(Int((REyeb.size.height-REye10.size.height)/2))
+        let offsetOut = CGFloat(Int((ROutb.size.height-ROuter.size.height)/2))
+        let offsetFace = CGFloat(Int((RFacb.size.height-RFace.size.height)/2))
+        let offsetFacX = CGFloat(Int((RFacb.size.width-RFace.size.width)/2))
+  //      print(offsetFace,offsetFacX)
   //      print (offsetEye,offsetOut)
  //       printRect(r1:rectFace,r2:rectFaceb)
  //       printRect(r1:rectEye10,r2:rectEyeb)
@@ -558,10 +558,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
                     self.openCV.matching(UIFaceWithBorder, narrow:UIFaceorg, x:fX, y:fY)
                     //self.printRect(r1: RFacb, r2: RFace)
-                    //ここでは帰ってくる値はresizeする前のサイズのようだが、eyeのところではresizeしたサイズで帰ってくる？？？
-                    fy = CGFloat(fY.pointee) - 4*faceborder//100倍しても関係なさそう。fYはIntっぽい？
-                    fx = CGFloat(fX.pointee) - faceborder//fastKumamonで追加した行
-  //                  print(fX.pointee,fY.pointee)
+                    //print(fX.pointee,fY.pointee)
+                    fy = CGFloat(fY.pointee) - offsetFace// 4*faceborder//100倍しても関係なさそう。fYはIntっぽい？
+                    fx = CGFloat(fX.pointee) - offsetFacX//faceborder//fastKumamonで追加した行
+                    //print(fX.pointee,fY.pointee)
                 }
                     //1280x720
                 REyeb.origin.x += fx//ズラしておく
@@ -603,7 +603,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     CGOuter = cgImage.cropping(to: ROuter)
                     UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
                 }
-                let eyeP=CGFloat(eY.pointee) - CGFloat(self.eyeBorder) + 10
+                let eyeP=CGFloat(eY.pointee) - offsetEye
                 self.vHITeyePos.append(eyeP)
                 if outerborder == 0{
                     eye5=2.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - offsetEye))
