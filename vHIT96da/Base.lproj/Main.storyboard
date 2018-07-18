@@ -630,7 +630,7 @@
                                     <constraint firstAttribute="height" constant="40" id="Glv-kN-zYh"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="VOGa" backgroundImage="btn">
+                                <state key="normal" title="VOG" backgroundImage="btn">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -644,7 +644,7 @@
                                     <constraint firstAttribute="height" constant="40" id="isG-ml-cOe"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="VOGb" backgroundImage="btn">
+                                <state key="normal" title="VOG1" backgroundImage="btn">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
