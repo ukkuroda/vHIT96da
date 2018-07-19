@@ -536,6 +536,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             var fx:CGFloat = 0
             var fy:CGFloat = 0
             var eye5:CGFloat = 0
+            var eyeP:CGFloat = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
                 if self.calcFlag == false {
                     break
@@ -574,13 +575,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     self.calcFlag = false
                     break
                 }
-                if outerborder != 0{
+                if outerborder != 0{//vHIT
                     self.openCV.matching(UIEyeWithBorder, narrow: UIEye10, x: eX, y: eY)
                     CGOuterWithBorder = cgImage.cropping(to: ROutb)!//ROuterWithBorder)!
                     UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
                     self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
-                }else{
+                }else{//VOG:左を向いている時はUIEyeLorg,右を向いている時はUIEyeRorgでやって見るつもり。
                     self.openCV.matching(UIEyeWithBorder, narrow: UIEye10org, x: eX, y: eY)
+                    eyeP=CGFloat(eY.pointee) - offsetEye
+                    self.vHITeyePos.append(eyeP)
                 }
                 #if DEBUG
                     print(vHITcnt,Int(eY.pointee),Int(fY.pointee),Int(oY.pointee))
@@ -602,15 +605,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     UIEye10 = UIImage.init(cgImage: CGEye10, scale:1.0, orientation:orientation)
                     CGOuter = cgImage.cropping(to: ROuter)
                     UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                }
-                let eyeP=CGFloat(eY.pointee) - offsetEye
-                self.vHITeyePos.append(eyeP)
-                if outerborder == 0{
-                    eye5=2.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - offsetEye))
-                    //print(eY.pointee)
-                }else{
                     eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - offsetEye))
                     //print(eY.pointee) 77
+                }else{//VOG
+                    eye5=2.0*(self.Kalupdate1(measurement: eyeP))//CGFloat(eY.pointee) - offsetEye))
+                    //print(eY.pointee)
                 }
                 //
                 //print(eY.pointee,self.eyeBorder)
@@ -620,7 +619,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
                 }
                 
-                if outerborder != 0{
+                if outerborder != 0{//vHIT
                     let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - offsetOut))
                     self.vHITouter.append(outer5)
                     self.vHITouter5.append(outer5)
@@ -628,7 +627,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
                     }
                 }else{//eyeの角速度をouterに入れる
-                    let eyeP5=20.0*(self.Kalupdate(measurement: eyePlast - eyeP))
+                    let eyeP5=20.0*(self.Kalupdate(measurement: eyeP - eyePlast))
                     self.vHITouter.append(eyeP5)
                     self.vHITouter5.append(eyeP5)
                     if vHITcnt > 5{
