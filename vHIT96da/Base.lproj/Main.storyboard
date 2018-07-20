@@ -722,7 +722,10 @@
                     <connections>
                         <outlet property="eyeBinput" destination="wHd-Gu-5nW" id="Jjd-FR-sCv"/>
                         <outlet property="eyeRatioinput" destination="2b1-ge-IVn" id="7yl-ln-hlg"/>
+                        <outlet property="eyen" destination="tWF-A9-5II" id="gmh-an-eGM"/>
                         <outlet property="faceBinput" destination="clc-JS-Bam" id="PGf-ef-t85"/>
+                        <outlet property="faceb" destination="NMH-1D-eWf" id="PYH-Vt-Qcf"/>
+                        <outlet property="flat1" destination="srl-OW-f1c" id="YqQ-HD-ggi"/>
                         <outlet property="flatSuminput" destination="O7P-AP-fl8" id="45q-6e-kpP"/>
                         <outlet property="keyDown" destination="pMb-F1-KQb" id="9ax-j5-bsU"/>
                         <outlet property="labelEye" destination="icf-go-ZXT" id="L7X-TS-ij7"/>
@@ -730,7 +733,13 @@
                         <outlet property="labelOuter" destination="Pqs-uv-FDI" id="Txa-sZ-A0Y"/>
                         <outlet property="outerBinput" destination="FSt-pQ-nLm" id="CZr-cS-h0G"/>
                         <outlet property="outerRatioinput" destination="PBe-Ga-pXd" id="sQ6-j8-7Om"/>
+                        <outlet property="outerb" destination="8cN-2j-pVR" id="sTp-Ue-0Rn"/>
+                        <outlet property="outern" destination="Wre-qf-59d" id="kHj-lN-nvL"/>
+                        <outlet property="slope4" destination="qsU-FA-btD" id="1bs-4Z-VNx"/>
                         <outlet property="updownPointinput" destination="BtS-x5-rPf" id="9bI-Lh-6xO"/>
+                        <outlet property="vhitpng" destination="EJg-35-yLr" id="juY-rW-Ebq"/>
+                        <outlet property="wave2" destination="9oE-gN-h2Z" id="qMK-Ov-KbS"/>
+                        <outlet property="wave3" destination="sxp-7B-zQB" id="ZV0-Py-rWK"/>
                         <outlet property="wavePeakinput" destination="qd9-uN-Ocb" id="Qzy-EJ-Gvb"/>
                         <outlet property="waveWidthinput" destination="yIp-mP-SHA" id="EgU-x1-BK1"/>
                     </connections>
