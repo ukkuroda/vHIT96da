@@ -323,7 +323,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
                 //       print("OKが押された")
                 if self.outerBorder != 0{
-                    self.vHITcalc()
+                    self.vHITcalc_sub_old()
                 }else{
                     self.VOGcalc()
                 }
@@ -333,7 +333,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             self.present(alert, animated: true, completion: nil)
         }else{
             if outerBorder != 0 {
-                vHITcalc()
+                vHITcalc_sub_old()
             }else{
                 VOGcalc()
             }
@@ -368,6 +368,177 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //print(avasset.metadata[0].stringValue!)
         }else{
             slowvideoAdd = " "
+        }
+    }
+    func vHITcalc_sub_old(){
+        dispOrgflag = false
+        stopButton.isHidden = false
+        stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
+        stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
+        stopButton.frame.size.width = calcButton.frame.size.width
+        stopButton.frame.size.height = calcButton.frame.size.height
+        calcButton.isEnabled = false
+        calcFlag = true
+        listButton.isEnabled = false
+        paraButton.isEnabled = false
+        saveButton.isEnabled = false
+        waveButton.isEnabled = false
+        helpButton.isEnabled = false
+        playButton.isEnabled = false
+        vHITouter.removeAll()
+        vHITeye.removeAll()
+        vHITeye5.removeAll()
+        vHITouter5.removeAll()
+        var vHITcnt:Int = 0
+        timercnt = 0
+        if lineView != nil{//これが無いとエラーがでる。
+            lineView?.removeFromSuperview()//realwaveを消す
+        }
+        openCVstopFlag = false
+        UIApplication.shared.isIdleTimerDisabled = true
+        let eyedx:CGFloat = CGFloat(eyeBorder)
+        let eyedy:CGFloat = 4 * CGFloat(eyeBorder)
+        let facedx:CGFloat = CGFloat(faceBorder)
+        let facedy:CGFloat = 4 * CGFloat(faceBorder)
+        let outerdx:CGFloat = CGFloat(outerBorder)
+        let outerdy:CGFloat = 4 * CGFloat(outerBorder)
+        self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
+        self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+        drawBoxies()
+        startTimer()//resizerectのチェックの時はここをコメントアウト*********************
+        let fileURL = URL(fileURLWithPath: slowvideoPath)
+        getAddress()
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
+        let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
+        calcDate = videoDate.text!
+        var reader: AVAssetReader! = nil
+        do {
+            reader = try AVAssetReader(asset: avAsset)
+        } catch {
+              return
+        }
+        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+             return
+        }
+        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+        reader.add(readerOutput)
+        reader.startReading()
+        let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let fX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let fY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let oX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let oY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        var CGEye:CGImage!
+        let CGFace:CGImage!
+        var CGOuter:CGImage!
+        var CGEyeWithBorder:CGImage!
+        var CGFaceWithBorder:CGImage!
+        var CGOuterWithBorder:CGImage!
+        var UIEye:UIImage!
+        var UIEyeWithBorder:UIImage!
+        let UIFace:UIImage!
+        var UIFaceWithBorder:UIImage!
+        var UIOuter:UIImage!
+        var UIOuterWithBorder:UIImage!
+        let context:CIContext = CIContext.init(options: nil)
+        let orientation = UIImageOrientation.right
+        let sample = readerOutput.copyNextSampleBuffer()
+        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+        var REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        var rectEyeb = getWiderect(rect: REye, dx: 0*eyedx, dy: eyedy)//3
+        var rectFacb = getWiderect(rect: RFace, dx: facedx, dy: facedy)//facedx=20(faceborder*4) facedy=5(faceborder)
+        var rectOutb = getWiderect(rect: ROuter, dx: 0*outerdx, dy: outerdy)//10
+        eyeCropView.frame=rectEye
+        faceCropView.frame=rectFace
+        outerCropView.frame=rectOuter
+        CGEye = cgImage.cropping(to: REye)
+        CGFace = cgImage.cropping(to: RFace)
+        CGOuter = cgImage.cropping(to: ROuter)
+        UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
+        UIFace = UIImage.init(cgImage: CGFace, scale:1.0, orientation:orientation)
+        UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
+        while reader.status != AVAssetReaderStatus.reading {
+            sleep(UInt32(0.1))
+        }
+        DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
+            var fx:CGFloat = 0
+            var fy:CGFloat = 0
+            while let sample = readerOutput.copyNextSampleBuffer() {
+                if self.calcFlag == false {
+                    break
+                }
+                let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!
+                let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+                let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+                //画像を縦横変換するならこの位置でCIImage.oriented()を使う？
+                if facedx == 0{//顔の動きをチェックしない
+                    fx = 0
+                    fy = 0
+                }else{
+                    if rectFacb.origin.y < 0 || rectFacb.origin.y + rectFacb.size.height>720 {//checkはこれだけでいいか？
+                        self.calcFlag = false
+                        break
+                    }
+                    CGFaceWithBorder = cgImage.cropping(to: rectFacb)!
+                    UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+                    self.openCV.matching(UIFaceWithBorder, narrow:UIFace, x:fX, y:fY)
+                    fy = CGFloat(fY.pointee) - facedy//100倍しても関係なさそう。fYはIntっぽい？
+                    fx = CGFloat(fX.pointee) - facedx//fastKumamonで追加した行
+                }
+                rectEyeb.origin.x += fx//ズラしておく
+                rectEyeb.origin.y += fy
+                rectOutb.origin.x += fx
+                rectOutb.origin.y += fy
+                CGEyeWithBorder = cgImage.cropping(to: rectEyeb)!//ciimageからcrop
+                UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)//UIImage変換
+                if rectOutb.origin.x > 1277 || rectOutb.origin.y + rectOutb.size.height > 720 {//ここもチェック
+                    self.calcFlag = false
+                    break
+                }
+                CGOuterWithBorder = cgImage.cropping(to: rectOutb)!//ROuterWithBorder)!
+                UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
+                self.openCV.matching(UIEyeWithBorder, narrow:UIEye, x:eX, y:eY)
+                self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
+                while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
+                    usleep(1)
+                }
+                rectFacb.origin.x += fx
+                rectFacb.origin.y += fy
+                REye.origin.x += fx
+                REye.origin.y += fy
+                ROuter.origin.x += fx
+                ROuter.origin.y += fy
+                CGEye = cgImage.cropping(to: REye)
+                CGOuter = cgImage.cropping(to: ROuter)
+                UIEye = UIImage.init(cgImage: CGEye, scale:1.0, orientation:orientation)
+                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
+                let eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy))
+                self.vHITeye5.append(eye5)
+                self.vHITeye.append(eye5)//12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - eyedy)))// - fy)))
+                if vHITcnt > 5{
+                    self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
+                }
+                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - outerdy))// - fy))
+                self.vHITouter.append(outer5)
+                self.vHITouter5.append(outer5)
+                if vHITcnt > 5{
+                    self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
+                }
+                vHITcnt += 1
+                while reader.status != AVAssetReaderStatus.reading {
+                    sleep(UInt32(0.1))
+                }
+            }
+            self.calcFlag = false
+            if self.getLines() > 0{
+                self.nonsavedFlag = true
+            }
         }
     }
     func vHITcalc_sub_orig(){
