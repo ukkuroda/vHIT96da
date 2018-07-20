@@ -143,9 +143,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         wavePeak = 15
         updownPgap = 6
         //       peakWidth = 23
-        eyeBorder = 50
-        faceBorder = 5
-        outerBorder = 40
+        eyeBorder = 10
+        faceBorder = 8
+        outerBorder = 30
         eyeRatio = 100
         outerRatio = 100
         //        let ratioW = self.view.bounds.width/375.0//6s
