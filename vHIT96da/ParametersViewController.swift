@@ -66,69 +66,70 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBAction func tapBack(_ sender: Any) {
         numpadOff(0)
     }
-    func showParams(show:Bool){
-        if show == true{
-            vhitpng.isHidden=false
-            flat1.isHidden=false
-            wave2.isHidden=false
-            wave3.isHidden=false
-            slope4.isHidden=false
- //           eyen.isHidden=false
-            outern.text="outer n/100"
- //           outern.isHidden=false
- //           faceb.isHidden=false
-            outerb.isHidden=false
- //           labelFace.isHidden=false
-            labelOuter.isHidden=false
-            flatSuminput.isHidden=false
-            waveWidthinput.isHidden=false
-            wavePeakinput.isHidden=false
-            updownPointinput.isHidden=false
- //           faceBinput.isHidden=false
-            outerBinput.isHidden=false
-//            eyeRatioinput.isHidden=false
-//            outerRatioinput.isHidden=false
-            
-        }else{
-            vhitpng.isHidden=true
-            flat1.isHidden=true
-            wave2.isHidden=true
-            wave3.isHidden=true
-            slope4.isHidden=true
- //           eyen.isHidden=true
-            outern.text="speed n/100"//isHidden=true
- //           faceb.isHidden=true
-            outerb.isHidden=true
- //           labelFace.isHidden=true
-            labelOuter.isHidden=true
-            flatSuminput.isHidden=true
-            waveWidthinput.isHidden=true
-            wavePeakinput.isHidden=true
-            updownPointinput.isHidden=true
-  //          faceBinput.isHidden=true
-            outerBinput.isHidden=true
-  //          eyeRatioinput.isHidden=true
-  //          outerRatioinput.isHidden=true
-     }
-    }
-    @IBAction func setVog(_ sender: Any) {
-        faceBorder = 0
-        outerBorder = 0
-        dispParam()
-        showParams(show: false)
-    }
-    @IBAction func setVOGb(_ sender: Any) {
-        faceBorder = 8
-        outerBorder = 0
-        dispParam()
-        showParams(show: false)
-     }
-    @IBAction func setVhit(_ sender: Any) {
-        faceBorder = 8
-        outerBorder = 30
-        dispParam()
-        showParams(show: true)
-    }
+//    func showParams(show:Bool){
+//        if show == true{
+//            vhitpng.isHidden=false
+//            flat1.isHidden=false
+//            wave2.isHidden=false
+//            wave3.isHidden=false
+//            slope4.isHidden=false
+// //           eyen.isHidden=false
+//            outern.text="outer n/100"
+// //           outern.isHidden=false
+//            faceb.isHidden=false
+//            outerb.isHidden=false
+//            faceBinput.isHidden=false
+//           labelFace.isHidden=false
+//            labelOuter.isHidden=false
+//            flatSuminput.isHidden=false
+//            waveWidthinput.isHidden=false
+//            wavePeakinput.isHidden=false
+//            updownPointinput.isHidden=false
+//              outerBinput.isHidden=false
+//
+//        }else{
+//            vhitpng.isHidden=true
+//            flat1.isHidden=true
+//            wave2.isHidden=true
+//            wave3.isHidden=true
+//            slope4.isHidden=true
+// //           eyen.isHidden=true
+//            outern.text="speed n/100"//isHidden=true
+//            faceb.isHidden=true
+//            faceBinput.isHidden=true
+//           outerb.isHidden=true
+//            labelFace.isHidden=true
+//            labelOuter.isHidden=true
+//            flatSuminput.isHidden=true
+//            waveWidthinput.isHidden=true
+//            wavePeakinput.isHidden=true
+//            updownPointinput.isHidden=true
+//             outerBinput.isHidden=true
+//       }
+//    }
+//    @IBAction func setVog(_ sender: Any) {
+//        faceBorder = 0
+//        outerBorder = 0
+//        dispParam()
+//        showParams(show: false)
+//        
+//    }
+//    @IBAction func setVOGb(_ sender: Any) {
+//        faceBorder = 8
+//        outerBorder = 0
+//        dispParam()
+//        showParams(show: false)
+//        faceb.isHidden=false
+//        faceBinput.isHidden=false
+//        labelFace.isHidden=false
+//
+//     }
+//    @IBAction func setVhit(_ sender: Any) {
+//        faceBorder = 8
+//        outerBorder = 30
+//        dispParam()
+//        showParams(show: true)
+//    }
     @IBAction func numpadOff(_ sender: Any) {
  //       flatWidthinput.endEditing(true)
         flatSuminput.endEditing(true)
@@ -211,7 +212,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         //        self.rectFace = CGRect(x:167*ratioW,y:328*ratioH,width:77*ratioW,height:27*ratioH)
         //        self.rectOuter = CGRect(x:140*ratioW,y:510*ratioH,width:110*ratioW,height:10*ratioH)
         dispParam()
-        showParams(show: true)
+ //       showParams(show: true)
         
     }
     func Field2value(field:UITextField) -> Int {

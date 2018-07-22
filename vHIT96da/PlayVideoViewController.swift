@@ -29,7 +29,7 @@ class PlayVideoViewController: UIViewController {
         self.view.addSubview(playerController.view)
         playerController.view.frame = self.view.frame
         player.play()
-        
+      //chotto
         //print(videoPath)
         // Do any additional setup after loading the view.
     }
