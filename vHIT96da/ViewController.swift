@@ -110,8 +110,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var slowVideoCurrent:Int = 0
     var waveCurrpoint:Int = 0//現在表示波形の視点（アレイインデックス）
     var slowImgs = Array<UIImage>()
+    
+    var slowPath = Array<String>()
+    var slowDate = Array<String>()
+    var slowDura = Array<String>()
+    var slowFrames = Array<UIImage>()
+
     var slowvideoPath:String = ""
     var slowvideoAdd:String = ""
+    var startPoint:Int = 0
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
@@ -132,6 +139,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var eyeCropView: UIImageView!
     @IBOutlet weak var faceCropView: UIImageView!
     @IBOutlet weak var outerCropView: UIImageView!
+    
+    @IBOutlet weak var nextVideoOutlet: UIButton!
+    
+    @IBOutlet weak var backVideoOutlet: UIButton!
+    
+    
     var rectEye = CGRect(x:0,y:0,width:0,height:0)
     var rectFace = CGRect(x:0,y:0,width:0,height:0)
     var rectOuter = CGRect(x:0,y:0,width:0,height:0)
@@ -169,6 +182,41 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var timer: Timer!
     var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
     
+    @IBAction func backVideo(_ sender: Any) {
+        if vHITlineView?.isHidden == false{
+            return
+        }
+        slowVideoCurrent -= 1
+        if slowVideoCurrent < 0 {
+            slowVideoCurrent = slowVideoCnt
+        }
+//        print(slowVideoCurrent, slowDate[slowVideoCurrent])
+        slowImage.image = slowImgs[slowVideoCurrent]
+        videoDate.text=slowDate[slowVideoCurrent]
+        startPoint=0
+    }
+    @IBAction func nextVideo(_ sender: Any) {
+        if vHITlineView?.isHidden == false{
+            return
+        }
+        slowVideoCurrent += 1
+        if slowVideoCurrent > slowVideoCnt{
+            slowVideoCurrent = 0
+        }
+ //       print(slowVideoCurrent, slowDate[slowVideoCurrent])
+        slowImage.image = slowImgs[slowVideoCurrent]
+  
+        videoDate.text=slowDate[slowVideoCurrent]
+        startPoint=0
+    }
+    
+//
+//
+//    @IBAction func backVideo(_ sender: Any) {
+//    }
+//
+//    @IBAction func nextVideo(_ sender: Any) {
+//    }
     func getWiderect(rect:CGRect,dx:CGFloat,dy:CGFloat) -> CGRect {
         // 横と縦が入れ替わっている
         var newrect:CGRect = CGRect(x:0,y:0,width:0,height:0)
@@ -321,9 +369,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //            }
         }
     }
-    func getAddress(){
+    func getAddress(num:Int){
         //self.slowvideoPath = tokenKeys[8]
-        let url = NSURL(fileURLWithPath: slowvideoPath)
+        let url = NSURL(fileURLWithPath: slowPath[num])
         let avasset = AVAsset(url: url as URL)
         let loc = avasset.metadata[0].stringValue!
         //+33.1755+130.4922+013.299/
@@ -354,6 +402,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
 
     func vHITcalc(){
+        getAddress(num:slowVideoCurrent)//ちょっと時間が掛かるのでここに
+        //        print("address****:",slowvideoAdd)
         dispOrgflag = false
         stopButton.isHidden = false
         stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
@@ -388,11 +438,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         drawBoxies()
         startTimer()//resizerectのチェックの時はここをコメントアウト*********************
-        let fileURL = URL(fileURLWithPath: slowvideoPath)
-        getAddress()
+        let fileURL = URL(fileURLWithPath: slowPath[slowVideoCurrent])
+
+        //slowvideoAdd にアドレスが入る
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
         let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-        
+        let sec10 = Int(10*avAsset.duration.seconds)
+        let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
+        slowDura[slowVideoCurrent]=temp
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
         do {
@@ -456,8 +509,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
         let context:CIContext = CIContext.init(options: nil)
         let orientation = UIImageOrientation.right
-        
-        let sample = readerOutput.copyNextSampleBuffer()
+        var sample:CMSampleBuffer!
+//        let sample = readerOutput.copyNextSampleBuffer()
+        for _ in 0...(startPoint) {
+            sample = readerOutput.copyNextSampleBuffer()
+            while reader.status != AVAssetReaderStatus.reading {
+                sleep(UInt32(0.1))
+            }
+            
+        }
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         //おそらくCIImage->CGImageが重いのでCGImageにしてからcropする。
@@ -1099,6 +1159,59 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
      }
     func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
+        //print("**::;setVideopathdate")
+        if num == 0{
+            //slowvideoPath = Bundle.main.path(forResource: "vhit20", ofType: "mov")!
+            slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
+            //videoDate.text = "VOG video : sample"
+            slowDate.append("vHIT video : sample")
+            //videoDuration = "2.5s"
+            slowDura.append("2.5s")
+            //            freecntLabel.text = "\(freeCounter)"
+            return
+        }
+        // スロービデオのアルバムを取得
+        let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
+        let assetCollection = result.firstObject;
+        // アルバムからアセット一覧を取得
+        let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
+        if num > fetchAssets.count {//その番号のビデオがないとき
+            return
+        }
+        // アセットを取得
+        let asset = fetchAssets.object(at: num-1)
+        let option = PHVideoRequestOptions()
+        //print(Int(10*asset.duration))
+        let sec10 = Int(10*asset.duration)
+        //videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
+        let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
+        slowDura.append(temp)
+        let dateFormatter = DateFormatter()
+        //To prevent displaying either date or time, set the desired style to NoStyle.
+        dateFormatter.timeStyle = .medium //Set time style
+        dateFormatter.dateStyle = .medium //Set date style
+        dateFormatter.timeZone = NSTimeZone() as TimeZone?//TimeZone(identifier: "ja")
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let localDate = dateFormatter.string(from: asset.creationDate!)
+        //       videoDate.text = localDate + " (\(num))"
+        slowDate.append(localDate + " (\(num))")
+        //       freecntLabel.text = "\(freeCounter)"
+        // アセットの情報を取得
+        PHImageManager.default().requestAVAsset(forVideo: asset,
+                                                options: option,
+                                                resultHandler: { (avAsset, audioMix, info) in
+                                                    if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
+                                                        let tokenKeys = tokenStr.components(separatedBy: ";")
+                                                        self.slowvideoPath = tokenKeys[8]
+                                                        self.slowPath.append(self.slowvideoPath)
+                                                        //   let temp = self.getThumbnailFrom(path: tokenKeys[8])
+                                                        //   self.slowImgs.append(temp!)
+                                                    }
+        })
+    }
+    
+   /*
+ func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスをslowvideoPathにセットする
         if num == 0{
             slowvideoPath = Bundle.main.path(forResource: "vhit20", ofType: "mov")!
             videoDate.text = "vHIT video : sample"
@@ -1140,7 +1253,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                     }
         })
     }
- 
+ */
     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
             return UserDefaults.standard.integer(forKey:str)
@@ -1295,7 +1408,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawPath.stroke()
         drawPath2.stroke()
         //print(videoDuration)
-        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,videoDuration,timercnt+1)
+        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,slowDura[slowVideoCurrent],timercnt+1)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
@@ -1473,28 +1586,67 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    func setslowImgs(){
-        slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
-        slowImgs.removeAll()
-        for i in 0...slowVideoCnt{
-            slowImgs.append(getSlowimg(num: i))
-        }
-    }
     @objc func viewWillEnterForeground(_ notification: Notification?) {
         if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
             setslowImgs()
             freeCounter += 1
             UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-            
             if slowVideoCurrent > slowVideoCnt{
                 slowVideoCurrent = slowVideoCnt
             }
-            setVideoPathDate(num: slowVideoCurrent)
             if dispOrgflag == true{
                 dispOrgflag = false//Kalman filtered dataを表示
                 calcDrawVHIT()
             }
+            showCurrent()
         }
+    }
+    func getThumbnailFrom(path: String) -> UIImage? {
+        let url = NSURL(fileURLWithPath: path)
+        do {
+            
+            let asset = AVURLAsset(url: url as URL , options: nil)
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            imgGenerator.appliesPreferredTrackTransform = true
+            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+            let thumbnail = UIImage(cgImage: cgImage)
+            
+            return thumbnail
+            
+        } catch let error {
+            
+            print("*** Error generating thumbnail: \(error.localizedDescription)")
+            return nil
+            
+        }
+        
+    }
+    func setslowImgs(){
+        slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
+        slowImgs.removeAll()
+        slowPath.removeAll()
+        slowDate.removeAll()
+        slowDura.removeAll()
+        for i in 0...slowVideoCnt{
+  //          sleep(UInt32(0.1))
+            setVideoPathDate(num: i)
+ //           print("num***:",i)
+            //ここでslowDate,slowPath,slowDura,slowImgsをappend
+            //ここでslowPathだけappendして見る。他はダミー
+        }
+        for i in 0...slowVideoCnt{
+ //           print("num2**:",i,slowPath[i])
+            //setVideoPathDatではslowImgsのappendは無理なのでここで
+            slowImgs.append(getThumbnailFrom(path: slowPath[i])!)
+ //           print(i,slowDate[i])
+            //ここでslowpath以外をappendして見る。
+            //appendThumbetc(num:i)
+        }
+    }
+    func showCurrent(){
+        slowImage.image = slowImgs[slowVideoCurrent]
+        videoDate.text = slowDate[slowVideoCurrent]
+        freecntLabel.text = "\(freeCounter)"
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -1514,9 +1666,30 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         dispWakus()
         setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
-  //       print("count",slowVideoCnt)
-        setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
-        slowImage.image = slowImgs[slowVideoCurrent]
+ //       print(slowVideoCurrent)
+        showCurrent()
+  //      setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+  //      slowImage.image = slowImgs[slowVideoCurrent]
+        
+  /*
+ NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+ stopButton.isHidden = true
+ getUserDefaults()
+ freeCounter += 1
+ boxHeight=view.bounds.height*180/500
+ mailWidth=240*10
+ mailHeight=240*10*boxHeight/view.bounds.width
+
+ setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
+ slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
+ //slowImage.image = slowImgs[slowVideoCurrent]
+ showCurrent()
+         */
+        
+        
+        
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -1549,7 +1722,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #endif
         }else if let vc = segue.destination as? PlayVideoViewController{
             let Controller:PlayVideoViewController = vc
-            Controller.videoPath = slowvideoPath
+            
+            Controller.videoPath = slowPath[slowVideoCurrent]
+            //           Controller.videoDuration = slowDura[slowVideoCurrent]
+            Controller.currPos = 0
+            Controller.videoDateNum = slowDate[slowVideoCurrent]
+            
+            
+  //          Controller.videoPath = slowvideoPath
        //     Controller.videoDate = videoDate.text!
         }else{
             #if DEBUG
@@ -1593,10 +1773,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
-        }else if segue.source is PlayVideoViewController{
-            #if DEBUG
-            print("tatsuaki-unwind from playvideo")
-            #endif
+        }else if let vc = segue.source as? PlayVideoViewController{
+            let Controller:PlayVideoViewController = vc
+            startPoint = Controller.currPos*24
+            slowImage.image = Controller.playImage.image
+            
+            if vHITboxView?.isHidden == false{
+                vHITboxView?.isHidden = true
+                boxView?.isHidden = true
+                vHITlineView?.isHidden = true
+                lineView?.isHidden = true
+            }
+            
+            // #if DEBUG
+            print("tatsuaki-unwind from playvideo",startPoint)
+            // #endif
+
         }else{
             #if DEBUG
             print("tatsuaki-unwind from list")
@@ -1758,6 +1950,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     var lastslowVideo:Int = -2
     var lastwavePoint:Int = -2
+    var lastmoveX:Int = -2
     @IBAction func panGesture(_ sender: UIPanGestureRecognizer) {
         if calcFlag == true{
             return
@@ -1771,25 +1964,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }else{
                 //ここでslowvideoを描画してみようか
                 if lastslowVideo != slowVideoCurrent{
-                    setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
-                    setslowImage()//.image = slowImgs[slowVideoCurrent]
-                    lastslowVideo = slowVideoCurrent//       print(slowvideoPath)
+  //                  setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
+  //                  setslowImage()//.image = slowImgs[slowVideoCurrent]
+  //                  lastslowVideo = slowVideoCurrent//       print(slowvideoPath)
                 }
-                if slowVideoCnt > 0{//2こ以上あった時
-                    var backNum = slowVideoCurrent - 1
-                    if backNum < 0 {
-                        backNum = slowVideoCnt
-                    }      //          print("left",backNum)
-                    let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
-                    let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
-                    backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
-                    backNum = slowVideoCurrent + 1
-                    if backNum >  slowVideoCnt {
-                        backNum = 0
-                    }
-                    backImage.image = self.slowImgs[backNum]// 若番のサムネールをゲット：こちらが下、後面
-                    leftrightFlag = true
-                }
+//                if slowVideoCnt > 0{//2こ以上あった時
+//                    var backNum = slowVideoCurrent - 1
+//                    if backNum < 0 {
+//                        backNum = slowVideoCnt
+//                    }      //          print("left",backNum)
+//                    let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
+//                    let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
+//                    backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
+//                    backNum = slowVideoCurrent + 1
+//                    if backNum >  slowVideoCnt {
+//                        backNum = 0
+//                    }
+//                    backImage.image = self.slowImgs[backNum]// 若番のサムネールをゲット：こちらが下、後面
+//                    leftrightFlag = true
+//                }
                 rectType = checkWaks(po: pos)//枠設定かどうか。
  //               stPo = sender.location(in: self.view)
                 if rectType == 0 {
@@ -1802,10 +1995,20 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         } else if sender.state == .changed {
             if vHITboxView?.isHidden == false{//結果が表示されている時
-                let movex = Int(move.x/10.0)
-      //          print("all",move.x,Int(move.x/10.0),movex)
-                waveCurrpoint -= movex
-                if waveCurrpoint<0{
+                let h=Int(self.view.bounds.height)
+                var dd=Int(h - Int(pos.y))/25 + 1
+                if dd>25{
+                    dd=25
+                }
+                if Int(move.x) > lastmoveX + dd{
+                    waveCurrpoint -= dd*4
+                    lastmoveX = Int(move.x)
+                }else if Int(move.x) < lastmoveX - dd{
+                    waveCurrpoint += dd*4
+                    lastmoveX = Int(move.x)
+                }
+                //print("all",dd,Int(move.x),lastmoveX,waveCurrpoint)// Int(move.x/10.0),movex)
+                 if waveCurrpoint<0{
                     waveCurrpoint = 0
                 }else if waveCurrpoint > vHITouter.count - Int(self.view.bounds.width){
                     waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
@@ -1825,19 +2028,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     dispWakus()
                 }else{//} if slowVideoCnt > -1{
-                    if leftrightFlag == true{
-                        self.slowImage.frame.origin.x = move.x
-                        if move.x > self.view.bounds.width/3 {
-                            showNextvideo(direction: 0)
-                            self.slowImage.frame.origin.x = 0
-                            leftrightFlag = false
-                            
-                        }else if move.x < -self.view.bounds.width/3 {
-                            showNextvideo(direction: 1)
-                            self.slowImage.frame.origin.x = 0
-                            leftrightFlag = false
-                        }
-                    }
+//                    if leftrightFlag == true{
+//                        self.slowImage.frame.origin.x = move.x
+//                        if move.x > self.view.bounds.width/3 {
+//                            showNextvideo(direction: 0)
+//                            self.slowImage.frame.origin.x = 0
+//                            leftrightFlag = false
+//                            
+//                        }else if move.x < -self.view.bounds.width/3 {
+//                            showNextvideo(direction: 1)
+//                            self.slowImage.frame.origin.x = 0
+//                            leftrightFlag = false
+//                        }
+//                    }
                 }
             }
         }else if sender.state == .ended{
