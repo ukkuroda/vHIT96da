@@ -338,37 +338,65 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         stopButton.isHidden = true
         calcButton.isEnabled = true
+ //       calcButton.isHidden = false
+
         waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
     }
-    
+    func setButtons(mode:Bool){
+        if mode == true{
+            stopButton.isHidden = true
+ //           stopButton.isEnabled = false
+            calcButton.isEnabled = true
+            listButton.isEnabled = true
+            paraButton.isEnabled = true
+            saveButton.isEnabled = true
+            waveButton.isEnabled = true
+            helpButton.isEnabled = true
+            playButton.isEnabled = true
+        }else{
+            stopButton.isHidden = false
+            stopButton.isEnabled = false
+            calcButton.isEnabled = false
+            listButton.isEnabled = false
+            paraButton.isEnabled = false
+            saveButton.isEnabled = false
+            waveButton.isEnabled = false
+            helpButton.isEnabled = false
+            playButton.isEnabled = false
+        }
+    }
     @IBAction func vHITcalc(_ sender: Any) {
         setUserDefaults()
-        if nonsavedFlag == true && getLines() > 0{
+         if nonsavedFlag == true && getLines() > 0{
+            setButtons(mode: false)
+
+//            calcButton.isEnabled=false
+
             let alert = UIAlertController(
                 title: "You are erasing vHIT Data.",
                 message: "OK ?",
                 preferredStyle: .alert)
-            
             // アラートにボタンをつける
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                //       print("OKが押された")
-//                if self.outerBorder != 0{
-                    self.vHITcalc()//_sub_old()
-//                }else{
-//                    self.VOGcalc()
-//                }
+                //self.calcButton.isEnabled=true
+                self.setButtons(mode: false)
+                self.vHITcalc()
             }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler:{ action in
+       //         self.calcButton.isEnabled=true
+                self.setButtons(mode: true)
+       //         print("****cancel")
+            }))
             // アラート表示
             self.present(alert, animated: true, completion: nil)
+ //           calcButton.isEnabled=true
+        //１：直ぐここと２を通る
         }else{
-//            if outerBorder != 0 {
-                vHITcalc()//_sub_old()
-//            }else{
-//                VOGcalc()
-//            }
+            setButtons(mode: false)
+            vHITcalc()
         }
-    }
+        //２：直ぐここを通る
+     }
     func getAddress(num:Int){
         //self.slowvideoPath = tokenKeys[8]
         let url = NSURL(fileURLWithPath: slowPath[num])
@@ -402,22 +430,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
 
     func vHITcalc(){
-        getAddress(num:slowVideoCurrent)//ちょっと時間が掛かるのでここに
-        //        print("address****:",slowvideoAdd)
+        //print("******")
         dispOrgflag = false
-        stopButton.isHidden = false
+        calcFlag = true
+//        stopButton.isHidden = false
+//        calcButton.isEnabled = false
         stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
         stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
         stopButton.frame.size.width = calcButton.frame.size.width
         stopButton.frame.size.height = calcButton.frame.size.height
-        calcButton.isEnabled = false
-        calcFlag = true
-        listButton.isEnabled = false
-        paraButton.isEnabled = false
-        saveButton.isEnabled = false
-        waveButton.isEnabled = false
-        helpButton.isEnabled = false
-        playButton.isEnabled = false
+//        listButton.isEnabled = false
+//        paraButton.isEnabled = false
+//        saveButton.isEnabled = false
+//        waveButton.isEnabled = false
+//        helpButton.isEnabled = false
+//        playButton.isEnabled = false
+        slowvideoAdd=" "
+        getAddress(num:slowVideoCurrent)//ちょっと時間が掛かるのでここに、結果が出ようが出まいがすぐ帰ってくる。
+        //slowvideoAddを表示する時に、ちゃんとアドレスがセットされていることを期待して、ここに置いている。
+        //print("address****:",slowvideoAdd)
         vHITeye.removeAll()
         vHITeye5.removeAll()
         vHITeyePos.removeAll()
@@ -514,10 +545,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         for _ in 0...(startPoint) {
             sample = readerOutput.copyNextSampleBuffer()
             while reader.status != AVAssetReaderStatus.reading {
-                sleep(UInt32(0.1))
+                sleep(UInt32(0.01))
             }
             
         }
+        stopButton.isEnabled = true
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         //おそらくCIImage->CGImageが重いのでCGImageにしてからcropする。
@@ -1031,6 +1063,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             paraButton.isEnabled = true
             saveButton.isEnabled = true
             calcButton.isEnabled = true
+ //           calcButton.isHidden = false
+
             stopButton.isHidden = true
             waveButton.isEnabled = true
             helpButton.isEnabled = true
@@ -1786,7 +1820,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             
             // #if DEBUG
-            print("tatsuaki-unwind from playvideo",startPoint)
+            //print("tatsuaki-unwind from playvideo",startPoint)
             // #endif
 
         }else{
