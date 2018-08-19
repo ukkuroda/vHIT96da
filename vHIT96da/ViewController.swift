@@ -327,26 +327,27 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcFlag = false
         UIApplication.shared.isIdleTimerDisabled = false
 
-        listButton.isEnabled = true
-        paraButton.isEnabled = true
-        saveButton.isEnabled = true
-        waveButton.isEnabled = true
-        helpButton.isEnabled = true
-        playButton.isEnabled = true
+//        listButton.isEnabled = true
+//        paraButton.isEnabled = true
+//        saveButton.isEnabled = true
+//        waveButton.isEnabled = true
+//        helpButton.isEnabled = true
+//        playButton.isEnabled = true
         if timer?.isValid == true {
             timer.invalidate()
         }
-        stopButton.isHidden = true
-        calcButton.isEnabled = true
+        setButtons(mode: true)
+//        stopButton.isHidden = true
+//        calcButton.isEnabled = true
  //       calcButton.isHidden = false
 
         waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
     }
     func setButtons(mode:Bool){
         if mode == true{
-            stopButton.isHidden = true
- //           stopButton.isEnabled = false
+            calcButton.isHidden = false
             calcButton.isEnabled = true
+            stopButton.isHidden = true
             listButton.isEnabled = true
             paraButton.isEnabled = true
             saveButton.isEnabled = true
@@ -354,9 +355,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             helpButton.isEnabled = true
             playButton.isEnabled = true
         }else{
+            calcButton.isHidden = true
             stopButton.isHidden = false
             stopButton.isEnabled = false
-            calcButton.isEnabled = false
             listButton.isEnabled = false
             paraButton.isEnabled = false
             saveButton.isEnabled = false
@@ -369,27 +370,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         setUserDefaults()
          if nonsavedFlag == true && getLines() > 0{
             setButtons(mode: false)
-
-//            calcButton.isEnabled=false
-
             let alert = UIAlertController(
                 title: "You are erasing vHIT Data.",
                 message: "OK ?",
                 preferredStyle: .alert)
             // アラートにボタンをつける
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                //self.calcButton.isEnabled=true
                 self.setButtons(mode: false)
                 self.vHITcalc()
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler:{ action in
-       //         self.calcButton.isEnabled=true
                 self.setButtons(mode: true)
        //         print("****cancel")
             }))
             // アラート表示
             self.present(alert, animated: true, completion: nil)
- //           calcButton.isEnabled=true
         //１：直ぐここと２を通る
         }else{
             setButtons(mode: false)
@@ -435,10 +430,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         calcFlag = true
 //        stopButton.isHidden = false
 //        calcButton.isEnabled = false
-        stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
-        stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
-        stopButton.frame.size.width = calcButton.frame.size.width
-        stopButton.frame.size.height = calcButton.frame.size.height
+//        stopButton.frame.origin.x = buttonsWaku.frame.origin.x + calcButton.frame.origin.x
+//        stopButton.frame.origin.y = buttonsWaku.frame.origin.y + calcButton.frame.origin.y
+//        stopButton.frame.size.width = calcButton.frame.size.width
+//        stopButton.frame.size.height = calcButton.frame.size.height
 //        listButton.isEnabled = false
 //        paraButton.isEnabled = false
 //        saveButton.isEnabled = false
@@ -1059,19 +1054,20 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         if calcFlag == false {
-            listButton.isEnabled = true
-            paraButton.isEnabled = true
-            saveButton.isEnabled = true
-            calcButton.isEnabled = true
- //           calcButton.isHidden = false
-
-            stopButton.isHidden = true
-            waveButton.isEnabled = true
-            helpButton.isEnabled = true
-            playButton.isEnabled = true
+//            listButton.isEnabled = true
+//            paraButton.isEnabled = true
+//            saveButton.isEnabled = true
+//            calcButton.isEnabled = true
+// //           calcButton.isHidden = false
+//
+//            stopButton.isHidden = true
+//            waveButton.isEnabled = true
+//            helpButton.isEnabled = true
+//            playButton.isEnabled = true
   
             //if timer?.isValid == true {
             timer.invalidate()
+            setButtons(mode: true)
             //  }
             UIApplication.shared.isIdleTimerDisabled = false
             drawBoxies()

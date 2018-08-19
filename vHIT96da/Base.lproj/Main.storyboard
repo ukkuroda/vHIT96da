@@ -109,7 +109,7 @@
                                 <rect key="frame" x="20" y="614" width="335" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Afb-7h-V8u">
-                                        <rect key="frame" x="0.0" y="0.0" width="39.5" height="43"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="33" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="list" image="mail"/>
                                         <connections>
@@ -117,7 +117,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldV-kl-ghp">
-                                        <rect key="frame" x="49.5" y="0.0" width="39" height="43"/>
+                                        <rect key="frame" x="43" y="0.0" width="33.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="save" image="save"/>
                                         <connections>
@@ -125,7 +125,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q2m-D3-Mdm">
-                                        <rect key="frame" x="98.5" y="0.0" width="39.5" height="43"/>
+                                        <rect key="frame" x="86.5" y="0.0" width="33" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="disp" image="disp"/>
                                         <connections>
@@ -133,15 +133,23 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-CJ-Yxe">
-                                        <rect key="frame" x="148" y="0.0" width="39" height="43"/>
+                                        <rect key="frame" x="129.5" y="0.0" width="33" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="start"/>
                                         <connections>
                                             <action selector="vHITcalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1P8-eL-Cbp"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqt-I0-fRF">
+                                        <rect key="frame" x="172.5" y="0.0" width="33" height="43"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                        <state key="normal" image="stop"/>
+                                        <connections>
+                                            <action selector="stopCalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZYP-2r-Mah"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4bc-dn-f4s">
-                                        <rect key="frame" x="197" y="0.0" width="39.5" height="43"/>
+                                        <rect key="frame" x="215.5" y="0.0" width="33.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="play" image="play"/>
                                         <connections>
@@ -149,7 +157,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nHY-L8-P6Q">
-                                        <rect key="frame" x="246.5" y="0.0" width="39" height="43"/>
+                                        <rect key="frame" x="259" y="0.0" width="33" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="set"/>
                                         <connections>
@@ -157,7 +165,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7OA-cL-B3S">
-                                        <rect key="frame" x="295.5" y="0.0" width="39.5" height="43"/>
+                                        <rect key="frame" x="302" y="0.0" width="33" height="43"/>
                                         <state key="normal" title="Button" image="help"/>
                                         <connections>
                                             <segue destination="jcX-Lf-HTi" kind="show" id="yrV-wM-iGp"/>
@@ -211,15 +219,6 @@
                                 <rect key="frame" x="16" y="226" width="103" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqt-I0-fRF">
-                                <rect key="frame" x="157" y="544" width="60" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" image="stop"/>
-                                <connections>
-                                    <action selector="stopCalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZYP-2r-Mah"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LZQ-Ez-rYI">
                                 <rect key="frame" x="10" y="310.5" width="45" height="45"/>
                                 <constraints>
