@@ -34,8 +34,28 @@ class PlayVideoViewController: UIViewController {
     @IBOutlet weak var back1Button:UIButton!
     @IBOutlet weak var next10Button:UIButton!
     @IBOutlet weak var back10Button:UIButton!
+    func stopTimer1(){
+        if (timer1?.isValid)! {
+            timer1.invalidate()
+        }
+    }
+    @IBAction func toTop(_ sender: Any) {
+        stopTimer1()
+        currPos = 0
+        playImage.image=getFrame(n: currPos)
+        showCurAll(num:currPos)
+    }
+    @IBAction func playVideo(_ sender: Any) {
+        if timer1?.isValid == true {
+            timer1.invalidate()
+            return
+        }
+        timer1 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateNext), userInfo: nil, repeats: true)
+        playImage.image=getFrame(n: currPos)
+        showCurAll(num:currPos)
+    }
     @IBAction func next10(_ sender: Any) {
-        //       stopTimer()
+        stopTimer1()
         currPos += 10
         if currPos>=slowFrames1.count{
             currPos=slowFrames1.count-1
@@ -44,7 +64,7 @@ class PlayVideoViewController: UIViewController {
         showCurAll(num:currPos)
     }
     @IBAction func next1(_ sender: Any) {
-        //        stopTimer()
+        stopTimer1()
         currPos += 1
         if currPos>=slowFrames1.count{
             currPos=slowFrames1.count-1
@@ -53,7 +73,7 @@ class PlayVideoViewController: UIViewController {
         showCurAll(num:currPos)
     }
     @IBAction func back1(_ sender: Any) {
-        //        stopTimer()
+        stopTimer1()
         currPos -= 1
         if currPos<0{
             currPos=0
@@ -62,7 +82,7 @@ class PlayVideoViewController: UIViewController {
         showCurAll(num:currPos)
     }
     @IBAction func back10(_ sender: Any) {
-        //       stopTimer()
+        stopTimer1()
         currPos -= 10
         if currPos<0{
             currPos=0
