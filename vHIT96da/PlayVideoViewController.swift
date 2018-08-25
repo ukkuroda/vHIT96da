@@ -35,7 +35,7 @@ class PlayVideoViewController: UIViewController {
     @IBOutlet weak var next10Button:UIButton!
     @IBOutlet weak var back10Button:UIButton!
     func stopTimer1(){
-        if (timer1?.isValid)! {
+        if timer1?.isValid == true {
             timer1.invalidate()
         }
     }
@@ -240,8 +240,11 @@ class PlayVideoViewController: UIViewController {
         let fileURL = URL(fileURLWithPath: videoPath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-        
-        videoLength=Float(avAsset.duration.seconds)
+        if videoPath.contains("vhit20.mov"){
+            videoLength=2.5
+        }else{
+            videoLength=Float(avAsset.duration.seconds)
+        }
         //let sec10 = Int(10*avAsset.duration)
         //videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
         //        let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
@@ -310,6 +313,7 @@ class PlayVideoViewController: UIViewController {
         //        if (timer?.isValid)! {
         //            timer.invalidate()
         //        }
+        stopTimer1()
         videoGetloop = false
         slowFrames.removeAll()
         slowFrames1.removeAll()

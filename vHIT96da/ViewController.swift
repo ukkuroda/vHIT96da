@@ -1280,7 +1280,69 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         
     }
+    func getThumbnailFrom(num:Int, path: String) -> UIImage? {
+        let url = NSURL(fileURLWithPath: path)
+        do {
+            
+            let asset = AVURLAsset(url: url as URL , options: nil)
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            imgGenerator.appliesPreferredTrackTransform = true
+            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+            let thumbnail = UIImage(cgImage: cgImage)
+            
+            return thumbnail
+            
+        } catch let error {
+            
+            print("*** Error generating thumbnail: \(error.localizedDescription)")
+            return nil
+            
+        }
+        
+    }
     func setslowImgs(){
+        let tempCnt=slowVideoCnt
+        slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
+        //        slowImgs.removeAll()
+        slowPath.removeAll()
+        slowDate.removeAll()
+        slowDura.removeAll()
+        for i in 0...slowVideoCnt{
+            sleep(UInt32(0.1))
+            setVideoPathDate(num: i)
+            //ここでslowDate,slowPath,slowDuraをappend
+            //ここでslowPathだけappendして見る。他はダミー
+        }
+        if tempCnt != slowVideoCnt{
+            slowImgs.removeAll()
+            for i in 0...slowVideoCnt{
+                //setVideoPathDatではslowImgsのappendは無理なのでここで
+                slowImgs.append(getThumbnailFrom(num:i,path: slowPath[i])!)
+                //ここでslowpath以外をappendして見る。
+                //appendThumbetc(num:i)
+            }
+            slowVideoCurrent=slowVideoCnt
+        }else{
+            //            if slowVideoCnt != 0{
+            //                slowImgs.removeLast()
+            //            }
+            while slowVideoCnt>slowPath.count-1{
+                sleep(UInt32(0.1))
+//                print(slowVideoCnt,slowPath.count)
+            }
+//                     print(slowVideoCnt,slowPath.count)
+            //slowPathのappendが終わるのに結構時間が掛かる。
+            //           sleep(UInt32(10))
+            //            print("eee",slowVideoCnt,slowPath.count)//[slowVideoCnt])
+            //            print("www",slowPath[0],slowPath[slowVideoCnt-10])
+            slowImgs[slowVideoCnt-1]=getThumbnailFrom(num:slowVideoCnt-1,path: slowPath[slowVideoCnt-1])!
+        }
+        showCurrent()
+    }
+    
+    
+    
+/*    func setslowImgs(){
         slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
         slowImgs.removeAll()
         slowPath.removeAll()
@@ -1300,7 +1362,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //ここでslowpath以外をappendして見る。
             //appendThumbetc(num:i)
         }
-    }
+    }*/
     func showCurrent(){
         slowImage.image = slowImgs[slowVideoCurrent]
         videoDate.text = slowDate[slowVideoCurrent]
@@ -1363,8 +1425,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //           Controller.videoDuration = slowDura[slowVideoCurrent]
             Controller.currPos = 0
             Controller.videoDateNum = slowDate[slowVideoCurrent]
-            
-            
   //          Controller.videoPath = slowvideoPath
        //     Controller.videoDate = videoDate.text!
         }else{
@@ -1430,7 +1490,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("tatsuaki-unwind from list")
             #endif
         }
-        //        }
+ //       print(slowVideoCnt,getslowVideoNum())
+        if slowVideoCnt != getslowVideoNum(){
+            setslowImgs()
+        }
     }
     func checkrect(po:CGPoint, re:CGRect) ->Bool
     {
