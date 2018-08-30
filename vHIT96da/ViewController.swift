@@ -775,27 +775,27 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             calcDrawVHIT()
   //      }
     }
-    func showNextvideo(direction: Int){
-        let num = slowVideoCnt
-        if direction == 1 {
-            slowVideoCurrent += 1
-            if slowVideoCurrent > num{
-                slowVideoCurrent = 0
-            }
-        }else{
-            slowVideoCurrent -= 1
-            if slowVideoCurrent < 0 {
-                slowVideoCurrent = num
-            }
-        }
-        #if DEBUG
-            print("video_num:"+"\(slowVideoCurrent)")
-        #endif
-        setVideoPathDate(num: slowVideoCurrent)
-        //print(slowvideoPath)
-        slowImage.image = slowImgs[slowVideoCurrent]//getSlowimg(num: slowVideoCurrent)
-    }
-    
+//    func showNextvideo(direction: Int){
+//        let num = slowVideoCnt
+//        if direction == 1 {
+//            slowVideoCurrent += 1
+//            if slowVideoCurrent > num{
+//                slowVideoCurrent = 0
+//            }
+//        }else{
+//            slowVideoCurrent -= 1
+//            if slowVideoCurrent < 0 {
+//                slowVideoCurrent = num
+//            }
+//        }
+//        #if DEBUG
+//            print("video_num:"+"\(slowVideoCurrent)")
+//        #endif
+//        setVideoPathDate(num: slowVideoCurrent)
+//        //print(slowvideoPath)
+//        slowImage.image = slowImgs[slowVideoCurrent]//getSlowimg(num: slowVideoCurrent)
+//    }
+//
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
             return Int(field.text!)!
@@ -885,6 +885,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //videoDuration = "2.5s"
             slowDura.append("2.5s")
             //            freecntLabel.text = "\(freeCounter)"
+            appendingFlag=false
             return
         }
         // スロービデオのアルバムを取得
@@ -923,6 +924,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                         self.slowPath.append(self.slowvideoPath)
                                                         //   let temp = self.getThumbnailFrom(path: tokenKeys[8])
                                                         //   self.slowImgs.append(temp!)
+                                                        self.appendingFlag=false
                                                     }
         })
     }
@@ -1300,6 +1302,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         
     }
+    /*
     func setslowImgs(){
         let tempCnt=slowVideoCnt
         slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
@@ -1313,33 +1316,64 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //ここでslowDate,slowPath,slowDuraをappend
             //ここでslowPathだけappendして見る。他はダミー
         }
-        if tempCnt != slowVideoCnt{
+
+        if tempCnt != slowVideoCnt || slowVideoCnt == 0{
             slowImgs.removeAll()
+            while slowVideoCnt>slowPath.count-1{
+                sleep(UInt32(0.1))
+            }
+
             for i in 0...slowVideoCnt{
                 //setVideoPathDatではslowImgsのappendは無理なのでここで
                 slowImgs.append(getThumbnailFrom(num:i,path: slowPath[i])!)
-                //ここでslowpath以外をappendして見る。
-                //appendThumbetc(num:i)
             }
             slowVideoCurrent=slowVideoCnt
         }else{
-            //            if slowVideoCnt != 0{
-            //                slowImgs.removeLast()
-            //            }
             while slowVideoCnt>slowPath.count-1{
                 sleep(UInt32(0.1))
-//                print(slowVideoCnt,slowPath.count)
             }
-//                     print(slowVideoCnt,slowPath.count)
-            //slowPathのappendが終わるのに結構時間が掛かる。
-            //           sleep(UInt32(10))
-            //            print("eee",slowVideoCnt,slowPath.count)//[slowVideoCnt])
-            //            print("www",slowPath[0],slowPath[slowVideoCnt-10])
-            slowImgs[slowVideoCnt-1]=getThumbnailFrom(num:slowVideoCnt-1,path: slowPath[slowVideoCnt-1])!
+//             print("***4",slowPath[slowVideoCnt])
+            slowImgs[slowVideoCnt]=getThumbnailFrom(num:slowVideoCnt,path: slowPath[slowVideoCnt])!
         }
         showCurrent()
     }
     
+    */
+    var appendingFlag:Bool = false
+    func setslowImgs(){
+        if slowVideoCnt != getslowVideoNum() || slowVideoCnt == 0{
+            slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
+            slowImgs.removeAll()
+            slowPath.removeAll()
+            slowDate.removeAll()
+            slowDura.removeAll()
+            for i in 0...slowVideoCnt{
+                sleep(UInt32(0.1))
+                appendingFlag=true
+                //ここでslowDate,slowPath,slowDuraをappend
+                setVideoPathDate(num: i)//別スレッドが終わるのをチェックappendingFlag
+                while appendingFlag == true{
+                    sleep(UInt32(0.1))
+                }
+ //               print("**append:",i)
+                //ここでslowPathだけappend
+                slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
+            }
+        }else{
+            print(slowVideoCnt)
+            slowImgs.removeLast()
+            slowPath.removeLast()
+            slowDate.removeLast()
+            slowDura.removeLast()
+            appendingFlag=true
+            setVideoPathDate(num: slowVideoCnt)
+            while appendingFlag == true{
+                sleep(UInt32(0.1))
+            }
+            slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
+        }
+        showCurrent()
+    }
     
     
 /*    func setslowImgs(){
@@ -1382,9 +1416,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //ratioW = 720.0/Double(self.view.bounds.width)
         freeCounter += 1
         UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-      
+   //     print("***viewDidload")
+
         dispWakus()
         setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
+     //   print("***viewDidload")
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
  //       print(slowVideoCurrent)
         showCurrent()
