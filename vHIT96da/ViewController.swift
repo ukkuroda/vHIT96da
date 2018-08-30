@@ -1252,14 +1252,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             setslowImgs()
             freeCounter += 1
             UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-            if slowVideoCurrent > slowVideoCnt{
-                slowVideoCurrent = slowVideoCnt
-            }
+//            if slowVideoCurrent > slowVideoCnt{
+//                slowVideoCurrent = slowVideoCnt
+//            }
             if dispOrgflag == true{
                 dispOrgflag = false//Kalman filtered dataを表示
                 calcDrawVHIT()
             }
-            showCurrent()
+//            showCurrent()
         }
     }
     func getThumbnailFrom(path: String) -> UIImage? {
@@ -1372,6 +1372,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
         }
+        if slowVideoCurrent > slowVideoCnt{
+            slowVideoCurrent = slowVideoCnt
+        }
+
         showCurrent()
     }
     
