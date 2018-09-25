@@ -908,15 +908,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                 options: option,
                                                 resultHandler: { (avAsset, audioMix, info) in
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
-                                            
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
-                                                        self.slowPath.append(tokenKeys[8])
-                                                      //self.slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
+                                                        let urlStr = tokenKeys.filter { $0.contains("/private/var/mobile/Media") }.first
+                                                        //self.slowPath.append(tokenKeys[11])//[8])
+                                                        self.slowPath.append(urlStr!)
+                                                        //self.slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
                                                         self.appendingFlag=false
+                                                        //print(info as Any)
                                                     }else{//cloud上videoはvhit20を登録して、thumbnailをcluod.jpgにセット
                                                         self.slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
                                                         self.appendingFlag=false
- //                                                       print(info as Any)
+                                                        //print(info as Any)
                                                     }
         })
     }
@@ -1311,13 +1313,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 setVideoPathDate(num: i)//別スレッドが終わるのをチェックappendingFlag
                 while appendingFlag == true{
                     sleep(UInt32(0.1))
-//                    print(i)
+  //                  print(i)
                 }
  //               print("**append:",i)
                 //ここでslowPathだけappend
+  //              print(slowPath[i])
                 if i != 0 && slowPath[slowPath.count-1].contains("vhit20") == true{
                     slowImgs.append(UIImage(named:"cloud.jpg")!)
+   //                 print("+++",slowPath[i],slowPath.count)
                 }else{
+  //                  print("***",slowPath[i],slowPath.count)
                     slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
                 }
             }
