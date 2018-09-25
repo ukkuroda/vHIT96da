@@ -1110,23 +1110,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var tempnum:Int = 0
  //   var cnt:Int = 0
     @IBAction func saveResult(_ sender: Any) {
-//        cnt += 10
-//        drawOnewave(startcount: cnt)
-//        return
-//        if freeCounter > 999{
-//            // アラートを作成
-//            let alert = UIAlertController(
-//                title: "over 999 trials !",
-//                message: "Get new vHIT96da to save the data.",
-//                preferredStyle: .alert)
-//            // アラートにボタンをつける
-//            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//                //self.vHITcalc_pre()
-//            }))
-//            // アラート表示
-//            self.present(alert, animated: true, completion: nil)
-//            return
-//        }
         #if DEBUG
         print("kuroda-debug" + "\(getLines())")
         #endif
@@ -1136,7 +1119,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if getLines() < 1 {
             return
         }
-        
+        if vHITboxView?.isHidden == true{
+            showWave(0)
+        }
         //var idNumber:Int = 0
         let alert = UIAlertController(title: "vHIT96da", message: "Input ID number", preferredStyle: .alert)
         let saveAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction!) -> Void in
@@ -1169,7 +1154,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         alert.addAction(cancelAction)//この行と下の行の並びを変えるとCancelとOKの左右が入れ替わる。
         alert.addAction(saveAction)
         present(alert, animated: true, completion: nil)
-        
+
     }
     func drawWaves(width w:CGFloat,height h:CGFloat) -> UIImage {
         let size = CGSize(width:w, height:h)
