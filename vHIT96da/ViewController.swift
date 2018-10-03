@@ -174,6 +174,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     var dispOrgflag:Bool = false
     //解析結果保存用配列
+    var lVnum = Array<Int>()
+    var rVnum = Array<Int>()
     var vHITeyePos = Array<CGFloat>()
     var vHITeye = Array<CGFloat>()
     var vHITeye5 = Array<CGFloat>()
@@ -244,12 +246,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       height: rect.width * ih / vh)
     }
     //vHITeyeOrgを表示するかも
-    @IBAction func tapFrame(_ sender: Any) {
+    @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
 
+        print(sender.location(in: self.view))
         if calcFlag == true || vHITboxView?.isHidden == true{
             return
         }
-        if dispOrgflag == true {
+         if dispOrgflag == true {
             dispOrgflag = false
         }else{
             dispOrgflag = true
@@ -1106,10 +1109,29 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawPath.removeAllPoints()
         return ln
     }
+    func outTrial(){
+        // アラートを作成
+        let alert = UIAlertController(
+            title: "You can't save Data",
+            message: "trial has exceeded 50 times",
+            preferredStyle: .alert)
+        
+        // アラートにボタンをつける
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            
+ //           print("*********")
+        }))
+        // アラート表示
+        self.present(alert, animated: true, completion: nil)
+    }
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
- //   var cnt:Int = 0
     @IBAction func saveResult(_ sender: Any) {
+//        if freeCounter > 50{
+//            outTrial()
+//            return
+//        }
         #if DEBUG
         print("kuroda-debug" + "\(getLines())")
         #endif
@@ -1227,7 +1249,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
     @objc func viewWillEnterForeground(_ notification: Notification?) {
-        print("willenter")
+ //       print("willenter")
         if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
             setslowImgs()
             freeCounter += 1
@@ -1311,7 +1333,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
                 }
             }
-            print(slowVideoCnt)
+   //         print(slowVideoCnt)
        }else{
             slowImgs.removeLast()
             slowPath.removeLast()
@@ -1322,7 +1344,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             while appendingFlag == true{
                 sleep(UInt32(0.1))
             }
-            print(slowVideoCnt)
+ //           print(slowVideoCnt)
             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
         }
         if slowVideoCurrent > slowVideoCnt{
@@ -1590,32 +1612,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let pos = sender.location(in: self.view)
         if sender.state == .began {
             stPo = sender.location(in: self.view)
-            if vHITboxView?.isHidden == false{//結果が表示されている時
-
+            if vHITboxView?.isHidden == false{//結果が表示されていない時
             }else{
-                //ここでslowvideoを描画してみようか
-                if lastslowVideo != slowVideoCurrent{
-  //                  setVideoPathDate(num: slowVideoCurrent)//0:sample.MOV 1-n 古い順からの　*.MOV のパス、日時をセットする
-  //                  setslowImage()//.image = slowImgs[slowVideoCurrent]
-  //                  lastslowVideo = slowVideoCurrent//       print(slowvideoPath)
-                }
-//                if slowVideoCnt > 0{//2こ以上あった時
-//                    var backNum = slowVideoCurrent - 1
-//                    if backNum < 0 {
-//                        backNum = slowVideoCnt
-//                    }      //          print("left",backNum)
-//                    let backimg2 = self.slowImgs[backNum]// getSlowimg(num: backNum)//老番のサムネールをゲット
-//                    let backrect:CGRect = CGRect(x:0,y:0,width:backimg2.size.width/2,height:backimg2.size.height)
-//                    backImage2.image = backimg2.cropping(to: backrect)//老番のサムネールの右半分
-//                    backNum = slowVideoCurrent + 1
-//                    if backNum >  slowVideoCnt {
-//                        backNum = 0
-//                    }
-//                    backImage.image = self.slowImgs[backNum]// 若番のサムネールをゲット：こちらが下、後面
-//                    leftrightFlag = true
-//                }
                 rectType = checkWaks(po: pos)//枠設定かどうか。
- //               stPo = sender.location(in: self.view)
                 if rectType == 0 {
                     stRect = rectEye//tapした時の枠をstRectとする
                 } else if rectType == 1 && faceBorder != 0{
@@ -1658,27 +1657,73 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
                     }
                     dispWakus()
-                }else{//} if slowVideoCnt > -1{
-//                    if leftrightFlag == true{
-//                        self.slowImage.frame.origin.x = move.x
-//                        if move.x > self.view.bounds.width/3 {
-//                            showNextvideo(direction: 0)
-//                            self.slowImage.frame.origin.x = 0
-//                            leftrightFlag = false
-//                            
-//                        }else if move.x < -self.view.bounds.width/3 {
-//                            showNextvideo(direction: 1)
-//                            self.slowImage.frame.origin.x = 0
-//                            leftrightFlag = false
-//                        }
-//                    }
+                }else{
                 }
             }
         }else if sender.state == .ended{
             self.slowImage.frame.origin.x = 0
+            if vHITboxView?.isHidden == false{//結果が表示されている時
+                if rVnum.count>0 && lVnum.count>0{
+                    checkEndpos(pos: lastwavePoint + Int(self.view.bounds.width/2))
+                }
+            }
         }
     }
-    
+    func checkLpos(pos:Int) -> Int{
+        let lc=lVnum.count
+        if lc>0{
+            for i in 0..<lc{
+                if lVnum[i]<pos && lVnum[i]+120>pos{
+//                    print("left",i)
+                    return i
+                }
+            }
+        }else{
+            return -1
+        }
+        return -2
+    }
+    func checkRpos(pos:Int) -> Int{
+        let rc=rVnum.count
+        if rc>0{
+            for i in 0..<rc{
+                if rVnum[i]<pos && rVnum[i]+120>pos{
+//                    print("right",i)
+                    return i
+                }
+            }
+        }else{
+            return -1
+        }
+        return -2
+    }
+    func checkEndpos(pos:Int){
+        let rc:Int = checkRpos(pos: pos)
+        let lc:Int = checkLpos(pos: pos)
+        if rc >= 0{
+            print("right",rc,pos)
+            return
+        }
+        if lc >= 0{
+            print("left",lc,pos)
+            return
+        }
+        if rc == -1 && lc == -1{
+            if pos < 20 + Int(self.view.bounds.width/2){
+                if rVnum[0] < Int(self.view.bounds.width/2){
+                    print("right",0,pos)
+                }else if lVnum[0] < Int(self.view.bounds.width/2){
+                    print("left",0,pos)
+                }
+            }else if pos > vHITouter.count - Int(self.view.bounds.width/2 - 20){
+                if rVnum[rVnum.count - 1] > vHITouter.count - Int(self.view.bounds.width/2){
+                    print("left",rVnum.count,pos)
+                }else if lVnum[lVnum.count - 1] > vHITouter.count - Int(self.view.bounds.width/2){
+                    print("left",lVnum.count,pos)
+                }
+            }
+        }
+    }
     var lnum1:Int = 0
     var lnum2:Int = 0
     func CheckLines() -> Bool
@@ -1766,6 +1811,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+        lVnum.removeAll()//left vHIT の始点の配列
+        rVnum.removeAll()//right vHIT の始点の配列
         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
@@ -1782,6 +1829,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         openCVstopFlag = false
         drawVHITwaves()
+//        if lVnum.count>0 {
+//            print("left:",lVnum.count,lVnum[lVnum.count-1])//,rVnum.count,rVnum[rVnum.count-1])
+//        }
+//        if rVnum.count>0 {
+//            print("right:",rVnum.count,rVnum[rVnum.count-1])
+//        }
     }
     func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波
         //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
@@ -1799,6 +1852,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     wP[t][ln][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
                     return t
                 }
+            }
+            if t == 0{
+                lVnum.append(ws)
+            }else{
+                rVnum.append(ws)
             }
             for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
