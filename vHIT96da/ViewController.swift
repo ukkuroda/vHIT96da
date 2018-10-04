@@ -245,20 +245,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       width: rect.height * iw / vw,
                       height: rect.width * ih / vh)
     }
-    //vHITeyeOrgを表示するかも
-    @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
-
-        print(sender.location(in: self.view))
-        if calcFlag == true || vHITboxView?.isHidden == true{
-            return
-        }
-         if dispOrgflag == true {
-            dispOrgflag = false
-        }else{
-            dispOrgflag = true
-        }
-        calcDrawVHIT()
-    }
+  
     let KalQ:CGFloat = 0.0001
     let KalR:CGFloat = 0.001
     var KalX:CGFloat = 0.0
@@ -1669,6 +1656,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
     }
+    //vHITeyeOrgを表示するかも
+    @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
+        
+        //print(sender.location(in: self.view))
+        if rVnum.count>0 && lVnum.count>0{
+            //print(lastwavePoint + Int(sender.location(in: self.view).x))
+            checkEndpos(pos:lastwavePoint + Int(sender.location(in: self.view).x))
+            //checkEndpos(pos: lastwavePoint + Int(self.view.bounds.width/2))
+        }
+        if calcFlag == true || vHITboxView?.isHidden == true{
+            return
+        }
+        if dispOrgflag == true {
+            dispOrgflag = false
+        }else{
+            dispOrgflag = true
+        }
+        calcDrawVHIT()
+    }
     func checkLpos(pos:Int) -> Int{
         let lc=lVnum.count
         if lc>0{
@@ -1708,7 +1714,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("left",lc,pos)
             return
         }
-        if rc == -1 && lc == -1{
+        if rc == -1 && lc == -1{//L,Rともデータがあってしかもヒットしていない時
             if pos < 20 + Int(self.view.bounds.width/2){
                 if rVnum[0] < Int(self.view.bounds.width/2){
                     print("right",0,pos)
