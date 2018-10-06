@@ -174,8 +174,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     var dispOrgflag:Bool = false
     //解析結果保存用配列
-    var lVnum = Array<Int>()
-    var rVnum = Array<Int>()
+    var waveTuple = Array<(Int,Int,Int,Int,Int)>()//rl,rlnum,framenum,disp onoff,current disp onoff)
+//    var lVnum = Array<Int>()
+//    var lVnuD = Array<Int>()
+//    var rVnum = Array<Int>()
+//    var rVnuD = Array<Int>()
     var vHITeyePos = Array<CGFloat>()
     var vHITeye = Array<CGFloat>()
     var vHITeye5 = Array<CGFloat>()
@@ -1144,7 +1147,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let drawImage = self.drawWaves(width:500,height:200)
             // イメージビューに設定する
             UIImageWriteToSavedPhotosAlbum(drawImage, nil, nil, nil)
-            //self.drawVHITwaves()
             self.nonsavedFlag = false //解析結果がsaveされたのでfalse
             self.calcDrawVHIT()
             #if DEBUG
@@ -1612,27 +1614,40 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         } else if sender.state == .changed {
             if vHITboxView?.isHidden == false{//結果が表示されている時
-                let h=Int(self.view.bounds.height)
-                var dd=Int(h - Int(pos.y))/25 + 1
-                if dd>25{
-                    dd=25
-                }
-                if Int(move.x) > lastmoveX + dd{
-                    waveCurrpoint -= dd*4
-                    lastmoveX = Int(move.x)
-                }else if Int(move.x) < lastmoveX - dd{
-                    waveCurrpoint += dd*4
-                    lastmoveX = Int(move.x)
-                }
-                //print("all",dd,Int(move.x),lastmoveX,waveCurrpoint)// Int(move.x/10.0),movex)
-                 if waveCurrpoint<0{
-                    waveCurrpoint = 0
-                }else if waveCurrpoint > vHITouter.count - Int(self.view.bounds.width){
-                    waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
-                }
-                if waveCurrpoint != lastwavePoint{
-                    drawOnewave(startcount: waveCurrpoint)
-                    lastwavePoint = waveCurrpoint
+                let h=self.view.bounds.height
+                //let hI=Int(h)
+                //let posyI=Int(pos.y)
+                if pos.y > h/2{
+                    var dd=Int(10)
+                    if pos.y < h/2 + h/6{//dd < 10{
+                        dd = 2
+                    }else if pos.y > h/2 + h*2/6{
+                        dd = 20
+                    }
+                    if Int(move.x) > lastmoveX + dd{
+                        waveCurrpoint -= dd*4
+                        lastmoveX = Int(move.x)
+                    }else if Int(move.x) < lastmoveX - dd{
+                        waveCurrpoint += dd*4
+                        lastmoveX = Int(move.x)
+                    }
+                    //print("all",dd,Int(move.x),lastmoveX,waveCurrpoint)// Int(move.x/10.0),movex)
+                    if waveCurrpoint<0{
+                        waveCurrpoint = 0
+                    }else if waveCurrpoint > vHITouter.count - Int(self.view.bounds.width){
+                        waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
+                    }
+                    if waveCurrpoint != lastwavePoint{
+                        drawOnewave(startcount: waveCurrpoint)
+                        lastwavePoint = waveCurrpoint
+                        if waveTuple.count>0{
+                            checksetPos(pos: lastwavePoint + Int(self.view.bounds.width/2), mode:1)
+                            for n in 0..<waveTuple.count{
+                                print(waveTuple[n])
+                            }
+                        }
+                        
+                    }
                 }
             }else{
                 if rectType > -1 {//枠の設定の場合
@@ -1650,86 +1665,72 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }else if sender.state == .ended{
             self.slowImage.frame.origin.x = 0
             if vHITboxView?.isHidden == false{//結果が表示されている時
-                if rVnum.count>0 && lVnum.count>0{
-                    checkEndpos(pos: lastwavePoint + Int(self.view.bounds.width/2))
+                if waveTuple.count>0 {
+                    for i in 0..<waveTuple.count{
+                        waveTuple[i].4 = 0
+                    }
                 }
             }
         }
     }
     //vHITeyeOrgを表示するかも
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
-        
-        //print(sender.location(in: self.view))
-        if rVnum.count>0 && lVnum.count>0{
-            //print(lastwavePoint + Int(sender.location(in: self.view).x))
-            checkEndpos(pos:lastwavePoint + Int(sender.location(in: self.view).x))
-            //checkEndpos(pos: lastwavePoint + Int(self.view.bounds.width/2))
-        }
+//        print("tap")
         if calcFlag == true || vHITboxView?.isHidden == true{
             return
         }
-        if dispOrgflag == true {
-            dispOrgflag = false
+        if sender.location(in: self.view).y > self.view.bounds.height/2{
+            if waveTuple.count > 0{
+                var temp = checksetPos(pos:lastwavePoint + Int(sender.location(in: self.view).x),mode: 2)
+                if temp >= 0{
+                    print("********1",temp,"******",waveTuple[temp].3)
+                    if waveTuple[temp].3 == 1{
+                        waveTuple[temp].3 = 0
+                    }else if waveTuple[temp].3 == 0{
+                        waveTuple[temp].3 = 1
+                    }else{
+                        waveTuple[temp].3 = 99
+                    }
+                    print("********2",temp,"******",waveTuple[temp].3)
+                }
+                for i in 0..<waveTuple.count{
+                    print(waveTuple[i])
+                }
+            }
         }else{
-            dispOrgflag = true
+            if dispOrgflag == true {
+                dispOrgflag = false
+            }else{
+                dispOrgflag = true
+            }
         }
-        calcDrawVHIT()
+//        calcDrawVHIT()
+        drawVHITwaves()
     }
-    func checkLpos(pos:Int) -> Int{
-        let lc=lVnum.count
-        if lc>0{
-            for i in 0..<lc{
-                if lVnum[i]<pos && lVnum[i]+120>pos{
-//                    print("left",i)
-                    return i
+
+    func checksetPos(pos:Int,mode:Int) -> Int{
+        let cnt=waveTuple.count
+        var return_n = -2
+        if cnt>0{
+            for i in 0..<cnt{
+                if waveTuple[i].2<pos && waveTuple[i].2+120>pos{
+                    waveTuple[i].4 = mode //sellected
+                    return_n = i
+                    break
+                }
+                waveTuple[i].4 = 0//not sellected
+            }
+            if return_n > -1 && return_n < cnt{
+                for n in (return_n + 1)..<cnt{
+                    waveTuple[n].4 = 0
                 }
             }
         }else{
             return -1
         }
-        return -2
+        return return_n
     }
-    func checkRpos(pos:Int) -> Int{
-        let rc=rVnum.count
-        if rc>0{
-            for i in 0..<rc{
-                if rVnum[i]<pos && rVnum[i]+120>pos{
-//                    print("right",i)
-                    return i
-                }
-            }
-        }else{
-            return -1
-        }
-        return -2
-    }
-    func checkEndpos(pos:Int){
-        let rc:Int = checkRpos(pos: pos)
-        let lc:Int = checkLpos(pos: pos)
-        if rc >= 0{
-            print("right",rc,pos)
-            return
-        }
-        if lc >= 0{
-            print("left",lc,pos)
-            return
-        }
-        if rc == -1 && lc == -1{//L,Rともデータがあってしかもヒットしていない時
-            if pos < 20 + Int(self.view.bounds.width/2){
-                if rVnum[0] < Int(self.view.bounds.width/2){
-                    print("right",0,pos)
-                }else if lVnum[0] < Int(self.view.bounds.width/2){
-                    print("left",0,pos)
-                }
-            }else if pos > vHITouter.count - Int(self.view.bounds.width/2 - 20){
-                if rVnum[rVnum.count - 1] > vHITouter.count - Int(self.view.bounds.width/2){
-                    print("left",rVnum.count,pos)
-                }else if lVnum[lVnum.count - 1] > vHITouter.count - Int(self.view.bounds.width/2){
-                    print("left",lVnum.count,pos)
-                }
-            }
-        }
-    }
+
     var lnum1:Int = 0
     var lnum2:Int = 0
     func CheckLines() -> Bool
@@ -1817,8 +1818,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func calcDrawVHIT(){
         self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-        lVnum.removeAll()//left vHIT の始点の配列
-        rVnum.removeAll()//right vHIT の始点の配列
+  //      lVnum.removeAll()//left vHIT の始点の配列
+  //      lVnuD.removeAll()
+        waveTuple.removeAll()
+  //      rVnum.removeAll()//right vHIT の始点の配列
+ //       rVnuD.removeAll()
         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
@@ -1835,12 +1839,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         openCVstopFlag = false
         drawVHITwaves()
-//        if lVnum.count>0 {
-//            print("left:",lVnum.count,lVnum[lVnum.count-1])//,rVnum.count,rVnum[rVnum.count-1])
-//        }
-//        if rVnum.count>0 {
-//            print("right:",rVnum.count,rVnum[rVnum.count-1])
-//        }
     }
     func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波
         //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
@@ -1859,11 +1857,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     return t
                 }
             }
-            if t == 0{
-                lVnum.append(ws)
-            }else{
-                rVnum.append(ws)
-            }
+            waveTuple.append((t,ln,ws,1,0))
             for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
                      wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
