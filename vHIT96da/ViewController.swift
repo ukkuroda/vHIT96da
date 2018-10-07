@@ -174,7 +174,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     var dispOrgflag:Bool = false
     //解析結果保存用配列
-    var waveTuple = Array<(Int,Int,Int,Int,Int)>()//rl,rlnum,framenum,disp onoff,current disp onoff)
+  //   var wave125a = Array<[Int](repeating:0,count:125)>()
+    var waveTuple = Array<(Int,Int,Int,Int)>()//rl,framenum,disp onoff,current disp onoff)
 //    var lVnum = Array<Int>()
 //    var lVnuD = Array<Int>()
 //    var rVnum = Array<Int>()
@@ -186,7 +187,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vHITouter5 = Array<CGFloat>()
     var timer: Timer!
     var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
-    
+    var eyeWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
+    var outWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
     @IBAction func backVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
             return
@@ -1667,7 +1669,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if vHITboxView?.isHidden == false{//結果が表示されている時
                 if waveTuple.count>0 {
                     for i in 0..<waveTuple.count{
-                        waveTuple[i].4 = 0
+                        waveTuple[i].3 = 0
                     }
                 }
             }
@@ -1679,19 +1681,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if calcFlag == true || vHITboxView?.isHidden == true{
             return
         }
-        if sender.location(in: self.view).y > self.view.bounds.height/2{
+        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
             if waveTuple.count > 0{
                 var temp = checksetPos(pos:lastwavePoint + Int(sender.location(in: self.view).x),mode: 2)
                 if temp >= 0{
-                    print("********1",temp,"******",waveTuple[temp].3)
-                    if waveTuple[temp].3 == 1{
-                        waveTuple[temp].3 = 0
-                    }else if waveTuple[temp].3 == 0{
-                        waveTuple[temp].3 = 1
+                    if waveTuple[temp].2 == 1{
+                        waveTuple[temp].2 = 0
                     }else{
-                        waveTuple[temp].3 = 99
+                        waveTuple[temp].2 = 1
                     }
-                    print("********2",temp,"******",waveTuple[temp].3)
                 }
                 for i in 0..<waveTuple.count{
                     print(waveTuple[i])
@@ -1713,16 +1711,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var return_n = -2
         if cnt>0{
             for i in 0..<cnt{
-                if waveTuple[i].2<pos && waveTuple[i].2+120>pos{
-                    waveTuple[i].4 = mode //sellected
+                if waveTuple[i].1<pos && waveTuple[i].1+120>pos{
+                    waveTuple[i].3 = mode //sellected
                     return_n = i
                     break
                 }
-                waveTuple[i].4 = 0//not sellected
+                waveTuple[i].3 = 0//not sellected
             }
             if return_n > -1 && return_n < cnt{
                 for n in (return_n + 1)..<cnt{
-                    waveTuple[n].4 = 0
+                    waveTuple[n].3 = 0
                 }
             }
         }else{
@@ -1857,7 +1855,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     return t
                 }
             }
-            waveTuple.append((t,ln,ws,1,0))
+            waveTuple.append((t,ws,1,0))//L/R,frameNumber,disp,current)
             for k1 in ws..<ws + 120{
                 if dispOrgflag == false {
                      wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
