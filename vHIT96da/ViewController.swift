@@ -186,8 +186,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vHITouter = Array<CGFloat>()
     var vHITouter5 = Array<CGFloat>()
     var timer: Timer!
-    var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
+//    var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
     var eyeWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
+    var eyefWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
     var outWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
     @IBAction func backVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
@@ -308,11 +309,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             boxView?.isHidden = false
             vHITlineView?.isHidden = false
             lineView?.isHidden = false//: UIImageView? // <- 追加
+            nextVideoOutlet.isHidden = true
+            backVideoOutlet.isHidden = true
         }else{
             vHITboxView?.isHidden = true
             boxView?.isHidden = true
             vHITlineView?.isHidden = true
             lineView?.isHidden = true
+            nextVideoOutlet.isHidden = false
+            backVideoOutlet.isHidden = false
         }
         
     }
@@ -353,7 +358,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     @IBAction func vHITcalc(_ sender: Any) {
         setUserDefaults()
-         if nonsavedFlag == true && getLines() > 0{
+         if nonsavedFlag == true && waveTuple.count > 0{
             setButtons(mode: false)
             let alert = UIAlertController(
                 title: "You are erasing vHIT Data.",
@@ -433,8 +438,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let eyeborder:CGFloat = CGFloat(eyeBorder)
         let faceborder:CGFloat = CGFloat(faceBorder)
         let outerborder:CGFloat = CGFloat(outerBorder)
-        self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
-        self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+//        self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
+//        self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         drawBoxies()
         startTimer()//resizerectのチェックの時はここをコメントアウト*********************
         let fileURL = URL(fileURLWithPath: slowPath[slowVideoCurrent])
@@ -625,7 +630,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }
             self.calcFlag = false
-            if self.getLines() > 0{
+            if self.waveTuple.count > 0{
                 self.nonsavedFlag = true
             }
         }
@@ -762,7 +767,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             UIApplication.shared.isIdleTimerDisabled = false
             drawBoxies()
             calcDrawVHIT()//終わり直前で認識されたvhitdataが認識されないこともあるかもしれないので、駄目押し。だめ押し用のcalcdrawvhitは別に作る必要があるかもしれない。
-            if self.getLines() > 0{
+            if self.waveTuple.count > 0{
                 self.nonsavedFlag = true
             }
             waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
@@ -905,13 +910,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                     if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
                                                         let tokenKeys = tokenStr.components(separatedBy: ";")
                                                         let urlStr = tokenKeys.filter { $0.contains("/private/var/mobile/Media") }.first
-                                                        //self.slowPath.append(tokenKeys[11])//[8])
                                                         self.slowPath.append(urlStr!)
-                                                        //self.slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
                                                         self.appendingFlag=false
                                                         //print(info as Any)
-                                                    }else{//cloud上videoはvhit20を登録して、thumbnailをcluod.jpgにセット
-                                                        self.slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
+                                                    }else{//cloud上videoはvhit20を登録して
+                                                        self.slowPath.append("vhit20")
                                                         self.appendingFlag=false
                                                         //print(info as Any)
                                                     }
@@ -1070,15 +1073,80 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    var drawPath = UIBezierPath()
-    func draw1(rl:Int,eyeouter:Int,pt:Int,color:UIColor) -> Int
-    {
+
+//    func draw1(rl:Int,eyeouter:Int,pt:Int,color:UIColor) -> Int
+//    {
+//        var pointList = Array<CGPoint>()
+//        var ln:Int = 0
+//        let drawPath = UIBezierPath()
+//        while wP[rl][ln][0][0] != 9999 {
+//            for n in 0..<120 {
+//                let px = CGFloat(pt + n*2)
+//                let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
+//                let point = CGPoint(x:px,y:py)
+//                pointList.append(point)
+//            }
+//            // 始点に移動する
+//            drawPath.move(to: pointList[0])
+//            // 配列から始点の値を取り除く
+//            pointList.removeFirst()
+//            // 配列から点を取り出して連結していく
+//            for pt in pointList {
+//                drawPath.addLine(to: pt)
+//            }
+//            // 線の色
+//            color.setStroke()
+//            // 線幅
+//            drawPath.lineWidth = 0.3
+//            ln += 1
+//            pointList.removeAll()
+//        }
+//        drawPath.stroke()
+//        drawPath.removeAllPoints()
+//        return ln
+//    }
+    func drawTemp(){
         var pointList = Array<CGPoint>()
-        var ln:Int = 0
-        while wP[rl][ln][0][0] != 9999 {
+        let drawPath = UIBezierPath()
+        for n in 0..<120 {
+            let px = CGFloat(60 + n*2)//260 or 0
+            let py = CGFloat(eyeWs[1][n] + 90)
+            let point = CGPoint(x:px,y:py)
+            pointList.append(point)
+        }
+        // 始点に移動する
+        drawPath.move(to: pointList[0])
+        // 配列から始点の値を取り除く
+        pointList.removeFirst()
+        // 配列から点を取り出して連結していく
+        for pt in pointList {
+            drawPath.addLine(to: pt)
+        }
+        // 線の色
+        UIColor.red.setStroke()
+        // 線幅
+        drawPath.lineWidth = 2.3
+        pointList.removeAll()
+        
+        drawPath.stroke()
+        drawPath.removeAllPoints()
+    }
+    func draw1wave(){
+        var pointList = Array<CGPoint>()
+        let drawPath = UIBezierPath()
+        var rlPt:Int = 0
+        for i in 0..<waveTuple.count{
+            if waveTuple[i].2 == 0 || waveTuple[i].0 == 0{
+                continue
+            }
             for n in 0..<120 {
-                let px = CGFloat(pt + n*2)
-                let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
+                let px = CGFloat(260 + n*2)//260 or 0
+                var py:CGFloat = 0
+                if dispOrgflag == true{
+                    py = CGFloat(eyeWs[i][n] + 90)
+                }else{
+                    py = CGFloat(eyefWs[i][n] + 90)
+                }
                 let point = CGPoint(x:px,y:py)
                 pointList.append(point)
             }
@@ -1091,15 +1159,116 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 drawPath.addLine(to: pt)
             }
             // 線の色
-            color.setStroke()
+            UIColor.red.setStroke()
             // 線幅
             drawPath.lineWidth = 0.3
-            ln += 1
             pointList.removeAll()
         }
         drawPath.stroke()
         drawPath.removeAllPoints()
-        return ln
+        for i in 0..<waveTuple.count{
+            if waveTuple[i].2 == 0 || waveTuple[i].0 == 1{
+                continue
+            }
+            for n in 0..<120 {
+                let px = CGFloat(n*2)//260 or 0
+                var py:CGFloat = 0
+                if dispOrgflag == true{
+                    py = CGFloat(eyeWs[i][n] + 90)
+                }else{
+                    py = CGFloat(eyefWs[i][n] + 90)
+                }
+//                let py = CGFloat(eyeWs[i][n] + 90)
+                let point = CGPoint(x:px,y:py)
+                pointList.append(point)
+            }
+            // 始点に移動する
+            drawPath.move(to: pointList[0])
+            // 配列から始点の値を取り除く
+            pointList.removeFirst()
+            // 配列から点を取り出して連結していく
+            for pt in pointList {
+                drawPath.addLine(to: pt)
+            }
+            // 線の色
+            UIColor.blue.setStroke()
+            // 線幅
+            drawPath.lineWidth = 0.3
+            pointList.removeAll()
+        }
+        drawPath.stroke()
+        drawPath.removeAllPoints()
+        for i in 0..<waveTuple.count{
+            if waveTuple[i].2 == 0{
+                continue
+            }
+            if waveTuple[i].0 == 0{
+                rlPt=0
+            }else{
+                rlPt=260
+            }
+            for n in 0..<120 {
+                let px = CGFloat(rlPt + n*2)
+                let py = CGFloat(outWs[i][n] + 90)
+                let point = CGPoint(x:px,y:py)
+                pointList.append(point)
+            }
+            drawPath.move(to: pointList[0])
+            pointList.removeFirst()
+            for pt in pointList {
+                drawPath.addLine(to: pt)
+            }
+            UIColor.black.setStroke()
+            drawPath.lineWidth = 0.3
+            pointList.removeAll()
+        }
+        drawPath.stroke()
+        drawPath.removeAllPoints()
+        for i in 0..<waveTuple.count{//bold line
+            if waveTuple[i].3 == 1 || (waveTuple[i].3 == 2 && waveTuple[i].2 == 1){
+                if waveTuple[i].0 == 0{
+                    rlPt=0
+                }else{
+                    rlPt=260
+                }
+                for n in 0..<120 {
+                    let px = CGFloat(rlPt + n*2)
+                    let py = CGFloat(outWs[i][n] + 90)
+                    let point = CGPoint(x:px,y:py)
+                    pointList.append(point)
+                }
+                drawPath.move(to: pointList[0])
+                pointList.removeFirst()
+                for pt in pointList {
+                    drawPath.addLine(to: pt)
+                }
+                UIColor.black.setStroke()
+                drawPath.lineWidth = 1.0
+                pointList.removeAll()
+                for n in 0..<120 {
+                    let px = CGFloat(rlPt + n*2)
+                    var py:CGFloat = 0
+                    if dispOrgflag == true{
+                        py = CGFloat(eyeWs[i][n] + 90)
+                    }else{
+                        py = CGFloat(eyefWs[i][n] + 90)
+                    }
+ //                   let py = CGFloat(eyeWs[i][n] + 90)
+                    let point = CGPoint(x:px,y:py)
+                    pointList.append(point)
+                }
+                drawPath.move(to: pointList[0])
+                pointList.removeFirst()
+                for pt in pointList {
+                    drawPath.addLine(to: pt)
+                }
+                UIColor.black.setStroke()
+                drawPath.lineWidth = 1.0
+                pointList.removeAll()
+            }
+        }
+        drawPath.stroke()
+        drawPath.removeAllPoints()
     }
     func outTrial(){
         // アラートを作成
@@ -1130,7 +1299,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if calcFlag == true{
             return
         }
-        if getLines() < 1 {
+        if waveTuple.count < 1 {
             return
         }
         if vHITboxView?.isHidden == true{
@@ -1150,10 +1319,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             // イメージビューに設定する
             UIImageWriteToSavedPhotosAlbum(drawImage, nil, nil, nil)
             self.nonsavedFlag = false //解析結果がsaveされたのでfalse
-            self.calcDrawVHIT()
-            #if DEBUG
-            print(self.getLines())
-            #endif
+//            self.calcDrawVHIT()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action:UIAlertAction!) -> Void in
@@ -1174,7 +1340,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // イメージ処理の開始
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         // パスの初期化
-        drawPath = UIBezierPath()
+        let drawPath = UIBezierPath()
         
 //        let str1 = videoDate.text?.components(separatedBy: ":")
         let str1 = calcDate.components(separatedBy: ":")
@@ -1220,19 +1386,24 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         drawPath.stroke()
         drawPath.removeAllPoints()
-        
-        var riln = draw1(rl:0,eyeouter:0,pt:0,color:UIColor.blue)
-        riln = draw1(rl:0,eyeouter:1,pt:0,color:UIColor.black)
-        var leln = draw1(rl:1,eyeouter:0,pt:260,color:UIColor.red)
-        leln = draw1(rl:1,eyeouter:1,pt:260,color:UIColor.black)
-        
+        draw1wave()
+        var riln:Int = 0
+        var leln:Int = 0
+        for i in 0..<waveTuple.count{
+            if waveTuple[i].2 == 1{
+                if waveTuple[i].0 == 0 {
+                    riln += 1
+                }else{
+                    leln += 1
+                }
+            }
+        }
         "\(riln)".draw(at: CGPoint(x: 3, y: 0), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         "\(leln)".draw(at: CGPoint(x: 263, y: 0), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
-        
         // イメージコンテキストからUIImageを作る
         let image = UIGraphicsGetImageFromCurrentImageContext()
         // イメージ処理の終了
@@ -1311,20 +1482,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 setVideoPathDate(num: i)//別スレッドが終わるのをチェックappendingFlag
                 while appendingFlag == true{
                     sleep(UInt32(0.1))
-  //                  print(i)
-                }
- //               print("**append:",i)
-                //ここでslowPathだけappend
-  //              print(slowPath[i])
-                if i != 0 && slowPath[slowPath.count-1].contains("vhit20") == true{
+                 }
+                 //ここでslowPathだけappend
+                 if i != 0 && slowPath[slowPath.count-1].contains("vhit20") == true{
                     slowImgs.append(UIImage(named:"cloud.jpg")!)
-   //                 print("+++",slowPath[i],slowPath.count)
-                }else{
-  //                  print("***",slowPath[i],slowPath.count)
-                    slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
+                 }else{
+                     slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
                 }
             }
-   //         print(slowVideoCnt)
        }else{
             slowImgs.removeLast()
             slowPath.removeLast()
@@ -1335,17 +1500,35 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             while appendingFlag == true{
                 sleep(UInt32(0.1))
             }
- //           print(slowVideoCnt)
-            slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
+             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
         }
+ //       print(slowImgs.count,slowPath.count,slowDate.count,slowDura.count,slowImgs.count)
+        if slowImgs.count > 1{
+  //          let cnt = slowImgs.count - 1
+            for i in (1..<slowImgs.count).reversed(){
+                if slowPath[i].contains("vhit20") == true{
+                    slowImgs.remove(at: i)
+                    slowPath.remove(at: i)
+                    slowDate.remove(at: i)
+                    slowDura.remove(at: i)
+                }
+            }
+        }
+        for i in 1..<slowImgs.count{
+            let str = slowDate[i].components(separatedBy: "(")
+            let st1 = str[0] + "(\(i))"
+            slowDate[i] = st1
+        }
+        slowVideoCnt = slowImgs.count-1
         if slowVideoCurrent > slowVideoCnt{
             slowVideoCurrent = slowVideoCnt
         }
-
-        showCurrent()
+ //       print(slowImgs.count,slowPath.count,slowDate.count,slowDura.count,slowImgs.count)
+ //       showCurrent()
     }
     
     func showCurrent(){
+//        print(slowVideoCnt,slowVideoCurrent)
         slowImage.image = slowImgs[slowVideoCurrent]
         videoDate.text = slowDate[slowVideoCurrent]
         freecntLabel.text = "\(freeCounter)"
@@ -1357,8 +1540,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         // Do any additional setup after loading the view, typically from a nib.
         stopButton.isHidden = true
-        self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
-        self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+ //       self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
+ //       self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
         getUserDefaults()
         //let videoWidth = 720.0
         //ratioW = 720.0/Double(self.view.bounds.width)
@@ -1368,9 +1551,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
         dispWakus()
         setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
- //       print("***viewDidload")
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
- //       print(slowVideoCurrent)
         showCurrent()
     }
 
@@ -1474,8 +1655,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("tatsuaki-unwind from list")
             #endif
         }
- //       print(slowVideoCnt,getslowVideoNum())
-        if slowVideoCnt != getslowVideoNum(){
+         if slowVideoCnt != getslowVideoNum(){
             setslowImgs()
         }
     }
@@ -1644,11 +1824,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         lastwavePoint = waveCurrpoint
                         if waveTuple.count>0{
                             checksetPos(pos: lastwavePoint + Int(self.view.bounds.width/2), mode:1)
-                            for n in 0..<waveTuple.count{
-                                print(waveTuple[n])
-                            }
+//                            for n in 0..<waveTuple.count{
+//                                print(waveTuple[n])
+//                            }
+                            drawVHITwaves()
                         }
-                        
                     }
                 }
             }else{
@@ -1677,11 +1857,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //vHITeyeOrgを表示するかも
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
-//        print("tap")
-        if calcFlag == true || vHITboxView?.isHidden == true{
+        if calcFlag == true || vHITboxView?.isHidden == true || waveTuple.count == 0{
             return
         }
-        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
+       if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
             if waveTuple.count > 0{
                 var temp = checksetPos(pos:lastwavePoint + Int(sender.location(in: self.view).x),mode: 2)
                 if temp >= 0{
@@ -1691,9 +1870,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         waveTuple[temp].2 = 1
                     }
                 }
-                for i in 0..<waveTuple.count{
-                    print(waveTuple[i])
-                }
+//                for i in 0..<waveTuple.count{
+//                    print(waveTuple[i])
+//                }
             }
         }else{
             if dispOrgflag == true {
@@ -1702,7 +1881,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 dispOrgflag = true
             }
         }
-//        calcDrawVHIT()
         drawVHITwaves()
     }
 
@@ -1731,35 +1909,35 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
     var lnum1:Int = 0
     var lnum2:Int = 0
-    func CheckLines() -> Bool
-    {//lineが増えているかチェック
-        var l1:Int = 0
-        var l2:Int = 0
-        while wP[0][l1][0][0] != 9999 {
-            l1 += 1
-        }
-        while wP[1][l2][0][0] != 9999 {
-            l2 += 1
-        }
-        if lnum1<l1||lnum2<l2{
-            lnum1 = l1;
-            lnum2 = l2;
-            return true;
-        }
-        return false;
-    }
-    func getLines() -> Int
-    {//lineが増えているかチェック
-        var l1:Int = 0
-        var l2:Int = 0
-        while wP[0][l1][0][0] != 9999 {
-            l1 += 1
-        }
-        while wP[1][l2][0][0] != 9999 {
-            l2 += 1
-        }
-        return l1 + l2
-    }
+//    func CheckLines() -> Bool
+//    {//lineが増えているかチェック
+//        var l1:Int = 0
+//        var l2:Int = 0
+//        while wP[0][l1][0][0] != 9999 {
+//            l1 += 1
+//        }
+//        while wP[1][l2][0][0] != 9999 {
+//            l2 += 1
+//        }
+//        if lnum1<l1||lnum2<l2{
+//            lnum1 = l1;
+//            lnum2 = l2;
+//            return true;
+//        }
+//        return false;
+//    }
+//    func getLines() -> Int
+//    {//lineが増えているかチェック
+//        var l1:Int = 0
+//        var l2:Int = 0
+//        while wP[0][l1][0][0] != 9999 {
+//            l1 += 1
+//        }
+//        while wP[1][l2][0][0] != 9999 {
+//            l2 += 1
+//        }
+//        return l1 + l2
+//    }
     
     func updownp(n:Int,nami:Int) -> Int {
         //yなので、増えると下方向にずれる
@@ -1814,8 +1992,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return updownp(n: num + flatwidth, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
     func calcDrawVHIT(){
-        self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-        self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+  //      self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+  //      self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
   //      lVnum.removeAll()//left vHIT の始点の配列
   //      lVnuD.removeAll()
         waveTuple.removeAll()
@@ -1847,29 +2025,34 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if t != -1 {
             //          print("getupdownp")
             let ws = number - flatwidth + 5;//波表示開始位置 wavestartpoint
-            var ln:Int = 0
-            while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
-                ln += 1
-                if ln > 20 {//20本まで
-                    wP[t][ln][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-                    return t
-                }
-            }
+//            var ln:Int = 0
+//            while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
+//                ln += 1
+//                if ln > 20 {//20本まで
+//                    wP[t][ln][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+//                    return t
+//                }
+//            }
             waveTuple.append((t,ws,1,0))//L/R,frameNumber,disp,current)
+            let num=waveTuple.count-1
             for k1 in ws..<ws + 120{
-                if dispOrgflag == false {
-                     wP[t][ln][0][k1 - ws] = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
-                    //ここで強制終了、止まる。k1が実在するvHITeyeを超える。release時のみ
-                }else{
-                    wP[t][ln][0][k1 - ws] = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
-                   // dispOrgflag = false
-                }
+                let iFil = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
+                let iOrg = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
+                eyeWs[num][k1-ws] = iOrg
+                eyefWs[num][k1-ws] = iFil
+//                if dispOrgflag == false {
+//                     wP[t][ln][0][k1 - ws] = iFil//Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
+//                }else{
+//                    wP[t][ln][0][k1 - ws] = iOrg//Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)
+//                }
             }
             for k2 in ws..<ws + 120{
-                wP[t][ln][1][k2 - ws] = Int(vHITouter[k2]*CGFloat(outerRatio)/100.0)
+                let i = Int(vHITouter[k2]*CGFloat(outerRatio)/100.0)
+//                wP[t][ln][1][k2 - ws] = i
+                outWs[num][k2 - ws] = i
             }//ここでエラーが出るようだ？
-            wP[t][ln + 1][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-            wP[t][ln + 1][1][0] = 9999
+//            wP[t][ln + 1][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
+//            wP[t][ln + 1][1][0] = 9999
         }
         return t
     }
