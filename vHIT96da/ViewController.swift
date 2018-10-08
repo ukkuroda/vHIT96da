@@ -108,6 +108,7 @@ extension UIImage {
 class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
     var slowVideoCurrent:Int = 0
+    var allVideoCnt:Int = 0
     var waveCurrpoint:Int = 0//現在表示波形の視点（アレイインデックス）
     var slowImgs = Array<UIImage>()
     
@@ -804,65 +805,65 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return 0
     }
   
-    var retImage:UIImage!
+ //   var retImage:UIImage!
  
-    func getSlowimg(num:Int) ->UIImage{
-        var fileURL:URL
-         if num == 0{
-            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
-             videoDuration = "2.0s"
-            let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
-            let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-             var reader: AVAssetReader! = nil
-            do {
-                reader = try AVAssetReader(asset: avAsset)
-            } catch {
-                #if DEBUG
-                print("could not initialize reader.")
-                #endif
-                return nil!
-            }
-            
-            guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-                #if DEBUG
-                print("could not retrieve the video track.")
-                #endif
-                return nil!
-            }
-            
-            let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-            let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-            reader.add(readerOutput)
-            reader.startReading()
-            
-            let context:CIContext = CIContext.init(options: nil)
-            let orientation = UIImageOrientation.right
-            
-            let sample = readerOutput.copyNextSampleBuffer()
-            let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-            let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-            return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-
-        }else{
-            //ビデオがあるかどうか事前にチェックして呼ぶこと
-            let number = num - 1
-            // スロービデオのアルバムを取得
-            let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
-            let assetCollection = result.firstObject;
-            // アルバムからアセット一覧を取得
-            let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
-            
-            let asset  = fetchAssets.object(at: number)
-            let manager = PHImageManager()//.default()
-            
-  //まず低解像度の画像を送っておいて、おいおい高解像度を渡すようだが、低解像度をもらってしまっているようだ
-            manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode:PHImageContentMode.aspectFill, options:nil) { (image, info) in
-                self.retImage = image
-            }
-              return self.retImage
-        }
-     }
+//    func getSlowimg(num:Int) ->UIImage{
+//        var fileURL:URL
+//         if num == 0{
+//            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
+//             videoDuration = "2.0s"
+//            let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
+//            let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
+//             var reader: AVAssetReader! = nil
+//            do {
+//                reader = try AVAssetReader(asset: avAsset)
+//            } catch {
+//                #if DEBUG
+//                print("could not initialize reader.")
+//                #endif
+//                return nil!
+//            }
+//
+//            guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+//                #if DEBUG
+//                print("could not retrieve the video track.")
+//                #endif
+//                return nil!
+//            }
+//
+//            let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+//            let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+//            reader.add(readerOutput)
+//            reader.startReading()
+//
+//            let context:CIContext = CIContext.init(options: nil)
+//            let orientation = UIImageOrientation.right
+//
+//            let sample = readerOutput.copyNextSampleBuffer()
+//            let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+//            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//            let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+//            return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+//
+//        }else{
+//            //ビデオがあるかどうか事前にチェックして呼ぶこと
+//            let number = num - 1
+//            // スロービデオのアルバムを取得
+//            let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
+//            let assetCollection = result.firstObject;
+//            // アルバムからアセット一覧を取得
+//            let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
+//
+//            let asset  = fetchAssets.object(at: number)
+//            let manager = PHImageManager()//.default()
+//
+//  //まず低解像度の画像を送っておいて、おいおい高解像度を渡すようだが、低解像度をもらってしまっているようだ
+//            manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode:PHImageContentMode.aspectFill, options:nil) { (image, info) in
+//                self.retImage = image
+//            }
+//              return self.retImage
+//        }
+//     }
     func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスを
         //print("**::;setVideopathdate")
         if num == 0{
@@ -913,8 +914,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                                         self.slowPath.append(urlStr!)
                                                         self.appendingFlag=false
                                                         //print(info as Any)
-                                                    }else{//cloud上videoはvhit20を登録して
-                                                        self.slowPath.append("vhit20")
+                                                    }else{//cloud上videoはdeleteと登録して
+                                                        self.slowPath.append("delete")
                                                         self.appendingFlag=false
                                                         //print(info as Any)
                                                     }
@@ -1074,68 +1075,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
 
-//    func draw1(rl:Int,eyeouter:Int,pt:Int,color:UIColor) -> Int
-//    {
-//        var pointList = Array<CGPoint>()
-//        var ln:Int = 0
-//        let drawPath = UIBezierPath()
-//        while wP[rl][ln][0][0] != 9999 {
-//            for n in 0..<120 {
-//                let px = CGFloat(pt + n*2)
-//                let py = CGFloat(wP[rl][ln][eyeouter][n] + 90)
-//                let point = CGPoint(x:px,y:py)
-//                pointList.append(point)
-//            }
-//            // 始点に移動する
-//            drawPath.move(to: pointList[0])
-//            // 配列から始点の値を取り除く
-//            pointList.removeFirst()
-//            // 配列から点を取り出して連結していく
-//            for pt in pointList {
-//                drawPath.addLine(to: pt)
-//            }
-//            // 線の色
-//            color.setStroke()
-//            // 線幅
-//            drawPath.lineWidth = 0.3
-//            ln += 1
-//            pointList.removeAll()
-//        }
-//        drawPath.stroke()
-//        drawPath.removeAllPoints()
-//        return ln
-//    }
-    func drawTemp(){
-        var pointList = Array<CGPoint>()
-        let drawPath = UIBezierPath()
-        for n in 0..<120 {
-            let px = CGFloat(60 + n*2)//260 or 0
-            let py = CGFloat(eyeWs[1][n] + 90)
-            let point = CGPoint(x:px,y:py)
-            pointList.append(point)
-        }
-        // 始点に移動する
-        drawPath.move(to: pointList[0])
-        // 配列から始点の値を取り除く
-        pointList.removeFirst()
-        // 配列から点を取り出して連結していく
-        for pt in pointList {
-            drawPath.addLine(to: pt)
-        }
-        // 線の色
-        UIColor.red.setStroke()
-        // 線幅
-        drawPath.lineWidth = 2.3
-        pointList.removeAll()
-        
-        drawPath.stroke()
-        drawPath.removeAllPoints()
-    }
+
     func draw1wave(){
         var pointList = Array<CGPoint>()
         let drawPath = UIBezierPath()
         var rlPt:Int = 0
-        for i in 0..<waveTuple.count{
+        for i in 0..<waveTuple.count{//右のvHIT
             if waveTuple[i].2 == 0 || waveTuple[i].0 == 0{
                 continue
             }
@@ -1166,7 +1111,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         drawPath.stroke()
         drawPath.removeAllPoints()
-        for i in 0..<waveTuple.count{
+        for i in 0..<waveTuple.count{//左のvHIT
             if waveTuple[i].2 == 0 || waveTuple[i].0 == 1{
                 continue
             }
@@ -1198,7 +1143,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         drawPath.stroke()
         drawPath.removeAllPoints()
-        for i in 0..<waveTuple.count{
+        for i in 0..<waveTuple.count{//左右のoutWsを表示
             if waveTuple[i].2 == 0{
                 continue
             }
@@ -1224,7 +1169,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         drawPath.stroke()
         drawPath.removeAllPoints()
-        for i in 0..<waveTuple.count{//bold line
+        for i in 0..<waveTuple.count{//太く表示する
             if waveTuple[i].3 == 1 || (waveTuple[i].3 == 2 && waveTuple[i].2 == 1){
                 if waveTuple[i].0 == 0{
                     rlPt=0
@@ -1413,39 +1358,41 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @objc func viewWillEnterForeground(_ notification: Notification?) {
  //       print("willenter")
         if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
-            setslowImgs()
+            let tempNum = getslowVideoNum()
+            if allVideoCnt != tempNum{
+                allVideoCnt = tempNum
+                setslowImgs()
+                showCurrent()
+            }
             freeCounter += 1
             UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-//            if slowVideoCurrent > slowVideoCnt{
-//                slowVideoCurrent = slowVideoCnt
+            freecntLabel.text = "\(freeCounter)"
+//            if dispOrgflag == true{
+//                dispOrgflag = false//Kalman filtered dataを表示
+//                calcDrawVHIT()
 //            }
-            if dispOrgflag == true{
-                dispOrgflag = false//Kalman filtered dataを表示
-                calcDrawVHIT()
-            }
-//            showCurrent()
         }
     }
-    func getThumbnailFrom(path: String) -> UIImage? {
-        let url = NSURL(fileURLWithPath: path)
-        do {
-            
-            let asset = AVURLAsset(url: url as URL , options: nil)
-            let imgGenerator = AVAssetImageGenerator(asset: asset)
-            imgGenerator.appliesPreferredTrackTransform = true
-            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
-            let thumbnail = UIImage(cgImage: cgImage)
-            
-            return thumbnail
-            
-        } catch let error {
-            
-            print("*** Error generating thumbnail: \(error.localizedDescription)")
-            return nil
-            
-        }
-        
-    }
+//    func getThumbnailFrom(path: String) -> UIImage? {
+//        let url = NSURL(fileURLWithPath: path)
+//        do {
+//
+//            let asset = AVURLAsset(url: url as URL , options: nil)
+//            let imgGenerator = AVAssetImageGenerator(asset: asset)
+//            imgGenerator.appliesPreferredTrackTransform = true
+//            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+//            let thumbnail = UIImage(cgImage: cgImage)
+//
+//            return thumbnail
+//
+//        } catch let error {
+//
+//            print("*** Error generating thumbnail: \(error.localizedDescription)")
+//            return nil
+//
+//        }
+//
+//    }
     func getThumbnailFrom(num:Int, path: String) -> UIImage? {
         let url = NSURL(fileURLWithPath: path)
         do {
@@ -1469,8 +1416,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
    
     var appendingFlag:Bool = false
     func setslowImgs(){
-        if slowVideoCnt != getslowVideoNum() || slowVideoCnt == 0{
-            slowVideoCnt = getslowVideoNum()//slowImgsにサムネイルを登録する
+//        if slowVideoCnt == 0{
+            slowVideoCnt = allVideoCnt
             slowImgs.removeAll()
             slowPath.removeAll()
             slowDate.removeAll()
@@ -1484,29 +1431,27 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     sleep(UInt32(0.1))
                  }
                  //ここでslowPathだけappend
-                 if i != 0 && slowPath[slowPath.count-1].contains("vhit20") == true{
+                 if i != 0 && slowPath[slowPath.count-1].contains("delete") == true{
                     slowImgs.append(UIImage(named:"cloud.jpg")!)
                  }else{
                      slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
                 }
             }
-       }else{
-            slowImgs.removeLast()
-            slowPath.removeLast()
-            slowDate.removeLast()
-            slowDura.removeLast()
-            appendingFlag=true
-            setVideoPathDate(num: slowVideoCnt)
-            while appendingFlag == true{
-                sleep(UInt32(0.1))
-            }
-             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
-        }
- //       print(slowImgs.count,slowPath.count,slowDate.count,slowDura.count,slowImgs.count)
+//       }else{
+//            slowImgs.removeLast()
+//            slowPath.removeLast()
+//            slowDate.removeLast()
+//            slowDura.removeLast()
+//            appendingFlag=true
+//            setVideoPathDate(num: slowVideoCnt)
+//            while appendingFlag == true{
+//                sleep(UInt32(0.1))
+//            }
+//             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
+//        }
         if slowImgs.count > 1{
-  //          let cnt = slowImgs.count - 1
-            for i in (1..<slowImgs.count).reversed(){
-                if slowPath[i].contains("vhit20") == true{
+             for i in (1..<slowImgs.count).reversed(){
+                if slowPath[i].contains("delete") == true{
                     slowImgs.remove(at: i)
                     slowPath.remove(at: i)
                     slowDate.remove(at: i)
@@ -1523,8 +1468,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if slowVideoCurrent > slowVideoCnt{
             slowVideoCurrent = slowVideoCnt
         }
- //       print(slowImgs.count,slowPath.count,slowDate.count,slowDura.count,slowImgs.count)
- //       showCurrent()
     }
     
     func showCurrent(){
@@ -1540,17 +1483,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         // Do any additional setup after loading the view, typically from a nib.
         stopButton.isHidden = true
- //       self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
- //       self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-        getUserDefaults()
+         getUserDefaults()
         //let videoWidth = 720.0
         //ratioW = 720.0/Double(self.view.bounds.width)
         freeCounter += 1
         UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
  //       print("***viewDidload")
-
+        allVideoCnt = getslowVideoNum()//cloud上のビデオも含めた数,この変化を見る
         dispWakus()
-        setslowImgs()//slowVideoCntを得て、slowImgsアレイにサムネールを登録
+        setslowImgs()//実機上のslowVideoCntを得て、slowImgsアレイにサムネールを登録
         slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
         showCurrent()
     }
@@ -1655,7 +1596,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("tatsuaki-unwind from list")
             #endif
         }
-         if slowVideoCnt != getslowVideoNum(){
+        let tempNum = getslowVideoNum()
+        if allVideoCnt != tempNum{
+            allVideoCnt = tempNum
             setslowImgs()
         }
     }
@@ -1824,9 +1767,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         lastwavePoint = waveCurrpoint
                         if waveTuple.count>0{
                             checksetPos(pos: lastwavePoint + Int(self.view.bounds.width/2), mode:1)
-//                            for n in 0..<waveTuple.count{
-//                                print(waveTuple[n])
-//                            }
                             drawVHITwaves()
                         }
                     }
@@ -1851,6 +1791,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     for i in 0..<waveTuple.count{
                         waveTuple[i].3 = 0
                     }
+                    drawVHITwaves()
                 }
             }
         }
@@ -1862,7 +1803,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
             if waveTuple.count > 0{
-                var temp = checksetPos(pos:lastwavePoint + Int(sender.location(in: self.view).x),mode: 2)
+                let temp = checksetPos(pos:lastwavePoint + Int(sender.location(in: self.view).x),mode: 2)
                 if temp >= 0{
                     if waveTuple[temp].2 == 1{
                         waveTuple[temp].2 = 0
@@ -1870,9 +1811,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         waveTuple[temp].2 = 1
                     }
                 }
-//                for i in 0..<waveTuple.count{
-//                    print(waveTuple[i])
-//                }
             }
         }else{
             if dispOrgflag == true {
@@ -1906,38 +1844,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return return_n
     }
-
-    var lnum1:Int = 0
-    var lnum2:Int = 0
-//    func CheckLines() -> Bool
-//    {//lineが増えているかチェック
-//        var l1:Int = 0
-//        var l2:Int = 0
-//        while wP[0][l1][0][0] != 9999 {
-//            l1 += 1
-//        }
-//        while wP[1][l2][0][0] != 9999 {
-//            l2 += 1
-//        }
-//        if lnum1<l1||lnum2<l2{
-//            lnum1 = l1;
-//            lnum2 = l2;
-//            return true;
-//        }
-//        return false;
-//    }
-//    func getLines() -> Int
-//    {//lineが増えているかチェック
-//        var l1:Int = 0
-//        var l2:Int = 0
-//        while wP[0][l1][0][0] != 9999 {
-//            l1 += 1
-//        }
-//        while wP[1][l2][0][0] != 9999 {
-//            l2 += 1
-//        }
-//        return l1 + l2
-//    }
     
     func updownp(n:Int,nami:Int) -> Int {
         //yなので、増えると下方向にずれる
@@ -1992,14 +1898,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return updownp(n: num + flatwidth, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
     }
     func calcDrawVHIT(){
-  //      self.wP[0][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-  //      self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-  //      lVnum.removeAll()//left vHIT の始点の配列
-  //      lVnuD.removeAll()
-        waveTuple.removeAll()
-  //      rVnum.removeAll()//right vHIT の始点の配列
- //       rVnuD.removeAll()
-        openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
+          waveTuple.removeAll()
+         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
         let vHITcnt = self.vHITouter.count
         if vHITcnt < 400 {
             openCVstopFlag = false
@@ -2017,22 +1917,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawVHITwaves()
     }
     func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波
-        //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
-        //       print(number)
-        //print(dispOrgflag)
         let flatwidth:Int = 10
         let t = Getupdownp(num: number,flatwidth:flatwidth)
         if t != -1 {
             //          print("getupdownp")
             let ws = number - flatwidth + 5;//波表示開始位置 wavestartpoint
-//            var ln:Int = 0
-//            while wP[t][ln][0][0] != 9999 {//最終ラインの位置を探しそこへ書き込む。20本を超えたら戻る。
-//                ln += 1
-//                if ln > 20 {//20本まで
-//                    wP[t][ln][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-//                    return t
-//                }
-//            }
             waveTuple.append((t,ws,1,0))//L/R,frameNumber,disp,current)
             let num=waveTuple.count-1
             for k1 in ws..<ws + 120{
@@ -2040,19 +1929,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let iOrg = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
                 eyeWs[num][k1-ws] = iOrg
                 eyefWs[num][k1-ws] = iFil
-//                if dispOrgflag == false {
-//                     wP[t][ln][0][k1 - ws] = iFil//Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
-//                }else{
-//                    wP[t][ln][0][k1 - ws] = iOrg//Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)
-//                }
             }
             for k2 in ws..<ws + 120{
                 let i = Int(vHITouter[k2]*CGFloat(outerRatio)/100.0)
-//                wP[t][ln][1][k2 - ws] = i
                 outWs[num][k2 - ws] = i
             }//ここでエラーが出るようだ？
-//            wP[t][ln + 1][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-//            wP[t][ln + 1][1][0] = 9999
         }
         return t
     }
