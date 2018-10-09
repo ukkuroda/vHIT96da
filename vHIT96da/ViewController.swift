@@ -1507,13 +1507,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if let vc = segue.destination as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             //      遷移先のParametersViewControllerで宣言している値に代入して渡す
-   //         ParametersViewController.flatWidth = flatWidth
             ParametersViewController.flatsumLimit = flatsumLimit
             ParametersViewController.waveWidth = waveWidth
             ParametersViewController.wavePeak = wavePeak
             ParametersViewController.updownPgap = updownPgap
-   //         ParametersViewController.peakWidth = peakWidth
-            ParametersViewController.rectEye = rectEye
+             ParametersViewController.rectEye = rectEye
             ParametersViewController.rectFace = rectFace
             ParametersViewController.rectOuter = rectOuter
             ParametersViewController.eyeBorder = eyeBorder
@@ -1550,12 +1548,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if let vc = segue.source as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             // segueから遷移先のResultViewControllerを取得する
-   //         flatWidth = ParametersViewController.flatWidth
             flatsumLimit = ParametersViewController.flatsumLimit
             updownPgap = ParametersViewController.updownPgap
             waveWidth = ParametersViewController.waveWidth
             wavePeak = ParametersViewController.wavePeak
-    //        peakWidth = ParametersViewController.peakWidth
             rectEye = ParametersViewController.rectEye
             rectFace = ParametersViewController.rectFace
             rectOuter = ParametersViewController.rectOuter
@@ -1789,7 +1785,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if vHITboxView?.isHidden == false{//結果が表示されている時
                 if waveTuple.count>0 {
                     for i in 0..<waveTuple.count{
-                        waveTuple[i].3 = 0
+                        if waveTuple[i].3 == 1{
+                            waveTuple[i].3 = 2
+                        }
                     }
                     drawVHITwaves()
                 }
