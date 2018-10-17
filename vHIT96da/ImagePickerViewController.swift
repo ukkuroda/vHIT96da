@@ -35,7 +35,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         //     let toRecipients = [""]
         mailViewController.mailComposeDelegate = self
         mailViewController.setSubject("vHIT96da")
-//        mailViewController.setMessageBody("By vHIT96da", isHTML: false)
+        //        mailViewController.setMessageBody("By vHIT96da", isHTML: false)
         let imageDataq = UIImageJPEGRepresentation(videoView, 1.0)
         mailViewController.addAttachmentData(imageDataq!, mimeType: "image/jpg", fileName: imageName)
         present(mailViewController, animated: true, completion: nil)

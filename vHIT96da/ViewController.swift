@@ -936,7 +936,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         freeCounter = getUserDefault(str: "freeCounter", ret:0)//50回以上になるとその由のアラームを出す
         flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
         waveWidth = getUserDefault(str: "waveWidth", ret: 40)
-        wavePeak = getUserDefault(str: "wavePeak", ret: 15)
+        wavePeak = getUserDefault(str: "wavePeak", ret: 30)
         updownPgap = getUserDefault(str: "updownPgap", ret: 6)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 10)
         faceBorder = getUserDefault(str: "faceBorder", ret: 8)

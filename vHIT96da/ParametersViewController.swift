@@ -198,7 +198,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         //       flatWidth = 28
         flatsumLimit = 80
         waveWidth = 40
-        wavePeak = 15
+        wavePeak = 30
         updownPgap = 6
         //       peakWidth = 23
         eyeBorder = 10
