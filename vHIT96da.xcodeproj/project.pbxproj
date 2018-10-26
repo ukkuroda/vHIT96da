@@ -14,6 +14,7 @@
 		8E9AC3AD2077B98C001D366E /* PlayVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */; };
 		8EA90BE32038208200D042D0 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EA90BE22038208200D042D0 /* opencv2.framework */; };
 		8EB6E0F9208E1CB0000A85EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EB6E0F8208E1CAF000A85EB /* Assets.xcassets */; };
+		8EBC22802182D6A100EF040C /* HelpjViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBC227F2182D6A100EF040C /* HelpjViewController.swift */; };
 		8ECE3964203802750054AC0C /* opencvWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECE3963203802750054AC0C /* opencvWrapper.mm */; };
 		8EE2C01D202F32440064ED6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE2C01C202F32440064ED6F /* AppDelegate.swift */; };
 		8EE2C01F202F32440064ED6F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE2C01E202F32440064ED6F /* ViewController.swift */; };
@@ -29,6 +30,7 @@
 		8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayVideoViewController.swift; sourceTree = "<group>"; };
 		8EA90BE22038208200D042D0 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		8EB6E0F8208E1CAF000A85EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8EBC227F2182D6A100EF040C /* HelpjViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpjViewController.swift; sourceTree = "<group>"; };
 		8ECE3961203802750054AC0C /* vHIT96da-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "vHIT96da-Bridging-Header.h"; sourceTree = "<group>"; };
 		8ECE3962203802750054AC0C /* opencvWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = opencvWrapper.h; sourceTree = "<group>"; };
 		8ECE3963203802750054AC0C /* opencvWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = opencvWrapper.mm; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				8EE2C01C202F32440064ED6F /* AppDelegate.swift */,
+				8EBC227F2182D6A100EF040C /* HelpjViewController.swift */,
 				8E16BF7120D40FAC00964AEA /* vhit20.mov */,
 				8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */,
 				8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */,
@@ -169,6 +172,7 @@
 				8E08E1C12046906400FFB255 /* ImagePickerViewController.swift in Sources */,
 				8E9AC3AD2077B98C001D366E /* PlayVideoViewController.swift in Sources */,
 				8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */,
+				8EBC22802182D6A100EF040C /* HelpjViewController.swift in Sources */,
 				8ECE3964203802750054AC0C /* opencvWrapper.mm in Sources */,
 				8EE2C01D202F32440064ED6F /* AppDelegate.swift in Sources */,
 			);

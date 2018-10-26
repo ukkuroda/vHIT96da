@@ -105,10 +105,10 @@
                                 </connections>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UsG-5w-jrf">
-                                <rect key="frame" x="20" y="515" width="280" height="43"/>
+                                <rect key="frame" x="10" y="515" width="300" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Afb-7h-V8u">
-                                        <rect key="frame" x="0.0" y="0.0" width="26.5" height="43"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="29" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="list" image="mail"/>
                                         <connections>
@@ -116,7 +116,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldV-kl-ghp">
-                                        <rect key="frame" x="36.5" y="0.0" width="26" height="43"/>
+                                        <rect key="frame" x="39" y="0.0" width="28.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="save" image="save"/>
                                         <connections>
@@ -124,7 +124,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q2m-D3-Mdm">
-                                        <rect key="frame" x="72.5" y="0.0" width="26.5" height="43"/>
+                                        <rect key="frame" x="77.5" y="0.0" width="29" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="disp" image="disp"/>
                                         <connections>
@@ -132,7 +132,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-CJ-Yxe">
-                                        <rect key="frame" x="109" y="0.0" width="26" height="43"/>
+                                        <rect key="frame" x="116.5" y="0.0" width="28.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="start"/>
                                         <connections>
@@ -140,7 +140,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqt-I0-fRF">
-                                        <rect key="frame" x="145" y="0.0" width="26.5" height="43"/>
+                                        <rect key="frame" x="155" y="0.0" width="29" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="stop"/>
                                         <connections>
@@ -148,7 +148,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4bc-dn-f4s">
-                                        <rect key="frame" x="181.5" y="0.0" width="26" height="43"/>
+                                        <rect key="frame" x="194" y="0.0" width="28.5" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="play" image="play"/>
                                         <connections>
@@ -156,7 +156,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nHY-L8-P6Q">
-                                        <rect key="frame" x="217.5" y="0.0" width="26.5" height="43"/>
+                                        <rect key="frame" x="232.5" y="0.0" width="29" height="43"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" image="set"/>
                                         <connections>
@@ -164,7 +164,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7OA-cL-B3S">
-                                        <rect key="frame" x="254" y="0.0" width="26" height="43"/>
+                                        <rect key="frame" x="271.5" y="0.0" width="28.5" height="43"/>
                                         <state key="normal" title="Button" image="help"/>
                                         <connections>
                                             <segue destination="jcX-Lf-HTi" kind="show" id="yrV-wM-iGp"/>
@@ -252,14 +252,14 @@
                             <constraint firstItem="6oH-Ur-nDk" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="NQb-1R-zRO"/>
                             <constraint firstItem="fee-9L-VIg" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="P8E-Z1-giN"/>
                             <constraint firstAttribute="bottom" secondItem="UsG-5w-jrf" secondAttribute="bottom" constant="10" id="P9Q-KY-U46"/>
-                            <constraint firstItem="UsG-5w-jrf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="SGT-Bl-XkR"/>
+                            <constraint firstItem="UsG-5w-jrf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="SGT-Bl-XkR"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ST5-jh-Ekt"/>
                             <constraint firstItem="LZQ-Ez-rYI" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="UvQ-bh-TPS"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="5" id="Vbt-ge-8hs"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="aGg-qH-zlC"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="aZd-EJ-iYv"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ggC-et-dyX"/>
-                            <constraint firstAttribute="trailing" secondItem="UsG-5w-jrf" secondAttribute="trailing" constant="20" id="v4R-jy-1DV"/>
+                            <constraint firstAttribute="trailing" secondItem="UsG-5w-jrf" secondAttribute="trailing" constant="10" id="v4R-jy-1DV"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <connections>
@@ -324,45 +324,45 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZDr-ID-gRF">
-                                <rect key="frame" x="20" y="513" width="280" height="45"/>
+                                <rect key="frame" x="10" y="513" width="300" height="45"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BVO-mg-ikb">
-                                        <rect key="frame" x="0.0" y="0.0" width="32.5" height="45"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="36" height="45"/>
                                         <state key="normal" backgroundImage="tostart"/>
                                         <connections>
                                             <action selector="toTop:" destination="iop-07-P89" eventType="touchUpInside" id="fbJ-5y-bYY"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QGv-nm-2Nj">
-                                        <rect key="frame" x="49.5" y="0.0" width="32.5" height="45"/>
+                                        <rect key="frame" x="53" y="0.0" width="35.5" height="45"/>
                                         <state key="normal" backgroundImage="left2"/>
                                         <connections>
                                             <action selector="back10:" destination="iop-07-P89" eventType="touchDown" id="jsB-Ns-h8j"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kvx-lo-ORz">
-                                        <rect key="frame" x="99" y="0.0" width="32.5" height="45"/>
+                                        <rect key="frame" x="105.5" y="0.0" width="36" height="45"/>
                                         <state key="normal" backgroundImage="left1"/>
                                         <connections>
                                             <action selector="back1:" destination="iop-07-P89" eventType="touchDown" id="cqY-yE-Soc"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oei-Sb-0wT">
-                                        <rect key="frame" x="148.5" y="0.0" width="32.5" height="45"/>
+                                        <rect key="frame" x="158.5" y="0.0" width="36" height="45"/>
                                         <state key="normal" backgroundImage="right1"/>
                                         <connections>
                                             <action selector="next1:" destination="iop-07-P89" eventType="touchDown" id="hQr-xO-kmU"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xa0-ou-dmS">
-                                        <rect key="frame" x="198" y="0.0" width="32.5" height="45"/>
+                                        <rect key="frame" x="211.5" y="0.0" width="35.5" height="45"/>
                                         <state key="normal" backgroundImage="right2"/>
                                         <connections>
                                             <action selector="next10:" destination="iop-07-P89" eventType="touchDown" id="qDk-rm-dO6"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q3d-Jq-FYa">
-                                        <rect key="frame" x="247.5" y="0.0" width="32.5" height="45"/>
+                                        <rect key="frame" x="264" y="0.0" width="36" height="45"/>
                                         <state key="normal" backgroundImage="playexit3"/>
                                         <connections>
                                             <segue destination="fg6-Ey-mWf" kind="unwind" unwindAction="unwind:" id="kSb-Fs-8Ni"/>
@@ -389,7 +389,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFz-lM-lPi">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFz-lM-lPi">
                                 <rect key="frame" x="265" y="30" width="50" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="2Il-hG-Vo4"/>
@@ -434,7 +434,7 @@ and EXIT</string>
                             <constraint firstItem="Vos-UF-Z1Y" firstAttribute="trailing" secondItem="cyE-Ko-XbV" secondAttribute="trailing" constant="50" id="MnX-cg-zNh"/>
                             <constraint firstAttribute="bottom" secondItem="ZDr-ID-gRF" secondAttribute="bottom" constant="10" id="P7i-IX-CGl"/>
                             <constraint firstItem="ZDr-ID-gRF" firstAttribute="top" secondItem="tUa-OA-L8L" secondAttribute="bottom" constant="15" id="PgO-qF-n50"/>
-                            <constraint firstItem="ZDr-ID-gRF" firstAttribute="leading" secondItem="Vos-UF-Z1Y" secondAttribute="leading" constant="20" id="YMZ-hM-cWI"/>
+                            <constraint firstItem="ZDr-ID-gRF" firstAttribute="leading" secondItem="Vos-UF-Z1Y" secondAttribute="leading" constant="10" id="YMZ-hM-cWI"/>
                             <constraint firstItem="tye-VD-IIQ" firstAttribute="top" secondItem="Vos-UF-Z1Y" secondAttribute="top" constant="5" id="YXK-Om-XW1"/>
                             <constraint firstItem="hli-XL-Hxc" firstAttribute="centerX" secondItem="waR-mR-wSk" secondAttribute="centerX" id="aul-Fj-XYk"/>
                             <constraint firstItem="tye-VD-IIQ" firstAttribute="trailing" secondItem="Vos-UF-Z1Y" secondAttribute="trailing" id="b74-mL-mvx"/>
@@ -445,7 +445,7 @@ and EXIT</string>
                             <constraint firstItem="cyE-Ko-XbV" firstAttribute="top" secondItem="hli-XL-Hxc" secondAttribute="bottom" constant="10" id="sYi-wK-w7t"/>
                             <constraint firstItem="zFz-lM-lPi" firstAttribute="top" secondItem="Vos-UF-Z1Y" secondAttribute="top" constant="10" id="spt-xh-DLI"/>
                             <constraint firstItem="tUa-OA-L8L" firstAttribute="leading" secondItem="Vos-UF-Z1Y" secondAttribute="leading" constant="20" id="tzr-Ow-Rtw"/>
-                            <constraint firstAttribute="trailing" secondItem="ZDr-ID-gRF" secondAttribute="trailing" constant="20" id="x5j-Fe-5YE"/>
+                            <constraint firstAttribute="trailing" secondItem="ZDr-ID-gRF" secondAttribute="trailing" constant="10" id="x5j-Fe-5YE"/>
                             <constraint firstItem="Vos-UF-Z1Y" firstAttribute="trailing" secondItem="zFz-lM-lPi" secondAttribute="trailing" constant="5" id="xCH-OX-bcf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Vos-UF-Z1Y"/>
@@ -844,22 +844,23 @@ and EXIT</string>
             </objects>
             <point key="canvasLocation" x="764" y="73.313343328335833"/>
         </scene>
-        <!--View Controller-->
+        <!--Helpj View Controller-->
         <scene sceneID="hFD-w5-waW">
             <objects>
-                <viewController id="jcX-Lf-HTi" sceneMemberID="viewController">
+                <viewController id="jcX-Lf-HTi" customClass="HelpjViewController" customModule="vHIT96da" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SG3-KA-IYb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="helptxtj" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
-                                <rect key="frame" x="0.0" y="25" width="320" height="503"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="helptxtj" translatesAutoresizingMaskIntoConstraints="NO" id="j2D-6T-AEW">
+                                <rect key="frame" x="0.0" y="20" width="320" height="330"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qiw-FJ-LWg">
-                                <rect key="frame" x="10" y="533" width="60" height="30"/>
+                                <rect key="frame" x="5" y="533" width="60" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="ETK-eM-q3Q"/>
-                                    <constraint firstAttribute="width" constant="60" id="bSf-ma-r94"/>
+                                    <constraint firstAttribute="width" constant="60" id="DqZ-ac-Wb3"/>
+                                    <constraint firstAttribute="height" constant="30" id="fsN-Ee-7wo"/>
                                 </constraints>
                                 <state key="normal" title="English" backgroundImage="btn"/>
                                 <connections>
@@ -867,10 +868,10 @@ and EXIT</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPw-uT-6g8">
-                                <rect key="frame" x="260" y="533" width="50" height="30"/>
+                                <rect key="frame" x="265" y="533" width="50" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="ahd-51-HQc"/>
-                                    <constraint firstAttribute="height" constant="30" id="dNN-s5-oBF"/>
+                                    <constraint firstAttribute="height" constant="30" id="652-qN-KT4"/>
+                                    <constraint firstAttribute="width" constant="50" id="qWd-eb-Nhc"/>
                                 </constraints>
                                 <state key="normal" title="Exit" backgroundImage="btn"/>
                                 <connections>
@@ -879,23 +880,37 @@ and EXIT</string>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="Qiw-FJ-LWg" secondAttribute="bottom" constant="5" id="34x-sb-BeO"/>
-                            <constraint firstItem="j2D-6T-AEW" firstAttribute="trailing" secondItem="2Hn-LM-5hZ" secondAttribute="trailing" id="5jX-OP-YSf"/>
-                            <constraint firstItem="j2D-6T-AEW" firstAttribute="top" secondItem="2Hn-LM-5hZ" secondAttribute="top" constant="5" id="EPg-Fg-Tlq"/>
-                            <constraint firstItem="Qiw-FJ-LWg" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="10" id="HN2-JR-yYa"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="j2D-6T-AEW" secondAttribute="bottom" constant="40" id="Q3X-5c-RyC"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="fPw-uT-6g8" secondAttribute="trailing" constant="10" id="cI9-eb-4et"/>
-                            <constraint firstItem="j2D-6T-AEW" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" id="v0j-ZM-Qcq"/>
-                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="fPw-uT-6g8" secondAttribute="bottom" constant="5" id="x30-lf-UzW"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="Qiw-FJ-LWg" secondAttribute="bottom" constant="5" id="N1R-HV-q2c"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="trailing" secondItem="fPw-uT-6g8" secondAttribute="trailing" constant="5" id="N9G-8f-yT7"/>
+                            <constraint firstItem="Qiw-FJ-LWg" firstAttribute="leading" secondItem="2Hn-LM-5hZ" secondAttribute="leading" constant="5" id="Pru-0R-RSW"/>
+                            <constraint firstItem="2Hn-LM-5hZ" firstAttribute="bottom" secondItem="fPw-uT-6g8" secondAttribute="bottom" constant="5" id="Wlw-Fg-ntK"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Hn-LM-5hZ"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="aE2-5o-jFc" appends="YES" id="Xf8-Ci-RWF"/>
+                            <outletCollection property="gestureRecognizers" destination="rNW-1K-UYf" appends="YES" id="h6R-ji-8ST"/>
+                        </connections>
                     </view>
+                    <connections>
+                        <outlet property="hView" destination="j2D-6T-AEW" id="HXI-09-XgW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8AV-xf-OhK" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Qpl-Z7-gTZ" userLabel="Exit" sceneMemberID="exit"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="aE2-5o-jFc">
+                    <connections>
+                        <action selector="panGes:" destination="jcX-Lf-HTi" id="9f8-6W-5xp"/>
+                    </connections>
+                </panGestureRecognizer>
+                <pinchGestureRecognizer id="rNW-1K-UYf">
+                    <connections>
+                        <action selector="pinchGes:" destination="jcX-Lf-HTi" id="Q14-7g-HhH"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1564" y="-40"/>
+            <point key="canvasLocation" x="1563.75" y="-40.140845070422536"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="1tP-by-dJR">
@@ -947,7 +962,7 @@ and EXIT</string>
         <image name="disp" width="260" height="260"/>
         <image name="help" width="260" height="260"/>
         <image name="helptxt" width="1242" height="2241"/>
-        <image name="helptxtj" width="1916" height="3218"/>
+        <image name="helptxtj" width="1900" height="3508"/>
         <image name="left1" width="630" height="630"/>
         <image name="left2" width="630" height="630"/>
         <image name="mail" width="260" height="260"/>
