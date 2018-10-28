@@ -19,21 +19,27 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="EQY-o7-8gh">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="510"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="IOM-Pm-uIp">
-                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="itemSize" width="133" height="118"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="iIj-Zw-9zK">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="iIj-Zw-9zK">
+                                        <rect key="frame" x="0.0" y="0.0" width="133" height="118"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="133" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qdB-5e-QDp">
+                                                    <rect key="frame" x="0.0" y="0.0" width="133" height="118"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
                                         </view>
                                     </collectionViewCell>
                                 </cells>
@@ -55,39 +61,60 @@
                                     <segue destination="ShO-G9-0jC" kind="unwind" unwindAction="unwind:" id="dhC-87-8m8"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MSu-2e-oey">
-                                <rect key="frame" x="20" y="518" width="210" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MSu-2e-oey">
+                                <rect key="frame" x="20" y="518" width="35" height="40"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <bool key="isElement" value="NO"/>
                                 </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Njb-dw-m1A"/>
+                                    <constraint firstAttribute="width" constant="35" id="zla-AC-EVy"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <state key="normal" title="click the image to mail it" backgroundImage="btnb">
+                                <state key="normal" backgroundImage="gomi">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="deleOne:" destination="dfx-rB-Lsf" eventType="touchUpInside" id="Nb8-Ib-p33"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MNc-mq-rZI">
+                                <rect key="frame" x="140" y="518" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="13G-Z3-FmF"/>
+                                    <constraint firstAttribute="height" constant="40" id="DgM-UO-fQn"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="mail-1"/>
+                                <connections>
+                                    <action selector="mailOne:" destination="dfx-rB-Lsf" eventType="touchUpInside" id="hHb-8h-XJC"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="EQY-o7-8gh" firstAttribute="trailing" secondItem="2FJ-od-8mC" secondAttribute="trailing" id="6ig-ly-hUb"/>
-                            <constraint firstItem="2FJ-od-8mC" firstAttribute="bottom" secondItem="EQY-o7-8gh" secondAttribute="bottom" id="9rW-bU-4R2"/>
-                            <constraint firstItem="2FJ-od-8mC" firstAttribute="bottom" secondItem="MSu-2e-oey" secondAttribute="bottom" constant="10" id="FdP-ib-TND"/>
-                            <constraint firstItem="EQY-o7-8gh" firstAttribute="top" secondItem="fnD-Hr-hiZ" secondAttribute="top" id="LEq-y4-mWo"/>
-                            <constraint firstItem="EQY-o7-8gh" firstAttribute="leading" secondItem="2FJ-od-8mC" secondAttribute="leading" id="LyD-wk-vah"/>
+                            <constraint firstItem="EQY-o7-8gh" firstAttribute="top" secondItem="fnD-Hr-hiZ" secondAttribute="top" id="3SO-fd-eUC"/>
+                            <constraint firstItem="EQY-o7-8gh" firstAttribute="leading" secondItem="2FJ-od-8mC" secondAttribute="leading" id="KVy-Mq-6uN"/>
+                            <constraint firstItem="Ty3-wO-nMU" firstAttribute="top" secondItem="EQY-o7-8gh" secondAttribute="bottom" constant="8" id="VQR-9h-Qxp"/>
                             <constraint firstAttribute="trailing" secondItem="Ty3-wO-nMU" secondAttribute="trailing" constant="10" id="bBm-NH-mp9"/>
                             <constraint firstItem="2FJ-od-8mC" firstAttribute="bottom" secondItem="Ty3-wO-nMU" secondAttribute="bottom" constant="10" id="bCU-gW-yLT"/>
-                            <constraint firstItem="Ty3-wO-nMU" firstAttribute="leading" secondItem="MSu-2e-oey" secondAttribute="trailing" constant="20" id="dxo-A5-ewv"/>
-                            <constraint firstItem="MSu-2e-oey" firstAttribute="leading" secondItem="2FJ-od-8mC" secondAttribute="leading" constant="20" id="jj8-8M-7iu"/>
+                            <constraint firstItem="MNc-mq-rZI" firstAttribute="centerX" secondItem="fnD-Hr-hiZ" secondAttribute="centerX" id="g8t-Rr-vmP"/>
+                            <constraint firstItem="2FJ-od-8mC" firstAttribute="bottom" secondItem="MSu-2e-oey" secondAttribute="bottom" constant="10" id="mdn-qi-g3i"/>
+                            <constraint firstItem="2FJ-od-8mC" firstAttribute="bottom" secondItem="MNc-mq-rZI" secondAttribute="bottom" constant="10" id="qET-MB-9eh"/>
+                            <constraint firstItem="2FJ-od-8mC" firstAttribute="trailing" secondItem="EQY-o7-8gh" secondAttribute="trailing" id="uKA-0c-nKO"/>
+                            <constraint firstItem="MSu-2e-oey" firstAttribute="leading" secondItem="2FJ-od-8mC" secondAttribute="leading" constant="20" id="vgD-q0-4lT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2FJ-od-8mC"/>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="EQY-o7-8gh" id="pMM-7l-esF"/>
+                        <outlet property="deleButton" destination="MSu-2e-oey" id="Xiz-tU-Pa3"/>
+                        <outlet property="mailButton" destination="MNc-mq-rZI" id="kTU-so-pFk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FpZ-3E-w35" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="ShO-G9-0jC" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-1159.2" y="-119.1904047976012"/>
+            <point key="canvasLocation" x="-1160.625" y="-119.36619718309859"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -960,12 +987,14 @@ and EXIT</string>
         <image name="btn" width="300" height="40"/>
         <image name="btnb" width="300" height="40"/>
         <image name="disp" width="260" height="260"/>
+        <image name="gomi" width="500" height="500"/>
         <image name="help" width="260" height="260"/>
         <image name="helptxt" width="1242" height="2241"/>
         <image name="helptxtj" width="1900" height="3508"/>
         <image name="left1" width="630" height="630"/>
         <image name="left2" width="630" height="630"/>
         <image name="mail" width="260" height="260"/>
+        <image name="mail-1" width="500" height="523"/>
         <image name="nextvideo" width="630" height="630"/>
         <image name="play" width="260" height="260"/>
         <image name="playexit3" width="630" height="630"/>

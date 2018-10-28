@@ -11,8 +11,9 @@ import UIKit
 class HelpjViewController: UIViewController {
     @IBOutlet weak var hView:UIImageView!
     var currentScale:CGFloat = 1.0
-    var helpHlimit:CGFloat=0
+
     var stPos:CGPoint!
+    var moveLast = CGPoint(x:0,y:0)
     override func viewDidLoad() {
         super.viewDidLoad()
         let w=view.bounds.width
@@ -20,38 +21,39 @@ class HelpjViewController: UIViewController {
         hView.frame.origin.y=0
         hView.frame.size.width=w
         hView.frame.size.height=w*3508/1900
-        helpHlimit=view.bounds.height-w*3508/1900 - 50
+//        helpHlimit=view.bounds.height-w*3508/1900 - 50
         if UIApplication.shared.isIdleTimerDisabled == true{
             UIApplication.shared.isIdleTimerDisabled = false//監視する
         }
-    }
- 
-    @IBAction func panGes(_ sender: UIPanGestureRecognizer) {
+     }
+     @IBAction func panGes(_ sender: UIPanGestureRecognizer) {
         let move:CGPoint = sender.translation(in: self.view)
+   //      let temppos = sender.location(in: self.view)
         if sender.state == .began {
             stPos = hView.frame.origin
         } else if sender.state == .changed {
             var px=stPos.x + move.x
             var py=stPos.y + move.y
-             if currentScale == 1{
+            
+            if currentScale == 1{
                 if py < -100{
                     py = -100
-                }else if py > 0{
+                   }else if py > 0{
                     py = 0
-                }
+                  }
                 hView.frame.origin.x=0
                 hView.frame.origin.y=py
             }else{
                 if px > 0{
                     px = 0
-                }else if px < -self.view.bounds.width{
+                 }else if px < -self.view.bounds.width{
                     px = -self.view.bounds.width
-                }
+                 }
                 if py > 0 {
                     py = 0
                 }else if py < -self.view.bounds.height*1.2{
                     py = -self.view.bounds.height*1.2
-                }
+                 }
                 hView.frame.origin.x = px
                 hView.frame.origin.y = py
             }
@@ -89,7 +91,10 @@ class HelpjViewController: UIViewController {
             UIView.animate(withDuration: 0.2, animations: {
                 self.hView.transform = CGAffineTransform(scaleX: self.currentScale, y: self.currentScale)
             }, completion: nil)
-            
+            if currentScale == 1{
+                hView.frame.origin.x=0
+                hView.frame.origin.y=0
+            }
         }
     }
 }
