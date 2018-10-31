@@ -1434,7 +1434,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                  if i != 0 && slowPath[slowPath.count-1].contains("delete") == true{
                     slowImgs.append(UIImage(named:"cloud.jpg")!)
                  }else{
-                     slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)
+                     slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)//ここでエラーが出るぞ
                 }
             }
 //       }else{

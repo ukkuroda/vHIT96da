@@ -10,6 +10,7 @@
 		8E08E1C12046906400FFB255 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */; };
 		8E16BF7220D40FAC00964AEA /* vhit20.mov in Resources */ = {isa = PBXBuildFile; fileRef = 8E16BF7120D40FAC00964AEA /* vhit20.mov */; };
 		8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E495CC5202FE7880030748C /* ParametersViewController.swift */; };
+		8E5D4FFB21897D380092D095 /* HlpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5D4FFA21897D380092D095 /* HlpViewController.swift */; };
 		8E6A654E20BC0B7600EE74EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E6A654D20BC0B7600EE74EF /* Images.xcassets */; };
 		8E9AC3AD2077B98C001D366E /* PlayVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */; };
 		8EA90BE32038208200D042D0 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EA90BE22038208200D042D0 /* opencv2.framework */; };
@@ -26,6 +27,7 @@
 		8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
 		8E16BF7120D40FAC00964AEA /* vhit20.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = vhit20.mov; sourceTree = "<group>"; };
 		8E495CC5202FE7880030748C /* ParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParametersViewController.swift; sourceTree = "<group>"; };
+		8E5D4FFA21897D380092D095 /* HlpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HlpViewController.swift; sourceTree = "<group>"; };
 		8E6A654D20BC0B7600EE74EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayVideoViewController.swift; sourceTree = "<group>"; };
 		8EA90BE22038208200D042D0 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 			children = (
 				8EE2C01C202F32440064ED6F /* AppDelegate.swift */,
 				8EBC227F2182D6A100EF040C /* HelpjViewController.swift */,
+				8E5D4FFA21897D380092D095 /* HlpViewController.swift */,
 				8E16BF7120D40FAC00964AEA /* vhit20.mov */,
 				8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */,
 				8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */,
@@ -173,6 +176,7 @@
 				8E9AC3AD2077B98C001D366E /* PlayVideoViewController.swift in Sources */,
 				8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */,
 				8EBC22802182D6A100EF040C /* HelpjViewController.swift in Sources */,
+				8E5D4FFB21897D380092D095 /* HlpViewController.swift in Sources */,
 				8ECE3964203802750054AC0C /* opencvWrapper.mm in Sources */,
 				8EE2C01D202F32440064ED6F /* AppDelegate.swift in Sources */,
 			);
