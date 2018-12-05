@@ -115,6 +115,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var slowPath = Array<String>()
     var slowDate = Array<String>()
     var slowDura = Array<String>()
+    var slowDuraorg = Array<String>()
     var slowFrames = Array<UIImage>()
 
 //    var slowvideoPath:String = ""
@@ -873,6 +874,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             slowDate.append("vHIT video : sample")
             //videoDuration = "2.5s"
             slowDura.append("2.5s")
+            slowDuraorg.append("2.5s")
             //            freecntLabel.text = "\(freeCounter)"
             appendingFlag=false
             return
@@ -893,6 +895,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
         let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
         slowDura.append(temp)
+        slowDuraorg.append(temp)
         let dateFormatter = DateFormatter()
         //To prevent displaying either date or time, set the desired style to NoStyle.
         dateFormatter.timeStyle = .medium //Set time style
@@ -1416,39 +1419,40 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
    
     var appendingFlag:Bool = false
     func setslowImgs(){
-//        if slowVideoCnt == 0{
-            slowVideoCnt = allVideoCnt
-            slowImgs.removeAll()
-            slowPath.removeAll()
-            slowDate.removeAll()
-            slowDura.removeAll()
-            for i in 0...slowVideoCnt{
+        //        if slowVideoCnt == 0{
+        slowVideoCnt = allVideoCnt
+        slowImgs.removeAll()
+        slowPath.removeAll()
+        slowDate.removeAll()
+        slowDura.removeAll()
+        slowDuraorg.removeAll()
+        for i in 0...slowVideoCnt{
+            sleep(UInt32(0.1))
+            appendingFlag=true
+            //ここでslowDate,slowPath,slowDuraをappend
+            setVideoPathDate(num: i)//別スレッドが終わるのをチェックappendingFlag
+            while appendingFlag == true{
                 sleep(UInt32(0.1))
-                appendingFlag=true
-                //ここでslowDate,slowPath,slowDuraをappend
-                setVideoPathDate(num: i)//別スレッドが終わるのをチェックappendingFlag
-                while appendingFlag == true{
-                    sleep(UInt32(0.1))
-                 }
-                 //ここでslowPathだけappend
-                 if i != 0 && slowPath[slowPath.count-1].contains("delete") == true{
-                    slowImgs.append(UIImage(named:"cloud.jpg")!)
-                 }else{
-                     slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)//ここでエラーが出るぞ
-                }
             }
-//       }else{
-//            slowImgs.removeLast()
-//            slowPath.removeLast()
-//            slowDate.removeLast()
-//            slowDura.removeLast()
-//            appendingFlag=true
-//            setVideoPathDate(num: slowVideoCnt)
-//            while appendingFlag == true{
-//                sleep(UInt32(0.1))
-//            }
-//             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
-//        }
+            //ここでslowPathだけappend
+            if i != 0 && slowPath[slowPath.count-1].contains("delete") == true{
+                slowImgs.append(UIImage(named:"cloud.jpg")!)
+            }else{
+                slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)//ここでエラーが出るぞ
+            }
+        }
+        //       }else{
+        //            slowImgs.removeLast()
+        //            slowPath.removeLast()
+        //            slowDate.removeLast()
+        //            slowDura.removeLast()
+        //            appendingFlag=true
+        //            setVideoPathDate(num: slowVideoCnt)
+        //            while appendingFlag == true{
+        //                sleep(UInt32(0.1))
+        //            }
+        //             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
+        //        }
         if slowImgs.count > 1{
              for i in (1..<slowImgs.count).reversed(){
                 if slowPath[i].contains("delete") == true{
@@ -1456,6 +1460,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     slowPath.remove(at: i)
                     slowDate.remove(at: i)
                     slowDura.remove(at: i)
+                    slowDuraorg.remove(at: i)
                 }
             }
         }
@@ -1575,11 +1580,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let Controller:PlayVideoViewController = vc
             startPoint = Controller.currPos*24
             slowImage.image = Controller.playImage.image
- 
             slowImgs[slowVideoCurrent]=slowImage.image!
-            let secs = slowDura[slowVideoCurrent].components(separatedBy: "s")
+            let secs = slowDuraorg[slowVideoCurrent].components(separatedBy: "s")
             let sec:Double = Double(secs[0])!
-            slowDura[slowVideoCurrent]="\(sec - Double(startPoint)/240.0)" + "s"
+            let secd:Double = sec - Double(startPoint)/240.0
+            let secd2:Double = Double(Int(secd*10.0))/10.0
+            slowDura[slowVideoCurrent]="\(secd2)" + "s"
             if vHITboxView?.isHidden == false{
                 vHITboxView?.isHidden = true
                 boxView?.isHidden = true
