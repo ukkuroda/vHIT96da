@@ -111,12 +111,27 @@ class PlayVideoViewController: UIViewController {
     @objc func updateNext(tm: Timer) {
         currPos += 1
         if currPos>slowFrames1.count-1{
-            currPos=slowFrames1.count - 1
+            //currPos=slowFrames1.count - 1
+            currPos=0
         }
         playImage.image=getFrame(n: currPos)
         showCurAll(num: currPos)
+        if currPos == 0{
+            stopTimer1()
+        }
         //       cntNum.text="\(currPos-1)"+"/"+"\(frameN)"
     }
+
+//    
+//    @objc func updateNext(tm: Timer) {
+//        currPos += 1
+//        if currPos>slowFrames1.count-1{
+//            currPos=slowFrames1.count - 1
+//        }
+//        playImage.image=getFrame(n: currPos)
+//        showCurAll(num: currPos)
+//        //       cntNum.text="\(currPos-1)"+"/"+"\(frameN)"
+//    }
     @objc func updateBack(tm: Timer) {
         currPos -= 1
         if currPos<0{

@@ -448,9 +448,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //slowvideoAdd にアドレスが入る
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
         let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-        let sec10 = Int(10*avAsset.duration.seconds)
-        let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
-        slowDura[slowVideoCurrent]=temp
+  //      let sec10 = Int(10*avAsset.duration.seconds)
+   //     let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
+    //    slowDura[slowVideoCurrent]=temp
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
         do {
@@ -1575,7 +1575,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let Controller:PlayVideoViewController = vc
             startPoint = Controller.currPos*24
             slowImage.image = Controller.playImage.image
-            
+ 
+            slowImgs[slowVideoCurrent]=slowImage.image!
+            let secs = slowDura[slowVideoCurrent].components(separatedBy: "s")
+            let sec:Double = Double(secs[0])!
+            slowDura[slowVideoCurrent]="\(sec - Double(startPoint)/240.0)" + "s"
             if vHITboxView?.isHidden == false{
                 vHITboxView?.isHidden = true
                 boxView?.isHidden = true
