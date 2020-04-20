@@ -10,53 +10,30 @@ import UIKit
 
 class HlpViewController: UIViewController, UIScrollViewDelegate  {
 
-        @IBOutlet var scrollView: UIScrollView!
-        var imageView: UIImageView!
+    @IBOutlet weak var imageView1: UIImageView!
+    @IBOutlet var scrollView: UIScrollView!
+    //    var imageView: UIImageView!
+    var vhit_vog:Bool?
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            scrollView.delegate = self
-            
-            imageView = UIImageView(image: UIImage(named: "helptxt.png"))
-            scrollView.addSubview(imageView)
-        }
+        scrollView.delegate = self
+        scrollView.maximumZoomScale = 2.0
+        scrollView.minimumZoomScale = 1.0
+        self.view.addSubview(scrollView)
         
-        override func viewDidLayoutSubviews() {
-            super.viewDidLayoutSubviews()
-            if let size = imageView.image?.size {
-                // imageViewのサイズがscrollView内に収まるように調整
-                let wrate = scrollView.frame.width / size.width
-                let hrate = scrollView.frame.height / size.height
-                let rate = min(wrate, hrate, 1)
-                imageView.frame.size.width = size.width * rate
-                imageView.frame.size.height = size.height * rate
-               
-                
-                // contentSizeを画像サイズに設定
-                scrollView.contentSize = imageView.frame.size
-                // 初期表示のためcontentInsetを更新
-                updateScrollInset()
-            }
-        }
-        
-        func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
-            // ズームのために要指定
-            return imageView
-        }
-        
-        func scrollViewDidZoom(scrollView: UIScrollView) {
-            // ズームのタイミングでcontentInsetを更新
-            updateScrollInset()
-        }
-        
-        private func updateScrollInset() {
-            // imageViewの大きさからcontentInsetを再計算
-            // なお、0を下回らないようにする
-            scrollView.contentInset = UIEdgeInsetsMake(
-                max((scrollView.frame.height - imageView.frame.height)/2, 0),
-                max((scrollView.frame.width - imageView.frame.width)/2, 0),
-                0,
-                0
-            );
-        }
+        imageView1.image = UIImage(named: "helptxt")
+        print(imageView1.frame)
+        imageView1.frame.origin.x=0
+        imageView1.frame.origin.y=0
+        imageView1.frame.size.width=self.view.bounds.width
+        imageView1.frame.size.height=self.view.bounds.height-45
+        //        imageView.frame = scrollView.frame
+        scrollView.addSubview(imageView1)
+    }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return self.imageView1
+    }
+
 }

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,36 +13,35 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c4v-jJ-c25">
-                                <rect key="frame" x="5" y="120" width="365" height="200"/>
+                                <rect key="frame" x="5" y="100" width="310" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="kwa-sy-dVQ"/>
                                 </constraints>
-                                <string key="text">vHIT 
+                                <string key="text">vHIT&amp;VOG
 for
 iPhone</string>
-                                <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="55"/>
+                                <fontDescription key="fontDescription" name="CourierNewPSMT" family="Courier New" pointSize="47"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="version 3.5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HK7-WL-kmC">
-                                <rect key="frame" x="5" y="481" width="365" height="36"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="36" id="ETf-Mj-2Z1"/>
-                                </constraints>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HK7-WL-kmC">
+                                <rect key="frame" x="5" y="397" width="310" height="72"/>
+                                <string key="text">Version 3.9
+2020-4-9</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vHIT96da" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HEA-rJ-xd7">
-                                <rect key="frame" x="5" y="396" width="375" height="80"/>
+                                <rect key="frame" x="5" y="312" width="320" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="IP6-vv-WWv"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="CourierNewPS-BoldMT" family="Courier New" pointSize="55"/>
+                                <fontDescription key="fontDescription" name="CourierNewPS-BoldMT" family="Courier New" pointSize="47"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -53,12 +50,12 @@ iPhone</string>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="c4v-jJ-c25" secondAttribute="trailing" constant="5" id="15l-Hs-sn4"/>
                             <constraint firstItem="c4v-jJ-c25" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="100" id="90w-kx-hDY"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HK7-WL-kmC" secondAttribute="bottom" constant="150" id="KLk-rB-pP4"/>
                             <constraint firstItem="c4v-jJ-c25" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="Y3L-SB-2bl"/>
-                            <constraint firstItem="HK7-WL-kmC" firstAttribute="top" secondItem="HEA-rJ-xd7" secondAttribute="bottom" constant="5" id="Ywe-ZW-FxQ"/>
-                            <constraint firstItem="HK7-WL-kmC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="dbu-XB-50S"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HK7-WL-kmC" secondAttribute="trailing" constant="5" id="ZLk-qp-t4F"/>
+                            <constraint firstItem="HK7-WL-kmC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="cMa-hx-21F"/>
                             <constraint firstAttribute="trailing" secondItem="HEA-rJ-xd7" secondAttribute="trailing" constant="-5" id="dqN-F4-UlF"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HK7-WL-kmC" secondAttribute="trailing" constant="5" id="myY-rv-uBS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HK7-WL-kmC" secondAttribute="bottom" constant="99" id="klz-aU-MWf"/>
+                            <constraint firstItem="HK7-WL-kmC" firstAttribute="top" secondItem="HEA-rJ-xd7" secondAttribute="bottom" constant="5" id="nOL-M4-Zuh"/>
                             <constraint firstItem="HEA-rJ-xd7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="ujl-fI-WYE"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

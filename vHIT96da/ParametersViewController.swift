@@ -9,211 +9,70 @@
 import UIKit
 
 class ParametersViewController: UIViewController, UITextFieldDelegate {
-    
- //   var flatWidth:Int = 0
-    var flatsumLimit:Int = 0
+ 
+    @IBOutlet weak var markText: UILabel!
+    @IBOutlet weak var markSwitch: UISwitch!
+    var faceF:Int?
+    var widthRange:Int = 0
     var waveWidth:Int = 0
-    var wavePeak:Int = 0
-    var updownPgap:Int = 0
-  //  var peakWidth:Int = 0
     var eyeBorder:Int = 0
-    var faceBorder:Int = 0
-    var outerBorder:Int = 0
-    var rectEye = CGRect(x:0,y:0,width:0,height:0)
-    var rectFace = CGRect(x:0,y:0,width:0,height:0)
-    var rectOuter = CGRect(x:0,y:0,width:0,height:0)
-    var eyeRatio:Int = 0
-    var outerRatio:Int = 0
-    
- //   @IBOutlet weak var ettButton: UIButton!
-  //  @IBOutlet weak var vhitButton: UIButton!
-    @IBOutlet weak var flat1: UILabel!
-    @IBOutlet weak var wave2: UILabel!
-    @IBOutlet weak var wave3: UILabel!
-    @IBOutlet weak var slope4: UILabel!
-    @IBOutlet weak var faceb: UILabel!
-    @IBOutlet weak var outerb: UILabel!
-    @IBOutlet weak var eyen: UILabel!
-    @IBOutlet weak var outern: UILabel!
+    var gyroDelta:Int = 0
+    var ratio1:Int = 0
+    var ratio2:Int = 0
+    var vhit_vog:Bool?
+    @IBOutlet weak var gyroText: UILabel!
+    @IBOutlet weak var paraText1: UILabel!
+    @IBOutlet weak var paraText2: UILabel!
+    @IBOutlet weak var paraText3: UILabel!
+    @IBOutlet weak var paraText4: UILabel!
+    @IBOutlet weak var paraText5: UILabel!
+    @IBOutlet weak var paraText6: UILabel!
     @IBOutlet weak var vhitpng: UIImageView!
     @IBOutlet weak var keyDown: UIButton!
-    @IBOutlet weak var labelEye: UILabel!
-    @IBOutlet weak var labelFace: UILabel!
-    @IBOutlet weak var labelOuter: UILabel!
- //   @IBOutlet weak var flatWidthinput: UITextField!
-    @IBOutlet weak var flatSuminput: UITextField!
+    @IBOutlet weak var widthRangeinput: UITextField!
     @IBOutlet weak var waveWidthinput: UITextField!
-    @IBOutlet weak var wavePeakinput: UITextField!
-    @IBOutlet weak var updownPointinput: UITextField!
-//    @IBOutlet weak var peakWidthinput: UITextField!
-    
     @IBOutlet weak var eyeBinput: UITextField!
-    @IBOutlet weak var faceBinput: UITextField!
-    @IBOutlet weak var outerBinput: UITextField!
+    @IBOutlet weak var gyroDinput: UITextField!
+    @IBOutlet weak var ratio1input: UITextField!
+    @IBOutlet weak var ratio2input: UITextField!
     
-    @IBOutlet weak var eyeRatioinput: UITextField!
-    @IBOutlet weak var outerRatioinput: UITextField!
-    
+    @IBAction func markButton(_ sender: UISwitch) {
+        if sender.isOn{
+            faceF=1
+        }else{
+            faceF=0
+        }
+    }
     // became first responder
     func textFieldDidBeginEditing(_ textField: UITextField) {
         keyDown.isHidden = false
     }
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//   //     print("\(String(describing: flatWidthinput.text))")
-//     //   print("kkkkkkk********")
-//        return true
-//    }
+
     @IBAction func tapBack(_ sender: Any) {
         numpadOff(0)
     }
-//    func showParams(show:Bool){
-//        if show == true{
-//            vhitpng.isHidden=false
-//            flat1.isHidden=false
-//            wave2.isHidden=false
-//            wave3.isHidden=false
-//            slope4.isHidden=false
-// //           eyen.isHidden=false
-//            outern.text="outer n/100"
-// //           outern.isHidden=false
-//            faceb.isHidden=false
-//            outerb.isHidden=false
-//            faceBinput.isHidden=false
-//           labelFace.isHidden=false
-//            labelOuter.isHidden=false
-//            flatSuminput.isHidden=false
-//            waveWidthinput.isHidden=false
-//            wavePeakinput.isHidden=false
-//            updownPointinput.isHidden=false
-//              outerBinput.isHidden=false
-//
-//        }else{
-//            vhitpng.isHidden=true
-//            flat1.isHidden=true
-//            wave2.isHidden=true
-//            wave3.isHidden=true
-//            slope4.isHidden=true
-// //           eyen.isHidden=true
-//            outern.text="speed n/100"//isHidden=true
-//            faceb.isHidden=true
-//            faceBinput.isHidden=true
-//           outerb.isHidden=true
-//            labelFace.isHidden=true
-//            labelOuter.isHidden=true
-//            flatSuminput.isHidden=true
-//            waveWidthinput.isHidden=true
-//            wavePeakinput.isHidden=true
-//            updownPointinput.isHidden=true
-//             outerBinput.isHidden=true
-//       }
-//    }
-//    @IBAction func setVog(_ sender: Any) {
-//        faceBorder = 0
-//        outerBorder = 0
-//        dispParam()
-//        showParams(show: false)
-//        
-//    }
-//    @IBAction func setVOGb(_ sender: Any) {
-//        faceBorder = 8
-//        outerBorder = 0
-//        dispParam()
-//        showParams(show: false)
-//        faceb.isHidden=false
-//        faceBinput.isHidden=false
-//        labelFace.isHidden=false
-//
-//     }
-//    @IBAction func setVhit(_ sender: Any) {
-//        faceBorder = 8
-//        outerBorder = 30
-//        dispParam()
-//        showParams(show: true)
-//    }
+
     @IBAction func numpadOff(_ sender: Any) {
- //       flatWidthinput.endEditing(true)
-        flatSuminput.endEditing(true)
+ 
+        widthRangeinput.endEditing(true)
         waveWidthinput.endEditing(true)
-        wavePeakinput.endEditing(true)
-        updownPointinput.endEditing(true)
- //       peakWidthinput.endEditing(true)
         eyeBinput.endEditing(true)
-        faceBinput.endEditing(true)
-        outerBinput.endEditing(true)
-        eyeRatioinput.endEditing(true)
-        outerRatioinput.endEditing(true)
+        gyroDinput.endEditing(true)
+        ratio1input.endEditing(true)
+        ratio2input.endEditing(true)
         keyDown.isHidden = true
     }
-//    @IBAction func flatwidthDown(_ sender: Any) {
-    //   //    keyDown.isHidden = false
-//  //      setKeydown()
-//   }
-//    @IBAction func flatsumDown(_ sender: Any) {
-//     //  keyDown.isHidden = false
-//    ///    setKeydown()
-//  }
-//    @IBAction func wavewidthDown(_ sender: Any) {
-//     //  keyDown.isHidden = false
-//    //    setKeydown()
-//    }
-//    @IBAction func wavepeakDown(_ sender: Any) {
-//   //      keyDown.isHidden = false
-//      //  setKeydown()
-//    }
-//
-////    @IBAction func updownUp(_ sender: Any) {
-//  //      keyDown.isHidden = false
-//    //}
-//    @IBAction func updownDown(_ sender: Any) {
-//  //      print("***************:")
-//   //     keyDown.isHidden = false
-//
-//   //     sleep(UInt32(0.1))
-//    //    keyDown.isHidden = false
-//    //    setKeydown()
-//   }
-//
-//    @IBAction func peakwidthDown(_ sender: Any) {
-//   //    keyDown.isHidden = false
-//        //setKeydown()
-//  }
-//    @IBAction func eyeBorderDown(_ sender: Any) {
-//    //    keyDown.isHidden = false
-//        //setKeydown()
-//    }
-//
-//    @IBAction func faceBorderDown(_ sender: Any) {
-//   // keyDown.isHidden = false
-//        //setKeydown()
-//    }
-//
-//    @IBAction func outerBorderDown(_ sender: Any) {
-//      //   keyDown.isHidden = false
-//      //  setKeydown()
-//    }
-//
-    
+
     @IBAction func setDefault(_ sender: Any) {
-        //上手く働かない
-        //       flatWidth = 28
-        flatsumLimit = 80
-        waveWidth = 40
-        wavePeak = 30
-        updownPgap = 6
-        //       peakWidth = 23
-        eyeBorder = 10
-        faceBorder = 8
-        outerBorder = 30
-        eyeRatio = 100
-        outerRatio = 100
-        //        let ratioW = self.view.bounds.width/375.0//6s
-        //        let ratioH = self.view.bounds.height/667.0//6s
-        //        self.rectEye = CGRect(x:97*ratioW,y:143*ratioH,width:209*ratioW,height:10*ratioH)
-        //        self.rectFace = CGRect(x:167*ratioW,y:328*ratioH,width:77*ratioW,height:27*ratioH)
-        //        self.rectOuter = CGRect(x:140*ratioW,y:510*ratioH,width:110*ratioW,height:10*ratioH)
+        widthRange = 30
+        waveWidth = 80
+        eyeBorder=10
+        faceF=0
+        markSwitch.isOn=false
+        gyroDelta = 50
+        ratio1 = 100
+        ratio2 = 100
         dispParam()
- //       showParams(show: true)
-        
     }
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
@@ -222,106 +81,120 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             return 0
         }
     }
-//    @IBAction func flatWidthButton(_ sender: Any) {
-//   //     print("*******flatwidthbutton button")
-//        flatWidth = Field2value(field: flatWidthinput)
-//    }
-    @IBAction func flatSumButton(_ sender: Any) {
-        flatsumLimit = Field2value(field:flatSuminput)
+
+
+    @IBAction func widthRangeButton(_ sender: Any) {
+        widthRange = Field2value(field:widthRangeinput)
     }
     @IBAction func waveWidthButton(_ sender: Any) {
         waveWidth = Field2value(field: waveWidthinput)
     }
-    @IBAction func wavePeakButton(_ sender: Any) {
-        wavePeak = Field2value(field: wavePeakinput)
-    }
-    @IBAction func updownPointButton(_ sender: Any) {
-        updownPgap = Field2value(field: updownPointinput)
-    }
-//    @IBAction func peakWidthButton(_ sender: Any) {
-//        peakWidth = Field2value(field: peakWidthinput)
-//    }
     
     @IBAction func eyeBorderButton(_ sender: Any) {
         eyeBorder = Field2value(field: eyeBinput)
     }
-    @IBAction func faceBorderButton(_ sender: Any) {
-        faceBorder = Field2value(field: faceBinput)
+    
+    @IBAction func gyroDeltaButton(_  sender: Any) {
+        gyroDelta = Field2value(field: gyroDinput)
     }
-    @IBAction func outerBorderButton(_ sender: Any) {
-        outerBorder = Field2value(field: outerBinput)
-    }
-    @IBAction func eyeRatioButton(_ sender: Any) {
-        eyeRatio = Field2value(field: eyeRatioinput)
-    }
-    @IBAction func outerRationButton(_ sender: Any) {
-        outerRatio = Field2value(field: outerRatioinput)
+//    @IBAction func outerBorderButton(_ sender: Any) {
+////        outerBorder = Field2value(field: outerBinput)
+//    }
+
+    @IBAction func ratio1Button(_ sender: Any) {
+        ratio1 = Field2value(field: ratio1input)
     }
     
+    @IBAction func ratio2Button(_ sender: Any) {
+        ratio2 = Field2value(field: ratio2input)
+    }
     
     func dispParam(){
-        var x = 0
-        var y = 0
-        var width = 0
-        var height = 0
- //       self.flatWidthinput.text = "\(flatWidth)"
-        self.flatSuminput.text = "\(flatsumLimit)"
+        self.widthRangeinput.text = "\(widthRange)"
         self.waveWidthinput.text = "\(waveWidth)"
-        self.wavePeakinput.text = "\(wavePeak)"
-        self.updownPointinput.text = "\(updownPgap)"
- //       self.peakWidthinput.text = "\(peakWidth)"
         self.eyeBinput.text = "\(eyeBorder)"
-        self.faceBinput.text = "\(faceBorder)"
-        self.outerBinput.text = "\(outerBorder)"
-        self.eyeRatioinput.text = "\(eyeRatio)"
-        self.outerRatioinput.text = "\(outerRatio)"
-        x = Int(rectEye.origin.x)
-        y = Int(rectEye.origin.y)
-        width = Int(rectEye.size.width)
-        height = Int(rectEye.size.height)
-        self.labelEye.text = "\(String(format:"%04d,%04d,%04d,%04d eye",x,y,width,height))"
-        x = Int(rectFace.origin.x)
-        y = Int(rectFace.origin.y)
-        width = Int(rectFace.size.width)
-        height = Int(rectFace.size.height)
-        self.labelFace.text = "\(String(format:"%04d,%04d,%04d,%04d face",x,y,width,height))"
-        x = Int(rectOuter.origin.x)
-        y = Int(rectOuter.origin.y)
-        width = Int(rectOuter.size.width)
-        height = Int(rectOuter.size.height)
-        self.labelOuter.text = "\(String(format:"%04d,%04d,%04d,%04d outer",x,y,width,height))"
+        self.gyroDinput.text = "\(gyroDelta)"
+        self.ratio1input.text = "\(ratio1)"
+        self.ratio2input.text = "\(ratio2)"
+        
+    }
+    func setTexts(){
+        let ww:CGFloat=view.bounds.width
+        let wh:CGFloat=view.bounds.height
+        let bw:CGFloat=45
+        let bh:CGFloat=25
+        let bh1=bh+3
+        let tw:CGFloat=ww-bw-10
+        let vhit_h:CGFloat=ww/4
+        let by:CGFloat=20//vhit_h+20
+        let x1:CGFloat=3
+        let x2=x1+bw+5
+        if vhit_vog==false{
+            vhitpng.isHidden=true
+            paraText1.isHidden=true
+            //paraText2.isHidden=true
+            paraText5.isHidden=true
+            paraText6.isHidden=true
+            waveWidthinput.isHidden = true
+            widthRangeinput.isHidden = true
+            eyeBinput.isHidden = true
+            gyroDinput.isHidden = true
+            ratio1input.isHidden = false
+            ratio2input.isHidden = false
+            markText.isHidden = true
+            markSwitch.isHidden = true
+            gyroText.isHidden = true
+            paraText2.text = "VOG 波形表示高さの調整"
+            paraText3.text="眼球位置（上段）表示の高さ ％"
+            paraText4.text="眼球速度（下段）表示の高さ ％"
+            paraText2.frame   = CGRect(x:x2,   y: bh1*1.5 ,width: tw, height: bh)
+            paraText3.frame   = CGRect(x:x2,   y: bh1*3 ,width: tw, height: bh)
+            paraText4.frame   = CGRect(x:x2,   y: bh1*4 ,width: tw, height: bh)
+            ratio1input.frame = CGRect(x:x1,y: bh1*3 ,width: bw, height: bh)
+            ratio2input.frame = CGRect(x:x1,y: bh1*4 ,width: bw, height: bh)
+        }else{
+            paraText1.frame = CGRect(x:x2,   y: by ,width: tw, height: bh)
+            paraText2.frame = CGRect(x:x2,   y: by+bh1 ,width: tw, height: bh)
+            paraText3.frame = CGRect(x:x2,   y: by+bh1*2 ,width: tw, height: bh)
+            paraText4.frame = CGRect(x:x2,   y: by+bh1*3 ,width: tw, height: bh)
+            paraText5.frame = CGRect(x:x2,   y: by+bh1*4 ,width: tw, height: bh)
+            paraText6.frame = CGRect(x:x2,   y: by+bh1*5 ,width: tw, height: bh)
+            markText.frame  = CGRect(x:x2+2,y:by+bh1*6+2,width:tw,height:bh)
+            vhitpng.frame   = CGRect(x:0, y: by+bh1*7+10 ,width: ww, height: ww*9/32)
+            gyroText.frame = CGRect(x:5,y:by+bh1*7+10+ww/5,width:ww-10,height:bh*7)//wh-by-bh1*7-10-ww/5-70)
+            waveWidthinput.frame = CGRect(x:x1,y: by,width: bw, height: bh)
+            widthRangeinput.frame = CGRect(x:x1,y:by+bh1 ,width: bw, height: bh)
+            ratio1input.frame = CGRect(x:x1,y: by+bh1*2 ,width: bw, height: bh)
+            ratio2input.frame = CGRect(x:x1,y: by+bh1*3 ,width: bw, height: bh)
+            gyroDinput.frame = CGRect(x:x1,y: by+bh1*4 ,width: bw, height: bh)
+            eyeBinput.frame = CGRect(x:x1,y: by+bh1*5 ,width: bw, height: bh)
+            markSwitch.frame = CGRect(x:x1,y:by+bh1*6,width:1,height:1)
+            if faceF==1{
+                markSwitch.isOn=true
+            }else{
+                markSwitch.isOn=false
+            }
+        }
         
     }
     override func viewDidLoad() {
         super.viewDidLoad()
- //       flatWidthinput.delegate = self
-        //flatWidthinput.delegate = self//これはなんだ？コメントアウトして大丈夫かな？
-        flatSuminput.delegate = self
+        widthRangeinput.delegate = self
         waveWidthinput.delegate = self
-        wavePeakinput.delegate = self
-        updownPointinput.delegate = self
- //       peakWidthinput.delegate = self
         eyeBinput.delegate = self
-        faceBinput.delegate = self
-        outerBinput.delegate = self
-        eyeRatioinput.delegate = self
-        outerRatioinput.delegate = self
-    //    setKeydown()
-      //入力を数字入力キーボードとする
- //       self.flatWidthinput.keyboardType = UIKeyboardType.numberPad
-        self.flatSuminput.keyboardType = UIKeyboardType.numberPad
+        gyroDinput.delegate = self
+        ratio1input.delegate = self
+        ratio2input.delegate = self
+
+        self.widthRangeinput.keyboardType = UIKeyboardType.numberPad
         self.waveWidthinput.keyboardType = UIKeyboardType.numberPad
-        self.wavePeakinput.keyboardType = UIKeyboardType.numberPad
-        self.updownPointinput.keyboardType = UIKeyboardType.numberPad
-  //      self.peakWidthinput.keyboardType = UIKeyboardType.numberPad
         self.eyeBinput.keyboardType = UIKeyboardType.numberPad
-        self.faceBinput.keyboardType = UIKeyboardType.numberPad
-        self.outerBinput.keyboardType = UIKeyboardType.numberPad
-        self.eyeRatioinput.keyboardType = UIKeyboardType.numberPad
-        self.outerRatioinput.keyboardType = UIKeyboardType.numberPad
+        self.gyroDinput.keyboardType = UIKeyboardType.numberPad
+        self.ratio1input.keyboardType = UIKeyboardType.numberPad
+        self.ratio2input.keyboardType = UIKeyboardType.numberPad
+        setTexts()
         dispParam()
         setKeydown()
-        
         keyDown.isHidden = true
     }
     func setKeydown(){

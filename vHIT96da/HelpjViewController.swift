@@ -8,27 +8,33 @@
 
 import UIKit
 
-class HelpjViewController: UIViewController {
+class HelpjViewController: UIViewController, UIScrollViewDelegate   {
     @IBOutlet weak var hView:UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
- //1900/3508
+    var vhit_vog:Bool?
     override func viewDidLoad() {
         super.viewDidLoad()
-        scrollView.isHidden=true
-        hView.isHidden=false
-//        if UIApplication.shared.isIdleTimerDisabled == true{
-//            UIApplication.shared.isIdleTimerDisabled = false//監視する
-//        }
-     }
-    @IBAction func pinchGes(_ sender: UIPinchGestureRecognizer) {
-        if sender.state == .changed {
-            if sender.scale < 1.0 {
-                hView.isHidden=false
-                scrollView.isHidden=true
-            } else if sender.scale > 1.1{
-                hView.isHidden=true
-                scrollView.isHidden=false
-            }
+        
+        scrollView.delegate = self
+        scrollView.maximumZoomScale = 2.0
+        scrollView.minimumZoomScale = 1.0
+        self.view.addSubview(scrollView)
+        if vhit_vog == true{
+            hView.image = UIImage(named: "vhithelp")
+        }else{
+            hView.image = UIImage(named: "voghelp")
         }
+        print(hView.frame)
+        hView.frame.origin.x=0
+        hView.frame.origin.y=0
+        hView.frame.size.width=self.view.bounds.width
+        hView.frame.size.height=self.view.bounds.height - 45
+        //        imageView.frame = scrollView.frame
+        scrollView.addSubview(hView)
     }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return self.hView
+    }
+
 }

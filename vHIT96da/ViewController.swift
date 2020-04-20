@@ -5,36 +5,7 @@
 //  Created by kuroda tatsuaki on 2018/02/10.
 //  Copyright © 2018年 tatsuaki.kuroda. All rights reserved.
 //
-/*
- //写真の位置情報を取得する
- func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:[String: Any]){
- 
- 
- let selected = info[UIImagePickerControllerOriginalImage] as! UIImage
- 
- let metadata = info[UIImagePickerControllerMediaMetadata]
- //        let metadata = info[UIImagePickerControllerMediaMetadata] as? NSDictionary
- let exif = metadata[kCGImagePropertyExifDictionary]
- //        let exif: NSMutableDictionary = metadata[kCGImagePropertyExifDictionary]
- //        let exif = metadata?.objectForKey(kCGImagePropertyExifDictionary)
- 
- print(exif)  // nil が表示される
- 
- //        if let asset = PHAsset.fetchAssets(withALAssetURLs: [info[UIImagePickerControllerReferenceURL] as! URL], options: nil).firstObject {
- //            PHImageManager.default().requestImage(for: asset , targetSize: PHImageManagerMaximumSize, contentMode: PHImageContentMode.aspectFill , options: PHFetchOptions) { image, info in
- //                print(image?.ciImage?.properties)
- //                print("info", info)
- //            }
- //        }
- 
- imageView.contentMode = .scaleAspectFit
- selectedImage = selected
- imageView.image = selected
- text.text = "検出中"
- dismiss(animated: true, completion: nil)
- 
- }
- */
+
 import UIKit
 import AVFoundation
 //import MobileCoreServices
@@ -107,24 +78,97 @@ extension UIImage {
 
 class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     let openCV = opencvWrapper()
-    var slowVideoCurrent:Int = 0
-    var allVideoCnt:Int = 0
+    var vhitVideocurrent:Int = 0
+    var slowVideoall:Int = 0
+    var vhitVideos:Int = 0
     var waveCurrpoint:Int = 0//現在表示波形の視点（アレイインデックス）
-    var slowImgs = Array<UIImage>()
-    
-    var slowPath = Array<String>()
-    var slowDate = Array<String>()
-    var slowDura = Array<String>()
-    var slowDuraorg = Array<String>()
-    var slowFrames = Array<UIImage>()
 
-//    var slowvideoPath:String = ""
-    var slowvideoAdd:String = ""
+    var vidImg = Array<UIImage>()
+    var vidPath = Array<String>()
+    var vidDate = Array<String>()
+    var vidDura = Array<String>()
+    var vidDuraorg = Array<String>()
+    var vidFps:Float = 0
+    var vidCurrent:Int=0
+    let videoPathtext:String="videoPath.txt"
+    @IBOutlet weak var arrowImage: UIImageView!
+    var recstart = CFAbsoluteTimeGetCurrent()
+    var recstart_1 = CFAbsoluteTimeGetCurrent()
+    @IBOutlet weak var cameraButton: UIButton!
+
+    @IBOutlet weak var vogButton: UIButton!
+    @IBOutlet weak var vhitButton: UIButton!
+    var box1ys:CGFloat=0//上のboxのcenter:y VOGのみ
+    var boxHeight:CGFloat=0//VOGのみ
+    var mailWidth:CGFloat=0//VOG
+    var mailHeight:CGFloat=0//VOG
+    var gyroboxView: UIImageView?//vhit realtime
+    var gyrolineView: UIImageView?//vhit realtime
+    var vHITboxView: UIImageView?//vhits
+    var vHITlineView: UIImageView?//vhits
+    var voglineView:UIImageView?//vog
+    var vogboxView:UIImageView?//vog
+    @IBOutlet weak var nextVideoOutlet: UIButton!
+    @IBOutlet weak var backVideoOutlet: UIButton!
+    @IBOutlet weak var eraseButton: UIButton!
+    
+    @IBAction func eraseVideo(_ sender: Any) {
+        let str=getFsindoc().components(separatedBy: ",")
+        if !str[0].contains("vHIT96da"){
+            return
+        }
+        let str1=vidPath[vidCurrent].components(separatedBy: ".MOV")
+        //str1[0]=vHIT96da*(.MOVを削ったもの)
+
+        for i in 0..<str.count{
+            if str[i].contains(str1[0]){
+                if removeFile(delFile: str[i])==true{
+                    print("remove completed:",str[i])
+                    vHITeye.removeAll()
+                    vHITeye5.removeAll()
+                    vogPos.removeAll()
+                    vogPos5.removeAll()
+                    vHITface.removeAll()
+                    vHITface5.removeAll()
+                    vHITgyro5.removeAll()
+                }
+            }
+        }
+        setArrays()//current - lastone
+        showCurrent()
+        showBoxies(f: false)
+    }
+    @IBAction func vhitGo(_ sender: Any) {
+        if calcFlag == true || vhit_vog == true{
+            return
+        }
+        vhit_vog=true
+        setArrow()
+        dispWakus()
+        if vHITeye.count>0 && vidCurrent != -1{
+        drawRealwave()
+        calcDrawVHIT()
+        }
+        showBoxies(f:false)
+    }
+    @IBAction func vogGo(_ sender: Any) {
+        if calcFlag == true || vhit_vog == false{
+            return
+        }
+        vhit_vog = false
+        setArrow()
+        dispWakus()
+        if vHITeye.count>0  && vidCurrent != -1{
+            drawVogwave()
+        }
+        showBoxies(f: false)
+    }
     var startPoint:Int = 0
+    var startFrame:Int=0
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
-    var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye,vHITouterがちゃんと読めない瞬間が生じるようだ
-    
+    var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye
+    //vHITfaceがちゃんと読めない瞬間が生じるようだ
     @IBOutlet weak var freecntLabel: UILabel!
     @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
@@ -136,20 +180,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var paraButton: UIButton!
     @IBOutlet weak var eyeWaku: UIView!
+    @IBOutlet weak var eyeText: UIView!
     @IBOutlet weak var faceWaku: UIView!
-    @IBOutlet weak var outerWaku: UIView!
-    @IBOutlet weak var eyeCropView: UIImageView!
-    @IBOutlet weak var faceCropView: UIImageView!
-    @IBOutlet weak var outerCropView: UIImageView!
-    
-    @IBOutlet weak var nextVideoOutlet: UIButton!
-    
-    @IBOutlet weak var backVideoOutlet: UIButton!
-    
+
+    @IBOutlet weak var eyeCropView: UIImageView!//debug用
+    @IBOutlet weak var faceCropView: UIImageView!//debug用
     
     var rectEye = CGRect(x:0,y:0,width:0,height:0)
     var rectFace = CGRect(x:0,y:0,width:0,height:0)
-    var rectOuter = CGRect(x:0,y:0,width:0,height:0)
     
     @IBOutlet weak var backImage2: UIImageView!
     @IBOutlet weak var backImage: UIImageView!
@@ -159,74 +197,75 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var calcDate:String = ""
     var idNumber:Int = 0
     var vHITtitle:String = ""
-//    var ratioW:Double = 0.0//実際の映像横サイズと表示横サイズの比率
-//    var flatWidth:Int = 0
+
     var freeCounter:Int = 0//これが実行毎に減って,0になったら起動できなくする。
 
-    var flatsumLimit:Int = 0
-    var updownPgap:Int = 0
+    var widthRange:Int = 0
+
     var waveWidth:Int = 0
-    var wavePeak:Int = 0
- //   var peakWidth:Int = 0
-    var eyeBorder:Int = 50
-    var faceBorder:Int = 5
-    var outerBorder:Int = 40
-    var eyeRatio:Int = 100
-    var outerRatio:Int = 100
-    
-    var dispOrgflag:Bool = false
+ 
+    var eyeBorder:Int = 20
+    var gyroDelta:Int = 50
+    var eyeRatio:Int = 100//vhit
+    var gyroRatio:Int = 100//vhit
+    var posRatio:Int = 100//vog
+    var veloRatio:Int = 100//vog
+    var vhit_vog:Bool = true
+    var faceF:Int = 1
     //解析結果保存用配列
-  //   var wave125a = Array<[Int](repeating:0,count:125)>()
+
     var waveTuple = Array<(Int,Int,Int,Int)>()//rl,framenum,disp onoff,current disp onoff)
-//    var lVnum = Array<Int>()
-//    var lVnuD = Array<Int>()
-//    var rVnum = Array<Int>()
-//    var rVnuD = Array<Int>()
-    var vHITeyePos = Array<CGFloat>()
+
+    var vogPos = Array<CGFloat>()
+    var vogPos5 = Array<CGFloat>()
     var vHITeye = Array<CGFloat>()
     var vHITeye5 = Array<CGFloat>()
-    var vHITouter = Array<CGFloat>()
-    var vHITouter5 = Array<CGFloat>()
+    var vHITface = Array<CGFloat>()
+    var vHITface5 = Array<CGFloat>()
+    var gyroData = Array<CGFloat>()
+    var vHITgyro5 = Array<CGFloat>()
+
+    var gyro = Array<Double>()
+    var gyroTime = Array<Double>()
+    var gyro5 = Array<Double>()
     var timer: Timer!
-//    var wP = [[[[Int]]]](repeating:[[[Int]]](repeating:[[Int]](repeating:[Int](repeating:0,count:125),count:2),count:30),count:2)
-    var eyeWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
-    var eyefWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
-    var outWs = [[Int]](repeating:[Int](repeating:0,count:125),count:40)
+
+    var eyeWs = [[Int]](repeating:[Int](repeating:0,count:125),count:80)
+    var gyroWs = [[Int]](repeating:[Int](repeating:0,count:125),count:80)
     @IBAction func backVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
             return
         }
-        slowVideoCurrent -= 1
-        if slowVideoCurrent < 0 {
-            slowVideoCurrent = slowVideoCnt
+        vhitVideocurrent -= 1
+        if vhitVideocurrent < 0 {
+            vhitVideocurrent = vhitVideos
         }
-//        print(slowVideoCurrent, slowDate[slowVideoCurrent])
-        slowImage.image = slowImgs[slowVideoCurrent]
-        videoDate.text=slowDate[slowVideoCurrent]
-        startPoint=0
+        vidCurrent -= 1
+        if vidCurrent < 0 {
+            vidCurrent = vidPath.count-1
+        }
+        show1()
+    }
+    func show1(){
+        slowImage.image = vidImg[vidCurrent]
+        videoDate.text=vidDate[vidCurrent]
+        startFrame=0
     }
     @IBAction func nextVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
             return
         }
-        slowVideoCurrent += 1
-        if slowVideoCurrent > slowVideoCnt{
-            slowVideoCurrent = 0
+        vhitVideocurrent += 1
+        vidCurrent += 1
+        if vhitVideocurrent > vhitVideos{
+            vhitVideocurrent = 0
         }
- //       print(slowVideoCurrent, slowDate[slowVideoCurrent])
-        slowImage.image = slowImgs[slowVideoCurrent]
-  
-        videoDate.text=slowDate[slowVideoCurrent]
-        startPoint=0
+        if vidCurrent>vidPath.count-1{
+            vidCurrent=0
+        }
+        show1()
     }
-    
-//
-//
-//    @IBAction func backVideo(_ sender: Any) {
-//    }
-//
-//    @IBAction func nextVideo(_ sender: Any) {
-//    }
+ 
     func getWiderect(rect:CGRect,dx:CGFloat,dy:CGFloat) -> CGRect {
         // 横と縦が入れ替わっている
         var newrect:CGRect = CGRect(x:0,y:0,width:0,height:0)
@@ -253,20 +292,36 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       width: rect.height * iw / vw,
                       height: rect.width * ih / vh)
     }
-  
+  let KalQvog:CGFloat = 0.0001
+  let KalRvog:CGFloat = 0.001
+  var KalXvog:CGFloat = 0.0
+  var KalPvog:CGFloat = 0.0
+  var KalKvog:CGFloat = 0.0
+  func Kalmanmeasurementvog()
+  {
+      KalKvog = (KalPvog + KalQvog) / (KalPvog + KalQvog + KalRvog);
+      KalPvog = KalRvog * (KalPvog + KalQvog) / (KalRvog + KalPvog + KalQvog);
+  }
+  func Kalmanvog(measurement:CGFloat) -> CGFloat
+  {
+      Kalmanmeasurementvog();
+      let result = KalXvog + (measurement - KalXvog) * KalKvog;
+      KalXvog = result;
+      return result;
+  }
     let KalQ:CGFloat = 0.0001
     let KalR:CGFloat = 0.001
     var KalX:CGFloat = 0.0
     var KalP:CGFloat = 0.0
     var KalK:CGFloat = 0.0
-    func KalmeasurementUpdate()
+    func Kalmanmeasurement()
     {
         KalK = (KalP + KalQ) / (KalP + KalQ + KalR);
         KalP = KalR * (KalP + KalQ) / (KalR + KalP + KalQ);
     }
-    func Kalupdate(measurement:CGFloat) -> CGFloat
+    func Kalman(measurement:CGFloat) -> CGFloat
     {
-        KalmeasurementUpdate();
+        Kalmanmeasurement();
         let result = KalX + (measurement - KalX) * KalK;
         KalX = result;
         return result;
@@ -277,53 +332,119 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var KalX1:CGFloat = 0.0
     var KalP1:CGFloat = 0.0
     var KalK1:CGFloat = 0.0
-    func KalmeasurementUpdate1()
+    func Kalmanmeasurement1()
     {
         KalK1 = (KalP1 + KalQ1) / (KalP1 + KalQ1 + KalR1);
         KalP1 = KalR1 * (KalP1 + KalQ1) / (KalR1 + KalP1 + KalQ1);
     }
-    func Kalupdate1(measurement:CGFloat) -> CGFloat
+    func Kalman1(measurement:CGFloat) -> CGFloat
     {
-        KalmeasurementUpdate1();
+        Kalmanmeasurement1();
         let result = KalX1 + (measurement - KalX1) * KalK1;
         KalX1 = result;
         return result;
     }
-    
+    let KalQ2:CGFloat = 0.0001
+    let KalR2:CGFloat = 0.001
+    var KalX2:CGFloat = 0.0
+    var KalP2:CGFloat = 0.0
+    var KalK2:CGFloat = 0.0
+    func Kalmanmeasurement2()
+    {
+        KalK2 = (KalP2 + KalQ2) / (KalP2 + KalQ2 + KalR2);
+        KalP2 = KalR2 * (KalP2 + KalQ2) / (KalR2 + KalP2 + KalQ2);
+    }
+    func Kalman2(measurement:CGFloat) -> CGFloat
+    {
+        Kalmanmeasurement2();
+        let result = KalX2 + (measurement - KalX2) * KalK2;
+        KalX2 = result;
+        return result;
+    }
+    let KalQ3:Double = 0.0001
+    let KalR3:Double = 0.001
+    var KalX3:Double = 0.0
+    var KalP3:Double = 0.0
+    var KalK3:Double = 0.0
+    func Kalmanmeasurement3()
+    {
+        KalK3 = (KalP3 + KalQ3) / (KalP3 + KalQ3 + KalR3);
+        KalP3 = KalR3 * (KalP3 + KalQ3) / (KalR3 + KalP3 + KalQ3);
+    }
+    func Kalman3(measurement:Double) -> Double
+    {
+        Kalmanmeasurement3();
+        let result = KalX3 + (measurement - KalX3) * KalK3;
+        KalX3 = result;
+        return result;
+    }
     
     func startTimer() {
-        if vHITlineView != nil{
-            vHITlineView?.removeFromSuperview()
-        }
+//        if vHITlineView != nil{
+//            vHITlineView?.removeFromSuperview()
+//        }
         if timer?.isValid == true {
             timer.invalidate()
         }else{
-            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+            if vhit_vog == true{
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+            }else{
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update_vog), userInfo: nil, repeats: true)
+            }
         }
     }
-    
-    @IBAction func showWave(_ sender: Any) {
+    func showBoxies(f:Bool){
+        if f==true && vhit_vog==false{
+            vogboxView?.isHidden = false
+            voglineView?.isHidden = false
+            vHITboxView?.isHidden = true
+            vHITlineView?.isHidden = true
+            gyroboxView?.isHidden = true
+            gyrolineView?.isHidden = true
+            setBacknext(f: false)
+            eraseButton.isHidden=true
+        }else if f==true && vhit_vog==true{
+            vogboxView?.isHidden = true
+            voglineView?.isHidden = true
+            vHITboxView?.isHidden = false
+            vHITlineView?.isHidden = false
+            gyroboxView?.isHidden = false
+            gyrolineView?.isHidden = false
+            setBacknext(f: false)
+            eraseButton.isHidden=true
+        }else{
+            vogboxView?.isHidden = true
+            voglineView?.isHidden = true
+            vHITboxView?.isHidden = true
+            vHITlineView?.isHidden = true
+            gyroboxView?.isHidden = true
+            gyrolineView?.isHidden = true
+            setBacknext(f: true)
+            if vidPath.count != 0{
+                eraseButton.isHidden=false
+            }else{
+                eraseButton.isHidden=true
+            }
+        }
+    }
+    @IBAction func showWave(_ sender: Any) {//saveresult record-unwind の２箇所
         if calcFlag == true{
             return
         }
-        if vHITboxView?.isHidden == true{
-            vHITboxView?.isHidden = false
-            boxView?.isHidden = false
-            vHITlineView?.isHidden = false
-            lineView?.isHidden = false//: UIImageView? // <- 追加
+        if vHITboxView?.isHidden==false || vogboxView?.isHidden==false{
+            showBoxies(f: false)
+        }else{
+            showBoxies(f: true)
+        }
+    }
+    func setBacknext(f:Bool){//back and next button
+        nextVideoOutlet.isHidden = !f
+        backVideoOutlet.isHidden = !f
+        if vidPath.count < 2{
             nextVideoOutlet.isHidden = true
             backVideoOutlet.isHidden = true
-        }else{
-            vHITboxView?.isHidden = true
-            boxView?.isHidden = true
-            vHITlineView?.isHidden = true
-            lineView?.isHidden = true
-            nextVideoOutlet.isHidden = false
-            backVideoOutlet.isHidden = false
         }
-        
     }
-
     @IBAction func stopCalc(_ sender: Any) {
         
         calcFlag = false
@@ -333,7 +454,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             timer.invalidate()
         }
         setButtons(mode: true)
-        waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
+        waveCurrpoint = vHITface5.count - Int(self.view.bounds.width)
     }
     func setButtons(mode:Bool){
         if mode == true{
@@ -346,6 +467,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = true
             helpButton.isEnabled = true
             playButton.isEnabled = true
+            cameraButton.isUserInteractionEnabled = true
         }else{
             calcButton.isHidden = true
             stopButton.isHidden = false
@@ -356,16 +478,29 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = false
             helpButton.isEnabled = false
             playButton.isEnabled = false
+            cameraButton.isUserInteractionEnabled = false
         }
     }
     @IBAction func vHITcalc(_ sender: Any) {
+        print("*****",getVideofns())//videoPathtxt())
+        if !getVideofns().contains("vHIT96da"){//
+//        if vidPath[0]==""{//}.contains("var") && !vidPath[0].contains("MOV"){
+            return
+        }
         setUserDefaults()
-         if nonsavedFlag == true && waveTuple.count > 0{
+  //      print("vhitcalc")
+        if nonsavedFlag == true && (waveTuple.count > 0 || vogPos5.count > 0){
             setButtons(mode: false)
-            let alert = UIAlertController(
-                title: "You are erasing vHIT Data.",
+            var alert = UIAlertController(
+            title: "You are erasing vHIT Data.",
+            message: "OK ?",
+            preferredStyle: .alert)
+            if vhit_vog==false{
+                alert = UIAlertController(
+                title: "You are erasing VOG Data.",
                 message: "OK ?",
                 preferredStyle: .alert)
+            }
             // アラートにボタンをつける
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
                 self.setButtons(mode: false)
@@ -384,74 +519,55 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         //２：直ぐここを通る
      }
-    func getAddress(num:Int){
-        //self.slowvideoPath = tokenKeys[8]
-        let url = NSURL(fileURLWithPath: slowPath[num])
-        let avasset = AVAsset(url: url as URL)
-        let loc = avasset.metadata[0].stringValue!
-        //+33.1755+130.4922+013.299/
-        //locationDataがないときは Apple
-        //print(loc)
-        if loc.count > 15 {
-            let loc1 = loc[loc.index(loc.startIndex, offsetBy: 0)...loc.index(loc.startIndex, offsetBy: 7)]
-            let loc2 = loc[loc.index(loc.startIndex, offsetBy: 8)...loc.index(loc.startIndex, offsetBy: 15)]
-            let geocoder = CLGeocoder()
-            let location = CLLocation(latitude: CLLocationDegrees(loc1)!, longitude: CLLocationDegrees(loc2)!)
-            
-            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
-                if let placemarks = placemarks {
-                    if let pm = placemarks.first {
-                        if let subl = pm.subLocality {
-                            self.slowvideoAdd = subl
-                        } else {
-                            self.slowvideoAdd = pm.locality!
-                        }
-                    }
-                }
+
+    func setvHITgyro5(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
+         vHITgyro5.removeAll()
+         if gyroData.count>10{
+            for i in 0..<gyroData.count-startFrame-gyroDelta*240/1000-1{
+                vHITgyro5.append(gyroData[i+startFrame+gyroDelta*240/1000])
             }
-            
-            //print(avasset.metadata[0].stringValue!)
+            for _ in 0..<startFrame+gyroDelta*240/1000+1{
+                vHITgyro5.append(0)
+            }
         }else{
-            slowvideoAdd = " "
+            for _ in 0..<gyroData.count + startFrame + gyroDelta*240/1000{
+                vHITgyro5.append(0)
+             }
         }
     }
 
     func vHITcalc(){
-        //print("******")
-        dispOrgflag = false
         calcFlag = true
-        slowvideoAdd=" "
-        getAddress(num:slowVideoCurrent)//ちょっと時間が掛かるのでここに、結果が出ようが出まいがすぐ帰ってくる。
-        //slowvideoAddを表示する時に、ちゃんとアドレスがセットされていることを期待して、ここに置いている。
-        //print("address****:",slowvideoAdd)
         vHITeye.removeAll()
         vHITeye5.removeAll()
-        vHITeyePos.removeAll()
-        vHITouter.removeAll()
-        vHITouter5.removeAll()
-        var vHITcnt:Int = 0
-        timercnt = 0
-        if lineView != nil{//これが無いとエラーがでる。
-            lineView?.removeFromSuperview()//realwaveを消す
+        vogPos.removeAll()
+        vogPos5.removeAll()
+        vHITface.removeAll()
+        vHITface5.removeAll()
+        vHITgyro5.removeAll()
+        //makeBoxies()
+        showBoxies(f: true)
+        //vHITlinewViewだけは消しておく。その他波は１秒後には消えるので、そのまま。
+        if vHITlineView != nil{
+            vHITlineView?.removeFromSuperview()
         }
+//        let tempf = vidDate[vidCurrent].components(separatedBy: " (")
+//        let gyrof = tempf[0] + "-gyro.csv"
+        readGyro(path: vidPath[vidCurrent])//gyroDataを読み込む
+        setvHITgyro5()//gyroDeltastartframe分をズラしてvHITgyro5に入れる
+        var vHITcnt:Int = 0
         
+        timercnt = 0
+
         openCVstopFlag = false
         UIApplication.shared.isIdleTimerDisabled = true
         let eyeborder:CGFloat = CGFloat(eyeBorder)
-        let faceborder:CGFloat = CGFloat(faceBorder)
-        let outerborder:CGFloat = CGFloat(outerBorder)
-//        self.wP[0][0][0][0] = 9999//終点をセット  //wP[2][30][2][125]//L/R,lines,eye/gaikai,points
-//        self.wP[1][0][0][0] = 9999//終点をセット  //wP : L/R,lines,eye/gaikai,points
-        drawBoxies()
+//        print("eyeborder:",eyeBorder,faceF)
         startTimer()//resizerectのチェックの時はここをコメントアウト*********************
-        let fileURL = URL(fileURLWithPath: slowPath[slowVideoCurrent])
-
-        //slowvideoAdd にアドレスが入る
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
-        let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-  //      let sec10 = Int(10*avAsset.duration.seconds)
-   //     let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
-    //    slowDura[slowVideoCurrent]=temp
+ //       let fileURL = URL(fileURLWithPath: vidPath[vidCurrent])
+        let fileURL = getfileURL(path: vidPath[vidCurrent])
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
         do {
@@ -462,168 +578,183 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #endif
             return
         }
-        
-        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+         guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
             #if DEBUG
             print("could not retrieve the video track.")
             #endif
             return
         }
-        
+
         let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
         
         reader.add(readerOutput)
         let frameRate = videoTrack.nominalFrameRate
-        let startTime = CMTime(value: CMTimeValue(startPoint), timescale: CMTimeScale(frameRate))
+        //let startframe=startPoints[vhitVideocurrent]
+        let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
         let timeRange = CMTimeRange(start: startTime, end:kCMTimePositiveInfinity)
-        //.positiveInfinity)
+        //print("time",timeRange)
         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
         reader.startReading()
-        
-        
+        //startPoints[vhitVideocurrent] startframe 1sec=240
         let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let fX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let fY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-        let oX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-        let oY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-        
-        var CGEye10:CGImage!
+//        var st = CFAbsoluteTimeGetCurrent()
+//        openCV.getframes(getdocumentPath(path: vidPath[vidCurrent]),x:fX)
+//        print("videoframes:","\(CGFloat(fX.pointee))")
+//        print("time:",CFAbsoluteTimeGetCurrent()-st)
+        let CGEyeorg:CGImage!
+        let UIEyeorg:UIImage!
         var CGEyeWithBorder:CGImage!
-        var UIEye10:UIImage!
         var UIEyeWithBorder:UIImage!
-
+        
         let CGFaceorg:CGImage!
-        var CGFaceWithBorder:CGImage!
         let UIFaceorg:UIImage!
+        var CGFaceWithBorder:CGImage!
         var UIFaceWithBorder:UIImage!
-
-        var CGOuter:CGImage!
-        var CGOuterWithBorder:CGImage!
-        var UIOuter:UIImage!
-        var UIOuterWithBorder:UIImage!
- 
-         //rectEyeの両端からedずつ合わせたもの->recteye10
-        let ed:CGFloat = 2//VOGでは５だが状況が違うので
-        let rectEye10 = CGRect(x:rectEye.origin.x-ed,y:rectEye.origin.y,width:rectEye.size.width+2*ed,height:1.0)
-        let rectEyeb = CGRect(x:rectEye.origin.x-eyeborder-ed,y:rectEye.origin.y,width:rectEye.size.width+2*eyeborder+2*ed,height:1.0)
-        let rectFaceb = CGRect(x:rectFace.origin.x-faceborder,y:rectFace.origin.y-faceborder/4,width:rectFace.size.width+2*faceborder,height:rectFace.size.height+faceborder/2)
-        let rectOutb = CGRect(x:rectOuter.origin.x-outerborder,y:rectOuter.origin.y,width:rectOuter.size.width+2*outerborder,height:1.0)
-        //黒眼（角膜）部分を緑色水平線で選択し、その両サイド１０ピクセルを含めてレクトを設定。
+        //検出幅は眼球もマーク(face)も同じ
+        let rectEyeb = CGRect(x:rectEye.origin.x-eyeborder,y:rectEye.origin.y-eyeborder/4,width:rectEye.size.width+2*eyeborder,height:rectEye.size.height+eyeborder/2)
+        //エラーの時初期位置に戻し検出範囲を4倍とする。offsetも4倍となる。
+        let rectEyeberror = CGRect(x:rectEye.origin.x-4*eyeborder,y:rectEye.origin.y-eyeborder,width:rectEye.size.width+8*eyeborder,height:rectEye.size.height+2*eyeborder)
+        //エラーは出ないはず、出たときは初期に戻す？
+        let rectFaceb = CGRect(x:rectFace.origin.x-eyeborder,y:rectFace.origin.y-eyeborder/4,width:rectFace.size.width+2*eyeborder,height:rectFace.size.height+eyeborder/2)
 
         let context:CIContext = CIContext.init(options: nil)
         let orientation = UIImageOrientation.right
         var sample:CMSampleBuffer!
-//        let sample = readerOutput.copyNextSampleBuffer()
-//        for _ in 0...(startPoint) {
-            sample = readerOutput.copyNextSampleBuffer()
-//            while reader.status != AVAssetReaderStatus.reading {
-//                sleep(UInt32(0.01))
- //           }
-            
-//        }
+        sample = readerOutput.copyNextSampleBuffer()
         stopButton.isEnabled = true
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        //おそらくCIImage->CGImageが重いのでCGImageにしてからcropする。
-        //CGImageは中身はただのbitmapなのでcropしても軽いと想定
-        //なのでまず画像全体をCGImageにする。
         let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
         #if DEBUG
         print("image size =",cgImage.width, "x", cgImage.height)
         print("view size =", self.view.bounds.width, "x", self.view.bounds.height)
         #endif
-        var REye10 = resizeRect(rectEye10, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        
+        let REye = resizeRect(rectEye, onViewBounds:self.slowImage.frame, toImage:cgImage)
         let RFace = resizeRect(rectFace, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        var ROuter = resizeRect(rectOuter, onViewBounds:self.slowImage.frame, toImage:cgImage)
         var REyeb = resizeRect(rectEyeb, onViewBounds:self.slowImage.frame, toImage:cgImage)
+        let REyeberror = resizeRect(rectEyeberror, onViewBounds :self.slowImage.frame,toImage:cgImage)
         var RFacb = resizeRect(rectFaceb, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        var ROutb = resizeRect(rectOutb, onViewBounds:self.slowImage.frame, toImage:cgImage)
-        let offsetEye = CGFloat(Int((REyeb.size.height-REye10.size.height)/2))
-        let offsetOut = CGFloat(Int((ROutb.size.height-ROuter.size.height)/2))
-        let offsetFace = CGFloat(Int((RFacb.size.height-RFace.size.height)/2))
-        let offsetFacX = CGFloat(Int((RFacb.size.width-RFace.size.width)/2))
-  //      print(offsetFace,offsetFacX)
- //        printRect(r1:REye10,r2:REyeb)
-//        printRect(r1: ROuter, r2: ROutb)
-
-        CGEye10 = cgImage.cropping(to: REye10)
+        let REyeborg=REyeb
+        let RFacborg=RFacb
+        //何故cgfloat->int->cgfloatにしてたのか。判らぬままに変更
+//         let offsetEye = CGFloat(Int((REyeb.size.height-REye.size.height)/2))
+//         let offsetEyeX = CGFloat(Int((REyeb.size.width-REye.size.width)/2))
+//         let offsetFace = CGFloat(Int((RFacb.size.height-RFace.size.height)/2))
+//         let offsetFacX = CGFloat(Int((RFacb.size.width-RFace.size.width)/2))
+        let offsetEye = (REyeb.size.height-REye.size.height)/2.0//左右方向
+        let offsetEyeX = (REyeb.size.width-REye.size.width)/2.0//上下方向
+        let offsetFace = (RFacb.size.height-RFace.size.height)/2.0
+        let offsetFacX = (RFacb.size.width-RFace.size.width)/2.0
+ //       print("offset",offsetEye,offsetEyeX,offsetEyeerror,offsetEyeXerror)
+        CGEyeorg = cgImage.cropping(to: REye)
         CGFaceorg = cgImage.cropping(to: RFace)
-        CGOuter = cgImage.cropping(to: ROuter)
-        UIEye10 = UIImage.init(cgImage: CGEye10, scale:1.0, orientation:orientation)
+        UIEyeorg = UIImage.init(cgImage: CGEyeorg, scale:1.0, orientation:orientation)
         UIFaceorg = UIImage.init(cgImage: CGFaceorg, scale:1.0, orientation:orientation)
-        UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
+//        st=CFAbsoluteTimeGetCurrent()
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             var fx:CGFloat = 0
             var fy:CGFloat = 0
-            var eye5:CGFloat = 0
-            //          var eyeP:CGFloat = 0
+            var ex:CGFloat = 0
+            var ey:CGFloat = 0
+            var cvError:Bool = false
+            //var eye5:CGFloat = 0
+           
             while let sample = readerOutput.copyNextSampleBuffer() {
                 if self.calcFlag == false {
                     break
+                }//27secvideo ここだけをループすると->9sec
+               
+                let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
+                let ciImage = CIImage(cvPixelBuffer: pixelBuffer)//27secVideo ->10sec
+                //ciImage変換までは高速
+                let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!//27sec ->45sec この変換が大変そう
+
+                if self.faceF==1{
+                    CGFaceWithBorder = cgImage.cropping(to: RFacb)!
+                    UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
+                    let maxV=self.openCV.matching(UIFaceWithBorder, narrow:UIFaceorg, x:fX, y:fY)
+                    
+                    if maxV<0.7{//一致度0.7以下の時
+                        fy=0
+                        RFacb=RFacborg//初期値に戻す
+                    }else{
+                        fy = CGFloat(fY.pointee) - offsetFace
+                        fx = CGFloat(fX.pointee) - offsetFacX
+                        RFacb.origin.x += fx
+                        RFacb.origin.y += fy
+                    }
+                }else{
+                    fy=0
                 }
-                // サンプルバッファからピクセルバッファを取り出す
-                let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!
-                let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-                let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-                if RFacb.origin.y < 0 || RFacb.origin.y + RFacb.size.height>720 {//checkはこれだけでいいか？
-                    self.calcFlag = false
-                    break
-                }
-                CGFaceWithBorder = cgImage.cropping(to: RFacb)!
-                UIFaceWithBorder = UIImage.init(cgImage: CGFaceWithBorder, scale:1.0, orientation:orientation)
-                self.openCV.matching(UIFaceWithBorder, narrow:UIFaceorg, x:fX, y:fY)
-                //self.printRect(r1: RFacb, r2: RFace)
-                //print(fX.pointee,fY.pointee)
-                fy = CGFloat(fY.pointee) - offsetFace// 4*faceborder//100倍しても関係なさそう。fYはIntっぽい？
-                fx = CGFloat(fX.pointee) - offsetFacX//faceborder//fastKumamonで追加した行
-                REyeb.origin.x += fx//ズラしておく
-                REyeb.origin.y += fy
-                ROutb.origin.x += fx
-                ROutb.origin.y += fy
+                //前回がエラーの時はREyeb=REyeberror ４倍範囲で検出offsetも４倍
                 CGEyeWithBorder = cgImage.cropping(to: REyeb)!//ciimageからcrop
                 UIEyeWithBorder = UIImage.init(cgImage: CGEyeWithBorder, scale:1.0, orientation:orientation)
-                if ROutb.origin.x > 1277 || ROutb.origin.y + ROutb.size.height > 720 {//ここもチェック
-                    self.calcFlag = false
-                    break
-                }
+                //REyebをチェックする時　ここから
+                //DispatchQueue.globalをコメントアウト
+                //startTimerもコメントアウト(528行目辺り）
+//                faceCropView.frame=REyeb//CGRect(x:0,y:0,width: UIEyeWithBorder.size.width,height:UIEyeWithBorder.size.height)
+//                faceCropView.image=UIEyeWithBorder
+                //REyebをチェックする時　ここまで
+                let maxV=self.openCV.matching(UIEyeWithBorder, narrow: UIEyeorg, x: eX, y: eY)
                 
-                self.openCV.matching(UIEyeWithBorder, narrow: UIEye10, x: eX, y: eY)
-                CGOuterWithBorder = cgImage.cropping(to: ROutb)!//ROuterWithBorder)!
-                UIOuterWithBorder = UIImage.init(cgImage: CGOuterWithBorder, scale:1.0, orientation:orientation)
-                self.openCV.matching(UIOuterWithBorder, narrow:UIOuter, x:oX, y:oY)
+                //-2:matching error ２画像の範囲が異常で比較不能
                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                     usleep(1)
                 }
-                RFacb.origin.x += fx
-                RFacb.origin.y += fy
-                REye10.origin.x += fx
-                REye10.origin.y += fy
-                ROuter.origin.x += fx
-                ROuter.origin.y += fy
-                
-                CGEye10 = cgImage.cropping(to: REye10)
-                UIEye10 = UIImage.init(cgImage: CGEye10, scale:1.0, orientation:orientation)
-                CGOuter = cgImage.cropping(to: ROuter)
-                UIOuter = UIImage.init(cgImage: CGOuter, scale:1.0, orientation:orientation)
-                eye5=12.0*(self.Kalupdate1(measurement: CGFloat(eY.pointee) - offsetEye))
-                
+                var eyePos:CGFloat=0
+                if maxV < 0.7{//errorもここに来るぞ!!
+                    cvError=true
+                    ey=0
+                    REyeb=REyeberror//初期位置に戻す、4倍範囲
+//                    REyeb=REyeborg//初期位置に戻すだけ、範囲はそのまま
+                    eyePos = 0
+                }else{//検出できた時
+                    if cvError==false{//前回も検出出来た
+                        ey = CGFloat(eY.pointee) - offsetEye
+                        ex = CGFloat(eX.pointee) - offsetEyeX
+                        eyePos=REyeb.origin.y - offsetEye - REyeborg.origin.y + ey
+                    }else{//前回がエラーなら、初期位置に戻し4倍幅で検出
+                        ey = CGFloat(eY.pointee) - offsetEye*4.0
+                        ex = CGFloat(eX.pointee) - offsetEyeX*4.0
+                        eyePos = ey//初期位置からのズレはそのまま位置のはず
+                    }
+                    REyeb.origin.x += ex
+                    REyeb.origin.y += ey
+                    //eyePos=REyeb.origin.y - offsetEye - REyeborg.origin.y
+                    cvError=false
+                }
+                let eyePos5=1.0*(self.Kalmanvog(measurement:eyePos))
+                self.vogPos5.append(eyePos5)
+                self.vogPos.append(eyePos5)
+                if vHITcnt > 5{
+                    self.vogPos5[vHITcnt-2]=(self.vogPos[vHITcnt]+self.vogPos[vHITcnt-1]+self.vogPos[vHITcnt-2]+self.vogPos[vHITcnt-3]+self.vogPos[vHITcnt-4])/5
+                }
+                let eye5=12.0*(self.Kalman1(measurement: ey-fy*1.2))//そのままではずれる
+//                print("maxV,pos,velo:\(vHITcnt/24)",String(format:"%.2f %.2f %.2f", maxV,eyePos5,eye5))
+//                print("maxV,pos,velo:\(vHITcnt/24)",String(format:"%.2f %.2f %.2f", maxV,eyePos5,eye5))
+     //           print("maxV,eyex,y:\(vHITcnt/24)",String(format:"%.2f %.2f %.2f", maxV,REyeb.origin.x,REyeb.origin.y))
+      //          self.printRect(r1: REyeb,r2: REyeborg)
+                //光源も動いている。右にゴーグルが動くと光源も右に動く、その分を0.2加えている。
+                //１回だけ試してみて、1.2辺りがよかった。これで良いのかどうか？
+                //!faceFの時はfy=0
                 self.vHITeye5.append(eye5)
                 self.vHITeye.append(eye5)
                 if vHITcnt > 5{
                     self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
                 }
                 
-                let outer5=3.0*(self.Kalupdate(measurement: CGFloat(oY.pointee) - offsetOut))
-                self.vHITouter.append(outer5)
-                self.vHITouter5.append(outer5)
-                if vHITcnt > 5{
-                    self.vHITouter[vHITcnt-2]=(self.vHITouter5[vHITcnt]+self.vHITouter5[vHITcnt-1]+self.vHITouter5[vHITcnt-2]+self.vHITouter5[vHITcnt-3]+self.vHITouter5[vHITcnt-4])/5
+                let face5=12.0*(self.Kalman(measurement:fy))
+                self.vHITface.append(face5)
+                self.vHITface5.append(face5)
+                if vHITcnt > 5 && self.faceF==1{//ここを通しても92s
+                    self.vHITface5[vHITcnt-2]=(self.vHITface[vHITcnt]+self.vHITface[vHITcnt-1]+self.vHITface[vHITcnt-2]+self.vHITface[vHITcnt-3]+self.vHITface[vHITcnt-4])/5
                 }
                 
                 vHITcnt += 1
@@ -631,6 +762,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     sleep(UInt32(0.1))
                 }
             }
+ //           print("time:",CFAbsoluteTimeGetCurrent()-st)
             self.calcFlag = false
             if self.waveTuple.count > 0{
                 self.nonsavedFlag = true
@@ -644,7 +776,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
   //      print("willappear")
-        //viewDidLoad()
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
@@ -653,14 +784,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
  //       print("willdisappear")
     }
-    //使ってみたが
-//    func removeAllSubviews(parentView: UIView){
-//        let subviews = parentView.subviews
-//        for subview in subviews {
-//            subview.removeFromSuperview()
-//        }
-//    }
-    func makeBox(width w:CGFloat,height h:CGFloat) -> UIImage{
+ 
+    func makeBox(width w:CGFloat,height h:CGFloat) -> UIImage{//vHITとVOG同じ
         let size = CGSize(width:w, height:h)
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         let context = UIGraphicsGetCurrentContext()
@@ -674,118 +799,281 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    //var timecnt:Int = 0
-    var boxView: UIImageView? // <- 追加
-    var lineView: UIImageView? // <- 追加
-    var vHITboxView: UIImageView?
-    var vHITlineView: UIImageView?
-    func drawBoxies(){
- //       removeAllSubviews(parentView: self.view)
-        if vHITboxView == nil {
-            let boxImage = makeBox(width: view.bounds.width, height: view.bounds.width*200/500)
+    
+    func makeBoxies(){
+        
+        if gyroboxView == nil {//vHITboxView vogboxView
+            var boxImage = makeBox(width: view.bounds.width, height: view.bounds.width*200/500)
             vHITboxView = UIImageView(image: boxImage)
             vHITboxView?.center = CGPoint(x:view.bounds.width/2,y:160)// view.center
             view.addSubview(vHITboxView!)
+            boxImage = makeBox(width: self.view.bounds.width, height: 180)
+            gyroboxView = UIImageView(image: boxImage)
+            gyroboxView?.center = CGPoint(x:view.bounds.width/2,y:340)
+            view.addSubview(gyroboxView!)
+            
+            boxImage = makeBox(width: view.bounds.width, height:boxHeight)
+            vogboxView = UIImageView(image: boxImage)
+            box1ys=view.bounds.height/2
+            vogboxView?.center = CGPoint(x:view.bounds.width/2,y:box1ys)
+            view.addSubview(vogboxView!)
         }
-        if boxView == nil {
-            let boxImage1 = makeBox(width: self.view.bounds.width, height: 180)
-            boxView = UIImageView(image: boxImage1)
-  //          boxView?.center = self.view.center//CGPoint(x:view.bounds.width/2,y:330)
-            boxView?.center = CGPoint(x:view.bounds.width/2,y:340)
-            view.addSubview(boxView!)
-        }
-        vHITboxView?.isHidden = false
-        boxView?.isHidden = false
-//        print("count----" + "\(view.subviews.count)")
+        //        print("count----" + "\(view.subviews.count)")
     }
+
+    func drawVogwaves(timeflag:Bool,num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
+        let size = CGSize(width:w, height:h)
+        // イメージ処理の開始
+        UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+        // パスの初期化
+        let drawPath = UIBezierPath()
+        
+        if timeflag==true{
+            let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,vidDura[vidCurrent],timercnt+1)
+            //print(timetxt)
+            timetxt.draw(at: CGPoint(x: 20, y: 5), withAttributes: [
+                NSAttributedString.Key.foregroundColor : UIColor.black,
+                NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 70, weight: UIFont.Weight.regular)])
+        }
+        
+        let str1 = calcDate.components(separatedBy: ":")
+        let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
+        let str3 = "VOG96da"
+//        let str4 = slowvideoAdd//"Kuroda ENT Kumamoto Japan"
+        str2.draw(at: CGPoint(x: 20, y: h-100), withAttributes: [
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 70, weight: UIFont.Weight.regular)])
+        str3.draw(at: CGPoint(x: w-330, y: h-100), withAttributes: [
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 70, weight: UIFont.Weight.regular)])
+//        str4.draw(at: CGPoint(x: w/2+10, y: h-100), withAttributes: [
+//            NSAttributedString.Key.foregroundColor : UIColor.black,
+//            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 70, weight: UIFont.Weight.regular)])
+        
+        UIColor.black.setStroke()
+        drawPath.lineWidth = 2.0//1.0
+        let wI:Int = Int(w)
+        for i in 0...5 {
+            let xp:CGFloat = CGFloat(i*wI/5-num%(wI/5))
+            drawPath.move(to: CGPoint(x:xp,y:0))//-CGFloat(num%(Int(w)/5))+CGFloat(i)*w/5.0,y:0))
+            drawPath.addLine(to: CGPoint(x:xp,y:h-120))//-CGFloat(num%(Int(w)/5))+CGFloat(i)*w/5.0,y:h-120))
+        }
+        drawPath.move(to:CGPoint(x:0,y:0))
+        drawPath.addLine(to: CGPoint(x:w,y:0))
+        drawPath.move(to:CGPoint(x:0,y:h-120))
+        drawPath.addLine(to: CGPoint(x:w,y:h-120))
+        drawPath.stroke()
+        drawPath.removeAllPoints()
+        var pointList = Array<CGPoint>()
+        var pointList2 = Array<CGPoint>()
+        let pointCount = Int(w) // 点の個数
+        let dx = 1// xの間隔
+        for n in 1...(pointCount) {
+            if num + n < vHITeye.count {
+                // print("***",num,n,eyeVelo.count)
+                let px = CGFloat(dx * n)
+                let py = vogPos5[num + n] * CGFloat(eyeRatio)/100.0 + (h-120)/4//120.0//高さを3分の１とする
+                let py2 = vHITeye5[num + n] * CGFloat(gyroRatio)/75.0 + (h-120)*3/4//60.0
+                let point = CGPoint(x: px, y: py)
+                let point2 = CGPoint(x: px, y: py2)
+                pointList.append(point)
+                pointList2.append(point2)
+            }
+        }
+        // 始点に移動する
+        drawPath.move(to: pointList[0])
+        // 配列から始点の値を取り除く
+        pointList.removeFirst()
+        // 配列から点を取り出して連結していく
+        for pt in pointList {
+            drawPath.addLine(to: pt)
+        }
+        drawPath.move(to: pointList2[0])
+        // 配列から始点の値を取り除く
+        pointList2.removeFirst()
+        // 配列から点を取り出して連結していく
+        for pt in pointList2 {
+            drawPath.addLine(to: pt)
+        }
+        // 線の色
+        UIColor.black.setStroke()
+        // 線を描く
+        drawPath.stroke()
+        // イメージコンテキストからUIImageを作る
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        // イメージ処理の終了
+        UIGraphicsEndImageContext()
+        return image!
+    }
+    func drawVogline(startcount:Int){
+            if voglineView != nil{
+                voglineView?.removeFromSuperview()
+            }
+            var startcnt=startcount
+            if startcount>vogPos5.count-240*10{
+                startcnt=vogPos5.count-240*10
+            }
+            if startcnt<0 {
+                startcnt=0
+            }
+            let dImage = drawVogwaves(timeflag:true,num:startcnt,width:mailWidth,height:mailHeight)
+            let drawImage = dImage.resize(size: CGSize(width:view.bounds.width, height:boxHeight))
+            voglineView = UIImageView(image: drawImage)
+            voglineView?.center =  CGPoint(x:view.bounds.width/2,y:box1ys)
+            // 画面に表示する
+            view.addSubview(voglineView!)
+        }
+    func drawVogwave(){//vog
+        if voglineView != nil{
+            voglineView?.removeFromSuperview()
+        }
+        var startcnt=0
+        if vHITeye.count<240*10{//headを表示
+            startcnt=0
+        }else{
+            startcnt=vHITeye.count-240*10//tailを表示
+        }
+        let dImage = drawVogwaves(timeflag:true,num:startcnt,width:mailWidth,height:mailHeight)
+        let drawImage = dImage.resize(size: CGSize(width:view.bounds.width, height:boxHeight))
+        voglineView = UIImageView(image: drawImage)
+        voglineView?.center =  CGPoint(x:view.bounds.width/2,y:box1ys)
+        // 画面に表示する
+        view.addSubview(voglineView!)
+    }
+
     func drawVHITwaves(){//解析結果のvHITwavesを表示する
         if vHITlineView != nil{
             vHITlineView?.removeFromSuperview()
         }
-        let drawImage = drawWaves(width:500,height:200)
-        let dImage = drawImage.resize(size: CGSize(width:view.bounds.width, height:view.bounds.width*200/500))
+//        let drawImage = drawWaves(width:view.bounds.width,height: view.bounds.width*2/5)
+        let drawImage = drawvhitWaves(width:500,height:200)
+        let dImage = drawImage.resize(size: CGSize(width:view.bounds.width, height:view.bounds.width*2/5))
         vHITlineView = UIImageView(image: dImage)
         vHITlineView?.center =  CGPoint(x:view.bounds.width/2,y:160)
         // 画面に表示する
         view.addSubview(vHITlineView!)
+     //   showVog(f: true)
     }
     func drawRealwave(){
-        if lineView != nil{//これが無いとエラーがでる。
-            lineView?.removeFromSuperview()
+        if gyrolineView != nil{//これが無いとエラーがでる。
+            gyrolineView?.removeFromSuperview()
             //            lineView?.isHidden = false
         }
         var startcnt = 0
-        if vHITouter.count < Int(self.view.bounds.width){//横幅以内なら０からそこまで表示
+        if vHITface5.count < Int(self.view.bounds.width){//横幅以内なら０からそこまで表示
             startcnt = 0
         }else{//横幅超えたら、新しい横幅分を表示
-            startcnt = vHITouter.count - Int(self.view.bounds.width)
+            startcnt = vHITface5.count - Int(self.view.bounds.width)
         }
         //波形を時間軸で表示
         let drawImage = drawLine(num:startcnt,width:self.view.bounds.width,height:180)
         // イメージビューに設定する
-        lineView = UIImageView(image: drawImage)
+        gyrolineView = UIImageView(image: drawImage)
  //       lineView?.center = self.view.center
-        lineView?.center = CGPoint(x:view.bounds.width/2,y:340)//ここらあたりを変更se~7plusの大きさにも対応できた。
-        view.addSubview(lineView!)
+        gyrolineView?.center = CGPoint(x:view.bounds.width/2,y:340)//ここらあたりを変更se~7plusの大きさにも対応できた。
+        view.addSubview(gyrolineView!)
+  //      showBoxies(f: true)
 //        print("count----" + "\(view.subviews.count)")
     }
+
     func drawOnewave(startcount:Int){
         var startcnt = startcount
         if startcnt < 0 {
             startcnt = 0
         }
-        if lineView != nil{//これが無いとエラーがでる。
-            lineView?.removeFromSuperview()
+        if gyrolineView != nil{//これが無いとエラーがでる。
+            gyrolineView?.removeFromSuperview()
             //            lineView?.isHidden = false
         }
-        if vHITouter.count < Int(self.view.bounds.width){//横幅以内なら０からそこまで表示
+        if vHITface5.count < Int(self.view.bounds.width){//横幅以内なら０からそこまで表示
             startcnt = 0
-        }else if startcnt > vHITouter.count - Int(self.view.bounds.width){
-            startcnt = vHITouter.count - Int(self.view.bounds.width)
+        }else if startcnt > vHITface5.count - Int(self.view.bounds.width){
+            startcnt = vHITface5.count - Int(self.view.bounds.width)
         }
         //波形を時間軸で表示
         let drawImage = drawLine(num:startcnt,width:self.view.bounds.width,height:180)
         // イメージビューに設定する
-        lineView = UIImageView(image: drawImage)
+        gyrolineView = UIImageView(image: drawImage)
         //       lineView?.center = self.view.center
-        lineView?.center = CGPoint(x:view.bounds.width/2,y:340)//ここらあたりを変更se~7plusの大きさにも対応できた。
-        view.addSubview(lineView!)
+        gyrolineView?.center = CGPoint(x:view.bounds.width/2,y:340)
+        //ここらあたりを変更se~7plusの大きさにも対応できた。
+        view.addSubview(gyrolineView!)
         //        print("count----" + "\(view.subviews.count)")
     }
-    //var wpSleep:Int = 0
     var timercnt:Int = 0
- //   var lastvHITcnt:Int = 0
-    @objc func update(tm: Timer) {
-    
+    @objc func update_vog(tm: Timer) {
+        timercnt += 1
         if vHITeye.count < 5 {
             return
         }
         if calcFlag == false {
-  
+ 
+            timer.invalidate()
+            setButtons(mode: true)
+            UIApplication.shared.isIdleTimerDisabled = false
+            //終わり直前で認識されたvhitdataが認識されないこともあるかもしれないので、駄目押し。だめ押し用のcalcdrawvhitは別に作る必要があるかもしれない。
+            waveCurrpoint = vHITeye.count - Int(self.view.bounds.width)
+            if waveCurrpoint<0{
+                waveCurrpoint=0
+            }
+            //           print(eyeVelo.count)
+        }
+        
+        #if DEBUG
+        print("debug-update",timercnt)
+        #endif
+        //      if timercnt % 2 == 0{
+   //     dispWakus()
+        drawVogwave()
+   //     showBoxies(f: true)
+    }
+    @objc func update(tm: Timer) {
+        if vHITeye5.count < 5 {
+            return
+        }
+        if calcFlag == false {
+            
             //if timer?.isValid == true {
             timer.invalidate()
             setButtons(mode: true)
             //  }
             UIApplication.shared.isIdleTimerDisabled = false
-            drawBoxies()
-            calcDrawVHIT()//終わり直前で認識されたvhitdataが認識されないこともあるかもしれないので、駄目押し。だめ押し用のcalcdrawvhitは別に作る必要があるかもしれない。
+            //            makeBoxies()
+            //            calcDrawVHIT()
+            //終わり直前で認識されたvhitdataが認識されないこともあるかもしれないので、駄目押し。だめ押し用のcalcdrawvhitは別に作る必要があるかもしれない。
             if self.waveTuple.count > 0{
                 self.nonsavedFlag = true
             }
-            waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
+            waveCurrpoint = vHITface5.count - Int(self.view.bounds.width)
         }
- 
+        
         drawRealwave()
         timercnt += 1
         #if DEBUG
         print("debug-update",timercnt)
         #endif
-  //      if timercnt % 2 == 0{
-            dispWakus()
-            calcDrawVHIT()
-  //      }
+        //      if timercnt % 2 == 0{
+        //       dispWakus()
+        calcDrawVHIT()
+        //     showBoxies(f: true)
     }
-
+    func update_gyrodelta() {
+        if vHITeye5.count < 5 {
+            return
+        }
+        if calcFlag == false {
+            //           makeBoxies()
+            calcDrawVHIT()
+            //終わり直前で認識されたvhitdataが認識されないこともあるかもしれないので、駄目押し。だめ押し用のcalcdrawvhitは別に作る必要があるかもしれない。
+            if waveTuple.count > 0{
+                nonsavedFlag = true
+            }
+            waveCurrpoint = vHITface5.count - Int(view.bounds.width)
+        }
+        drawRealwave()
+        //       dispWakus()
+        calcDrawVHIT()
+    }
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
             return Int(field.text!)!
@@ -793,139 +1081,102 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return 0
         }
     }
-    
-  //  var path:String = ""
- //   var urlpath:NSURL!
-    func getslowVideoNum() -> Int{
-        let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
-        if let assetCollection = result.firstObject{
-            // アルバムからアセット一覧を取得
-            let fetchAssets = PHAsset.fetchAssets(in: assetCollection, options: nil)
-            return fetchAssets.count
-        }
-        return 0
+    func addArray(path:String){
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        appendAll(doc: documentsDirectory, path: path)
     }
-  
- //   var retImage:UIImage!
- 
-//    func getSlowimg(num:Int) ->UIImage{
-//        var fileURL:URL
-//         if num == 0{
-//            fileURL = URL(fileURLWithPath: Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
-//             videoDuration = "2.0s"
-//            let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]//,AVCaptureVideoOrientation = .Portrait]
-//            let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-//             var reader: AVAssetReader! = nil
-//            do {
-//                reader = try AVAssetReader(asset: avAsset)
-//            } catch {
-//                #if DEBUG
-//                print("could not initialize reader.")
-//                #endif
-//                return nil!
-//            }
-//
-//            guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-//                #if DEBUG
-//                print("could not retrieve the video track.")
-//                #endif
-//                return nil!
-//            }
-//
-//            let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-//            let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-//            reader.add(readerOutput)
-//            reader.startReading()
-//
-//            let context:CIContext = CIContext.init(options: nil)
-//            let orientation = UIImageOrientation.right
-//
-//            let sample = readerOutput.copyNextSampleBuffer()
-//            let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-//            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-//            let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-//            return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-//
-//        }else{
-//            //ビデオがあるかどうか事前にチェックして呼ぶこと
-//            let number = num - 1
-//            // スロービデオのアルバムを取得
-//            let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
-//            let assetCollection = result.firstObject;
-//            // アルバムからアセット一覧を取得
-//            let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
-//
-//            let asset  = fetchAssets.object(at: number)
-//            let manager = PHImageManager()//.default()
-//
-//  //まず低解像度の画像を送っておいて、おいおい高解像度を渡すようだが、低解像度をもらってしまっているようだ
-//            manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode:PHImageContentMode.aspectFill, options:nil) { (image, info) in
-//                self.retImage = image
-//            }
-//              return self.retImage
-//        }
-//     }
-    func setVideoPathDate(num:Int){//0:sample.MOV 1-n はアルバムの中の古い順からの　*.MOV のパスを
-        //print("**::;setVideopathdate")
-        if num == 0{
-            //slowvideoPath = Bundle.main.path(forResource: "vhit20", ofType: "mov")!
-            slowPath.append(Bundle.main.path(forResource: "vhit20", ofType: "mov")!)
-            //videoDate.text = "VOG video : sample"
-            slowDate.append("vHIT video : sample")
-            //videoDuration = "2.5s"
-            slowDura.append("2.5s")
-            slowDuraorg.append("2.5s")
-            //            freecntLabel.text = "\(freeCounter)"
-            appendingFlag=false
-            return
+    func getVideofns()->String{
+        let str=getFsindoc().components(separatedBy: ",")
+        
+        if !str[0].contains("vHIT96da"){
+            return ""
         }
-        // スロービデオのアルバムを取得
-        let result:PHFetchResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumSlomoVideos, options: nil)
-        let assetCollection = result.firstObject;
-        // アルバムからアセット一覧を取得
-        let fetchAssets = PHAsset.fetchAssets(in: assetCollection!, options: nil)
-        if num > fetchAssets.count {//その番号のビデオがないとき
-            return
+        var retStr:String=""
+        for i in 0..<str.count{
+            if str[i].contains(".MOV"){
+                retStr += str[i] + ","
+            }
         }
-        // アセットを取得
-        let asset = fetchAssets.object(at: num-1)
-        let option = PHVideoRequestOptions()
-        //print(Int(10*asset.duration))
-        let sec10 = Int(10*asset.duration)
-        //videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
+        //ifretStr += str[str.count-1]
+        //       print(retStr)
+        let retStr2=retStr.dropLast()
+        return String(retStr2)
+    }
+    func setArrays(){
+        let path = getVideofns()//videoPathtxt()
+        var str = path.components(separatedBy: ",")
+        print("setarray:",path,str[0],"*****")
+        //      print("befor sort:",str)
+        str.sort()//descend? ascend ?
+        //      print("after sort:",str)
+        //      print("array:",str.count,path,"*****end****")
+        //      return
+        vidPath.removeAll()
+        vidDate.removeAll()
+        vidDuraorg.removeAll()
+        vidDura.removeAll()
+        vidImg.removeAll()
+        print("setarray:",path,str[0],"*****")
+        if str[0]==""{//"*.MOV"でstr.countは１,"*.MOV,*.MOV"で2
+            return//""と何も無くてもstr.countは1   !!!!!
+        }
+        
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        for i in 0..<str.count{
+            appendAll(doc: documentsDirectory,path: str[i])
+        }
+        vidCurrent=vidPath.count-1
+    }
+    func getfileURL(path:String)->URL{
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        let vidpath = documentsDirectory + "/" + path
+        return URL(fileURLWithPath: vidpath)
+    }
+    func getdocumentPath(path:String)->String{
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        let vidpath = documentsDirectory + "/" + path
+        return vidpath
+    }
+    var appendingFlag:Bool = false
+    func appendAll(doc:String,path:String){//for で回すのでdocumentsdirはgetgetしておる
+        let vidpath = doc + "/" + path
+        let fileURL = URL(fileURLWithPath: vidpath)
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let asset = AVURLAsset(url: fileURL, options: options)
+        vidPath.append(path)
+        appendingFlag=true
+ //       print("path:",path)
+        
+        vidImg.append(getThumbnailFrom(path: vidpath)!)// vidPath.last!)!)
+        while appendingFlag == true{
+            sleep(UInt32(0.1))
+        }
+        let sec10 = Int(10*asset.duration.seconds)
         let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
-        slowDura.append(temp)
-        slowDuraorg.append(temp)
-        let dateFormatter = DateFormatter()
-        //To prevent displaying either date or time, set the desired style to NoStyle.
-        dateFormatter.timeStyle = .medium //Set time style
-        dateFormatter.dateStyle = .medium //Set date style
-        dateFormatter.timeZone = NSTimeZone() as TimeZone?//TimeZone(identifier: "ja")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let localDate = dateFormatter.string(from: asset.creationDate!)
-        //       videoDate.text = localDate + " (\(num))"
-        slowDate.append(localDate + " (\(num))")
-        //       freecntLabel.text = "\(freeCounter)"
-        // アセットの情報を取得
-    
-        PHImageManager.default().requestAVAsset(forVideo: asset,
-                                                options: option,
-                                                resultHandler: { (avAsset, audioMix, info) in
-                                                    if let tokenStr = info?["PHImageFileSandboxExtensionTokenKey"] as? String {
-                                                        let tokenKeys = tokenStr.components(separatedBy: ";")
-                                                        let urlStr = tokenKeys.filter { $0.contains("/private/var/mobile/Media") }.first
-                                                        self.slowPath.append(urlStr!)
-                                                        self.appendingFlag=false
-                                                        //print(info as Any)
-                                                    }else{//cloud上videoはdeleteと登録して
-                                                        self.slowPath.append("delete")
-                                                        self.appendingFlag=false
-                                                        //print(info as Any)
-                                                    }
-        })
+        vidDura.append(temp)
+        vidDuraorg.append(temp)
+        let str1=path.components(separatedBy: "vHIT96da")
+        let str2=str1[1].components(separatedBy: ".MOV")
+        let str3=str2[0] + " (\(vidPath.count-1))"
+        vidDate.append(str3)
     }
-    
-  
+
+    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        let filepath=documentsDirectory+"/"+path
+        let fileURL=URL(fileURLWithPath: filepath)
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        //options.version = .original
+        let asset = AVURLAsset(url: fileURL, options: options)
+        print(asset.tracks.first?.nominalFrameRate as Any)
+        return asset.tracks.first!.nominalFrameRate
+    }
+      
     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
             return UserDefaults.standard.integer(forKey:str)
@@ -937,78 +1188,69 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func getUserDefaults(){
         freeCounter = getUserDefault(str: "freeCounter", ret:0)//50回以上になるとその由のアラームを出す
-        flatsumLimit = getUserDefault(str: "flatsumLimit", ret: 80)
-        waveWidth = getUserDefault(str: "waveWidth", ret: 40)
-        wavePeak = getUserDefault(str: "wavePeak", ret: 30)
-        updownPgap = getUserDefault(str: "updownPgap", ret: 6)
+        widthRange = getUserDefault(str: "widthRange", ret: 30)
+        waveWidth = getUserDefault(str: "waveWidth", ret: 80)
+        //      wavePeak = getUserDefault(str: "wavePeak", ret: 30)
+        //      updownPgap = getUserDefault(str: "updownPgap", ret: 6)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 10)
-        faceBorder = getUserDefault(str: "faceBorder", ret: 8)
-        outerBorder = getUserDefault(str: "outerBorder", ret: 30)
+        gyroDelta = getUserDefault(str: "gyroDelta", ret: 50)
         eyeRatio = getUserDefault(str: "eyeRatio", ret: 100)
-        outerRatio = getUserDefault(str: "outerRatio", ret: 100)
+        gyroRatio = getUserDefault(str: "gyroRatio", ret: 100)
+        posRatio = getUserDefault(str: "posRatio", ret: 100)
+        veloRatio = getUserDefault(str: "veloRatio", ret: 100)
+        faceF = getUserDefault(str: "faceF", ret:0)
         //samplevideoでデフォルト値で上手く解析できるように、6s,7,8と7plus,8plus,xでデフォルト値を合わせる。
         let ratioW = self.view.bounds.width/375.0//6s
         let ratioH = self.view.bounds.height/667.0//6s
-
+        
         rectEye.origin.x = CGFloat(getUserDefault(str: "rectEye_x", ret: Int(123*ratioW)))
         rectEye.origin.y = CGFloat(getUserDefault(str: "rectEye_y", ret: Int(221*ratioH)))
-        rectEye.size.width = CGFloat(getUserDefault(str: "rectEye_w", ret: Int(159*ratioW)))
-        rectEye.size.height = 1//CGFloat(getUserDefault(str: "rectEye_h", ret: Int(10*ratioH)))
+        rectEye.size.width = 15
+        rectEye.size.height = 15
         rectFace.origin.x = CGFloat(getUserDefault(str: "rectFace_x", ret: Int(190*ratioW)))
         rectFace.origin.y = CGFloat(getUserDefault(str: "rectFace_y", ret: Int(296*ratioH)))
-        rectFace.size.width = 20//CGFloat(getUserDefault(str: "rectFace_w", ret: Int(77*ratioW)))
-        rectFace.size.height = 20//CGFloat(getUserDefault(str: "rectFace_h", ret: Int(27*ratioH)))
-        rectOuter.origin.x = CGFloat(getUserDefault(str: "rectOuter_x", ret: Int(143*ratioW)))
-        rectOuter.origin.y = CGFloat(getUserDefault(str: "rectOuter_y", ret: Int(538*ratioH)))
-        rectOuter.size.width = CGFloat(getUserDefault(str: "rectOuter_w", ret: Int(100*ratioW)))
-        rectOuter.size.height = 1//CGFloat(getUserDefault(str: "rectOuter_h", ret: Int(10*ratioH)))
-    }
-    func setUserDefaults(){//default値をセットするんじゃなく、defaultというものに値を設定するという意味
-        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-        UserDefaults.standard.set(flatsumLimit, forKey: "flatsumLimit")
-        UserDefaults.standard.set(waveWidth, forKey: "waveWidth")
-        UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
-        //3個続けて増加し、波幅の3/4ほど先が3個続けて減少（updownP_gap:増減閾値)
-        UserDefaults.standard.set(updownPgap, forKey: "updownPgap")
-        UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
-        UserDefaults.standard.set(faceBorder, forKey: "faceBorder")
-        UserDefaults.standard.set(outerBorder, forKey: "outerBorder")
-        UserDefaults.standard.set(eyeRatio, forKey: "eyeRatio")
-        UserDefaults.standard.set(outerRatio, forKey: "outerRatio")
-
+        rectFace.size.width = 20
+        rectFace.size.height = 20
         
+    }
+    //default値をセットするんじゃなく、defaultというものに値を設定するという意味
+    func setUserDefaults(){
+        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+        UserDefaults.standard.set(widthRange, forKey: "widthRange")
+        UserDefaults.standard.set(waveWidth, forKey: "waveWidth")
+ //       UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
+        //3個続けて増加し、波幅の3/4ほど先が3個続けて減少（updownP_gap:増減閾値)
+ //       UserDefaults.standard.set(updownPgap, forKey: "updownPgap")
+        UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
+        UserDefaults.standard.set(gyroDelta, forKey: "gyroDelta")
+        UserDefaults.standard.set(eyeRatio, forKey: "eyeRatio")
+        UserDefaults.standard.set(gyroRatio, forKey: "gyroRatio")
+        UserDefaults.standard.set(posRatio, forKey: "posRatio")
+        UserDefaults.standard.set(veloRatio, forKey: "veloRatio")
+        UserDefaults.standard.set(faceF,forKey: "faceF")
+
         UserDefaults.standard.set(Int(rectEye.origin.x), forKey: "rectEye_x")
         UserDefaults.standard.set(Int(rectEye.origin.y), forKey: "rectEye_y")
         UserDefaults.standard.set(Int(rectEye.size.width), forKey: "rectEye_w")
-          UserDefaults.standard.set(Int(rectFace.origin.x), forKey: "rectFace_x")
+        UserDefaults.standard.set(Int(rectFace.origin.x), forKey: "rectFace_x")
         UserDefaults.standard.set(Int(rectFace.origin.y), forKey: "rectFace_y")
-         UserDefaults.standard.set(Int(rectOuter.origin.x), forKey: "rectOuter_x")
-        UserDefaults.standard.set(Int(rectOuter.origin.y), forKey: "rectOuter_y")
-        UserDefaults.standard.set(Int(rectOuter.size.width), forKey: "rectOuter_w")
     }
-    
+
     func dispWakus(){
         let nullRect:CGRect = CGRect(x:0,y:0,width:0,height:0)
         eyeWaku.layer.borderColor = UIColor.green.cgColor
         eyeWaku.layer.borderWidth = 1.0
         eyeWaku.backgroundColor = UIColor.clear
         eyeWaku.frame = rectEye
-
+        eyeCropView.frame = CGRect(x:rectEye.origin.x-3,y:rectEye.origin.y-12,width:21,height:10)
+        eyeCropView.isHidden=true//これは無くても良さそう。
         faceWaku.layer.borderColor = UIColor.blue.cgColor
         faceWaku.layer.borderWidth = 1.0
         faceWaku.backgroundColor = UIColor.clear
-        if faceBorder == 0{
+        if  faceF==0 || vhit_vog==false{
             faceWaku.frame = nullRect
         }else{
             faceWaku.frame = rectFace
-        }
-        outerWaku.layer.borderColor = UIColor.red.cgColor
-        outerWaku.layer.borderWidth = 1.0
-        outerWaku.backgroundColor = UIColor.clear
-        if outerBorder == 0{
-            outerWaku.frame = nullRect
-        }else{
-            outerWaku.frame = rectOuter
         }
     }
     
@@ -1016,22 +1258,31 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let size = CGSize(width:w, height:h)
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         // 折れ線にする点の配列
-        var pointList = Array<CGPoint>()
+        var pointList0 = Array<CGPoint>()
+        var pointList1 = Array<CGPoint>()
         var pointList2 = Array<CGPoint>()
         let pointCount = Int(w) // 点の個数
         // xの間隔
-        let dx = 1//Int(w)/pointCount
+        let dx:CGFloat = 1//Int(w)/pointCount
         // yの振幅
         //     let height = UInt32(h)/2
         // 点の配列を作る
         for n in 1...(pointCount) {
-            if num + n < vHITouter.count {
-                let px = CGFloat(dx * n)
-                let py = vHITouter[num + n] * CGFloat(outerRatio)/300.0 + 120.0//高さを3分の１とする
-                let py2 = vHITeye[num + n] * CGFloat(eyeRatio)/300.0 + 60.0
-                let point = CGPoint(x: px, y: py)
+            if num + n < vHITface5.count {
+                let px = dx * CGFloat(n)
+                let py0 = vHITeye5[num + n] * CGFloat(eyeRatio)/300.0 + 60.0//高さを1/3とする
+                let py1 = vHITface5[num + n] * CGFloat(eyeRatio)/300.0 + 90.0
+//                let py0 = vogPos5[num + n] * CGFloat(eyeRatio)/300.0 + 60.0//高さを1/3とする
+//                let py1 = 5.0*vHITeye5[num + n] * CGFloat(eyeRatio)/300.0 + 90.0
+                //sample_videoではvHITgyro5が空なので下でエラーとなります。
+                //ここは無視して、プログラムを作って行きましょう。
+                //プログラム完成最終段階で、sample_videoを作りましょう。
+                let py2 = vHITgyro5[num + n] * CGFloat(gyroRatio)/300.0 + 120.0
+                let point0 = CGPoint(x: px, y: py0)
+                let point1 = CGPoint(x: px, y: py1)
                 let point2 = CGPoint(x: px, y: py2)
-                pointList.append(point)
+                pointList0.append(point0)
+                pointList1.append(point1)
                 pointList2.append(point2)
             }
         }
@@ -1039,15 +1290,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // イメージ処理の開始
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         // パスの初期化
-        let drawPath = UIBezierPath()
+        let drawPath0 = UIBezierPath()
+        let drawPath1 = UIBezierPath()
         let drawPath2 = UIBezierPath()
         // 始点に移動する
-        drawPath.move(to: pointList[0])
+        drawPath0.move(to: pointList0[0])
         // 配列から始点の値を取り除く
-        pointList.removeFirst()
+        pointList0.removeFirst()
         // 配列から点を取り出して連結していく
-        for pt in pointList {
-            drawPath.addLine(to: pt)
+        for pt in pointList0 {
+            drawPath0.addLine(to: pt)
+        }
+        drawPath1.move(to: pointList1[0])
+        // 配列から始点の値を取り除く
+        pointList1.removeFirst()
+        // 配列から点を取り出して連結していく
+        for pt in pointList1 {
+            drawPath1.addLine(to: pt)
         }
         drawPath2.move(to: pointList2[0])
         // 配列から始点の値を取り除く
@@ -1059,13 +1318,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // 線の色
         UIColor.black.setStroke()
         // 線幅
-        drawPath.lineWidth = 0.3
+        drawPath0.lineWidth = 0.3
+        drawPath1.lineWidth = 0.3
         drawPath2.lineWidth = 0.3
         // 線を描く
-        drawPath.stroke()
+        drawPath0.stroke()//
+        if faceF == 1{
+            drawPath1.stroke()
+        }
         drawPath2.stroke()
         //print(videoDuration)
-        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye.count,CGFloat(vHITeye.count)/240.0,slowDura[slowVideoCurrent],timercnt+1)
+        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITeye5.count,CGFloat(vHITeye5.count)/240.0,vidDura[vidCurrent],timercnt+1)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
@@ -1078,7 +1341,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
 
-
     func draw1wave(){
         var pointList = Array<CGPoint>()
         let drawPath = UIBezierPath()
@@ -1090,11 +1352,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             for n in 0..<120 {
                 let px = CGFloat(260 + n*2)//260 or 0
                 var py:CGFloat = 0
-                if dispOrgflag == true{
+           //     if dispOrgflag == true{
                     py = CGFloat(eyeWs[i][n] + 90)
-                }else{
-                    py = CGFloat(eyefWs[i][n] + 90)
-                }
+           //     }else{
+           //         py = CGFloat(eyefWs[i][n] + 90)
+           //     }
                 let point = CGPoint(x:px,y:py)
                 pointList.append(point)
             }
@@ -1121,11 +1383,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             for n in 0..<120 {
                 let px = CGFloat(n*2)//260 or 0
                 var py:CGFloat = 0
-                if dispOrgflag == true{
+             //   if dispOrgflag == true{
                     py = CGFloat(eyeWs[i][n] + 90)
-                }else{
-                    py = CGFloat(eyefWs[i][n] + 90)
-                }
+             //   }else{
+             //       py = CGFloat(eyefWs[i][n] + 90)
+             //   }
 //                let py = CGFloat(eyeWs[i][n] + 90)
                 let point = CGPoint(x:px,y:py)
                 pointList.append(point)
@@ -1157,7 +1419,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
             for n in 0..<120 {
                 let px = CGFloat(rlPt + n*2)
-                let py = CGFloat(outWs[i][n] + 90)
+                let py = CGFloat(gyroWs[i][n] + 90)
                 let point = CGPoint(x:px,y:py)
                 pointList.append(point)
             }
@@ -1181,7 +1443,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 for n in 0..<120 {
                     let px = CGFloat(rlPt + n*2)
-                    let py = CGFloat(outWs[i][n] + 90)
+                    let py = CGFloat(gyroWs[i][n] + 90)
                     let point = CGPoint(x:px,y:py)
                     pointList.append(point)
                 }
@@ -1196,11 +1458,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 for n in 0..<120 {
                     let px = CGFloat(rlPt + n*2)
                     var py:CGFloat = 0
-                    if dispOrgflag == true{
+                    //if dispOrgflag == true{
                         py = CGFloat(eyeWs[i][n] + 90)
-                    }else{
-                        py = CGFloat(eyefWs[i][n] + 90)
-                    }
+                    //}else{
+                    //    py = CGFloat(eyefWs[i][n] + 90)
+                    //}
  //                   let py = CGFloat(eyeWs[i][n] + 90)
                     let point = CGPoint(x:px,y:py)
                     pointList.append(point)
@@ -1236,22 +1498,27 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //アラート画面にテキスト入力欄を表示する。上記のswift入門よりコピー
     var tempnum:Int = 0
-    @IBAction func saveResult(_ sender: Any) {
+    @IBAction func saveResult(_ sender: Any) {//vhit
+        
 //        if freeCounter > 50{
 //            outTrial()
 //            return
 //        }
-        #if DEBUG
-        print("kuroda-debug" + "\(getLines())")
-        #endif
+//        #if DEBUG
+//        print("kuroda-debug" + "\(getLines())")
+//        #endif
         if calcFlag == true{
+            return
+        }
+        if vhit_vog==false{
+            saveResult_vog(0)
             return
         }
         if waveTuple.count < 1 {
             return
         }
         if vHITboxView?.isHidden == true{
-            showWave(0)
+            showBoxies(f: true)
         }
         //var idNumber:Int = 0
         let alert = UIAlertController(title: "vHIT96da", message: "Input ID number", preferredStyle: .alert)
@@ -1263,7 +1530,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             print("\(String(describing: textField.text))")
             #endif
             self.idNumber = self.Field2value(field: textField)
-            let drawImage = self.drawWaves(width:500,height:200)
+            let drawImage = self.drawvhitWaves(width:500,height:200)
+            
+  //          let drawImage = self.drawWaves(width:self.view.bounds.width,height: self.view.bounds.width*2/5)
+//             let drawImage = drawWaves(width:500,height:200)
+//             let dImage = drawImage.resize(size: CGSize(width:view.bounds.width, height:view.bounds.width*2/5))
+    //         vHITlineView = UIImageView(image: dImage)
+             
+            
             // イメージビューに設定する
             UIImageWriteToSavedPhotosAlbum(drawImage, nil, nil, nil)
             self.nonsavedFlag = false //解析結果がsaveされたのでfalse
@@ -1283,7 +1557,50 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         present(alert, animated: true, completion: nil)
 
     }
-    func drawWaves(width w:CGFloat,height h:CGFloat) -> UIImage {
+    func saveResult_vog(_ sender: Any) {//vog
+        
+        if calcFlag == true{
+            return
+        }
+        
+        //var idNumber:Int = 0
+        let alert = UIAlertController(title: "VOG96da", message: "Input ID number", preferredStyle: .alert)
+        let saveAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction!) -> Void in
+            
+            // 入力したテキストをコンソールに表示
+            let textField = alert.textFields![0] as UITextField
+            #if DEBUG
+            print("\(String(describing: textField.text))")
+            #endif
+            self.idNumber = self.Field2value(field: textField)
+            var cnt=self.waveCurrpoint
+            if self.vogPos5.count<240*10{
+                cnt=0
+            }else if self.waveCurrpoint>self.vogPos5.count-240*10{
+                cnt=self.vogPos5.count-240*10
+            }
+            let drawImage = self.drawVogwaves(timeflag: false, num:cnt,width:self.mailWidth,height:self.mailHeight)
+            // イメージビューに設定する
+            UIImageWriteToSavedPhotosAlbum(drawImage, nil, nil, nil)
+            //self.drawVHITwaves()
+            self.nonsavedFlag = false //解析結果がsaveされたのでfalse
+            //           self.calcDrawVHIT()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action:UIAlertAction!) -> Void in
+            self.idNumber = 1//キャンセルしてもここは通らない？
+        }
+        
+        // UIAlertControllerにtextFieldを追加
+        alert.addTextField { (textField:UITextField!) -> Void in
+            textField.keyboardType = UIKeyboardType.numberPad
+        }
+        alert.addAction(cancelAction)//この行と下の行の並びを変えるとCancelとOKの左右が入れ替わる。
+        alert.addAction(saveAction)
+        present(alert, animated: true, completion: nil)
+        
+    }
+    func drawvhitWaves(width w:CGFloat,height h:CGFloat) -> UIImage {
         let size = CGSize(width:w, height:h)
         // イメージ処理の開始
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
@@ -1294,16 +1611,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str1 = calcDate.components(separatedBy: ":")
         let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
         let str3 = "vHIT96da"
-        let str4 = slowvideoAdd//"96da Corp. Kumamoto Japan"
+    //    let str4 = slowvideoAdd//"96da Corp. Kumamoto Japan"
         str2.draw(at: CGPoint(x: 5, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         str3.draw(at: CGPoint(x: 428, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
             NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
-        str4.draw(at: CGPoint(x: 260, y: 180), withAttributes: [
+   /*     str4.draw(at: CGPoint(x: 260, y: 180), withAttributes: [
             NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])*/
 
         UIColor.black.setStroke()
         var pList = Array<CGPoint>()
@@ -1358,149 +1675,334 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
+  
     @objc func viewWillEnterForeground(_ notification: Notification?) {
  //       print("willenter")
-        if (self.isViewLoaded && (self.view.window != nil)) {//バックグラウンドで新しいビデオを撮影した時に対応。didloadでも行う
-            let tempNum = getslowVideoNum()
-            if allVideoCnt != tempNum{
-                allVideoCnt = tempNum
-                setslowImgs()
-                showCurrent()
-            }
+        if (self.isViewLoaded && (self.view.window != nil)) {
             freeCounter += 1
             UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
             freecntLabel.text = "\(freeCounter)"
-//            if dispOrgflag == true{
-//                dispOrgflag = false//Kalman filtered dataを表示
-//                calcDrawVHIT()
-//            }
         }
     }
-//    func getThumbnailFrom(path: String) -> UIImage? {
-//        let url = NSURL(fileURLWithPath: path)
-//        do {
-//
-//            let asset = AVURLAsset(url: url as URL , options: nil)
-//            let imgGenerator = AVAssetImageGenerator(asset: asset)
-//            imgGenerator.appliesPreferredTrackTransform = true
-//            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
-//            let thumbnail = UIImage(cgImage: cgImage)
-//
-//            return thumbnail
-//
-//        } catch let error {
-//
-//            print("*** Error generating thumbnail: \(error.localizedDescription)")
-//            return nil
-//
-//        }
-//
-//    }
-    func getThumbnailFrom(num:Int, path: String) -> UIImage? {
+
+    func getThumbnailFrom(path: String) -> UIImage? {
         let url = NSURL(fileURLWithPath: path)
+        if path==""{
+            return nil
+        }
         do {
-            
             let asset = AVURLAsset(url: url as URL , options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             imgGenerator.appliesPreferredTrackTransform = true
             let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
             let thumbnail = UIImage(cgImage: cgImage)
-            
+            appendingFlag=false
             return thumbnail
-            
         } catch let error {
-            
             print("*** Error generating thumbnail: \(error.localizedDescription)")
             return nil
-            
         }
-        
     }
-   
-    var appendingFlag:Bool = false
-    func setslowImgs(){
-        //        if slowVideoCnt == 0{
-        slowVideoCnt = allVideoCnt
-        slowImgs.removeAll()
-        slowPath.removeAll()
-        slowDate.removeAll()
-        slowDura.removeAll()
-        slowDuraorg.removeAll()
-        for i in 0...slowVideoCnt{
-            sleep(UInt32(0.1))
-            appendingFlag=true
-            //ここでslowDate,slowPath,slowDuraをappend
-            setVideoPathDate(num: i)//別スレッドが終わるのをチェックappendingFlag
-            while appendingFlag == true{
-                sleep(UInt32(0.1))
-            }
-            //ここでslowPathだけappend
-            if i != 0 && slowPath[slowPath.count-1].contains("delete") == true{
-                slowImgs.append(UIImage(named:"cloud.jpg")!)
-            }else{
-                slowImgs.append(getThumbnailFrom(num: i, path: slowPath[i])!)//ここでエラーが出るぞ
-            }
+ 
+    func showCurrent(){
+        print("*******",vidPath.count,vidCurrent)
+        if vidImg.count==0{
+            //imageFront.image = UIImage(named:epImg[0])
+            slowImage.image=UIImage(named:"vhittop")
+           return
         }
-        //       }else{
-        //            slowImgs.removeLast()
-        //            slowPath.removeLast()
-        //            slowDate.removeLast()
-        //            slowDura.removeLast()
-        //            appendingFlag=true
-        //            setVideoPathDate(num: slowVideoCnt)
-        //            while appendingFlag == true{
-        //                sleep(UInt32(0.1))
-        //            }
-        //             slowImgs.append(getThumbnailFrom(num: slowVideoCnt, path: slowPath[slowVideoCnt])!)
-        //        }
-        if slowImgs.count > 1{
-             for i in (1..<slowImgs.count).reversed(){
-                if slowPath[i].contains("delete") == true{
-                    slowImgs.remove(at: i)
-                    slowPath.remove(at: i)
-                    slowDate.remove(at: i)
-                    slowDura.remove(at: i)
-                    slowDuraorg.remove(at: i)
+        slowImage.image = vidImg[vidCurrent]
+        videoDate.text = vidDate[vidCurrent]
+        freecntLabel.text = "\(freeCounter)"
+    }
+    func camera_alert(){
+        if PHPhotoLibrary.authorizationStatus() != .authorized {
+            PHPhotoLibrary.requestAuthorization { status in
+                if status == .authorized {
+                    // フォトライブラリに写真を保存するなど、実施したいことをここに書く
+                } else if status == .denied {
+//                    let title: String = "Failed to save image"
+//                    let message: String = "Allow this app to access Photos."
+//                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//                    let settingsAction = UIAlertAction(title: "Settings", style: .default, handler: { (_) -> Void in
+//                        guard let settingsURL = URL(string: UIApplication.UIApplicationOpenSettingsURLString ) else {
+//                            return
+//                        }
+//                        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+//                    })
+//                    let closeAction: UIAlertAction = UIAlertAction(title: "Close", style: .cancel, handler: nil)
+//                    alert.addAction(settingsAction)
+//                    alert.addAction(closeAction)
+//                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        } else {
+            // フォトライブラリに写真を保存するなど、実施したいことをここに書く
+        }
+    }
+    func findVideos() {
+          // Documents ディレクトリの URL
+          let documentDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+          do {
+              // Documents ディレクトリ配下のファイル一覧を取得する
+              let contentUrls = try FileManager.default.contentsOfDirectory(at: documentDirectoryURL, includingPropertiesForKeys: nil)
+              for contentUrl in contentUrls {
+                  // 拡張子で判定する
+                  if contentUrl.pathExtension == "MOV" {
+                    print(contentUrl.absoluteString)
+                      // mp4 ファイルならフォトライブラリに書き出す
+
+                  }
+              }
+          }
+          catch {
+              print("ファイル一覧取得エラー")
+          }
+      }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        // Do any additional setup after loading the view, typically from a nib.
+        //dispDoc()//ドキュメントにあるファイルをprint
+        boxHeight=view.bounds.height*180/500
+        vhit_vog=true
+        mailWidth=240*10
+        mailHeight=240*10*boxHeight/view.bounds.width
+        stopButton.isHidden = true
+        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: 120, height: 45)
+        cameraButton.backgroundColor = UIColor.gray
+        cameraButton.layer.masksToBounds = true
+        cameraButton.setTitle("Camera", for: .normal)
+        cameraButton.layer.cornerRadius = 10
+        cameraButton.layer.position = CGPoint(x: self.view.bounds.width/2, y:self.view.bounds.height - 90)
+        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
+        vhitButton.backgroundColor = UIColor.gray
+        vhitButton.layer.masksToBounds = true
+        vhitButton.setTitle("vHIT", for: .normal)
+        vhitButton.layer.cornerRadius = 10
+        vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
+        vogButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
+        vogButton.backgroundColor = UIColor.gray
+        vogButton.layer.masksToBounds = true
+        vogButton.setTitle("VOG", for: .normal)
+        vogButton.layer.cornerRadius = 10
+        vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
+        setArrow()//vhit <-> vog
+//        //self.vogButton.addTarget(self, action: #selector(self.onClickvogButton(sender:)), for: .touchUpInside)
+//        //self.vhitButton.addTarget(self, action: #selector(self.onClickvhitButton(sender:)), for: .touchUpInside)
+//        self.view.addSubview(vhitButton)
+//        self.view.addSubview(vogButton)
+        getUserDefaults()
+        freeCounter += 1
+        camera_alert()
+        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+ 
+        dispWakus()
+//        print("******files in doc:",getFsindoc())
+//        print("******getVideofns:",getVideofns())
+//        findVideos()
+        setArrays()
+ //       delGyrocsv()//videoPath.txtにないvideoのgyro.csvを削除
+        vidCurrent=vidPath.count-1//ない場合は -1
+        showCurrent()
+        makeBoxies()//three boxies of gyro vHIT vog
+        showBoxies(f: false)//vhit_vogに応じてviewを表示
+    }
+    func setArrow(){
+        if vhit_vog==true{
+            arrowImage.frame = CGRect(x:50-10,y:view.bounds.height-135,width:20,height:20)
+        }else{
+            arrowImage.frame = CGRect(x:view.bounds.width-50-10,y:view.bounds.height-135,width:20,height:20)
+        }
+    }
+//    func delGyrocsv(){
+//        //vidDate(vidPathの作成日時分秒)と対応していない-gyro.csvファイルがあれば削除する
+//        let files=getFsindoc().components(separatedBy: ",")
+//        for i in 0..<files.count{
+//            var isF:Bool=false
+//            if files[i].contains("-gyro.csv"){
+//                let str=files[i].components(separatedBy: "-gyro")
+//                for j in 0..<vidDate.count{
+//                    if vidDate[j].contains(str[0]){
+//                        isF=true
+//                    }
+//                }
+//                if isF==true {
+//                    //print("exist",files[i])
+//                }else{
+//                    //print("does'nt exist",files[i])
+//                    if removeFile(delFile: files[i])==true{
+//                        print("remove completed:",files[i])
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    func addPath(path:String) {//初めてならpathを加え、でなければ","+pathを加える
+//        //let filename="videoPath.txt"
+//        return
+//        var text = getVideofns()//videoPathtxt()
+//        if !text.contains("vHIT96da"){//初めてならpathを加えるだけ
+//            text = path
+//        }else{//","とpathを加える
+//            text += "," + path
+//        }
+//        if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
+//
+//            let path_file_name = dir.appendingPathComponent( videoPathtext )
+//
+//            do {
+//
+//                try text.write( to: path_file_name, atomically: false, encoding: String.Encoding.utf8 )
+//
+//            } catch {
+//                print("videoPath.txt write err")//エラー処理
+//            }
+//        }
+//    }
+/*
+     //vidDate(vidPathの作成日時分秒)と対応していない-gyro.csvファイルがあれば削除する
+        let files=getFsindoc().components(separatedBy: ",")
+        for i in 0..<files.count{
+            var isF:Bool=false
+            if files[i].contains("-gyro.csv"){
+                let str=files[i].components(separatedBy: "-gyro")
+                for j in 0..<vidDate.count{
+                    if vidDate[j].contains(str[0]){
+                        isF=true
+                    }
+                }
+                if isF==true {
+                    //print("exist",files[i])
+                }else{
+                    //print("does'nt exist",files[i])
+                    if removeFile(delFile: files[i])==true{
+                        print("remove completed:",files[i])
+                    }
                 }
             }
         }
-        for i in 1..<slowImgs.count{
-            let str = slowDate[i].components(separatedBy: "(")
-            let st1 = str[0] + "(\(i))"
-            slowDate[i] = st1
-        }
-        slowVideoCnt = slowImgs.count-1
-        if slowVideoCurrent > slowVideoCnt{
-            slowVideoCurrent = slowVideoCnt
-        }
-    }
-    
-    func showCurrent(){
-//        print(slowVideoCnt,slowVideoCurrent)
-        slowImage.image = slowImgs[slowVideoCurrent]
-        videoDate.text = slowDate[slowVideoCurrent]
-        freecntLabel.text = "\(freeCounter)"
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
-        
-        // Do any additional setup after loading the view, typically from a nib.
-        stopButton.isHidden = true
-         getUserDefaults()
-        //let videoWidth = 720.0
-        //ratioW = 720.0/Double(self.view.bounds.width)
-        freeCounter += 1
-        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
- //       print("***viewDidload")
-        allVideoCnt = getslowVideoNum()//cloud上のビデオも含めた数,この変化を見る
-        dispWakus()
-        setslowImgs()//実機上のslowVideoCntを得て、slowImgsアレイにサムネールを登録
-        slowVideoCurrent = slowVideoCnt//現在表示の番号。アルバムがゼロならsample.MOVとなる
-        showCurrent()
-    }
+     */
 
+    
+    func removeFile(delFile:String)->Bool{
+        if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
+            
+            let path_file_name = dir.appendingPathComponent( delFile )
+            let fileManager = FileManager.default
+            
+            do {
+                try fileManager.removeItem(at: path_file_name)
+            } catch {
+                print("del file error")//エラー処理
+                return false
+            }
+            print("well done")
+            return true
+        }
+        return false
+    }
+    //panGestureのendedとunwind(record)の２箇所で実行
+//    let str=Controller.filePath!.components(separatedBy: ".MOV")
+//    let filename=str[0] + "-gyro.csv"
+//    print("gyroPath:",filename)
+//    saveGyro(pathGyro:filename)/
+    func saveGyro(path:String) {//gyroData(GFloat)を100倍してcsvとして保存
+        let str=path.components(separatedBy: ".MOV")
+        let gyroPath=str[0] + "-gyro.csv"
+        var text:String=""
+        for i in 0..<gyroData.count - 2{
+            text += String(Int(gyroData[i]*100.0)) + ","
+            //print(Int(gyroData[i]*100))
+        }
+        text += String(gyroDelta) + ","//gyroData.count-2=gyroDelta
+        print("save_gyroDelta:",String(gyroDelta))
+        text += "0"//gyroData.count-1=0
+        //Gyro(CGFloat配列）からtext(csv)を作り書き込む
+        
+        if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
+            
+            let path_file_name = dir.appendingPathComponent( gyroPath )
+            
+            do {
+                
+                try text.write( to: path_file_name, atomically: false, encoding: String.Encoding.utf8 )
+                
+            } catch {
+                print("gyroData.txt write err")//エラー処理
+            }
+        }
+    }
+    //calcVHITで実行、その後setvHITgyro5()
+    func readGyro(path:String){//gyroDataにデータを戻す
+        //let text:String="test"
+        let str=path.components(separatedBy: ".MOV")
+        let gyroPath=str[0] + "-gyro.csv"
+        print("gyropath:",gyroPath)
+        if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
+            
+            let path_file_name = dir.appendingPathComponent( gyroPath )
+            
+            do {
+                
+                let text = try String( contentsOf: path_file_name, encoding: String.Encoding.utf8 )
+                gyroData.removeAll()
+                let str=text.components(separatedBy: ",")
+                for i in 0..<str.count-2{
+                    gyroData.append(CGFloat(Double(str[i])!/100.0))
+                //    print(gyroData5.last)
+                }
+                gyroDelta=Int(str[str.count-2])!//gyroData[gyroData.count-2]/100.0)
+                let tt2=Int(str[str.count-1])!//gyroData[gyroData.count-3]/100.0)
+                //let tt1=Int(gyroData[gyroData.count-1]/100.0)
+                print("read_gyroDelta:",gyroDelta,tt2)
+                if(gyroDelta>200){
+                    gyroDelta=200
+                }
+                
+            } catch {
+                print("readGyro read error")//エラー処理
+                return
+            }
+            
+            //gyro(CGFloat配列)にtext(csv)から書き込む
+        }
+    }
+//    func videoPathtxt()->String{//
+// //       let filename="videoPath.txt"
+//        if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
+//
+//            let path_file_name = dir.appendingPathComponent( videoPathtext )
+//
+//            do {
+//
+//                let text = try String( contentsOf: path_file_name, encoding: String.Encoding.utf8 )
+//                return text
+//
+//            } catch {
+//                print("videoPath.txt read error")//エラー処理
+//            }
+//        }
+//        return ""
+//    }
+    func getFsindoc()->String{
+        let documentDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        do {
+            let contentUrls = try FileManager.default.contentsOfDirectory(at: documentDirectoryURL, includingPropertiesForKeys: nil)
+            let files = contentUrls.map{$0.lastPathComponent}
+            var str:String=""
+            if files.count==0{
+                return("")
+            }
+            for i in 0..<files.count{
+                str += files[i] + ","
+            }
+            let str2=str.dropLast()
+            return String(str2)
+        } catch {
+            return ""//print(error)
+        }
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -1512,30 +2014,43 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if let vc = segue.destination as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             //      遷移先のParametersViewControllerで宣言している値に代入して渡す
-            ParametersViewController.flatsumLimit = flatsumLimit
+            ParametersViewController.widthRange = widthRange
             ParametersViewController.waveWidth = waveWidth
-            ParametersViewController.wavePeak = wavePeak
-            ParametersViewController.updownPgap = updownPgap
-             ParametersViewController.rectEye = rectEye
-            ParametersViewController.rectFace = rectFace
-            ParametersViewController.rectOuter = rectOuter
+            ParametersViewController.vhit_vog = vhit_vog
+//            ParametersViewController.updownPgap = updownPgap
+ //           ParametersViewController.rectEye = rectEye
+//            ParametersViewController.rectFace = rectFace
             ParametersViewController.eyeBorder = eyeBorder
-            ParametersViewController.faceBorder = faceBorder
-            ParametersViewController.outerBorder = outerBorder
-            ParametersViewController.eyeRatio = eyeRatio
-            ParametersViewController.outerRatio = outerRatio
+            ParametersViewController.gyroDelta = gyroDelta
+            if vhit_vog == true{
+                ParametersViewController.ratio1 = eyeRatio
+                ParametersViewController.ratio2 = gyroRatio
+            }else{
+                ParametersViewController.ratio1 = posRatio
+                ParametersViewController.ratio2 = veloRatio
+            }
+            ParametersViewController.faceF=faceF
             #if DEBUG
             print("prepare para")
             #endif
         }else if let vc = segue.destination as? PlayVideoViewController{
             let Controller:PlayVideoViewController = vc
-            
-            Controller.videoPath = slowPath[slowVideoCurrent]
-            //           Controller.videoDuration = slowDura[slowVideoCurrent]
-            Controller.currPos = 0
-            Controller.videoDateNum = slowDate[slowVideoCurrent]
-  //          Controller.videoPath = slowvideoPath
-       //     Controller.videoDate = videoDate.text!
+            if vidCurrent == -1{
+                Controller.videoPath = ""
+                 Controller.currPos = 0
+                 Controller.videoDateNum = ""
+            }else{
+                Controller.videoPath = vidPath[vidCurrent]
+                Controller.currPos = 0
+                Controller.videoDateNum = vidDate[vidCurrent]
+            }
+        }else if let vc = segue.destination as? ImagePickerViewController{
+            let Controller:ImagePickerViewController = vc
+            Controller.tateyokoRatio=mailHeight/mailWidth
+            Controller.vhit_vog=vhit_vog
+        }else if let vc = segue.destination as? HelpjViewController{
+            let Controller:HelpjViewController = vc
+            Controller.vhit_vog = vhit_vog
         }else{
             #if DEBUG
             print("prepare list")
@@ -1543,69 +2058,133 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     func removeBoxies(){
-        boxView?.isHidden = true
+        gyroboxView?.isHidden = true
         vHITboxView?.isHidden = true
         vHITlineView?.isHidden = true //removeFromSuperview()
-        lineView?.isHidden = true //removeFromSuperview()
+        gyrolineView?.isHidden = true //removeFromSuperview()
     }
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
         //     if tempCalcflag == false{
         if let vc = segue.source as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             // segueから遷移先のResultViewControllerを取得する
-            flatsumLimit = ParametersViewController.flatsumLimit
-            updownPgap = ParametersViewController.updownPgap
+            widthRange = ParametersViewController.widthRange
             waveWidth = ParametersViewController.waveWidth
-            wavePeak = ParametersViewController.wavePeak
-            rectEye = ParametersViewController.rectEye
-            rectFace = ParametersViewController.rectFace
-            rectOuter = ParametersViewController.rectOuter
             eyeBorder = ParametersViewController.eyeBorder
-            faceBorder = ParametersViewController.faceBorder
-            outerBorder = ParametersViewController.outerBorder
-            eyeRatio = ParametersViewController.eyeRatio
-            outerRatio = ParametersViewController.outerRatio
-            setUserDefaults()
-            if vHITouter.count > 400{//データがありそうな時は表示
-                drawBoxies()
-                calcDrawVHIT()
+            gyroDelta = ParametersViewController.gyroDelta
+            if vhit_vog == true{
+                eyeRatio=ParametersViewController.ratio1
+                gyroRatio=ParametersViewController.ratio2
             }else{
-                removeBoxies()
+                posRatio=ParametersViewController.ratio1
+                veloRatio=ParametersViewController.ratio2
             }
+            faceF=ParametersViewController.faceF!
+            setUserDefaults()
+            //print("gyro",gyroDelta)
+            setvHITgyro5()
+            //print(gyroDelta,startFrame)
+//            if vHITface5.count > 400{//データがありそうな時は表示
+//                makeBoxies()
+//                calcDrawVHIT()
+//            }else{
+//                removeBoxies()
+//            }
             dispWakus()
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
         }else if let vc = segue.source as? PlayVideoViewController{
             let Controller:PlayVideoViewController = vc
-            startPoint = Controller.currPos*24
-            slowImage.image = Controller.playImage.image
-            slowImgs[slowVideoCurrent]=slowImage.image!
-            let secs = slowDuraorg[slowVideoCurrent].components(separatedBy: "s")
-            let sec:Double = Double(secs[0])!
-            let secd:Double = sec - Double(startPoint)/240.0
-            let secd2:Double = Double(Int(secd*10.0))/10.0
-            slowDura[slowVideoCurrent]="\(secd2)" + "s"
-            if vHITboxView?.isHidden == false{
-                vHITboxView?.isHidden = true
-                boxView?.isHidden = true
-                vHITlineView?.isHidden = true
-                lineView?.isHidden = true
+            if !(vidCurrent == -1){
+                startFrame = Controller.currPos*24
+                slowImage.image = Controller.playImage.image
+                vidImg[vidCurrent]=slowImage.image!
+                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
+                let sec:Double = Double(secs[0])!
+                let secd:Double = sec - Double(startPoint)/240.0
+                let secd2:Double = Double(Int(secd*10.0))/10.0
+                vidDura[vidCurrent]="\(secd2)" + "s"
+                if vHITboxView?.isHidden == false{
+                    vHITboxView?.isHidden = true
+                    gyroboxView?.isHidden = true
+                    vHITlineView?.isHidden = true
+                    gyrolineView?.isHidden = true
+                }
             }
-            
-            // #if DEBUG
-            //print("tatsuaki-unwind from playvideo",startPoint)
-            // #endif
-
+        }else if let vc = segue.source as? RecordViewController{
+            let Controller:RecordViewController = vc
+            //Controller.motionManager.stopDeviceMotionUpdates()
+            //print("recorded done")
+            if Controller.timer?.isValid == true {
+                Controller.timer.invalidate()
+            }
+            if Controller.recordedFlag==true{
+                //addPath(path:Controller.filePath!)
+                //print("filepath:",Controller.filePath)
+                //appendvideoImg()
+                //addPath(path: vidPath.last!)
+                addArray(path:Controller.filePath!)
+                vidCurrent=vidPath.count-1
+//                print(readPaths())
+                recstart = Controller.recstart
+//                print("gyro-count: \(Controller.gyro.count)")
+                var d:Double=0
+                gyroTime.removeAll()
+                gyro.removeAll()
+                gyro5.removeAll()
+                gyroData.removeAll()
+                //vHITgyro5.removeAll()
+                var tGyro = Array<CGFloat>()
+                tGyro.removeAll()
+                showCurrent()
+                showBoxies(f: false)
+                //showvHIT(f: false)
+                //NSTimeIntervalSince1970
+                //CFAbsoluteTimeGetCurrent().to
+                //print(fps,createtime!)
+                
+                //print("delay",delay,Controller.gyro[0]-createtime)
+                for i in 0...Controller.gyro.count/2-2{//1.5secで0.01遅れる。SE,8のどちらも
+                //print(String(format:"%.2f %.2f", Controller.gyro[i*2],Controller.gyro[i*2+1]))
+                    gyroTime.append(Controller.gyro[i*2]-recstart)//time
+                    d=Kalman3(measurement:Controller.gyro[i*2+1]*10)//gyro_data
+                    //d=Controller.gyro[i*2+1]*10
+                    gyro.append(-d)
+                    gyro5.append(-d)
+                }
+                //gyroは10msごとに拾ってある似合わせる
+                //これをvideoのフレーム数似合わせる
+//                print(getFps(path: Controller.filePath!))
+                vidFps=getFps(path:Controller.filePath!)
+                let framecount=Int(Float(gyro.count)*vidFps/100.0)
+                for i in 0...framecount+10{
+                    let gn=Double(i)/Double(vidFps)//iフレーム目の秒数
+                    var getj:Int=0
+                    for j in 0...gyro.count-1{
+                        if gyroTime[j] >= gn{//secondの値が入っている。
+                            getj=j//越えるところを見つける
+                            break
+                        }
+                    }
+                    gyroData.append(Kalman2(measurement:CGFloat(gyro[getj])))
+                }
+                for i in 0...gyroData.count-1{//tempデータに入れる
+                    tGyro.append(gyroData[i])
+                }
+                for i in 4...gyroData.count-5{//平均加算hightpass
+                    gyroData[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
+                }
+                //let str=Controller.filePath!.components(separatedBy: ".MOV")
+                //let filename=str[0] + "-gyro.csv"
+                //print("gyroPath:",filename)
+                saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
+                //VOGの時もgyrodataを保存する。（不必要だが、考えるべきことが減りそうなので）
+            }
         }else{
             #if DEBUG
             print("tatsuaki-unwind from list")
             #endif
-        }
-        let tempNum = getslowVideoNum()
-        if allVideoCnt != tempNum{
-            allVideoCnt = tempNum
-            setslowImgs()
         }
     }
     func checkrect(po:CGPoint, re:CGRect) ->Bool
@@ -1620,13 +2199,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
    
     func checkWaks(po:CGPoint) -> Int
     {
-        if checkrect(po: po, re: rectEye){
+        if checkrect(po: po, re: rectEye)==true{//rectEyeの下なら1
             return 0
-        }else if checkrect(po:po,re:rectFace){
+        }else if checkrect(po:po,re:rectFace)==true{//rectFaceの下なら2
             return 1
-        }else if checkrect(po:po,re:rectOuter){
-            return 2
-        }
+         }
         return -1
     }
     
@@ -1693,7 +2270,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let dx:CGFloat = movePo.x
         let dy:CGFloat = movePo.y
         //ここに関しては、移動先が範囲外の場合移動しない、という処理がなされているが、
-        //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
+    //移動先を計算して範囲外になった場合には異動先を境界ギリギリに設定する、というアルゴリズムにしないとおかしな動きになる。
         //あと、このアルゴリズムだと各rectが小さくなりすぎた場合に不具合が出る。
         //       if stPo.x > stRect.origin.x && stPo.x < (stRect.origin.x + stRect.size.width) && stPo.y > stRect.origin.y && stPo.y < (stRect.origin.y + stRect.size.height){
         r.origin.x = stRect.origin.x + dx;
@@ -1713,17 +2290,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return r
     }
+    
     var leftrightFlag:Bool = false
     var rectType:Int = 0//0:eye 1:face 2:outer -1:何も選択されていない
     var stPo:CGPoint = CGPoint(x:0,y:0)//stRect.origin tapした位置
     var stRect:CGRect = CGRect(x:0,y:0,width:0,height:0)//tapしたrectのtapした時のrect
     var changePo:CGPoint = CGPoint(x:0,y:0)
     var endPo:CGPoint = CGPoint(x:0,y:0)
-    var slowVideoCnt:Int = 0
-
     var lastslowVideo:Int = -2
     var lastwavePoint:Int = -2
     var lastmoveX:Int = -2
+    var lastmoveXgyro:Int = -2//vHIT用
     @IBAction func panGesture(_ sender: UIPanGestureRecognizer) {
         if calcFlag == true{
             return
@@ -1732,59 +2309,92 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let pos = sender.location(in: self.view)
         if sender.state == .began {
             stPo = sender.location(in: self.view)
-            if vHITboxView?.isHidden == false{//結果が表示されていない時
-            }else{
+            if vHITboxView?.isHidden == true && vogboxView?.isHidden  == true{
                 rectType = checkWaks(po: pos)//枠設定かどうか。
                 if rectType == 0 {
                     stRect = rectEye//tapした時の枠をstRectとする
-                } else if rectType == 1 && faceBorder != 0{
+                } else if rectType == 1 && eyeBorder != 0{
                     stRect = rectFace
-                } else if rectType == 2 && outerBorder != 0{
-                    stRect = rectOuter
                 }
             }
         } else if sender.state == .changed {
-            if vHITboxView?.isHidden == false{//結果が表示されている時
+            if vhit_vog == true && vHITboxView?.isHidden == false{//vhit
                 let h=self.view.bounds.height
                 //let hI=Int(h)
                 //let posyI=Int(pos.y)
-                if pos.y > h/2{
-                    var dd=Int(10)
-                    if pos.y < h/2 + h/6{//dd < 10{
-                        dd = 2
-                    }else if pos.y > h/2 + h*2/6{
-                        dd = 20
-                    }
-                    if Int(move.x) > lastmoveX + dd{
-                        waveCurrpoint -= dd*4
-                        lastmoveX = Int(move.x)
-                    }else if Int(move.x) < lastmoveX - dd{
-                        waveCurrpoint += dd*4
-                        lastmoveX = Int(move.x)
-                    }
-                    //print("all",dd,Int(move.x),lastmoveX,waveCurrpoint)// Int(move.x/10.0),movex)
-                    if waveCurrpoint<0{
-                        waveCurrpoint = 0
-                    }else if waveCurrpoint > vHITouter.count - Int(self.view.bounds.width){
-                        waveCurrpoint = vHITouter.count - Int(self.view.bounds.width)
-                    }
-                    if waveCurrpoint != lastwavePoint{
-                        drawOnewave(startcount: waveCurrpoint)
-                        lastwavePoint = waveCurrpoint
-                        if waveTuple.count>0{
-                            checksetPos(pos: lastwavePoint + Int(self.view.bounds.width/2), mode:1)
-                            drawVHITwaves()
+                if vhit_vog == true{//vhit
+                    if pos.y > h/2{//下半分の時
+                        var dd=Int(10)
+                        if pos.y < h/2 + h/6{//dd < 10{
+                            dd = 2
+                        }else if pos.y > h/2 + h*2/6{
+                            dd = 20
                         }
+                        if Int(move.x) > lastmoveX + dd{
+                            waveCurrpoint -= dd*4
+                            lastmoveX = Int(move.x)
+                        }else if Int(move.x) < lastmoveX - dd{
+                            waveCurrpoint += dd*4
+                            lastmoveX = Int(move.x)
+                        }
+                        //print("all",dd,Int(move.x),lastmoveX,waveCurrpoint)// Int(move.x/10.0),movex)
+                        if waveCurrpoint<0{
+                            waveCurrpoint = 0
+                        }else if waveCurrpoint > vHITface5.count - Int(self.view.bounds.width){
+                            waveCurrpoint = vHITface5.count - Int(self.view.bounds.width)
+                        }
+                        if waveCurrpoint != lastwavePoint{
+                            drawOnewave(startcount: waveCurrpoint)
+                            lastwavePoint = waveCurrpoint
+                            if waveTuple.count>0{
+                                checksetPos(pos: lastwavePoint + Int(self.view.bounds.width/2), mode:1)
+                                drawVHITwaves()
+                            }
+                        }
+                    }else{//上半分のとき
+                        let dd:Int = 10
+                        if Int(move.x) > lastmoveXgyro + dd{
+                            gyroDelta += 4
+                            
+                        }else if Int(move.x) < lastmoveXgyro - dd{
+                            gyroDelta -= 4
+                        }else{
+                            return
+                        }
+                        lastmoveXgyro=Int(move.x)
+                        if gyroDelta>200{
+                            gyroDelta=200
+                        }else if gyroDelta<0{
+                            gyroDelta=0
+                        }
+                        setvHITgyro5()
+                        update_gyrodelta()
                     }
                 }
-            }else{
+            }else if vhit_vog == false && vogboxView?.isHidden == false{//vog
+                let dd:Int=5
+                if Int(move.x) > lastmoveX + dd{
+                    waveCurrpoint -= dd*40
+                    lastmoveX = Int(move.x)
+                }else if Int(move.x) < lastmoveX - dd{
+                    waveCurrpoint += dd*40
+                    lastmoveX = Int(move.x)
+                }
+                if waveCurrpoint<0{
+                    waveCurrpoint = 0
+                }else if waveCurrpoint > vogPos5.count - 240*10{//eyeVelo.count
+                    waveCurrpoint = vogPos5.count - 240*10
+                }
+                if waveCurrpoint != lastwavePoint{
+                    drawVogline(startcount: waveCurrpoint)
+                    lastwavePoint = waveCurrpoint
+                }
+            }else{//枠
                 if rectType > -1 {//枠の設定の場合
                     if rectType == 0 {
-                        rectEye = setRectparams(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:rectOuter.origin.y - 20)
-                    } else if rectType == 1 && faceBorder != 0{
+                        rectEye = setFaceRectparam/*setRectparams*/(rect:rectEye,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:self.view.bounds.height - 20)
+                    } else if rectType == 1 && eyeBorder != 0{
                         rectFace = setFaceRectparam(rect:rectFace,stRect: stRect,stPo: stPo,movePo: move,uppo:30,lowpo:self.view.bounds.height - 20)
-                    } else if rectType == 2 && outerBorder != 0{
-                        rectOuter = setRectparams(rect:rectOuter,stRect: stRect,stPo:stPo,movePo: move,uppo:rectEye.origin.y+rectEye.height + 20,lowpo:self.view.bounds.height - 20)
                     }
                     dispWakus()
                 }else{
@@ -1800,10 +2410,33 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                     }
                     drawVHITwaves()
+//                    var str = vidDate[vidCurrent].components(separatedBy: " (")
+//                     str[0] += "-gyro.csv"
+                    saveGyro(path: vidPath[vidCurrent])//末尾のgyroDeltaを書き換える
                 }
             }
         }
     }
+    /*
+     func drawVogline(startcount:Int){
+         if gyrolineView != nil{
+             gyrolineView?.removeFromSuperview()
+         }
+         var startcnt=startcount
+         if startcount>vogPos5.count-240*10{
+             startcnt=vogPos5.count-240*10
+         }
+         if startcnt<0 {
+             startcnt=0
+         }
+         let dImage = drawVogwaves(timeflag:true,num:startcnt,width:mailWidth,height:mailHeight)
+         let drawImage = dImage.resize(size: CGSize(width:view.bounds.width, height:boxHeight))
+         gyrolineView = UIImageView(image: drawImage)
+         gyrolineView?.center =  CGPoint(x:view.bounds.width/2,y:box1ys)
+         // 画面に表示する
+         view.addSubview(gyrolineView!)
+     }
+*/
     //vHITeyeOrgを表示するかも
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
         if calcFlag == true || vHITboxView?.isHidden == true || waveTuple.count == 0{
@@ -1819,12 +2452,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         waveTuple[temp].2 = 1
                     }
                 }
-            }
-        }else{
-            if dispOrgflag == true {
-                dispOrgflag = false
-            }else{
-                dispOrgflag = true
             }
         }
         drawVHITwaves()
@@ -1852,70 +2479,64 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return return_n
     }
-    
-    func updownp(n:Int,nami:Int) -> Int {
-        //yなので、増えると下方向にずれる
- //       if Int(vHITouter[n]) != wavePeak/6 {
- //           return -1
- //       }
-        let s = updownPgap //2 よりも 4　で立ち上がりが揃う　5にすると揃うが合致数が減少する
-        if Get5(num: n) - s > Get5(num: n + 1) &&//3個続けて減ったら
-            Get5(num: n + 1) - s > Get5(num: n + 2) &&
-            Get5(num: n + 2) - s > Get5(num: n + 3) &&
-            Get5(num: n +     nami / 2) + s < Get5(num: n + 1 + nami / 2) &&//半波後が3個続けて増えたら
-            Get5(num: n + 1 + nami / 2) + s < Get5(num: n + 2 + nami / 2) &&
-            Get5(num: n + 2 + nami / 2) + s < Get5(num: n + 3 + nami / 2)
-        {
-            //           print("\(n)  up")
-            return 0
+
+    func g5(st:Int)->CGFloat{
+        if st>3 && st<vHITgyro5.count-2{
+            return(vHITgyro5[st-2]+vHITgyro5[st-1]+vHITgyro5[st]+vHITgyro5[st+1]+vHITgyro5[st+2])*2.0
         }
-        else if  Get5(num: n) + s < Get5(num: n + 1) &&//3個続けて増えたら
-            Get5(num: n + 1) + s < Get5(num: n + 2) &&
-            Get5(num: n + 2) + s < Get5(num: n + 3) &&
-            Get5(num: n +     nami / 2) - s > Get5(num: n + 1 + nami / 2) &&//半波後が3個続けて減ったら
-            Get5(num: n + 1 + nami / 2) - s > Get5(num: n + 2 + nami / 2) &&
-            Get5(num: n + 2 + nami / 2) - s > Get5(num: n + 3 + nami / 2)
-        {
-            //         print("\(n) down")
+        return 0
+    }
+    func upDownp(i:Int)->Int{
+        
+        let naf:Int=waveWidth*240/1000
+        let raf:Int=Int(Float(widthRange)*240.0/1000.0)
+        let sl:CGFloat=10//slope:傾き
+        let g1=g5(st:i+1)-g5(st:i)
+        let g2=g5(st:i+2)-g5(st:i+1)
+        let g3=g5(st:i+3)-g5(st:i+2)
+        let ga=g5(st:i+naf-raf+1)-g5(st:i+naf-raf)
+        let gb=g5(st:i+naf-raf+2)-g5(st:i+naf-raf+1)
+        let gc=g5(st:i+naf+raf+1)-g5(st:i+naf+raf)
+        let gd=g5(st:i+naf+raf+2)-g5(st:i+naf+raf+1)
+        if g1>4 && g2>g1+1 && g3>g2+1 && ga>sl && gb>sl && gc < -sl && gd < -sl  {
             return 1
+        }else if g1 < -4 && g2<g1+1 && g3<g2+1 && ga < -sl && gb < -sl && gc>sl && gd>sl{
+            return 0
         }
         return -1
     }
-    
-    func Get5(num:Int) -> Int {
-        var sum:Int = 0
-        for i  in 0..<5 {
-            sum += Int(vHITouter[num + i])
+
+    func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波
+        let flatwidth:Int = 12//12frame-50ms
+        let t = upDownp(i: number + flatwidth)
+//        let t = Getupdownp(num: number,flatwidth:flatwidth)
+  //      print("getupdownp:",t)
+        if t != -1 {
+            let ws = number// - flatwidth + 12;//波表示開始位置 wavestartpoint
+            waveTuple.append((t,ws,1,0))//L/R,frameNumber,disp,current)
+            let num=waveTuple.count-1
+            for k1 in ws..<ws + 120{
+                eyeWs[num][k1 - ws] = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)
+            }
+            for k2 in ws..<ws + 120{
+                gyroWs[num][k2 - ws] = Int(vHITgyro5[k2]*CGFloat(gyroRatio)/100.0)
+            }//ここでエラーが出るようだ？
         }
-        return sum
+        return t
     }
-    
-    func  Getupdownp(num:Int,flatwidth:Int) -> Int {//} n, int width, int sumlimit, int nami, int level) -> Int {
-        //let flatwidth:Int = 10
-        let t = Get5(num: num + flatwidth + waveWidth / 2)/5//240fps 30frame=30*1000ms/240(=125ms)
-        if t < wavePeak && t > -wavePeak {//1波の半分先がwavePeakを超えない
-            return -1
-        }
-        var sum:Int = 0
-        for i in 0..<flatwidth{
-            sum += Int(vHITouter[num+i])
-        }
-        if sum > flatsumLimit || sum < -flatsumLimit {//0からのズレがlimitを超える
-            return -1
-        }
-        return updownp(n: num + flatwidth, nami: waveWidth)//0 (合致数10,13)　-4 すると立ち上がりが揃う(合致数10,13) -5 でさらに揃うが(合致数8,12)　-6では(合致数4,7):とあるサンプルでの（合致数右,左)
-    }
+
     func calcDrawVHIT(){
-          waveTuple.removeAll()
-         openCVstopFlag = true//計算中はvHITouterへの書き込みを止める。
-        let vHITcnt = self.vHITouter.count
+        waveTuple.removeAll()
+ //       print("calcdrawvhit*****")
+        openCVstopFlag = true//計算中はvHITfaceへの書き込みを止める。
+        let vHITcnt = vHITeye5.count
         if vHITcnt < 400 {
             openCVstopFlag = false
-           return
+            return
         }
-         var skipCnt = 0
-        for vcnt in 50..<(vHITcnt - 130) {// flatwidth + 120 までを表示する。実在しないvHITouterをアクセスしないように！
-             if skipCnt > 0{
+        var skipCnt:Int = 0
+        for vcnt in 50..<(vHITcnt - 130) {// flatwidth + 120 までを表示する。実在しないvHITfaceをアクセスしないように！
+            if skipCnt > 0{
                 skipCnt -= 1
             }else if SetWave2wP(number:vcnt) > -1{
                 skipCnt = 30
@@ -1923,27 +2544,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         openCVstopFlag = false
         drawVHITwaves()
-    }
-    func SetWave2wP(number:Int) -> Int {//-1:波なし 0:上向き波？ 1:その反対向きの波
-        let flatwidth:Int = 10
-        let t = Getupdownp(num: number,flatwidth:flatwidth)
-        if t != -1 {
-            //          print("getupdownp")
-            let ws = number - flatwidth + 5;//波表示開始位置 wavestartpoint
-            waveTuple.append((t,ws,1,0))//L/R,frameNumber,disp,current)
-            let num=waveTuple.count-1
-            for k1 in ws..<ws + 120{
-                let iFil = Int(vHITeye[k1]*CGFloat(eyeRatio)/100.0)
-                let iOrg = Int(vHITeye5[k1]*CGFloat(eyeRatio)/100.0)//元波形を表示
-                eyeWs[num][k1-ws] = iOrg
-                eyefWs[num][k1-ws] = iFil
-            }
-            for k2 in ws..<ws + 120{
-                let i = Int(vHITouter[k2]*CGFloat(outerRatio)/100.0)
-                outWs[num][k2 - ws] = i
-            }//ここでエラーが出るようだ？
-        }
-        return t
     }
 }
 

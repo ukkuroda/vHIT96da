@@ -63,6 +63,116 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     *y_ret=0;
 }
 */
+/*
+- (IplImage *)createIplImageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    IplImage *iplimage = 0;
+    if (sampleBuffer) {
+        CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+        CVPixelBufferLockBaseAddress(imageBuffer, 0);
+
+        // get information of the image in the buffer
+        uint8_t *bufferBaseAddress = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
+        size_t bufferWidth = CVPixelBufferGetWidth(imageBuffer);
+        size_t bufferHeight = CVPixelBufferGetHeight(imageBuffer);
+
+        // create IplImage
+        if (bufferBaseAddress) {
+            iplimage = cvCreateImage(cvSize(bufferWidth, bufferHeight), IPL_DEPTH_8U, 4);
+            iplimage->imageData = (char*)bufferBaseAddress;
+        }
+
+        // release memory
+        CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    }
+    else{
+    }
+       // DLog(@"No sampleBuffer!!");
+
+    return iplimage;
+}
+// サンプルバッファのデータからCGImageRefを生成する
+- (UIImage *)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
+{
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    // ピクセルバッファのベースアドレスをロックする
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    // Get information of the image
+    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    // RGBの色空間
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    CGContextRef newContext = CGBitmapContextCreate(baseAddress,
+                                                    width,
+                                                    height,
+                                                    8,
+                                                    bytesPerRow,
+                                                    colorSpace,
+                                                    kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGImageRef cgImage = CGBitmapContextCreateImage(newContext);
+    CGContextRelease(newContext);
+    CGColorSpaceRelease(colorSpace);
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    UIImage *image = [UIImage imageWithCGImage:cgImage scale:1.0 orientation:UIImageOrientationRight];
+    CGImageRelease(cgImage);
+    return image;
+}*/
+-(void) getframes: (NSString *)fn x:(int *)x_ret{
+    int cnt=0;
+ //   char fname[300];
+ //   strcpy(fname,fn.UTF8String);//(fname,fn);
+    cv::VideoCapture cap;
+    cap.open(fn.UTF8String);
+//    //"/var/mobile/Media/DCIM/100APPLE/IMG_0357.MOV");
+    cv::Mat frame;
+    while(1){
+        cap>>frame;
+        cnt ++;
+        if(frame.empty()==true)break;
+    }
+    
+    *x_ret=cnt;
+}
+-(void) getframes: (NSString *)fn f:(int)fr x:(int *)x_ret{
+    int cnt=0;
+    cv::VideoCapture cap;
+    cap.open(fn.UTF8String);
+ //   double frameTime = 1000.0 * fr/120;//noFrame / frameRate;
+    //bool success =
+
+ //   cap.set(CV_CAP_PROP_POS_FRAMES,0);
+ //   cap.set(CV_CAP_PROP_POS_MSEC, double(100.0));//frameTime);
+
+//    int v_w=cap.get(CV_CAP_PROP_FRAME_WIDTH); //縦の大きさ
+//    int v_h=cap.get(CV_CAP_PROP_FRAME_HEIGHT); //横の大きさ
+//    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
+//    int fps=cap.get(CV_CAP_PROP_FPS);
+   // cap.set(CV_CAP_PROP_POS_MSEC , 1.0/fps);
+ //   char fname[300];
+ //   strcpy(fname,fn.UTF8String);//(fname,fn);
+//    //"/var/mobile/Media/DCIM/100APPLE/IMG_0357.MOV");
+    cv::Mat frame;
+    //VideoCaptureProperties(CV_CAP_PROP_POS_AVI_RATIO, 0);//Reset
+//
+  //      cap.set(CV_CAP_PROP_POS_AVI_RATIO,0);
+//    cap.set(CV_CAP_PROP_POS_FRAMES,cap.get(CV_CAP_PROP_POS_FRAMES));
+// cap.set(CV_CAP_PROP_POS_FRAMES,2);
+// cap.set(CV_CAP_PROP_POS_FRAMES,3);
+// cap.set(CV_CAP_PROP_POS_FRAMES,4);
+// cap.set(CV_CAP_PROP_POS_FRAMES,1);
+// //   cap.set(CV_CAP_PROP_POS_AVI_RATIO,0);
+    cap.set(CV_CAP_PROP_POS_FRAMES,fr);//ちゃんとfrに値が入っている
+    cap.set(CV_CAP_PROP_POS_MSEC , double(500.0));//これでもスタート位置を変更できません？
+    while(1){
+        cap>>frame;
+        cnt ++;
+        if(frame.empty()==true)break;
+    }
+    
+    *x_ret=cnt;
+}
 //eye w:10 h:5    face w:20 h:10    outer w:40 h:20 横縦が入れ替わる
 -(void) matching_eye:(UIImage *)new_img old:(UIImage *)old_img x:(int *)x_ret y:(int *)y_ret
 {
@@ -90,6 +200,7 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     *x_ret = max_pt.x;
     *y_ret = max_pt.y;
 }
+int iii;
 -(void) matching_fac:(UIImage *)new_img old:(UIImage *)old_img x:(int *)x_ret y:(int *)y_ret
 {
     
@@ -106,7 +217,9 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     oldr.height=new_mat.rows-40;
     
     nar_mat = cv::Mat(old_mat,oldr).clone();
-    
+    int io;
+    io=565;
+    iii=io;
     // テンプレートマッチング
     cv::matchTemplate(new_mat, nar_mat, r_mat, CV_TM_CCOEFF_NORMED);
     // 最大のスコアの場所を探す
@@ -132,7 +245,8 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     oldr.height=new_mat.rows-80;
     
     nar_mat = cv::Mat(old_mat,oldr).clone();
-    
+    int j;
+    j=iii;
     // テンプレートマッチング
     cv::matchTemplate(new_mat, nar_mat, r_mat, CV_TM_CCOEFF_NORMED);
     // 最大のスコアの場所を探す
@@ -142,21 +256,40 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     *x_ret = max_pt.x;
     *y_ret = max_pt.y;
 }
--(void) matching:(UIImage *)wide_img narrow:(UIImage *)narrow_img x:(int *)x_ret y:(int *)y_ret
+-(double) matching:(UIImage *)wide_img narrow:(UIImage *)narrow_img x:(int *)x_ret y:(int *)y_ret
 {
     cv::Mat wide_mat;
     cv::Mat narrow_mat;
     cv::Mat return_mat;
     UIImageToMat(wide_img, wide_mat);
     UIImageToMat(narrow_img, narrow_mat);
+    *x_ret = 0;
+    *y_ret = 0;
     // テンプレートマッチング
-    cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);
+    try
+    {
+        cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);
+       // ...
+    }
+    catch( cv::Exception& e )
+    {
+      //  const char* err_msg = e.what();
+       // ...
+        return -2.0;
+    }
+    
     // 最大のスコアの場所を探す
     cv::Point max_pt;
     double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-    *x_ret = max_pt.x;
-    *y_ret = max_pt.y;
+//    if(maxVal>0.7){//恐らく見つかったらここ
+        *x_ret = max_pt.x;
+        *y_ret = max_pt.y;
+//    }else{//瞬きではこちらだろう
+//        *x_ret = 0;
+//        *y_ret = 0;
+//    }
+      return maxVal;
 }
 
 -(void) matching2:(UIImage *)wide_img n1:(UIImage *)narrow1_img n2:(UIImage *)narrow2_img x:(int *)eX y:(int *)eY

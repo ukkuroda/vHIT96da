@@ -8,7 +8,6 @@
 import UIKit
 import AVFoundation
 
-
 class PlayVideoViewController: UIViewController {
     var videoPath:String = ""
     var videoDateNum:String = ""
@@ -57,6 +56,9 @@ class PlayVideoViewController: UIViewController {
     @IBAction func next10(_ sender: Any) {
         stopTimer1()
         currPos += 10
+        if currPos>240{
+            currPos=240
+        }
         if currPos>=slowFrames1.count{
             currPos=slowFrames1.count-1
         }
@@ -66,6 +68,9 @@ class PlayVideoViewController: UIViewController {
     @IBAction func next1(_ sender: Any) {
         stopTimer1()
         currPos += 1
+        if currPos>240{
+            currPos=240
+        }
         if currPos>=slowFrames1.count{
             currPos=slowFrames1.count-1
         }
@@ -90,26 +95,12 @@ class PlayVideoViewController: UIViewController {
         playImage.image=getFrame(n: currPos)
         showCurAll(num:currPos)
     }
- //   var videoDate:String = ""//無駄だった
- //   @IBOutlet weak var dateLabel: UILabel!
-    //   @IBOutlet weak var pathLabel: UILabel!
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//
-//        print("playDidload")
-//        slowFrames.removeAll()
-//        slowFrames1.removeAll()
-//        getVideoframes()
-//        videoDate.text = videoDateNum
-//        currPos=0
-//        //        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
-//
-//        while frameN<2{
-//            sleep(UInt32(0.1))
-//        }
-//     }
+
     @objc func updateNext(tm: Timer) {
         currPos += 1
+        if currPos>240{
+            currPos=240
+        }
         if currPos>slowFrames1.count-1{
             //currPos=slowFrames1.count - 1
             currPos=0
@@ -119,19 +110,8 @@ class PlayVideoViewController: UIViewController {
         if currPos == 0{
             stopTimer1()
         }
-        //       cntNum.text="\(currPos-1)"+"/"+"\(frameN)"
     }
-
-//    
-//    @objc func updateNext(tm: Timer) {
-//        currPos += 1
-//        if currPos>slowFrames1.count-1{
-//            currPos=slowFrames1.count - 1
-//        }
-//        playImage.image=getFrame(n: currPos)
-//        showCurAll(num: currPos)
-//        //       cntNum.text="\(currPos-1)"+"/"+"\(frameN)"
-//    }
+    
     @objc func updateBack(tm: Timer) {
         currPos -= 1
         if currPos<0{
@@ -144,6 +124,9 @@ class PlayVideoViewController: UIViewController {
     }
     @objc func updateNext10(tm: Timer) {
         currPos += 10
+        if currPos>240{
+            currPos=240
+        }
         if currPos>slowFrames1.count-1{
             currPos=slowFrames1.count-1
         }
@@ -164,7 +147,7 @@ class PlayVideoViewController: UIViewController {
     @objc func longPressNext(gesture: UILongPressGestureRecognizer) {
         
         if gesture.state == .began {
-            print("Long Press")
+            //            print("Long Press")
             timer1 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateNext), userInfo: nil, repeats: true)
         }
         
@@ -175,7 +158,7 @@ class PlayVideoViewController: UIViewController {
     @objc func longPressBack(gesture: UILongPressGestureRecognizer) {
         
         if gesture.state == .began {
-            print("Long Press")
+            //          print("Long Press")
             timer2 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateBack), userInfo: nil, repeats: true)
         }
         
@@ -186,7 +169,7 @@ class PlayVideoViewController: UIViewController {
     @objc func longPressNext10(gesture: UILongPressGestureRecognizer) {
         
         if gesture.state == .began {
-            print("Long Press")
+            //           print("Long Press")
             timerN10 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateNext10), userInfo: nil, repeats: true)
         }
         
@@ -197,7 +180,7 @@ class PlayVideoViewController: UIViewController {
     @objc func longPressBack10(gesture: UILongPressGestureRecognizer) {
         
         if gesture.state == .began {
-            print("Long Press")
+            //           print("Long Press")
             timerB10 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateBack10), userInfo: nil, repeats: true)
         }
         
@@ -212,10 +195,12 @@ class PlayVideoViewController: UIViewController {
         cntNum.text="\(Float(num)/10.0)"+"s / "+"\(vlf)"+"s"
         videoSloutlet.value=Float(currPos)/(videoLength*10)
     }
- 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if videoDateNum==""{
+            return
+        }
         slowFrames.removeAll()
         slowFrames1.removeAll()
         
@@ -250,22 +235,19 @@ class PlayVideoViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    func getfileURL(path:String)->URL{
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        let vidpath = documentsDirectory + "/" + path
+        return URL(fileURLWithPath: vidpath)
+    }
     func getVideoframes(){
         frameN = 0
         var cnt:Int = 0
-        let fileURL = URL(fileURLWithPath: videoPath)
+        let fileURL = getfileURL(path: videoPath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        let avAsset = AVURLAsset(url: fileURL, options: options)//スローモションビデオ 240fps
-        if videoPath.contains("vhit20.mov"){
-            videoLength=2.5
-        }else{
-            videoLength=Float(avAsset.duration.seconds)
-        }
-        //let sec10 = Int(10*avAsset.duration)
-        //videoDuration = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
-        //        let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
-        
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        videoLength=Float(avAsset.duration.seconds)
         var reader: AVAssetReader! = nil
         do {
             reader = try AVAssetReader(asset: avAsset)
@@ -289,9 +271,7 @@ class PlayVideoViewController: UIViewController {
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
-        //        let context:CIContext = CIContext.init(options: nil)
-        //        let orientation = UIImageOrientation.right
-        
+  
         DispatchQueue.global(qos: .default).async {
             while let sample = readerOutput.copyNextSampleBuffer() {
                 // サンプルバッファからピクセルバッファを取り出す
@@ -301,15 +281,13 @@ class PlayVideoViewController: UIViewController {
                 }
                 if cnt%24 == 0{//0.1sごと
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!
-                    
-                    //                  let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-                    //                    let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
                     self.slowFrames1.append(pixelBuffer)
-                    //                  let uiImage = UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-                    //                  self.slowFrames.append(uiImage)
                     self.frameN += 1
                 }
                 cnt += 1
+                if cnt>240*10{
+                    break
+                }
             }
         }
     }
@@ -327,9 +305,6 @@ class PlayVideoViewController: UIViewController {
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        //        if (timer?.isValid)! {
-        //            timer.invalidate()
-        //        }
         stopTimer1()
         videoGetloop = false
         slowFrames.removeAll()
@@ -337,5 +312,4 @@ class PlayVideoViewController: UIViewController {
         curImage=playImage.image
         //  print("1stViewController's viewWillDisappear() is called")
     }
-
 }
