@@ -6,24 +6,36 @@
 //  Copyright © 2018年 tatsuaki.kuroda. All rights reserved.
 //
 #import <opencv2/opencv.hpp>
+#import <opencv2/videoio.hpp>
+#import <opencv2/video.hpp>
 #import <opencv2/imgcodecs/ios.h>
 #import "opencvWrapper.h"
 
 @implementation opencvWrapper
-/*
--(UIImage *)toGray:(UIImage *)input_img {
+//-(UIImage *)GrayScale:(UIImage *)image{
+-(UIImage *)GrayScale:(UIImage *)input_img vn:(NSString *)vname x:(int *)x_ret{
     // 変換用Matの宣言
     cv::Mat gray_img;
+    cv::VideoCapture cap;
+    cap.open(vname.UTF8String);
+    cv::Mat frame;
+    cap>>frame;
+    int v_w=cap.get(CV_CAP_PROP_FRAME_WIDTH); //縦の大きさ
+    int v_h=cap.get(CV_CAP_PROP_FRAME_HEIGHT); //横の大きさ
+    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
+    int fps=cap.get(CV_CAP_PROP_FPS);
+    for (int i=0;i<800;i++){
+        cap>>frame;
+    }
     // input_imageをcv::Mat型へ変換
     UIImageToMat(input_img, gray_img); //---②
-    
     cv::cvtColor(gray_img, gray_img, CV_BGR2GRAY); //---③
-    
     input_img = MatToUIImage(gray_img); //---④
-    
-    return input_img; //---⑤
+    _cvImage0=input_img;
+    *x_ret=678;
+    return MatToUIImage(frame);//input_img; //---⑤
 }
-
+/*
 cv::Mat oldmat;//うまくいかない。何か方法があるかもしれないが・・・下のコードではだめ
 -(void) matching0:(UIImage *)newimg
 {
@@ -37,6 +49,7 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     oldr.height = newmat.rows-40;
     oldmat = cv::Mat(newmat,oldr).clone();
 }
+ 
 -(void) matching1:(UIImage *)newimg x:(int *)x_ret y:(int *)y_ret
 {
     cv::Mat newmat;
@@ -90,10 +103,11 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
 
     return iplimage;
 }
+
 // サンプルバッファのデータからCGImageRefを生成する
-- (UIImage *)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
+- (UIImage *)imageFromSampleBuffer:(CMSampleBuffer)sample
 {
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sample);
     // ピクセルバッファのベースアドレスをロックする
     CVPixelBufferLockBaseAddress(imageBuffer, 0);
     // Get information of the image
@@ -118,25 +132,31 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     UIImage *image = [UIImage imageWithCGImage:cgImage scale:1.0 orientation:UIImageOrientationRight];
     CGImageRelease(cgImage);
     return image;
-}*/
--(void) getframes: (NSString *)fn x:(int *)x_ret{
-    int cnt=0;
- //   char fname[300];
- //   strcpy(fname,fn.UTF8String);//(fname,fn);
+}
+ */
+
+-(int)getIn: (NSString *)fn{
+    return _cnt+1;
+}
+-(int) getframes1: (NSString *)fn{
+    _cnt=0;
     cv::VideoCapture cap;
     cap.open(fn.UTF8String);
-//    //"/var/mobile/Media/DCIM/100APPLE/IMG_0357.MOV");
     cv::Mat frame;
+    int v_w=cap.get(CV_CAP_PROP_FRAME_WIDTH); //縦の大きさ
+    int v_h=cap.get(CV_CAP_PROP_FRAME_HEIGHT); //横の大きさ
+    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
+    int fps=cap.get(CV_CAP_PROP_FPS);
     while(1){
         cap>>frame;
-        cnt ++;
+        _cnt ++;
         if(frame.empty()==true)break;
     }
-    
-    *x_ret=cnt;
+    return 511;//v_w;
 }
--(void) getframes: (NSString *)fn f:(int)fr x:(int *)x_ret{
-    int cnt=0;
+
+-(int) getframes: (NSString *)fn f:(int *)framen{
+    _cnt=0;
     cv::VideoCapture cap;
     cap.open(fn.UTF8String);
  //   double frameTime = 1000.0 * fr/120;//noFrame / frameRate;
@@ -147,13 +167,14 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
 
 //    int v_w=cap.get(CV_CAP_PROP_FRAME_WIDTH); //縦の大きさ
 //    int v_h=cap.get(CV_CAP_PROP_FRAME_HEIGHT); //横の大きさ
-//    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
-//    int fps=cap.get(CV_CAP_PROP_FPS);
+    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
+    int fps=cap.get(CV_CAP_PROP_FPS);
    // cap.set(CV_CAP_PROP_POS_MSEC , 1.0/fps);
  //   char fname[300];
  //   strcpy(fname,fn.UTF8String);//(fname,fn);
 //    //"/var/mobile/Media/DCIM/100APPLE/IMG_0357.MOV");
     cv::Mat frame;
+    //frame.rows
     //VideoCaptureProperties(CV_CAP_PROP_POS_AVI_RATIO, 0);//Reset
 //
   //      cap.set(CV_CAP_PROP_POS_AVI_RATIO,0);
@@ -163,15 +184,18 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
 // cap.set(CV_CAP_PROP_POS_FRAMES,4);
 // cap.set(CV_CAP_PROP_POS_FRAMES,1);
 // //   cap.set(CV_CAP_PROP_POS_AVI_RATIO,0);
-    cap.set(CV_CAP_PROP_POS_FRAMES,fr);//ちゃんとfrに値が入っている
-    cap.set(CV_CAP_PROP_POS_MSEC , double(500.0));//これでもスタート位置を変更できません？
+//    cap.set(CV_CAP_PROP_POS_FRAMES,(int)framen);//ちゃんとfrに値が入っている
+//    cap.set(CV_CAP_PROP_POS_MSEC , double(500.0));//これでもスタート位置を変更できません？
     while(1){
         cap>>frame;
-        cnt ++;
+        _cnt ++;
         if(frame.empty()==true)break;
+  //      adaptiveThreshold0=cnt;
+//        UIImageToMat(_cvImage0,frame);
+//        self.print("openCVcnt:",cnt)
     }
-    
-    *x_ret=cnt;
+    *framen=_cnt;
+    return *framen;//cnt;
 }
 //eye w:10 h:5    face w:20 h:10    outer w:40 h:20 横縦が入れ替わる
 -(void) matching_eye:(UIImage *)new_img old:(UIImage *)old_img x:(int *)x_ret y:(int *)y_ret

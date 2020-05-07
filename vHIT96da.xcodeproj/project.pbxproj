@@ -8,10 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6932D4C4240A7D97008A03D9 /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6932D4C3240A7D97008A03D9 /* RecordViewController.swift */; };
-		69334E7E241B457900F52590 /* MovieCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69334E7D241B457900F52590 /* MovieCropper.swift */; };
 		8E08E1C12046906400FFB255 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */; };
 		8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E495CC5202FE7880030748C /* ParametersViewController.swift */; };
-		8E5D4FFB21897D380092D095 /* HlpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5D4FFA21897D380092D095 /* HlpViewController.swift */; };
 		8E6A654E20BC0B7600EE74EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E6A654D20BC0B7600EE74EF /* Images.xcassets */; };
 		8E9AC3AD2077B98C001D366E /* PlayVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */; };
 		8EA90BE32038208200D042D0 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EA90BE22038208200D042D0 /* opencv2.framework */; };
@@ -26,10 +24,8 @@
 
 /* Begin PBXFileReference section */
 		6932D4C3240A7D97008A03D9 /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
-		69334E7D241B457900F52590 /* MovieCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCropper.swift; sourceTree = "<group>"; };
 		8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
 		8E495CC5202FE7880030748C /* ParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParametersViewController.swift; sourceTree = "<group>"; };
-		8E5D4FFA21897D380092D095 /* HlpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HlpViewController.swift; sourceTree = "<group>"; };
 		8E6A654D20BC0B7600EE74EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayVideoViewController.swift; sourceTree = "<group>"; };
 		8EA90BE22038208200D042D0 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
@@ -80,14 +76,12 @@
 			children = (
 				8EE2C01C202F32440064ED6F /* AppDelegate.swift */,
 				8EBC227F2182D6A100EF040C /* HelpjViewController.swift */,
-				8E5D4FFA21897D380092D095 /* HlpViewController.swift */,
 				8E9AC3AC2077B98C001D366E /* PlayVideoViewController.swift */,
 				8E08E1C02046906400FFB255 /* ImagePickerViewController.swift */,
 				8EE2C01E202F32440064ED6F /* ViewController.swift */,
 				8E495CC5202FE7880030748C /* ParametersViewController.swift */,
 				8EE2C020202F32440064ED6F /* Main.storyboard */,
 				6932D4C3240A7D97008A03D9 /* RecordViewController.swift */,
-				69334E7D241B457900F52590 /* MovieCropper.swift */,
 				8EB6E0F8208E1CAF000A85EB /* Assets.xcassets */,
 				8EE2C025202F32440064ED6F /* LaunchScreen.storyboard */,
 				8EE2C028202F32440064ED6F /* Info.plist */,
@@ -179,8 +173,6 @@
 				6932D4C4240A7D97008A03D9 /* RecordViewController.swift in Sources */,
 				8E495CC6202FE7880030748C /* ParametersViewController.swift in Sources */,
 				8EBC22802182D6A100EF040C /* HelpjViewController.swift in Sources */,
-				69334E7E241B457900F52590 /* MovieCropper.swift in Sources */,
-				8E5D4FFB21897D380092D095 /* HlpViewController.swift in Sources */,
 				8ECE3964203802750054AC0C /* opencvWrapper.mm in Sources */,
 				8EE2C01D202F32440064ED6F /* AppDelegate.swift in Sources */,
 			);
@@ -324,7 +316,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.9;
 				DEVELOPMENT_TEAM = YKSHGZ7H3T;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -333,7 +325,7 @@
 				INFOPLIST_FILE = vHIT96da/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.8;
+				MARKETING_VERSION = 3.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kuroda33.vHIT96da;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -352,7 +344,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.9;
 				DEVELOPMENT_TEAM = YKSHGZ7H3T;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -361,7 +353,7 @@
 				INFOPLIST_FILE = vHIT96da/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.8;
+				MARKETING_VERSION = 3.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kuroda33.vHIT96da;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

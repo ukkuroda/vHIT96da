@@ -12,17 +12,38 @@ class HelpjViewController: UIViewController, UIScrollViewDelegate   {
     @IBOutlet weak var hView:UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
     var vhit_vog:Bool?
+    var jap_eng:Int=0
+    
+    @IBOutlet weak var exitButton: UIButton!
+    @IBOutlet weak var langButton: UIButton!
+    
+    @IBAction func langChan(_ sender: Any) {
+        if jap_eng==0{
+            jap_eng=1
+            hView.image=UIImage(named:"vhithelpen")
+            langButton.setTitle("Japanese", for: .normal)
+            
+        }else{
+            jap_eng=0
+            hView.image=UIImage(named:"vhithelp")
+            langButton.setTitle("English", for: .normal)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         scrollView.delegate = self
         scrollView.maximumZoomScale = 2.0
         scrollView.minimumZoomScale = 1.0
+        langButton.layer.cornerRadius = 5
+        exitButton.layer.cornerRadius = 5
         self.view.addSubview(scrollView)
         if vhit_vog == true{
             hView.image = UIImage(named: "vhithelp")
         }else{
             hView.image = UIImage(named: "voghelp")
+            langButton.isHidden=true
         }
         print(hView.frame)
         hView.frame.origin.x=0
