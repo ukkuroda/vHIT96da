@@ -143,16 +143,16 @@ cv::Mat oldmat;//うまくいかない。何か方法があるかもしれない
     cv::VideoCapture cap;
     cap.open(fn.UTF8String);
     cv::Mat frame;
-    int v_w=cap.get(CV_CAP_PROP_FRAME_WIDTH); //縦の大きさ
-    int v_h=cap.get(CV_CAP_PROP_FRAME_HEIGHT); //横の大きさ
-    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
-    int fps=cap.get(CV_CAP_PROP_FPS);
+//    int v_w=cap.get(CV_CAP_PROP_FRAME_WIDTH); //縦の大きさ
+//    int v_h=cap.get(CV_CAP_PROP_FRAME_HEIGHT); //横の大きさ
+//    int max_frame=cap.get(CV_CAP_PROP_FRAME_COUNT); //フレーム数
+//    int fps=cap.get(CV_CAP_PROP_FPS);
     while(1){
         cap>>frame;
         _cnt ++;
         if(frame.empty()==true)break;
     }
-    return 511;//v_w;
+    return _cnt;//v_w;
 }
 
 -(int) getframes: (NSString *)fn f:(int *)framen{
@@ -306,13 +306,13 @@ int iii;
     cv::Point max_pt;
     double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-//    if(maxVal>0.7){//恐らく見つかったらここ
+    if(maxVal>0.7){//恐らく見つかったらここ
         *x_ret = max_pt.x;
         *y_ret = max_pt.y;
 //    }else{//瞬きではこちらだろう
 //        *x_ret = 0;
 //        *y_ret = 0;
-//    }
+    }
       return maxVal;
 }
 

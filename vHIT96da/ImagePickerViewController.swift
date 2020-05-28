@@ -81,6 +81,8 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var mailButton: UIButton!
     @IBOutlet weak var deleButton: UIButton!
+    
+    @IBOutlet weak var exitButton: UIButton!
     var tateyokoRatio:CGFloat?
     var vhit_vog:Bool?
     fileprivate let kCellReuseIdentifier = "Cell"
@@ -95,6 +97,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         initView()
         loadPhotos()
         setButtons()
+        exitButton.layer.cornerRadius = 5
     }
   
     @IBAction func mailOne(_ sender: Any) {

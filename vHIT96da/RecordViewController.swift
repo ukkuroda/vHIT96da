@@ -27,42 +27,42 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     @IBOutlet weak var exitBut: UIButton!
     @IBOutlet weak var cameraView: UIImageView!
 
-    func drawCircle(x:CGFloat,y:CGFloat){//cPoint:CGPoint){//squareに変更
-           /* --- 円を描画 --- */
+    func drawSquare(x:CGFloat,y:CGFloat){
+           /* --- 正方形を描画 --- */
         let dia:CGFloat = view.bounds.width/5
-           let circleLayer = CAShapeLayer.init()
-           let circleFrame = CGRect.init(x:x-dia/2,y:y-dia/2,width:dia,height:dia)
-           circleLayer.frame = circleFrame
+           let squareLayer = CAShapeLayer.init()
+           let squareFrame = CGRect.init(x:x-dia/2,y:y-dia/2,width:dia,height:dia)
+           squareLayer.frame = squareFrame
            // 輪郭の色
-           circleLayer.strokeColor = UIColor.red.cgColor
-           // 円の中の色
-           circleLayer.fillColor = UIColor.clear.cgColor//UIColor.red.cgColor
+           squareLayer.strokeColor = UIColor.red.cgColor
+           // 中の色
+           squareLayer.fillColor = UIColor.clear.cgColor//UIColor.red.cgColor
            // 輪郭の太さ
-        circleLayer.lineWidth = 1.0
-           // 円形を描画
-        circleLayer.path = UIBezierPath.init(rect: CGRect.init(x: 0, y: 0, width: circleFrame.size.width, height: circleFrame.size.height)).cgPath
-//           circleLayer.path = UIBezierPath.init(ovalIn: CGRect.init(x: 0, y: 0, width: circleFrame.size.width, height: circleFrame.size.height)).cgPath
-           self.view.layer.addSublayer(circleLayer)
+        squareLayer.lineWidth = 1.0
+           // 正方形を描画
+        squareLayer.path = UIBezierPath.init(rect: CGRect.init(x: 0, y: 0, width: squareFrame.size.width, height: squareFrame.size.height)).cgPath
+//           circleLayer.path = UIBezierPath.init(ovalIn: CGRect.init(x: 0, y: 0, width: squareFrame.size.width, height: squareFrame.size.height)).cgPath
+           self.view.layer.addSublayer(squareLayer)
        }
-    @objc func onSliderChanged(sender: UISlider) {
-        // zoom in / zoom out
-        do {
-            try self.videoDevice?.lockForConfiguration()
-            
-            if self.videoDevice!.isExposureModeSupported(.continuousAutoExposure) && self.videoDevice!.isExposurePointOfInterestSupported {
-            
-            let shutterSpeed = CMTimeMake(1, 400)
-            self.videoDevice!.setExposureModeCustom(duration:shutterSpeed, iso: 800, completionHandler: nil)//上手く動かないぞ
-            
-            //             self.videoDevice?.ramp(
-            //                 toVideoZoomFactor: (self.videoDevice?.minAvailableVideoZoomFactor)! + 0.01 * CGFloat(sender.value) * ((self.videoDevice?.maxAvailableVideoZoomFactor)! - (self.videoDevice?.minAvailableVideoZoomFactor)!),
-            //                 withRate: 30.0)
-            }
-            self.videoDevice?.unlockForConfiguration()
-        } catch {
-            print("Failed to change zoom.")
-        }
-    }
+//    @objc func onSliderChanged(sender: UISlider) {
+//        // zoom in / zoom out
+//        do {
+//            try self.videoDevice?.lockForConfiguration()
+//            
+////            if self.videoDevice!.isExposureModeSupported(.continuousAutoExposure) && self.videoDevice!.isExposurePointOfInterestSupported {
+//            
+//            let shutterSpeed = CMTimeMake(1, 400)
+//            self.videoDevice!.setExposureModeCustom(duration:shutterSpeed, iso: 800, completionHandler: nil)//上手く動かないぞ
+//            
+//            //             self.videoDevice?.ramp(
+//            //                 toVideoZoomFactor: (self.videoDevice?.minAvailableVideoZoomFactor)! + 0.01 * CGFloat(sender.value) * ((self.videoDevice?.maxAvailableVideoZoomFactor)! - (self.videoDevice?.minAvailableVideoZoomFactor)!),
+//            //                 withRate: 30.0)
+////            }
+//            self.videoDevice?.unlockForConfiguration()
+//        } catch {
+//            print("Failed to change zoom.")
+//        }
+//    }
     var tapF:Bool=false
     @IBAction func tapGes(_ sender: UITapGestureRecognizer) {
         let screenSize=cameraView.bounds.size
@@ -82,9 +82,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 try device.lockForConfiguration()
                 
                 device.focusPointOfInterest = focusPoint
-                //device.focusMode = .ContinuousAutoFocus
+//                device.focusMode = .continuousAutoFocus
                 device.focusMode = .autoFocus
-                //device.focusMode = .Locked
+//                device.focusMode = .locked
                 //                device.exposurePointOfInterest = focusPoint
                 //                device.exposureMode = AVCaptureDevice.ExposureMode.custom //continuousAutoExposure
                 
@@ -93,31 +93,12 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                     device.exposurePointOfInterest = focusPoint
                     device.exposureMode = .continuousAutoExposure
                 }
-                //                if device.isExposureModeSupported(.custom){
-                //  device.exposurePointOfInterest = focusPoint
-                
-                //    device.exposureMode = AVCaptureDevice.ExposureMode.custom//autoExpose
-                // 取得した値をISO値にセットしてカメラ表示を変更
-                //                device.setExposureModeCustom(duration: CMTimeMakeWithSeconds(0.5, 1000*1000*1000), iso: 400, completionHandler: nil)
-                //                    let shutterSpeed = CMTimeMake(1, 400)
-                //
-                //                    device.setExposureModeCustom(duration: shutterSpeed, iso: 800, completionHandler: nil)
-                /*
-                 if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(exposureMode) {
-                 device.exposurePointOfInterest = devicePoint
-                 device.exposureMode = exposureMode
-                 }
-                 */
-                
-                //                }
                 device.unlockForConfiguration()
-                //                if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
-                //                    AudioServicesCreateSystemSoundID(soundUrl, &soundIdpint)
-                //                    AudioServicesPlaySystemSound(soundIdpint)
+   
                 if tapF {
                     view.layer.sublayers?.removeLast()
                 }
-                drawCircle(x: x0, y: y0)
+                drawSquare(x: x0, y: y0)
                 tapF=true;
                 //                }
             }

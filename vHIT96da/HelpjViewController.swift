@@ -20,7 +20,7 @@ class HelpjViewController: UIViewController, UIScrollViewDelegate   {
     @IBAction func langChan(_ sender: Any) {
         if jap_eng==0{
             jap_eng=1
-            hView.image=UIImage(named:"vhithelpen")
+            hView.image=UIImage(named:"vhithelpenglish")
             langButton.setTitle("Japanese", for: .normal)
             
         }else{
