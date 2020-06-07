@@ -85,9 +85,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 //                device.focusMode = .continuousAutoFocus
                 device.focusMode = .autoFocus
 //                device.focusMode = .locked
-                //                device.exposurePointOfInterest = focusPoint
-                //                device.exposureMode = AVCaptureDevice.ExposureMode.custom //continuousAutoExposure
-                
                 // 露出の設定
                 if device.isExposureModeSupported(.continuousAutoExposure) && device.isExposurePointOfInterestSupported {
                     device.exposurePointOfInterest = focusPoint
@@ -287,62 +284,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             return nil
         }
     }
-//    var lightOn:Bool = false
-//    var time0=CFAbsoluteTimeGetCurrent()
-//    func ledOnoff(){
-//        if CFAbsoluteTimeGetCurrent() - time0 > 0.2 && !lightOn{
-//             time0=CFAbsoluteTimeGetCurrent()
-//             return
-//         }
-//
-//         var level:Float = 0.0
-//              if lightOn {
-//                  level = 0.0
-//                  lightOn = false
-//              }else{
-//                  level = 0.1
-//                  lightOn = true
-//              }
-//              if let avDevice = AVCaptureDevice.default(for: AVMediaType.video){
-//
-//                  if avDevice.hasTorch {
-//                      do {
-//                          // torch device lock on
-//                          try avDevice.lockForConfiguration()
-//
-//                          if (level > 0.0){
-//                              do {
-//                                  try avDevice.setTorchModeOn(level: level)
-//                              } catch {
-//                                  print("error")
-//                              }
-//
-//                          } else {
-//                              // flash LED OFF
-//                              // 注意しないといけないのは、0.0はエラーになるのでLEDをoffさせます。
-//                              avDevice.torchMode = AVCaptureDevice.TorchMode.off
-//                          }
-//                          // torch device unlock
-//                          avDevice.unlockForConfiguration()
-//
-//                      } catch {
-//                          print("Torch could not be used")
-//                      }
-//                  } else {
-//                      print("Torch is not available")
-//                  }
-//              }
-//              else{
-//                  // no support
-//              }
-//    }
-//    @objc func onClickLedButton(sender: UIButton) {
-////        if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
-////            AudioServicesCreateSystemSoundID(soundUrl, &soundIdled)
-////            AudioServicesPlaySystemSound(soundIdled)
-////        }
-//        ledOnoff()
-//    }
    
     var soundIdstart:SystemSoundID = 1117
     var soundIdstop:SystemSoundID = 1118

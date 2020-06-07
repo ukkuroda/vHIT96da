@@ -35,6 +35,54 @@
     *x_ret=678;
     return MatToUIImage(frame);//input_img; //---⑤
 }
+-(double) matching_gray:(UIImage *)wide_img narrow:(UIImage *)narrow_img x:(int *)x_ret y:(int *)y_ret
+{
+    cv::Mat wide_mat;
+    cv::Mat narrow_mat;
+    cv::Mat return_mat;
+    int rows,cols;
+    UIImageToMat(wide_img, wide_mat);
+    cv::cvtColor(wide_mat,wide_mat,CV_BGR2GRAY);
+    UIImageToMat(narrow_img, narrow_mat);
+    cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
+    cols=wide_mat.cols;//width 1280/se 1/6-3/6
+    rows=wide_mat.rows;//height 720/se 1/3-2/3
+//    if (rows>cols){
+//        rows=rows/2;
+//    }else{
+//        cols=cols/2;
+//    }
+    //
+    cv::Rect myROI(cols/6,rows/3,cols/3,rows/3);
+    cv::Mat subImg=wide_mat(myROI);
+    *x_ret = 0;
+    *y_ret = 0;
+    // テンプレートマッチング
+    try
+    {
+        cv::matchTemplate(subImg, narrow_mat, return_mat, CV_TM_CCOEFF);//_NORMED);
+       // ...
+    }
+    catch( cv::Exception& e )
+    {
+      //  const char* err_msg = e.what();
+       // ...
+        return -2.0;
+    }
+    
+    // 最大のスコアの場所を探す
+    cv::Point max_pt;
+    double maxVal;
+    cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
+    if(maxVal>0.7){//恐らく見つかったらここ
+        *x_ret = max_pt.x;
+        *y_ret = max_pt.y;
+//    }else{//瞬きではこちらだろう
+//        *x_ret = 0;
+//        *y_ret = 0;
+    }
+      return maxVal;
+}
 /*
 cv::Mat oldmat;//うまくいかない。何か方法があるかもしれないが・・・下のコードではだめ
 -(void) matching0:(UIImage *)newimg
@@ -292,7 +340,7 @@ int iii;
     // テンプレートマッチング
     try
     {
-        cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);
+        cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF);//_NORMED);
        // ...
     }
     catch( cv::Exception& e )
