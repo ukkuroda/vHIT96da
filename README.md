@@ -1,3 +1,4 @@
 # vHIT96da
-for only iphone6s
-needs a unique goggle for the iphone6s
+vHITmode for iPhone6s iPhoneSE (iPhone7,8)
+VOGmode for all iPhones
+needs a unique goggles to fix the iPhone on face
