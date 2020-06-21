@@ -834,7 +834,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                         if self.faceF==1 && self.vhit_vog==true{
                             CGfacb = CGall.cropping(to: facbR)
-                            self.printR(str: "facbR:", rct: facbR)
+//                            self.printR(str: "facbR:", rct: facbR)
                             //self.printR(str: "cgall", rct: allR)
                             UIfacb = UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
                             let maxVf=self.openCV.matching(UIfacb, narrow: UIfac, x: fX, y: fY)
