@@ -2483,7 +2483,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
         return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
     }
-
+/*
     func resizeV2S(rect:CGRect,viewRect:CGRect,image:CGImage)->CGRect{//video2screen
         let vw = viewRect.height//iPhone画面
         let vh = viewRect.width//画面
@@ -2494,7 +2494,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                           y: rect.origin.x*vw/iw+vy,
                           width:rect.height*vh/ih,
                           height:rect.width*vw/iw)
-    }
+    }*/
+    /*
     func led2waku(video:UIImage){//led光源を探して、そこに枠を設定
         let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
@@ -2510,6 +2511,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuE=resizeV2S(rect: CGRect(x:x,y:y,width:tmp.width,height:tmp.height), viewRect: self.slowImage.frame,image:video.cgImage!)
         dispWakus()
     }
+ */
 //    func searchLED_se(video:UIImage)->CGPoint{//fit for SE
 //          let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
 //          let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
@@ -2599,7 +2601,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 vidDura[vidCurrent]="\(secd2)" + "s"
 //                print(posLED)
             }
-            led2waku(video: vidImg[vidCurrent])
+//            led2waku(video: vidImg[vidCurrent])
         }else if let vc = segue.source as? RecordViewController{
             let Controller:RecordViewController = vc
             //Controller.motionManager.stopDeviceMotionUpdates()
@@ -2610,7 +2612,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if Controller.recordedFlag==true{
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
-                led2waku(video: vidImg[vidCurrent])
+//                led2waku(video: vidImg[vidCurrent])
                 recStart = Controller.recStart
                 //               let recEnd=Controller.recEnd
                 //                print("gyro-count: \(Controller.gyro.count)")
@@ -2853,7 +2855,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     //色々やったがダメ？？？？
                     print("startframe:",startFrame)// vidImg[vidCurrent].size.width)
                     //led2waku(video:getThumbnailFrom(path: vidPath[vidCurrent])!)
-                    led2waku(video: getVideoframe())// vidImg[vidCurrent])
+//                    led2waku(video: getVideoframe())// vidImg[vidCurrent])
                 }else{
                     rectType += 1
                     if rectType > 1 {
