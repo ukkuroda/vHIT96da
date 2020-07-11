@@ -353,6 +353,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       width: rect.height * iw / vw,
                       height: rect.width * ih / vh)
     }
+    var kalVs:[[CGFloat]]=[[0.0001,0.001,0,1,2],[0.0001,0.001,3,4,5],[0.0001,0.001,6,7,8],[0.0001,0.001,10,11,12],[0.0001,0.001,13,14,15]]
+    func KalmanS(Q:CGFloat,R:CGFloat,num:Int){
+        kalVs[num][4] = (kalVs[num][3] + Q) / (kalVs[num][3] + Q + R);
+        kalVs[num][3] = R * (kalVs[num][3] + Q) / (R + kalVs[num][3] + Q);
+    }
+    func Kalman(value:CGFloat,num:Int)->CGFloat{
+        KalmanS(Q:kalVs[num][0],R:kalVs[num][1],num:num);
+        let result = kalVs[num][2] + (value - kalVs[num][2]) * kalVs[num][4];
+        kalVs[num][2] = result;
+        return result;
+    }
+    /*
     let KalQvog:CGFloat = 0.0001
     let KalRvog:CGFloat = 0.001
     var KalXvog:CGFloat = 0.0
@@ -439,7 +451,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         KalX3 = result;
         return result;
     }
-
+*/
     func startTimer() {
         if timer?.isValid == true {
             timer.invalidate()
@@ -871,7 +883,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 //                print("cnt err ey eyebR",vHITcnt,cvError,ey,Int(eyebR.height))
                 if self.faceF==1{
-                    let face5=12.0*self.Kalman1(measurement: fy)
+                    let face5=12.0*self.Kalman(value: fy,num: 0)
                     self.vHITface.append(face5)
                     self.vHITface5.append(face5)
                     if vHITcnt > 5{
@@ -881,13 +893,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     self.vHITface.append(0)
                     self.vHITface5.append(0)
                 }
-                let eyePos5=1.0*(self.Kalmanvog(measurement:eyePos))
+                let eyePos5=1.0*self.Kalman(value:eyePos,num:1)
                 self.vogPos5.append(eyePos5)
                 self.vogPos.append(eyePos5)
                 if vHITcnt > 5{
                     self.vogPos5[vHITcnt-2]=(self.vogPos[vHITcnt]+self.vogPos[vHITcnt-1]+self.vogPos[vHITcnt-2]+self.vogPos[vHITcnt-3]+self.vogPos[vHITcnt-4])/5
                 }
-                let eye5=12.0*(self.Kalman2(measurement: ey))//そのままではずれる
+                let eye5=12.0*self.Kalman(value: ey,num:2)//そのままではずれる
                 //                self.printRect(r1: REyeb,r2: eyebR0)
                 self.vHITeye5.append(eye5-self.vHITface5.last!)
                 self.vHITeye.append(eye5-self.vHITface5.last!)
@@ -2636,7 +2648,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     //録画開始時間より誤差が少ないようだ。
                     //かと思ったが、そうでもないようだ。下は開始時を起点
                     gyroTime.append(Controller.gyro[i*2]-recStart)
-                    d=Kalman3(measurement:Controller.gyro[i*2+1]*10)//gyro_data
+//                    d=Kalman3(measurement:Controller.gyro[i*2+1]*10)
+                    d=Double(Kalman(value:CGFloat(Controller.gyro[i*2+1]*10),num:4))
                     //d=Controller.gyro[i*2+1]*10
                     gyro.append(-d)
                     gyro5.append(-d)
@@ -2656,7 +2669,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             break
                         }
                     }
-                    gyroData.append(Kalman2(measurement:CGFloat(gyro[getj])))
+                    gyroData.append(Kalman(value:CGFloat(gyro[getj]),num:3))
                 }
                 for i in 0...gyroData.count-1{//tempデータに入れる
                     tGyro.append(gyroData[i])
