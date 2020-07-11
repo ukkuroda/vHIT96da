@@ -229,7 +229,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var waveWidth:Int = 0
     
     var eyeBorder:Int = 20
-    var gyroDelta:Int = 50
+//    var gyroDelta:Int = 0
     var eyeRatio:Int = 100//vhit
     var gyroRatio:Int = 100//vhit
     var posRatio:Int = 100//vog
@@ -597,7 +597,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func setvHITgyro5(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
         vHITgyro5.removeAll()
-        let sn=startFrame+gyroDelta*240/1000
+        let sn=startFrame
+//        let sn=startFrame+gyroDelta*240/1000
         if gyroData.count>10{
             for i in 0..<gyroData.count{
                 if i+sn>0 && i+sn<gyroData.count{
@@ -608,19 +609,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
     }
-    func setvHITgyro5_end(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
-        vHITgyro5.removeAll()
-        let sn=startFrame-gyroDelta*240/1000
-        if gyroData.count>10{
-            for i in 0..<gyroData.count{
-                if i+sn>0 && i+sn<gyroData.count{
-                    vHITgyro5.append(gyroData[i+sn])
-                }else{
-                    vHITgyro5.append(0)
-                }
-            }
-        }
-    }
+//    func setvHITgyro5_end(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
+//        vHITgyro5.removeAll()
+//        let sn=startFrame-gyroDelta*240/1000
+//        if gyroData.count>10{
+//            for i in 0..<gyroData.count{
+//                if i+sn>0 && i+sn<gyroData.count{
+//                    vHITgyro5.append(gyroData[i+sn])
+//                }else{
+//                    vHITgyro5.append(0)
+//                }
+//            }
+//        }
+//    }
     @available(iOS 13.0, *)
     func vHITcalc(){
         var cvError:Int = 0
@@ -1684,7 +1685,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //      wavePeak = getUserDefault(str: "wavePeak", ret: 30)
         //      updownPgap = getUserDefault(str: "updownPgap", ret: 6)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 10)
-        gyroDelta = getUserDefault(str: "gyroDelta", ret: 50)
+//        gyroDelta = getUserDefault(str: "gyroDelta", ret: 0)
         eyeRatio = getUserDefault(str: "eyeRatio", ret: 100)
         gyroRatio = getUserDefault(str: "gyroRatio", ret: 100)
         posRatio = getUserDefault(str: "posRatio", ret: 100)
@@ -1717,7 +1718,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //3個続けて増加し、波幅の3/4ほど先が3個続けて減少（updownP_gap:増減閾値)
         //       UserDefaults.standard.set(updownPgap, forKey: "updownPgap")
         UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
-        UserDefaults.standard.set(gyroDelta, forKey: "gyroDelta")
+//        UserDefaults.standard.set(gyroDelta, forKey: "gyroDelta")
         UserDefaults.standard.set(eyeRatio, forKey: "eyeRatio")
         UserDefaults.standard.set(gyroRatio, forKey: "gyroRatio")
         UserDefaults.standard.set(posRatio, forKey: "posRatio")
@@ -2329,8 +2330,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             text += String(Int(gyroData[i]*100.0)) + ","
             //print(Int(gyroData[i]*100))
         }
-        text += String(gyroDelta) + ","//gyroData.count-2=gyroDelta
-        print("save_gyroDelta:",String(gyroDelta))
+//        text += String(0) + ","
+//        print("save_gyroDelta:",String(gyroDelta))
         text += "0"//gyroData.count-1=0
         //Gyro(CGFloat配列）からtext(csv)を作り書き込む
         
@@ -2366,14 +2367,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     gyroData.append(CGFloat(Double(str[i])!/100.0))
                     //    print(gyroData5.last)
                 }
-                gyroDelta=Int(str[str.count-2])!//gyroData[gyroData.count-2]/100.0)
+//                gyroDelta=Int(str[str.count-2])!//gyroData[gyroData.count-2]/100.0)
                 //                _=Int(str[str.count-1])!//gyroData[gyroData.count-3]/100.0)
                 //let tt1=Int(gyroData[gyroData.count-1]/100.0)
                 //                print("read_gyroDelta:",gyroDelta,tt2)
-                if(gyroDelta>200){
-                    gyroDelta=200
-                }
-                
+//                if(gyroDelta>200){
+//                    gyroDelta=200
+//                }
+//              gyroDelta=0
             } catch {
                 print("readGyro read error")//エラー処理
                 return
@@ -2416,7 +2417,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             ParametersViewController.waveWidth = waveWidth
             ParametersViewController.vhit_vog = vhit_vog
             ParametersViewController.eyeBorder = eyeBorder
-            ParametersViewController.gyroDelta = gyroDelta
+//            ParametersViewController.gyroDelta = gyroDelta
             ParametersViewController.faceF = faceF
             if vhit_vog == true{
                 ParametersViewController.ratio1 = eyeRatio
@@ -2555,7 +2556,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             widthRange = ParametersViewController.widthRange
             waveWidth = ParametersViewController.waveWidth
             eyeBorder = ParametersViewController.eyeBorder
-            gyroDelta = ParametersViewController.gyroDelta
+//            gyroDelta = ParametersViewController.gyroDelta
             var chanF=false
             if vhit_vog == true{
                 eyeRatio=ParametersViewController.ratio1
@@ -2654,8 +2655,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     gyro.append(-d)
                     gyro5.append(-d)
                 }
-                //gyroは10msごとに拾ってある似合わせる
-                //これをvideoのフレーム数似合わせる
+                //gyroは10msごとに拾ってある.合わせる
+                //これをvideoのフレーム数に合わせる
                 //                print(getFps(path: Controller.filePath!))
                 vidFps=getFps(path:Controller.filePath!)
                 
@@ -2778,24 +2779,24 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 drawVHITwaves()
                             }
                         }
-                    }else{//上半分のとき
-                        let dd:Int = 10
-                        if Int(move.x) > lastmoveXgyro + dd{
-                            gyroDelta += 4
-                            
-                        }else if Int(move.x) < lastmoveXgyro - dd{
-                            gyroDelta -= 4
-                        }else{
-                            return
-                        }
-                        lastmoveXgyro=Int(move.x)
-                        if gyroDelta>400{
-                            gyroDelta=400
-                        }else if gyroDelta < 0{
-                            gyroDelta = 0
-                        }
-                        setvHITgyro5()
-                        update_gyrodelta()
+                    }else{//上半分のとき->ズレがなくなったので何もしない
+//                        let dd:Int = 10
+//                        if Int(move.x) > lastmoveXgyro + dd{
+//                            gyroDelta += 4
+//
+//                        }else if Int(move.x) < lastmoveXgyro - dd{
+//                            gyroDelta -= 4
+//                        }else{
+//                            return
+//                        }
+//                        lastmoveXgyro=Int(move.x)
+//                        if gyroDelta>400{
+//                            gyroDelta=400
+//                        }else if gyroDelta < 0{
+//                            gyroDelta = 0
+//                        }
+//                        setvHITgyro5()
+//                        update_gyrodelta()
                     }
 //                }
             }else if vhit_vog == false && vogboxView?.isHidden == false{//vog

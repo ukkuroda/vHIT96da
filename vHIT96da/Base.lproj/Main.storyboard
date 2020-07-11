@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -709,15 +708,6 @@ and EXIT</string>
                                     <action selector="eyeBorderButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="ctn-pq-KZt"/>
                                 </connections>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="clc-JS-Bam">
-                                <rect key="frame" x="5" y="139" width="45" height="34"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="gyroDeltaButton:" destination="jFt-gZ-HXu" eventType="editingChanged" id="87d-Q9-EFV"/>
-                                </connections>
-                            </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="(1)頭部回転時のGyro波形幅 msec" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="srl-OW-f1c">
                                 <rect key="frame" x="55" y="20" width="255" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -741,13 +731,6 @@ and EXIT</string>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="眼球回転角速度表示の高さ %" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tWF-A9-5II">
                                 <rect key="frame" x="55" y="80" width="255" height="25"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="GyroとVideoのずれ msec" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s5L-uX-evv">
-                                <rect key="frame" x="55" y="139" width="218" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
@@ -835,7 +818,6 @@ and EXIT</string>
                         <outlet property="exitButton" destination="ut3-ve-Fe7" id="IR0-BQ-SVI"/>
                         <outlet property="eyeBinput" destination="wHd-Gu-5nW" id="Jjd-FR-sCv"/>
                         <outlet property="faceFbutton" destination="eyC-be-Bgy" id="1BZ-yx-0Xd"/>
-                        <outlet property="gyroDinput" destination="clc-JS-Bam" id="HoL-xl-EDX"/>
                         <outlet property="gyroText" destination="Atu-MZ-zqA" id="65H-wy-p1s"/>
                         <outlet property="keyDown" destination="pMb-F1-KQb" id="9ax-j5-bsU"/>
                         <outlet property="markText" destination="aD3-jN-jML" id="cLB-AB-x5I"/>
@@ -847,7 +829,6 @@ and EXIT</string>
                         <outlet property="paraText2" destination="9oE-gN-h2Z" id="cr5-4C-3Jp"/>
                         <outlet property="paraText3" destination="tWF-A9-5II" id="8r4-49-JPz"/>
                         <outlet property="paraText4" destination="Wre-qf-59d" id="8WU-o2-e4F"/>
-                        <outlet property="paraText5" destination="s5L-uX-evv" id="hvT-cV-Tmj"/>
                         <outlet property="paraText6" destination="NMH-1D-eWf" id="3bC-Vb-aGc"/>
                         <outlet property="ratio1input" destination="2b1-ge-IVn" id="sOA-1O-Bl3"/>
                         <outlet property="ratio2input" destination="PBe-Ga-pXd" id="PGy-ii-8Mc"/>
