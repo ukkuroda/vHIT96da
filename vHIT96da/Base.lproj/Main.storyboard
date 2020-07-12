@@ -133,6 +133,26 @@
                                     <outletCollection property="gestureRecognizers" destination="dvP-Cv-tWK" appends="YES" id="dCE-0O-rR8"/>
                                 </connections>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Iqh-4c-2st">
+                                <rect key="frame" x="131" y="271" width="59" height="58"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jhl-W2-Rd7">
+                                <rect key="frame" x="131" y="39" width="59" height="58"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k50-f5-jh1">
+                                <rect key="frame" x="130" y="155" width="59" height="58"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tQh-go-BDj">
+                                <rect key="frame" x="131" y="212" width="59" height="58"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i5c-dW-a9a">
+                                <rect key="frame" x="130" y="98" width="59" height="58"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UsG-5w-jrf">
                                 <rect key="frame" x="10" y="515" width="300" height="43"/>
                                 <subviews>
@@ -351,6 +371,11 @@
                         </connections>
                     </view>
                     <connections>
+                        <outlet property="WakuAL" destination="Iqh-4c-2st" id="IGY-sR-TIm"/>
+                        <outlet property="WakuLB" destination="i5c-dW-a9a" id="1wZ-Uk-56k"/>
+                        <outlet property="WakuLS" destination="tQh-go-BDj" id="pz4-mk-m61"/>
+                        <outlet property="WakuUB" destination="k50-f5-jh1" id="BGH-eT-L8b"/>
+                        <outlet property="WakuUS" destination="jhl-W2-Rd7" id="La3-kk-kYg"/>
                         <outlet property="arrowImage" destination="YIA-4v-A2X" id="aB4-Z9-Hp1"/>
                         <outlet property="backVideoOutlet" destination="LZQ-Ez-rYI" id="3UD-xa-nFJ"/>
                         <outlet property="buttonsWaku" destination="UsG-5w-jrf" id="5Nv-zC-1Iy"/>

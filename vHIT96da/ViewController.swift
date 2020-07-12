@@ -101,6 +101,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var boxF:Bool=false
     @IBOutlet weak var vogButton: UIButton!
     @IBOutlet weak var vhitButton: UIButton!
+    
+    @IBOutlet weak var WakuAL: UIImageView!
+
+    @IBOutlet weak var WakuUS: UIImageView!
+    @IBOutlet weak var WakuUB: UIImageView!
+    @IBOutlet weak var WakuLS: UIImageView!
+    @IBOutlet weak var WakuLB: UIImageView!
+    
     var box1ys:CGFloat=0//上のboxのcenter:y VOGのみ
     var boxHeight:CGFloat=0//VOGのみ
     var mailWidth:CGFloat=0//VOG
@@ -1023,18 +1031,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         CGfacb = CGall.cropping(to:facbR)
         UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
         let h4=allR.size.height/3
-        /*
-        wakuAL.frame=CGRect(x:0,y:20,width:allR.size.width/3,height:h4)
-        wakuUS.frame=CGRect(x:0,y:h4+25,width:eyeR.size.width,height:eyeR.size.height)
-        wakuUB.frame=CGRect(x:0,y:h4+25+eyeR.size.height,width:eyebR.size.width,height:eyebR.size.height)
-        wakuLS.frame=CGRect(x:0,y:h4+30+eyeR.size.height+eyebR.size.height,width:facR.size.width,height:facR.size.height)
-        wakuLB.frame=CGRect(x:0,y:h4+30+eyeR.size.height+eyebR.size.height+facR.size.height,width:facbR.size.width,height:facbR.size.height)
-        wakuAL.image=UIall
-        wakuUS.image=UIeye
-        wakuUB.image=UIeyeb
-        wakuLS.image=UIfac
-        wakuLB.image=UIfacb
-   */
+        
+        WakuAL.frame=CGRect(x:0,y:20,width:allR.size.width/3,height:h4)
+        WakuUS.frame=CGRect(x:0,y:h4+25,width:eyeR.size.width,height:eyeR.size.height)
+        WakuUB.frame=CGRect(x:0,y:h4+25+eyeR.size.height,width:eyebR.size.width,height:eyebR.size.height)
+        WakuLS.frame=CGRect(x:0,y:h4+30+eyeR.size.height+eyebR.size.height,width:facR.size.width,height:facR.size.height)
+        WakuLB.frame=CGRect(x:0,y:h4+30+eyeR.size.height+eyebR.size.height+facR.size.height,width:facbR.size.width,height:facbR.size.height)
+        WakuAL.image=UIall
+        WakuUS.image=UIeye
+        WakuUB.image=UIeyeb
+        WakuLS.image=UIfac
+        WakuLB.image=UIfacb
+   
     }
 //    func dispRect_old(){//func vogGo(_ sender: Any) debugの時vogGoから呼んでいる
 //        let eyeborder:CGFloat = CGFloat(eyeBorder)
@@ -1160,7 +1168,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //            rectMode=0
 //        }
 //    }
-    
     
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
@@ -1591,7 +1598,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
         // 始点に移動する
-        
         //        context.move(to: CGPoint(x: 100, y: 100))
         //        context.addLine(to: CGPoint(x: 200, y: 200))
         //            context.strokePath()
