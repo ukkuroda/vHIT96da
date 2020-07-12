@@ -169,9 +169,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         showBoxies(f:boxF)
     }
     @IBAction func vogGo(_ sender: Any) {
-        
-        //        dispRect()
-        //        return
         rectType=0
         if calcFlag == true || vhit_vog == false{
             return
@@ -379,94 +376,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             kalVs[i][4]=0
         }
     }
-    /*
-    let KalQvog:CGFloat = 0.0001
-    let KalRvog:CGFloat = 0.001
-    var KalXvog:CGFloat = 0.0
-    var KalPvog:CGFloat = 0.0
-    var KalKvog:CGFloat = 0.0
-    func Kalmanmeasurementvog()
-    {
-        KalKvog = (KalPvog + KalQvog) / (KalPvog + KalQvog + KalRvog);
-        KalPvog = KalRvog * (KalPvog + KalQvog) / (KalRvog + KalPvog + KalQvog);
-    }
-    func Kalmanvog(measurement:CGFloat) -> CGFloat
-    {
-        Kalmanmeasurementvog();
-        let result = KalXvog + (measurement - KalXvog) * KalKvog;
-        KalXvog = result;
-        return result;
-    }
-    let KalQ:CGFloat = 0.0001
-    let KalR:CGFloat = 0.001
-    var KalX:CGFloat = 0.0
-    var KalP:CGFloat = 0.0
-    var KalK:CGFloat = 0.0
-    func Kalmanmeasurement()
-    {
-        KalK = (KalP + KalQ) / (KalP + KalQ + KalR);
-        KalP = KalR * (KalP + KalQ) / (KalR + KalP + KalQ);
-    }
-    func Kalman(measurement:CGFloat) -> CGFloat
-    {
-        Kalmanmeasurement();
-        let result = KalX + (measurement - KalX) * KalK;
-        KalX = result;
-        return result;
-    }
-    
-    let KalQ1:CGFloat = 0.0001
-    let KalR1:CGFloat = 0.001
-    var KalX1:CGFloat = 0.0
-    var KalP1:CGFloat = 0.0
-    var KalK1:CGFloat = 0.0
-    func Kalmanmeasurement1()
-    {
-        KalK1 = (KalP1 + KalQ1) / (KalP1 + KalQ1 + KalR1);
-        KalP1 = KalR1 * (KalP1 + KalQ1) / (KalR1 + KalP1 + KalQ1);
-    }
-    func Kalman1(measurement:CGFloat) -> CGFloat
-    {
-        Kalmanmeasurement1();
-        let result = KalX1 + (measurement - KalX1) * KalK1;
-        KalX1 = result;
-        return result;
-    }
-    let KalQ2:CGFloat = 0.0001
-    let KalR2:CGFloat = 0.001
-    var KalX2:CGFloat = 0.0
-    var KalP2:CGFloat = 0.0
-    var KalK2:CGFloat = 0.0
-    func Kalmanmeasurement2()
-    {
-        KalK2 = (KalP2 + KalQ2) / (KalP2 + KalQ2 + KalR2);
-        KalP2 = KalR2 * (KalP2 + KalQ2) / (KalR2 + KalP2 + KalQ2);
-    }
-    func Kalman2(measurement:CGFloat) -> CGFloat
-    {
-        Kalmanmeasurement2();
-        let result = KalX2 + (measurement - KalX2) * KalK2;
-        KalX2 = result;
-        return result;
-    }
-    let KalQ3:Double = 0.0001
-    let KalR3:Double = 0.001
-    var KalX3:Double = 0.0
-    var KalP3:Double = 0.0
-    var KalK3:Double = 0.0
-    func Kalmanmeasurement3()
-    {
-        KalK3 = (KalP3 + KalQ3) / (KalP3 + KalQ3 + KalR3);
-        KalP3 = KalR3 * (KalP3 + KalQ3) / (KalR3 + KalP3 + KalQ3);
-    }
-    func Kalman3(measurement:Double) -> Double
-    {
-        Kalmanmeasurement3();
-        let result = KalX3 + (measurement - KalX3) * KalK3;
-        KalX3 = result;
-        return result;
-    }
-*/
+ 
     func startTimer() {
         if timer?.isValid == true {
             timer.invalidate()
@@ -938,7 +848,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
 
     var allR:CGRect!
-    func dispRect(setF:Bool){//func vogGo(_ sender: Any) show_waks branchでvogGoから呼んでいる
+    func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let eyeborder:CGFloat = CGFloat(eyeBorder)
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
@@ -972,11 +882,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
         reader.startReading()
         
-        let CGeye:CGImage!
+        let CGeye:CGImage!//eye
         let UIeye:UIImage!
         var CGeyeb:CGImage!
         var UIeyeb:UIImage!
-        var CGfac:CGImage!
+        var CGfac:CGImage!//face
         var UIfac:UIImage!
         var CGfacb:CGImage!
         var UIfacb:UIImage!
@@ -1002,9 +912,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         sample = readerOutput.copyNextSampleBuffer()
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        //        if setF==true{
+    
         allR=resizeR2(allRs,viewRect:self.slowImage.frame,image: ciImage)
-        //        }
+
         var eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
         var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
         var facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
@@ -1044,138 +954,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         WakuLB.image=UIfacb
    
     }
-//    func dispRect_old(){//func vogGo(_ sender: Any) debugの時vogGoから呼んでいる
-//        let eyeborder:CGFloat = CGFloat(eyeBorder)
-//        //        print("eyeborder:",eyeBorder,faceF)
-//        //resizerectのチェックの時はここをコメントアウト*********************
-//        //       let fileURL = URL(fileURLWithPath: vidPath[vidCurrent])
-//        let fileURL = getfileURL(path: vidPath[vidCurrent])
-//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-//        let avAsset = AVURLAsset(url: fileURL, options: options)
-//        calcDate = videoDate.text!
-//        var reader: AVAssetReader! = nil
-//        do {
-//            reader = try AVAssetReader(asset: avAsset)
-//        } catch {
-//            #if DEBUG
-//            print("could not initialize reader.")
-//            #endif
-//            return
-//        }
-//        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-//            #if DEBUG
-//            print("could not retrieve the video track.")
-//            #endif
-//            return
-//        }
-//
-//        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-//        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-//
-//        reader.add(readerOutput)
-//        let frameRate = videoTrack.nominalFrameRate
-//        //let startframe=startPoints[vhitVideocurrent]
-//        let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
-//        let timeRange = CMTimeRange(start: startTime, end:kCMTimePositiveInfinity)
-//        //print("time",timeRange)
-//        reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
-//        reader.startReading()
-//        let CGeye:CGImage!
-//        let UIeye:UIImage!
-//        var CGeyeb:CGImage!
-//        var UIeyeb:UIImage!
-//        var CGfac:CGImage!
-//        var UIfac:UIImage!
-//        var CGfacb:CGImage!
-//        var UIfacb:UIImage!
-//        var CGall:CGImage!
-//        var UIall:UIImage!
-//        var CGfacall:CGImage!
-//        var UIfacall:UIImage!
-//        var eyeRs=wakuE
-//        var facRs=wakuF
-//        //設定枠 eyeRectScreen
-//        //iPhone上で左右が逆になる。分からんので下行の反則行為!eyeRsを操作する。
-//        //ciimageからresizeする時は左右逆になるか？
-//        //cgimageからcropする時はそのままか？
-//        eyeRs.origin.x=view.bounds.width-eyeRs.origin.x
-//        //facRs.origin.x=view.bounds.width-facRs.origin.x
-//        facRs.origin.x=eyeRs.origin.x + wakuF.origin.x - wakuE.origin.x
-//        //検出枠 eyebRectScreen
-//        let eyebRs=CGRect(x:eyeRs.origin.x-eyeborder,y:eyeRs.origin.y-eyeborder/4,width:eyeRs.size.width+2*eyeborder,height:eyeRs.size.height+eyeborder/2)
-//        let facbRs=CGRect(x:facRs.origin.x-eyeborder,y:facRs.origin.y-eyeborder/4,width:facRs.size.width+2*eyeborder,height:facRs.size.height+eyeborder/2)       //最大検出範囲 allRectScreen
-//
-//        let w6=view.bounds.width/6.0
-//        var allRs=CGRect(x:eyeRs.origin.x-w6,y:eyeRs.origin.y-w6/2,width: w6*2,height: w6+facRs.origin.y-eyeRs.origin.y)
-//        var facallRs=CGRect(x:eyeRs.origin.x-w6,y:eyeRs.origin.y-w6/2,width: w6*2,height: allRs.height)
-//        //        let allRs=CGRect(x:eyeRs.origin.x-view.bounds.width/6,y:eyeRs.origin.y-view.bounds.width/12,width: view.bounds.width/3,height: view.bounds.width/6)
-//        let context:CIContext = CIContext.init(options: nil)
-//        let orientation = UIImageOrientation.up//up=default right
-//        var sample:CMSampleBuffer!
-//        sample = readerOutput.copyNextSampleBuffer()
-//        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-//        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-//
-//        let allR=resizeR2(allRs,viewRect:self.slowImage.frame,image: ciImage)
-//        var eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
-//        var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
-//        eyeR.origin.x -= allR.origin.x
-//        eyeR.origin.y -= allR.origin.y
-//        eyebR.origin.x -= allR.origin.x
-//        eyebR.origin.y -= allR.origin.y
-//
-//        let facallR=resizeR2(facallRs,viewRect:self.slowImage.frame,image:ciImage)
-//        var facR = resizeR2(facRs, viewRect:self.slowImage.frame,image:ciImage)
-//        var facbR = resizeR2(facbRs,viewRect:self.slowImage.frame,image:ciImage)
-//        facR.origin.x -= facallR.origin.x
-//        facR.origin.y -= facallR.origin.y
-//        facbR.origin.x -= facallR.origin.x
-//        facbR.origin.y -= facallR.origin.y
-//
-//        printR(str: "eyeallR", rct: allR)
-//        printR(str: "eyeR", rct: eyeR)
-//        printR(str: "eyebR", rct: eyebR)
-//        printR(str: "facallR", rct: facallR)
-//        printR(str: "facR", rct: facR)
-//        printR(str: "facbR", rct: facbR)
-//        CGall = context.createCGImage(ciImage,from:allR)
-//        UIall=UIImage.init(cgImage: CGall,scale: 1.0,orientation: orientation)
-//        CGfacall = context.createCGImage(ciImage,from:facallR)
-//        UIfacall=UIImage.init(cgImage: CGfacall,scale: 1.0,orientation: orientation)
-//        CGeye = CGall.cropping(to: eyeR)
-//        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-//        CGeyeb = CGall.cropping(to:eyebR)
-//        UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
-//        CGfac = CGfacall.cropping(to: facR)
-//        UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
-//        CGfacb = CGfacall.cropping(to:facbR)
-//        UIfacb = UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
-//        if rectMode==0{
-//            slowImage.image=UIeye
-//        }else if rectMode==1{
-//            slowImage.image=UIeyeb
-//        }else if rectMode==2{
-//            slowImage.image=UIall
-//        }else if rectMode==3{
-//            slowImage.image=UIfac
-//        }else if rectMode==4{
-//            slowImage.image=UIfacb
-//        }else{
-//            slowImage.image=UIfacall
-//        }
-//        rectMode += 1
-//        if rectMode>5{
-//            rectMode=0
-//        }
-//    }
-    
+
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
     }
-    //
-    //    func printRect(r1 :CGRect,r2:CGRect){
-    //        print(Int(r1.origin.x),Int(r1.origin.y),Int(r1.size.width),Int(r1.size.height),",",Int(r2.origin.x),Int(r2.origin.y),Int(r2.size.width),Int(r2.size.height))
-    //    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         //      print("willappear")
@@ -2987,12 +2770,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
         if calcFlag == true || vHITboxView?.isHidden == true || waveTuple.count == 0{
             if vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
-                if sender.location(in: self.view).y < wakuE.origin.y{
-                    //print("current:",vidCurrent)
-                    //色々やったがダメ？？？？
-                    print("startframe:",startFrame)// vidImg[vidCurrent].size.width)
-                    //led2waku(video:getThumbnailFrom(path: vidPath[vidCurrent])!)
-//                    led2waku(video: getVideoframe())// vidImg[vidCurrent])
+                if sender.location(in: self.view).y < self.view.bounds.height/4 {
+                    print("startframe:",startFrame)
+                    dispWakuImages()
                 }else{
                     rectType += 1
                     if rectType > 1 {
