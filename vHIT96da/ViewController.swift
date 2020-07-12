@@ -2799,22 +2799,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
         if calcFlag == true || vHITboxView?.isHidden == true || waveTuple.count == 0{
             if vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
-//                if sender.location(in: self.view).y < self.view.bounds.height/4 {
-//                    if faceF==1{
-//                        print("tap upper 1/4")
-//                        dispWakuImages()
-//                    }
-//                }else{
-                    rectType += 1
-                    if rectType > 1 {
-                        rectType = 0
-                    }
-                    if vhit_vog==false || faceF==0{
-                        rectType=0
-                    }
-                    dispWakus()
+                rectType += 1
+                if rectType > 1 {
+                    rectType = 0
                 }
-//            }
+                if vhit_vog==false || faceF==0{
+                    rectType=0
+                }
+                dispWakus()
+            }
             return
         }
         if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
