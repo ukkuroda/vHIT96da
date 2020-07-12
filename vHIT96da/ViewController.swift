@@ -928,12 +928,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     
-    var rectMode:Int = 0
-    func dispRect(){//func vogGo(_ sender: Any) debugの時vogGoから呼んでいる
+
+    var allR:CGRect!
+    func dispRect(setF:Bool){//func vogGo(_ sender: Any) show_waks branchでvogGoから呼んでいる
         let eyeborder:CGFloat = CGFloat(eyeBorder)
-        //        print("eyeborder:",eyeBorder,faceF)
-        //resizerectのチェックの時はここをコメントアウト*********************
-        //       let fileURL = URL(fileURLWithPath: vidPath[vidCurrent])
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
@@ -965,6 +963,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //print("time",timeRange)
         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
         reader.startReading()
+        
         let CGeye:CGImage!
         let UIeye:UIImage!
         var CGeyeb:CGImage!
@@ -973,86 +972,195 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var UIfac:UIImage!
         var CGfacb:CGImage!
         var UIfacb:UIImage!
-        var CGall:CGImage!
+        var CGall:CGImage!//検出範囲枠
         var UIall:UIImage!
-        var CGfacall:CGImage!
-        var UIfacall:UIImage!
-        var eyeRs=wakuE
-        var facRs=wakuF
-        //設定枠 eyeRectScreen
-        //iPhone上で左右が逆になる。分からんので下行の反則行為!eyeRsを操作する。
-        //ciimageからresizeする時は左右逆になるか？
-        //cgimageからcropする時はそのままか？
-        eyeRs.origin.x=view.bounds.width-eyeRs.origin.x
-        //facRs.origin.x=view.bounds.width-facRs.origin.x
-        facRs.origin.x=eyeRs.origin.x + wakuF.origin.x - wakuE.origin.x
-        //検出枠 eyebRectScreen
-        let eyebRs=CGRect(x:eyeRs.origin.x-eyeborder,y:eyeRs.origin.y-eyeborder/4,width:eyeRs.size.width+2*eyeborder,height:eyeRs.size.height+eyeborder/2)
-        let facbRs=CGRect(x:facRs.origin.x-eyeborder,y:facRs.origin.y-eyeborder/4,width:facRs.size.width+2*eyeborder,height:facRs.size.height+eyeborder/2)       //最大検出範囲 allRectScreen
-        
+        let eyex=wakuE.origin.x//-wakuE.size.width/2
+        let eyey=wakuE.origin.y+wakuE.size.height/2
+        let eyeRs=CGRect(x:view.bounds.width-eyex,y:eyey,width: wakuE.width,height: wakuE.height)
+        //        print("waku",wakuE.width,wakuE.height)
+        //検出幅
+        let eyebRs = CGRect(x:eyeRs.origin.x-eyeborder,y:eyeRs.origin.y-eyeborder/4,width:eyeRs.size.width+2*eyeborder,height:eyeRs.size.height+eyeborder/2)
+        let facRs=CGRect(x:eyeRs.origin.x+wakuF.origin.x-wakuE.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
+        let facbRs = CGRect(x:facRs.origin.x-eyeborder,y:facRs.origin.y-eyeborder/4,width:facRs.size.width+2*eyeborder,height:facRs.size.height+eyeborder/2)
         let w6=view.bounds.width/6.0
-        var allRs=CGRect(x:eyeRs.origin.x-w6,y:eyeRs.origin.y-w6/2,width: w6*2,height: w6+facRs.origin.y-eyeRs.origin.y)
-        var facallRs=CGRect(x:eyeRs.origin.x-w6,y:eyeRs.origin.y-w6/2,width: w6*2,height: allRs.height)
-        //        let allRs=CGRect(x:eyeRs.origin.x-view.bounds.width/6,y:eyeRs.origin.y-view.bounds.width/12,width: view.bounds.width/3,height: view.bounds.width/6)
+        let w4=view.bounds.width/4.0
+        var allRs=CGRect(x:w4,y:eyeRs.origin.y-w6/2,width: w4*2,height: w6+facRs.origin.y-eyeRs.origin.y)
+        if faceF==0{
+            allRs=CGRect(x:w4,y:eyeRs.origin.y-w6/2,width: w4*2,height: w6)
+        }
         let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImageOrientation.up//up=default right
+        let orientation = UIImageOrientation.up//right
         var sample:CMSampleBuffer!
         sample = readerOutput.copyNextSampleBuffer()
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        
-        let allR=resizeR2(allRs,viewRect:self.slowImage.frame,image: ciImage)
+        //        if setF==true{
+        allR=resizeR2(allRs,viewRect:self.slowImage.frame,image: ciImage)
+        //        }
         var eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
         var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
+        var facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
+        var facbR = resizeR2(facbRs, viewRect: self.slowImage.frame, image: ciImage)
         eyeR.origin.x -= allR.origin.x
         eyeR.origin.y -= allR.origin.y
         eyebR.origin.x -= allR.origin.x
         eyebR.origin.y -= allR.origin.y
+        facR.origin.x -= allR.origin.x
+        facR.origin.y -= allR.origin.y
+        facbR.origin.x -= allR.origin.x
+        facbR.origin.y -= allR.origin.y
         
-        let facallR=resizeR2(facallRs,viewRect:self.slowImage.frame,image:ciImage)
-        var facR = resizeR2(facRs, viewRect:self.slowImage.frame,image:ciImage)
-        var facbR = resizeR2(facbRs,viewRect:self.slowImage.frame,image:ciImage)
-        facR.origin.x -= facallR.origin.x
-        facR.origin.y -= facallR.origin.y
-        facbR.origin.x -= facallR.origin.x
-        facbR.origin.y -= facallR.origin.y
-        
-        printR(str: "eyeallR", rct: allR)
-        printR(str: "eyeR", rct: eyeR)
-        printR(str: "eyebR", rct: eyebR)
-        printR(str: "facallR", rct: facallR)
-        printR(str: "facR", rct: facR)
-        printR(str: "facbR", rct: facbR)
-        CGall = context.createCGImage(ciImage,from:allR)
-        UIall=UIImage.init(cgImage: CGall,scale: 1.0,orientation: orientation)
-        CGfacall = context.createCGImage(ciImage,from:facallR)
-        UIfacall=UIImage.init(cgImage: CGfacall,scale: 1.0,orientation: orientation)
+        CGall = context.createCGImage(ciImage,from:allR)//
+        UIall = UIImage.init(cgImage: CGall, scale:1.0, orientation:orientation)
         CGeye = CGall.cropping(to: eyeR)
         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
         CGeyeb = CGall.cropping(to:eyebR)
         UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
-        CGfac = CGfacall.cropping(to: facR)
+        
+        CGfac = CGall.cropping(to: facR)
+        printR(str: "facR", rct: facR)
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
-        CGfacb = CGfacall.cropping(to:facbR)
-        UIfacb = UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
-        if rectMode==0{
-            slowImage.image=UIeye
-        }else if rectMode==1{
-            slowImage.image=UIeyeb
-        }else if rectMode==2{
-            slowImage.image=UIall
-        }else if rectMode==3{
-            slowImage.image=UIfac
-        }else if rectMode==4{
-            slowImage.image=UIfacb
-        }else{
-            slowImage.image=UIfacall
-        }
-        rectMode += 1
-        if rectMode>5{
-            rectMode=0
-        }
+        CGfacb = CGall.cropping(to:facbR)
+        UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
+        let h4=allR.size.height/3
+        /*
+        wakuAL.frame=CGRect(x:0,y:20,width:allR.size.width/3,height:h4)
+        wakuUS.frame=CGRect(x:0,y:h4+25,width:eyeR.size.width,height:eyeR.size.height)
+        wakuUB.frame=CGRect(x:0,y:h4+25+eyeR.size.height,width:eyebR.size.width,height:eyebR.size.height)
+        wakuLS.frame=CGRect(x:0,y:h4+30+eyeR.size.height+eyebR.size.height,width:facR.size.width,height:facR.size.height)
+        wakuLB.frame=CGRect(x:0,y:h4+30+eyeR.size.height+eyebR.size.height+facR.size.height,width:facbR.size.width,height:facbR.size.height)
+        wakuAL.image=UIall
+        wakuUS.image=UIeye
+        wakuUB.image=UIeyeb
+        wakuLS.image=UIfac
+        wakuLB.image=UIfacb
+   */
     }
+//    func dispRect_old(){//func vogGo(_ sender: Any) debugの時vogGoから呼んでいる
+//        let eyeborder:CGFloat = CGFloat(eyeBorder)
+//        //        print("eyeborder:",eyeBorder,faceF)
+//        //resizerectのチェックの時はここをコメントアウト*********************
+//        //       let fileURL = URL(fileURLWithPath: vidPath[vidCurrent])
+//        let fileURL = getfileURL(path: vidPath[vidCurrent])
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        let avAsset = AVURLAsset(url: fileURL, options: options)
+//        calcDate = videoDate.text!
+//        var reader: AVAssetReader! = nil
+//        do {
+//            reader = try AVAssetReader(asset: avAsset)
+//        } catch {
+//            #if DEBUG
+//            print("could not initialize reader.")
+//            #endif
+//            return
+//        }
+//        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+//            #if DEBUG
+//            print("could not retrieve the video track.")
+//            #endif
+//            return
+//        }
+//
+//        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+//        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+//
+//        reader.add(readerOutput)
+//        let frameRate = videoTrack.nominalFrameRate
+//        //let startframe=startPoints[vhitVideocurrent]
+//        let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
+//        let timeRange = CMTimeRange(start: startTime, end:kCMTimePositiveInfinity)
+//        //print("time",timeRange)
+//        reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
+//        reader.startReading()
+//        let CGeye:CGImage!
+//        let UIeye:UIImage!
+//        var CGeyeb:CGImage!
+//        var UIeyeb:UIImage!
+//        var CGfac:CGImage!
+//        var UIfac:UIImage!
+//        var CGfacb:CGImage!
+//        var UIfacb:UIImage!
+//        var CGall:CGImage!
+//        var UIall:UIImage!
+//        var CGfacall:CGImage!
+//        var UIfacall:UIImage!
+//        var eyeRs=wakuE
+//        var facRs=wakuF
+//        //設定枠 eyeRectScreen
+//        //iPhone上で左右が逆になる。分からんので下行の反則行為!eyeRsを操作する。
+//        //ciimageからresizeする時は左右逆になるか？
+//        //cgimageからcropする時はそのままか？
+//        eyeRs.origin.x=view.bounds.width-eyeRs.origin.x
+//        //facRs.origin.x=view.bounds.width-facRs.origin.x
+//        facRs.origin.x=eyeRs.origin.x + wakuF.origin.x - wakuE.origin.x
+//        //検出枠 eyebRectScreen
+//        let eyebRs=CGRect(x:eyeRs.origin.x-eyeborder,y:eyeRs.origin.y-eyeborder/4,width:eyeRs.size.width+2*eyeborder,height:eyeRs.size.height+eyeborder/2)
+//        let facbRs=CGRect(x:facRs.origin.x-eyeborder,y:facRs.origin.y-eyeborder/4,width:facRs.size.width+2*eyeborder,height:facRs.size.height+eyeborder/2)       //最大検出範囲 allRectScreen
+//
+//        let w6=view.bounds.width/6.0
+//        var allRs=CGRect(x:eyeRs.origin.x-w6,y:eyeRs.origin.y-w6/2,width: w6*2,height: w6+facRs.origin.y-eyeRs.origin.y)
+//        var facallRs=CGRect(x:eyeRs.origin.x-w6,y:eyeRs.origin.y-w6/2,width: w6*2,height: allRs.height)
+//        //        let allRs=CGRect(x:eyeRs.origin.x-view.bounds.width/6,y:eyeRs.origin.y-view.bounds.width/12,width: view.bounds.width/3,height: view.bounds.width/6)
+//        let context:CIContext = CIContext.init(options: nil)
+//        let orientation = UIImageOrientation.up//up=default right
+//        var sample:CMSampleBuffer!
+//        sample = readerOutput.copyNextSampleBuffer()
+//        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+//        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//
+//        let allR=resizeR2(allRs,viewRect:self.slowImage.frame,image: ciImage)
+//        var eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
+//        var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
+//        eyeR.origin.x -= allR.origin.x
+//        eyeR.origin.y -= allR.origin.y
+//        eyebR.origin.x -= allR.origin.x
+//        eyebR.origin.y -= allR.origin.y
+//
+//        let facallR=resizeR2(facallRs,viewRect:self.slowImage.frame,image:ciImage)
+//        var facR = resizeR2(facRs, viewRect:self.slowImage.frame,image:ciImage)
+//        var facbR = resizeR2(facbRs,viewRect:self.slowImage.frame,image:ciImage)
+//        facR.origin.x -= facallR.origin.x
+//        facR.origin.y -= facallR.origin.y
+//        facbR.origin.x -= facallR.origin.x
+//        facbR.origin.y -= facallR.origin.y
+//
+//        printR(str: "eyeallR", rct: allR)
+//        printR(str: "eyeR", rct: eyeR)
+//        printR(str: "eyebR", rct: eyebR)
+//        printR(str: "facallR", rct: facallR)
+//        printR(str: "facR", rct: facR)
+//        printR(str: "facbR", rct: facbR)
+//        CGall = context.createCGImage(ciImage,from:allR)
+//        UIall=UIImage.init(cgImage: CGall,scale: 1.0,orientation: orientation)
+//        CGfacall = context.createCGImage(ciImage,from:facallR)
+//        UIfacall=UIImage.init(cgImage: CGfacall,scale: 1.0,orientation: orientation)
+//        CGeye = CGall.cropping(to: eyeR)
+//        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
+//        CGeyeb = CGall.cropping(to:eyebR)
+//        UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
+//        CGfac = CGfacall.cropping(to: facR)
+//        UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
+//        CGfacb = CGfacall.cropping(to:facbR)
+//        UIfacb = UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
+//        if rectMode==0{
+//            slowImage.image=UIeye
+//        }else if rectMode==1{
+//            slowImage.image=UIeyeb
+//        }else if rectMode==2{
+//            slowImage.image=UIall
+//        }else if rectMode==3{
+//            slowImage.image=UIfac
+//        }else if rectMode==4{
+//            slowImage.image=UIfacb
+//        }else{
+//            slowImage.image=UIfacall
+//        }
+//        rectMode += 1
+//        if rectMode>5{
+//            rectMode=0
+//        }
+//    }
+    
     
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
