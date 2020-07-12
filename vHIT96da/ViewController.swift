@@ -364,6 +364,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         kalVs[num][2] = result;
         return result;
     }
+    func KalmanInit(){
+        for i in 0...4{
+            kalVs[i][2]=0
+            kalVs[i][3]=0
+            kalVs[i][4]=0
+        }
+    }
     /*
     let KalQvog:CGFloat = 0.0001
     let KalRvog:CGFloat = 0.001
@@ -634,6 +641,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vogPos.removeAll()
         vogPos5.removeAll()
         vHITgyro5.removeAll()
+        KalmanInit()
         //makeBoxies()
         showBoxies(f: true)
         vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
@@ -2623,6 +2631,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 Controller.session.stopRunning()
             }
             if Controller.recordedFlag==true{
+                KalmanInit()
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
 //                led2waku(video: vidImg[vidCurrent])
