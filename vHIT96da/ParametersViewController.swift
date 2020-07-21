@@ -13,18 +13,16 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var markdispText: UILabel!
     @IBOutlet weak var markText: UILabel!
     @IBOutlet weak var faceFbutton: UISwitch!
-    @IBOutlet weak var offButton: UIButton!
-    @IBOutlet weak var onButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     
     @IBOutlet weak var defaultButton: UIButton!
     
-    @IBAction func onBut(_ sender: UIButton) {
+    //@IBAction func onBut(_ sender: UIButton) {
 //        if okpMode==0{
 //
 //        }
 //        oknButton.image=UIImage(named:"circle")
-    }
+    //}
     @IBAction func offbut(_ sender: UIButton) {
         if okpMode==0{
             okpMode=1
@@ -39,7 +37,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     var widthRange:Int = 0
     var waveWidth:Int = 0
     var eyeBorder:Int = 0
-    var gyroDelta:Int = 0
+//    var gyroDelta:Int = 0
     var ratio1:Int = 0
     var ratio2:Int = 0
     var vhit_vog:Bool?
@@ -48,14 +46,14 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var paraText2: UILabel!
     @IBOutlet weak var paraText3: UILabel!
     @IBOutlet weak var paraText4: UILabel!
-    @IBOutlet weak var paraText5: UILabel!
+//    @IBOutlet weak var paraText5: UILabel!
     @IBOutlet weak var paraText6: UILabel!
     @IBOutlet weak var vhitpng: UIImageView!
     @IBOutlet weak var keyDown: UIButton!
     @IBOutlet weak var widthRangeinput: UITextField!
     @IBOutlet weak var waveWidthinput: UITextField!
     @IBOutlet weak var eyeBinput: UITextField!
-    @IBOutlet weak var gyroDinput: UITextField!
+//    @IBOutlet weak var gyroDinput: UITextField!
     @IBOutlet weak var ratio1input: UITextField!
     @IBOutlet weak var ratio2input: UITextField!
     
@@ -87,7 +85,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         widthRangeinput.endEditing(true)
         waveWidthinput.endEditing(true)
         eyeBinput.endEditing(true)
-        gyroDinput.endEditing(true)
+//        gyroDinput.endEditing(true)
         ratio1input.endEditing(true)
         ratio2input.endEditing(true)
         keyDown.isHidden = true
@@ -102,7 +100,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             faceFbutton.isOn=false
             faceF=0
             markdispSwitch.isOn=false
-            gyroDelta = 50
+//            gyroDelta = 50
             ratio1 = 100
             ratio2 = 100
         }else{
@@ -135,9 +133,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         eyeBorder = Field2value(field: eyeBinput)
     }
     
-    @IBAction func gyroDeltaButton(_  sender: Any) {
-        gyroDelta = Field2value(field: gyroDinput)
-    }
+//    @IBAction func gyroDeltaButton(_  sender: Any) {
+//        gyroDelta = Field2value(field: gyroDinput)
+//    }
 //    @IBAction func outerBorderButton(_ sender: Any) {
 ////        outerBorder = Field2value(field: outerBinput)
 //    }
@@ -154,7 +152,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.widthRangeinput.text = "\(widthRange)"
         self.waveWidthinput.text = "\(waveWidth)"
         self.eyeBinput.text = "\(eyeBorder)"
-        self.gyroDinput.text = "\(gyroDelta)"
+//        self.gyroDinput.text = "\(gyroDelta)"
         self.ratio1input.text = "\(ratio1)"
         self.ratio2input.text = "\(ratio2)"
         if faceF==0{
@@ -165,12 +163,12 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     }
     func setTexts(){
         let ww:CGFloat=view.bounds.width
-        let wh:CGFloat=view.bounds.height
+//        let wh:CGFloat=view.bounds.height
         let bw:CGFloat=45
         let bh:CGFloat=25
-        let bh1=bh+3
+        let bh1=bh+7
         let tw:CGFloat=ww-bw-10
-        let vhit_h:CGFloat=ww/4
+//        let vhit_h:CGFloat=ww/4
         let by:CGFloat=20//vhit_h+20
         let x1:CGFloat=3
         let x2=x1+bw+5
@@ -185,58 +183,40 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             vhitpng.isHidden=true
             paraText1.isHidden=true
             //paraText2.isHidden=true
-            paraText5.isHidden=true//false
+//            paraText5.isHidden=true//false
             paraText6.isHidden=false
             waveWidthinput.isHidden = true
             widthRangeinput.isHidden = true
             eyeBinput.isHidden = false
-            gyroDinput.isHidden = true
+//            gyroDinput.isHidden = true
             ratio1input.isHidden = false
             ratio2input.isHidden = false
-            offButton.isHidden=true
-            onButton.isHidden=true
 
             gyroText.isHidden = true
             paraText2.text = "VOG 波形表示高さの調整"
-//            paraText3.text="眼球位置（上段）表示の高さ ％"
-//            paraText4.text="眼球速度（下段）表示の高さ ％"
-//            paraText5.text="ETTモード：1画面に10秒の波形表示"
             paraText6.text="角膜上反射光源の移動（検出）幅"
             paraText2.frame   = CGRect(x:x2,   y: bh1*1.5 ,width: tw, height: bh)
             paraText3.frame   = CGRect(x:x2,   y: bh1*3 ,width: tw, height: bh)
             paraText4.frame   = CGRect(x:x2,   y: bh1*4 ,width: tw, height: bh)
-            paraText5.frame   = CGRect(x:x2,   y: bh1*5.5 ,width: tw, height: bh)
             paraText6.frame   = CGRect(x:x2,   y: bh1*5 ,width: tw, height: bh)
             ratio1input.frame = CGRect(x:x1,y: bh1*3 ,width: bw, height: bh)
             ratio2input.frame = CGRect(x:x1,y: bh1*4 ,width: bw, height: bh)
             eyeBinput.frame = CGRect(x:x1,y: bh1*5 ,width: bw, height: bh)
-//            if okpMode==1{
-//                offButton.frame = CGRect(x:x1+bh/2,y:bh1*5.5,width:bh,height: bh)
-//                onButton.frame = CGRect(x:x1+bh/2,y:bh1*6.5,width:bh,height:bh)
-//            }else{
-//                offButton.frame = CGRect(x:x1+bh/2,y:bh1*6.5,width:bh,height: bh)
-//                onButton.frame = CGRect(x:x1+bh/2,y:bh1*5.5,width:bh,height:bh)
-//            }
         }else{
             paraText1.frame = CGRect(x:x2,   y: by ,width: tw, height: bh)
             paraText2.frame = CGRect(x:x2,   y: by+bh1 ,width: tw, height: bh)
             paraText3.frame = CGRect(x:x2,   y: by+bh1*2 ,width: tw, height: bh)
             paraText4.frame = CGRect(x:x2,   y: by+bh1*3 ,width: tw, height: bh)
-            paraText5.frame = CGRect(x:x2,   y: by+bh1*4 ,width: tw, height: bh)
-            paraText6.frame = CGRect(x:x2,   y: by+bh1*5 ,width: tw, height: bh)
-            markText.frame  = CGRect(x:x2+4,y:by+bh1*6+3,width:tw,height:bh)
-//            markdispText.frame = CGRect(x:x2+2,y:by+bh1*7+6,width:tw,height:bh)
-            vhitpng.frame   = CGRect(x:0, y: by+bh1*7+10 ,width: ww, height: ww*9/32)
-            gyroText.frame = CGRect(x:5,y:by+bh1*7+25+ww/5,width:ww-10,height:bh*4)
+            paraText6.frame = CGRect(x:x2,   y: by+bh1*4 ,width: tw, height: bh)
+            markText.frame  = CGRect(x:x2+4, y: by+bh1*5+3,width:tw,height:bh)
+            vhitpng.frame   = CGRect(x:0,    y: by+bh1*6+10 ,width: ww, height: ww*9/32)
+            gyroText.frame = CGRect(x:5,     y: by+bh1*6+25+ww/5,width:ww-10,height:bh*4)
             waveWidthinput.frame = CGRect(x:x1,y: by,width: bw, height: bh)
             widthRangeinput.frame = CGRect(x:x1,y:by+bh1 ,width: bw, height: bh)
             ratio1input.frame = CGRect(x:x1,y: by+bh1*2 ,width: bw, height: bh)
             ratio2input.frame = CGRect(x:x1,y: by+bh1*3 ,width: bw, height: bh)
-            gyroDinput.frame = CGRect(x:x1,y: by+bh1*4 ,width: bw, height: bh)
-            eyeBinput.frame = CGRect(x:x1,y: by+bh1*5 ,width: bw, height: bh)
-            faceFbutton.frame =  CGRect(x:x1,y: by+bh1*6 ,width: bw, height: bh)
-            offButton.isHidden=true
-            onButton.isHidden=true
+            eyeBinput.frame = CGRect(x:x1,y: by+bh1*4 ,width: bw, height: bh)
+            faceFbutton.frame =  CGRect(x:x1,y: by+bh1*5 ,width: bw, height: bh)
         }
     }
     override func viewDidLoad() {
@@ -244,7 +224,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         widthRangeinput.delegate = self
         waveWidthinput.delegate = self
         eyeBinput.delegate = self
-        gyroDinput.delegate = self
+//        gyroDinput.delegate = self
         ratio1input.delegate = self
         ratio2input.delegate = self
         
@@ -252,7 +232,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         self.widthRangeinput.keyboardType = UIKeyboardType.numberPad
         self.waveWidthinput.keyboardType = UIKeyboardType.numberPad
         self.eyeBinput.keyboardType = UIKeyboardType.numberPad
-        self.gyroDinput.keyboardType = UIKeyboardType.numberPad
+//        self.gyroDinput.keyboardType = UIKeyboardType.numberPad
         self.ratio1input.keyboardType = UIKeyboardType.numberPad
         self.ratio2input.keyboardType = UIKeyboardType.numberPad
         setTexts()

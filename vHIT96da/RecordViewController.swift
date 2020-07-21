@@ -349,5 +349,10 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
         //recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
      }
-
+    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection]) {
+        recStart=CFAbsoluteTimeGetCurrent()
+        print("録画開始")
+        //fileOutput.stopRecording()
+        //recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
+     }
 }
