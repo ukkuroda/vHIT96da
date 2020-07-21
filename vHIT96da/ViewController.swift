@@ -703,7 +703,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let osFacY:CGFloat = (faceWithBorderRect.size.height - faceRect.size.height) / 2.0//左右方向
         let osFacX:CGFloat = (faceWithBorderRect.size.width - faceRect.size.width) / 2.0//上下方向
         
-        let osAllY:CGFloat = (allRect.height - eyeRect.height) / 2,0
+        let osAllY:CGFloat = (allRect.height - eyeRect.height) / 2.0
         let osAllX:CGFloat = (allRect.width - eyeRect.height) / 2.0
         
         while reader.status != AVAssetReaderStatus.reading {
