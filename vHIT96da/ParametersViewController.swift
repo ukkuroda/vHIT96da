@@ -13,18 +13,16 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var markdispText: UILabel!
     @IBOutlet weak var markText: UILabel!
     @IBOutlet weak var faceFbutton: UISwitch!
-    @IBOutlet weak var offButton: UIButton!
-    @IBOutlet weak var onButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     
     @IBOutlet weak var defaultButton: UIButton!
     
-    @IBAction func onBut(_ sender: UIButton) {
+    //@IBAction func onBut(_ sender: UIButton) {
 //        if okpMode==0{
 //
 //        }
 //        oknButton.image=UIImage(named:"circle")
-    }
+    //}
     @IBAction func offbut(_ sender: UIButton) {
         if okpMode==0{
             okpMode=1
@@ -193,8 +191,6 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
 //            gyroDinput.isHidden = true
             ratio1input.isHidden = false
             ratio2input.isHidden = false
-            offButton.isHidden=true
-            onButton.isHidden=true
 
             gyroText.isHidden = true
             paraText2.text = "VOG 波形表示高さの調整"
@@ -206,13 +202,6 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             ratio1input.frame = CGRect(x:x1,y: bh1*3 ,width: bw, height: bh)
             ratio2input.frame = CGRect(x:x1,y: bh1*4 ,width: bw, height: bh)
             eyeBinput.frame = CGRect(x:x1,y: bh1*5 ,width: bw, height: bh)
-//            if okpMode==1{
-//                offButton.frame = CGRect(x:x1+bh/2,y:bh1*5.5,width:bh,height: bh)
-//                onButton.frame = CGRect(x:x1+bh/2,y:bh1*6.5,width:bh,height:bh)
-//            }else{
-//                offButton.frame = CGRect(x:x1+bh/2,y:bh1*6.5,width:bh,height: bh)
-//                onButton.frame = CGRect(x:x1+bh/2,y:bh1*5.5,width:bh,height:bh)
-//            }
         }else{
             paraText1.frame = CGRect(x:x2,   y: by ,width: tw, height: bh)
             paraText2.frame = CGRect(x:x2,   y: by+bh1 ,width: tw, height: bh)
@@ -228,8 +217,6 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             ratio2input.frame = CGRect(x:x1,y: by+bh1*3 ,width: bw, height: bh)
             eyeBinput.frame = CGRect(x:x1,y: by+bh1*4 ,width: bw, height: bh)
             faceFbutton.frame =  CGRect(x:x1,y: by+bh1*5 ,width: bw, height: bh)
-            offButton.isHidden=true
-            onButton.isHidden=true
         }
     }
     override func viewDidLoad() {

@@ -58,23 +58,23 @@ extension UIImage {
     //
     //        return newImage
     //    }
-    func cropping(to: CGRect) -> UIImage? {
-        var opaque = false
-        if let cgImage = cgImage {
-            switch cgImage.alphaInfo {
-            case .noneSkipLast, .noneSkipFirst:
-                opaque = true
-            default:
-                break
-            }
-        }
-        
-        UIGraphicsBeginImageContextWithOptions(to.size, opaque, scale)
-        draw(at: CGPoint(x: -to.origin.x, y: -to.origin.y))
-        let result = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return result
-    }
+//    func cropping(to: CGRect) -> UIImage? {
+//        var opaque = false
+//        if let cgImage = cgImage {
+//            switch cgImage.alphaInfo {
+//            case .noneSkipLast, .noneSkipFirst:
+//                opaque = true
+//            default:
+//                break
+//            }
+//        }
+//
+//        UIGraphicsBeginImageContextWithOptions(to.size, opaque, scale)
+//        draw(at: CGPoint(x: -to.origin.x, y: -to.origin.y))
+//        let result = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        return result
+//    }
 }
 
 @available(iOS 13.0, *)
@@ -102,12 +102,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var vogButton: UIButton!
     @IBOutlet weak var vhitButton: UIButton!
     
-    @IBOutlet weak var WakuAL: UIImageView!
+    @IBOutlet weak var wakuAll: UIImageView!
     
-    @IBOutlet weak var WakuUS: UIImageView!
-    @IBOutlet weak var WakuUB: UIImageView!
-    @IBOutlet weak var WakuLS: UIImageView!
-    @IBOutlet weak var WakuLB: UIImageView!
+    @IBOutlet weak var wakuEye: UIImageView!
+    @IBOutlet weak var wakuEyeb: UIImageView!
+    @IBOutlet weak var wakuFac: UIImageView!
+    @IBOutlet weak var wakuFacb: UIImageView!
     
     var box1ys:CGFloat=0//上のboxのcenter:y VOGのみ
     var boxHeight:CGFloat=0//VOGのみ
@@ -168,6 +168,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         showBoxies(f:boxF)
     }
+    
     @IBAction func vogGo(_ sender: Any) {
         rectType=0
         if calcFlag == true || vhit_vog == false{
@@ -190,6 +191,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         showBoxies(f: boxF)
     }
+    
     var startPoint:Int = 0
     var startFrame:Int=0
     var calcFlag:Bool = false//calc中かどうか
@@ -214,9 +216,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var wave3View:UIImageView?
     //    @IBOutlet weak var wave1View: UIImageView!//debug用
     //    @IBOutlet weak var wave2View: UIImageView!//debug用
-    
-    var wakuE = CGRect(x:300,y:100,width:5,height:5)//tekitou
-    var wakuF = CGRect(x:300,y:200,width:5,height:5)
+    var wakuE = CGRect(x:300.0,y:100.0,width:5.0,height:5.0)
+    var wakuF = CGRect(x:300.0,y:200.0,width:5.0,height:5.0)
     
     @IBOutlet weak var backImage2: UIImageView!
     @IBOutlet weak var backImage: UIImageView!
@@ -609,7 +610,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         //        let allR = resizeRect(allRs,viewRect:self.slowImage.frame,image: cgImage)
         let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImageOrientation.up//right
+        let up = UIImageOrientation.up//right
         var sample:CMSampleBuffer!
         stopButton.isEnabled = true
         sample = readerOutput.copyNextSampleBuffer()
@@ -625,6 +626,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
         var facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
         var facbR = resizeR2(facbRs, viewRect: self.slowImage.frame, image: ciImage)
+        
         eyeR.origin.x -= allR.origin.x
         eyeR.origin.y -= allR.origin.y
         eyebR.origin.x -= allR.origin.x
@@ -642,17 +644,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        UIall=UIImage.init(cgImage: CGall,scale: 1.0,orientation: orientation)
         //        eyebR.origin.y -= eyebR.height
         CGeye = CGall.cropping(to: eyeR)
-        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
+        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:up)
         //     UIImageWriteToSavedPhotosAlbum(UIeye, nil, nil, nil)//albumに書きだす
         //     UIImageWriteToSavedPhotosAlbum(vidImg[vidCurrent], nil, nil, nil)
         
         CGeyeb = CGall.cropping(to:eyebR)
-        UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
+        UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:up)
+        
         if faceF==1{
             CGfac = CGall.cropping(to: facR)
-            UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
+            UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:up)
             CGfacb = CGall.cropping(to:facbR)
-            UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
+            UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:up)
         }
         //face markを下右に置くと計算できない。何故だ、バグ
         //face markを真下か左に置くと解析できるが、雑音が多い。何故だ、バグ
@@ -683,9 +686,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let osAllY:CGFloat = (allR.height-eyeR.height)/2
         let osAllX:CGFloat = (allR.width-eyeR.height)/2
+        
         while reader.status != AVAssetReaderStatus.reading {
             sleep(UInt32(0.1))
         }
+        
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
             var ex:CGFloat = 0
             var ey:CGFloat = 0
@@ -702,15 +707,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
                     cvError -= 1
                     //                cvfacError -= 1
-                    if cvError<2{
+                    if cvError < 2{
                         let ciImage: CIImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.up) //27secVideo ->10sec
                         CGall = context.createCGImage(ciImage, from: allR)!
-                        if eyebR.width != allR.width{
+                        if eyebR.width != allR.width { //
                             CGeyeb = CGall.cropping(to: eyebR)!
                         }else{
+                            print("allR:", allR.origin.x, allR.origin.y, allR.width, allR.height)
                             CGeyeb = CGall.cropping(to: CGRect(x:0,y:0,width: allR.width,height:allR.height))
                         }
-                        UIeyeb = UIImage.init(cgImage: CGeyeb, scale:1.0, orientation:orientation)
+                        UIeyeb = UIImage.init(cgImage: CGeyeb, scale:1.0, orientation:up)
+                        DispatchQueue.main.async {
+                            self.wakuEye.frame = CGRect(x:0, y:500, width:100, height:100)
+                            self.wakuEye.image = UIeye
+                            self.wakuEyeb.frame = CGRect(x:100, y:500, width:100, height:100)
+                            self.wakuEyeb.image = UIeyeb
+                        }
                         //REyebをチェックする時　ここまで
                         //                eX=eY=0
                         let maxV=self.openCV.matching(UIeyeb, narrow: UIeye, x: eX, y: eY)
@@ -745,7 +757,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 CGfacb = CGall.cropping(to: facbR)
                                 //                            self.printR(str: "facbR:", rct: facbR)
                                 //self.printR(str: "cgall", rct: allR)
-                                UIfacb = UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
+                                UIfacb = UIImage.init(cgImage: CGfacb,scale:1.0,orientation:up)
+                                DispatchQueue.main.async {
+                                    self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
+                                    self.wakuFac.image = UIfac
+                                    self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
+                                    self.wakuFacb.image = UIfacb
+                                }
                                 let maxVf=self.openCV.matching(UIfacb, narrow: UIfac, x: fX, y: fY)
                                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                                     usleep(1)
@@ -781,7 +799,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         ey=0
                         fy=0
                     }
+                    
                     //                print("cnt err ey eyebR",vHITcnt,cvError,ey,Int(eyebR.height))
+                                        
+                    // faceも検知している場合にはfyをkalmanにかけvHITface/vHITface5に追加。検知していない場合は0を追加
                     if self.faceF==1{
                         let face5=12.0*self.Kalman(value: fy,num: 0)
                         self.vHITface.append(face5)
@@ -793,12 +814,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         self.vHITface.append(0)
                         self.vHITface5.append(0)
                     }
+
+                    // eyePos, ey, fyをそれぞれ配列に追加
+                    // vogをkalmanにかけ配列に追加
                     let eyePos5=1.0*self.Kalman(value:eyePos,num:1)
                     self.vogPos5.append(eyePos5)
                     self.vogPos.append(eyePos5)
                     if vHITcnt > 5{
                         self.vogPos5[vHITcnt-2]=(self.vogPos[vHITcnt]+self.vogPos[vHITcnt-1]+self.vogPos[vHITcnt-2]+self.vogPos[vHITcnt-3]+self.vogPos[vHITcnt-4])/5
                     }
+                    
+                    // vHITeyeをkalmanにかけ配列に追加
                     let eye5=12.0*self.Kalman(value: ey,num:2)//そのままではずれる
                     //                self.printRect(r1: REyeb,r2: eyebR0)
                     self.vHITeye5.append(eye5-self.vHITface5.last!)
@@ -806,6 +832,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     if vHITcnt > 5{
                         self.vHITeye5[vHITcnt-2]=(self.vHITeye[vHITcnt]+self.vHITeye[vHITcnt-1]+self.vHITeye[vHITcnt-2]+self.vHITeye[vHITcnt-3]+self.vHITeye[vHITcnt-4])/5
                     }
+
+
                     vHITcnt += 1
                     while reader.status != AVAssetReaderStatus.reading {
                         sleep(UInt32(0.1))
@@ -937,19 +965,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let h3=allR.size.height/4
         var w3=allR.size.width/4
         let h4=view.bounds.height/2
-        WakuAL.frame=CGRect(x:0,y:h4,width:w3,height:h3)
-        WakuUS.frame=CGRect(x:w3,y:h4,width:eyeR.size.width*2,height:eyeR.size.height*2)
+        wakuAll.frame=CGRect(x:0,y:h4,width:w3,height:h3)
+        wakuEye.frame=CGRect(x:w3,y:h4,width:eyeR.size.width*2,height:eyeR.size.height*2)
         w3 += eyeR.size.width*2
-        WakuUB.frame=CGRect(x:w3,y:h4,width:eyebR.size.width*2,height:eyebR.size.height*2)
+        wakuEyeb.frame=CGRect(x:w3,y:h4,width:eyebR.size.width*2,height:eyebR.size.height*2)
         w3 += eyebR.size.width*2
-        WakuLS.frame=CGRect(x:w3,y:h4,width:facR.size.width*2,height:facR.size.height*2)
+        wakuFac.frame=CGRect(x:w3,y:h4,width:facR.size.width*2,height:facR.size.height*2)
         w3 += facR.size.width*2
-        WakuLB.frame=CGRect(x:w3,y:h4,width:facbR.size.width*2,height:facbR.size.height*2)
-        WakuAL.image=UIall
-        WakuUS.image=UIeye
-        WakuUB.image=UIeyeb
-        WakuLS.image=UIfac
-        WakuLB.image=UIfacb
+        wakuFacb.frame=CGRect(x:w3,y:h4,width:facbR.size.width*2,height:facbR.size.height*2)
+        wakuAll.image=UIall
+        wakuEye.image=UIeye
+        wakuEyeb.image=UIeyeb
+        wakuFac.image=UIfac
+        wakuFacb.image=UIfacb
         
     }
     
