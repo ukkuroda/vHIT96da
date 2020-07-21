@@ -889,7 +889,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     
-    var allR:CGRect!
+  /*  var allR:CGRect!
     
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let eyeborder:CGFloat = CGFloat(eyeBorder)
@@ -1020,7 +1020,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuFacb.image=UIfacb
         
     }
-    
+    */
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
     }
@@ -2831,9 +2831,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     saveGyro(path: vidPath[vidCurrent])//末尾のgyroDeltaを書き換える
                 }
             }else{
-                if faceF==1{
-                    dispWakuImages()// for debug
-                }
+//                if faceF==1{
+//                    dispWakuImages()// for debug
+//                }
             }
         }
     }
