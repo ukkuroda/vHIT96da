@@ -268,7 +268,7 @@ class PlayVideoViewController: UIViewController {
         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
         reader.add(readerOutput)
         reader.startReading()
-        while reader.status != AVAssetReaderStatus.reading {
+        while reader.status != AVAssetReader.Status.reading {
             sleep(UInt32(0.1))
         }
   
@@ -296,7 +296,7 @@ class PlayVideoViewController: UIViewController {
             return nil
         }
         let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImageOrientation.right
+        let orientation = UIImage.Orientation.right
         let pixelBuffer=slowFrames1[currPos]
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!

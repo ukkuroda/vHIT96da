@@ -164,8 +164,8 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             do {
                 try videoDevice!.lockForConfiguration()
                 videoDevice!.activeFormat = selectedFormat
-                videoDevice!.activeVideoMinFrameDuration = CMTimeMake(1, Int32(desiredFps))
-                videoDevice!.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(desiredFps))
+                videoDevice!.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(desiredFps))
+                videoDevice!.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(desiredFps))
                 videoDevice!.unlockForConfiguration()
     //            print("フォーマット・フレームレートを設定 : \(desiredFps) fps・\(maxWidth) px")
             }
@@ -225,7 +225,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
  
         // ファイル出力設定
         fileOutput = AVCaptureMovieFileOutput()
-        fileOutput.maxRecordedDuration = CMTimeMake(3*60, 1)//最長録画時間
+        fileOutput.maxRecordedDuration = CMTimeMake(value: 3*60, timescale: 1)//最長録画時間
         session.addOutput(fileOutput)
         
         let videoLayer : AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: session)
