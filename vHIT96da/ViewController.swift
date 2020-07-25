@@ -1715,7 +1715,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         eyeWaku.backgroundColor = UIColor.clear
         eyeWaku.layer.borderWidth=1.0
         
-        eyeWaku.frame = CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width:wakuE.size.width,height: wakuE.size.height)
+        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
         
         faceWaku.layer.borderColor = UIColor.green.cgColor
         faceWaku.layer.borderWidth = 1.0
@@ -1733,7 +1733,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if  vhit_vog==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku.frame=nullRect
         }else{
-            faceWaku.frame=CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width:wakuF.size.width,height: wakuF.size.height)
+            faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
         }
         
         //       printR(str: "wakuF", rct: wakuF)
