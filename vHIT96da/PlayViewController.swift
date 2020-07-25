@@ -64,9 +64,9 @@ class PlayViewController: UIViewController {
         layer.frame = view.bounds
         view.layer.addSublayer(layer)
         // Create Movie SeekBar
-        seekBar.frame = CGRect(x: 10, y: wh-110, width: ww - 20, height: 50)
-        //        seekBar.layer.position = CGPoint(x: view.bounds.midX, y: view.bounds.maxY - 100)
+        seekBar.frame = CGRect(x: 10, y: wh-100, width: ww - 20, height: 40)
         seekBar.minimumValue = 0
+        seekBar.layer.cornerRadius = 5
         seekBar.backgroundColor = UIColor.white
         seekBar.thumbTintColor = UIColor.black
         duration=Float(CMTimeGetSeconds(avAsset.duration))
@@ -116,7 +116,7 @@ class PlayViewController: UIViewController {
         exitLabel!.text = "EXIT"
         view.addSubview(exitLabel)
         
-        explanationLabel = UILabel(frame: CGRect(x: 10, y: wh-200, width: ww - 20, height: 30))
+        explanationLabel = UILabel(frame: CGRect(x: 10, y: wh-180, width: ww - 20, height: 30))
         explanationLabel!.layer.masksToBounds = true
         explanationLabel!.layer.cornerRadius = 5.0
         explanationLabel!.backgroundColor = UIColor.darkGray
@@ -125,8 +125,10 @@ class PlayViewController: UIViewController {
         explanationLabel!.text = "Set the start frame & exit"
         view.addSubview(explanationLabel!)
         
-        currTime = UILabel(frame:CGRect(x:ww-150,y:wh-150,width:140,height:25))
+        currTime = UILabel(frame:CGRect(x:ww-150,y:wh-140,width:140,height:30))
         currTime?.backgroundColor = UIColor.white
+        currTime?.layer.masksToBounds = true
+        currTime?.layer.cornerRadius = 5
         currTime?.textColor = UIColor.black
         currTime?.textAlignment = .center
         currTime!.text = String(format:"%.2f/%.2f",0.0,duration)
