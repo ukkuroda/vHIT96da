@@ -1020,6 +1020,46 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuFacb.image=UIfacb
         
     }
+    func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
+        let fileURL = getfileURL(path: vidPath[vidCurrent])
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        var reader: AVAssetReader! = nil
+        do {
+            reader = try AVAssetReader(asset: avAsset)
+        } catch {
+            #if DEBUG
+            print("could not initialize reader.")
+            #endif
+            return UIImage(named:"led")!
+        }
+        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+            #if DEBUG
+            print("could not retrieve the video track.")
+            #endif
+            return UIImage(named:"led")!
+        }
+        
+        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+        
+        reader.add(readerOutput)
+        let frameRate = videoTrack.nominalFrameRate
+        //let startframe=startPoints[vhitVideocurrent]
+        let startTime = CMTime(value: CMTimeValue(frameNumber), timescale: CMTimeScale(frameRate))
+        let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
+        //print("time",timeRange)
+        reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
+        reader.startReading()
+        let context:CIContext = CIContext.init(options: nil)
+        let orientation = UIImage.Orientation.right
+        var sample:CMSampleBuffer!
+        sample = readerOutput.copyNextSampleBuffer()
+        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+    }
     
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
@@ -2228,6 +2268,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         makeBoxies()//three boxies of gyro vHIT vog
         showBoxies(f: false)//vhit_vogに応じてviewを表示
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
+        self.setNeedsStatusBarAppearanceUpdate()
+        prefersHomeIndicatorAutoHidden
+    }
+    override var prefersHomeIndicatorAutoHidden: Bool {
+         get {
+             return true
+         }
+     }
+//    override func prefersHomeIndicatorAutoHidden() -> Bool {
+//        return true
+//    }
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     func drawWakulines(width w:CGFloat,height h:CGFloat) ->UIImage{
         let size = CGSize(width:w, height:h)
@@ -2575,9 +2628,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let curTime=Controller.seekBarValue
                 startFrame=Int(curTime*240.0)
                 print("startFrame",startFrame,curTime)
+                slowImage.image=getframeImage(frameNumber: startFrame)
 //                startFrame = Controller.startFrame!
 //                slowImage.image = Controller.playImage.image
-//                vidImg[vidCurrent]=slowImage.image!
+                vidImg[vidCurrent]=slowImage.image!
                 let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
                 let sec:Double = Double(secs[0])!
                 let secd:Double = sec - Double(startPoint)/240.0
