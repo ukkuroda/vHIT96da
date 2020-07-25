@@ -795,9 +795,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage,scale:1.0,orientation:up)
                                 
                                 DispatchQueue.main.async {
-                                    self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
+                                    let h2=200.0//動かないぞ？self.view.bounds.height/2
+                                    self.wakuFac.frame = CGRect(x:200, y:200, width:100, height:100)
                                     self.wakuFac.image = faceUIImage
-                                    self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
+                                    self.wakuFacb.frame = CGRect(x:300, y:200, width:100, height:100)
                                     self.wakuFacb.image = faceWithBorderUIImage
                                 }
                                 
@@ -2481,42 +2482,42 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITlineView?.isHidden = true //removeFromSuperview()
         gyrolineView?.isHidden = true //removeFromSuperview()
     }
-    func getVideoframe()->UIImage{
-        let fileURL = getfileURL(path: vidPath[vidCurrent])
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        let avAsset = AVURLAsset(url: fileURL, options: options)
-        var reader: AVAssetReader! = nil
-        do {
-            reader = try AVAssetReader(asset: avAsset)
-        } catch {
-            #if DEBUG
-            print("could not initialize reader.")
-            #endif
-            return UIImage(named:"led")!
-        }
-        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-            #if DEBUG
-            print("could not retrieve the video track.")
-            #endif
-            return UIImage(named:"led")!
-        }
-        
-        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-        reader.add(readerOutput)
-        reader.startReading()
-        while reader.status != AVAssetReader.Status.reading {
-            sleep(UInt32(0.1))
-        }
-        let sample = readerOutput.copyNextSampleBuffer()
-        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-        let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImage.Orientation.right
-        
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-    }
+//    func getVideoframe()->UIImage{
+//        let fileURL = getfileURL(path: vidPath[vidCurrent])
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        let avAsset = AVURLAsset(url: fileURL, options: options)
+//        var reader: AVAssetReader! = nil
+//        do {
+//            reader = try AVAssetReader(asset: avAsset)
+//        } catch {
+//            #if DEBUG
+//            print("could not initialize reader.")
+//            #endif
+//            return UIImage(named:"led")!
+//        }
+//        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+//            #if DEBUG
+//            print("could not retrieve the video track.")
+//            #endif
+//            return UIImage(named:"led")!
+//        }
+//        
+//        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+//        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+//        reader.add(readerOutput)
+//        reader.startReading()
+//        while reader.status != AVAssetReader.Status.reading {
+//            sleep(UInt32(0.1))
+//        }
+//        let sample = readerOutput.copyNextSampleBuffer()
+//        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+//        let context:CIContext = CIContext.init(options: nil)
+//        let orientation = UIImage.Orientation.right
+//        
+//        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+//        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+//    }
     /*
      func resizeV2S(rect:CGRect,viewRect:CGRect,image:CGImage)->CGRect{//video2screen
      let vw = viewRect.height//iPhone画面

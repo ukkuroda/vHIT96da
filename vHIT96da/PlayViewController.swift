@@ -175,7 +175,9 @@ class PlayViewController: UIViewController {
     // SeekBar Value Changed
     @objc func onSliderValueChange(){
         if playF==true{
-            return
+             videoPlayer.pause()
+              startButton.setTitle("Play", for: UIControl.State.normal)
+              playF=false
         }
         let newTime = CMTime(seconds: Double(seekBar.value), preferredTimescale: 600)
         currentCMTime=newTime
