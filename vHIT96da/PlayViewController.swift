@@ -19,7 +19,7 @@ class PlayViewController: UIViewController {
     var exitLabel:UILabel!
     var duration:Float=0
     var currTime:UILabel?
-    var duraTime:UILabel?
+//    var duraTime:UILabel?
     var timer: Timer!
     var videoPath:String?
     var explanationLabel:UILabel?
@@ -87,7 +87,8 @@ class PlayViewController: UIViewController {
             let value = Float(self.seekBar.maximumValue - self.seekBar.minimumValue) * Float(time) / Float(self.duration) + Float(self.seekBar.minimumValue)
             self.seekBar.value = value
             self.seekBarValue=value
-            self.currTime!.text = String(format:"%.2f",value)
+            self.currTime!.text = String(format:"%.2f/%.2f",value,self.duration)
+//            self.currTime!.text = String(format:"%.2f",value)
         })
         // Create Movie Start Button
         startButton = UIButton(frame: CGRect(x: ww/2-40, y: wh-50, width: 80, height: 40))
@@ -124,18 +125,18 @@ class PlayViewController: UIViewController {
         explanationLabel!.text = "Set the start frame & exit"
         view.addSubview(explanationLabel!)
         
-        currTime = UILabel(frame:CGRect(x:ww-80,y:wh-140,width:70,height:25))
+        currTime = UILabel(frame:CGRect(x:ww-150,y:wh-150,width:140,height:25))
         currTime?.backgroundColor = UIColor.white
         currTime?.textColor = UIColor.black
         currTime?.textAlignment = .center
-        currTime!.text = "0.00"
+        currTime!.text = String(format:"%.2f/%.2f",0.0,duration)
         view.addSubview(currTime!)
-        duraTime = UILabel(frame:CGRect(x:10,y:wh-140,width:70,height:25))
-        duraTime?.backgroundColor = UIColor.white
-        duraTime?.textColor = UIColor.black
-        duraTime?.textAlignment = .center
-        duraTime!.text = String(format:"%.2f",duration)
-        view.addSubview(duraTime!)
+//        duraTime = UILabel(frame:CGRect(x:10,y:wh-150,width:70,height:25))
+//        duraTime?.backgroundColor = UIColor.white
+//        duraTime?.textColor = UIColor.black
+//        duraTime?.textAlignment = .center
+//        duraTime!.text = String(format:"%.2f/%.2f",0.0,duration)
+//        view.addSubview(duraTime!)
         timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
     }
     // Start Button Tapped
@@ -180,7 +181,8 @@ class PlayViewController: UIViewController {
         currentCMTime=newTime
         seekBarValue=seekBar.value
         print(seekBarValue)
-        currTime!.text = String(format:"%.2f",seekBarValue)
+         currTime!.text = String(format:"%.2f/%.2f",seekBarValue,duration)
+//        currTime!.text = String(format:"%.2f",seekBarValue)
         videoPlayer.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
     }
 }

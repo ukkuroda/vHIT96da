@@ -2402,17 +2402,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("prepare para")
             #endif
-        }else if let vc = segue.destination as? PlayVideoViewController{
-            let Controller:PlayVideoViewController = vc
-            if vidCurrent == -1{
-                Controller.videoPath = ""
-                Controller.currPos = 0
-                Controller.videoDateNum = ""
-            }else{
-                Controller.videoPath = vidPath[vidCurrent]
-                Controller.currPos = 0
-                Controller.videoDateNum = vidDate[vidCurrent]
-            }
+//        }else if let vc = segue.destination as? PlayVideoViewController{
+//            let Controller:PlayVideoViewController = vc
+//            if vidCurrent == -1{
+//                Controller.videoPath = ""
+//                Controller.currPos = 0
+//                Controller.videoDateNum = ""
+//            }else{
+//                Controller.videoPath = vidPath[vidCurrent]
+//                Controller.currPos = 0
+//                Controller.videoDateNum = vidDate[vidCurrent]
+//            }
         }else if let vc = segue.destination as? PlayViewController{
             let Controller:PlayViewController = vc
             if vidCurrent == -1{
@@ -2580,19 +2580,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
-        }else if let vc = segue.source as? PlayVideoViewController{
-            let Controller:PlayVideoViewController = vc
-            if !(vidCurrent == -1){
-                startFrame = Controller.currPos*24
-                slowImage.image = Controller.playImage.image
-                vidImg[vidCurrent]=slowImage.image!
-                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
-                let sec:Double = Double(secs[0])!
-                let secd:Double = sec - Double(startPoint)/240.0
-                let secd2:Double = Double(Int(secd*10.0))/10.0
-                vidDura[vidCurrent]="\(secd2)" + "s"
-                //                print(posLED)
-            }
+//        }else if let vc = segue.source as? PlayVideoViewController{
+//            let Controller:PlayVideoViewController = vc
+//            if !(vidCurrent == -1){
+//                startFrame = Controller.currPos*24
+//                slowImage.image = Controller.playImage.image
+//                vidImg[vidCurrent]=slowImage.image!
+//                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
+//                let sec:Double = Double(secs[0])!
+//                let secd:Double = sec - Double(startPoint)/240.0
+//                let secd2:Double = Double(Int(secd*10.0))/10.0
+//                vidDura[vidCurrent]="\(secd2)" + "s"
+//                //                print(posLED)
+//            }
             //            led2waku(video: vidImg[vidCurrent])
         }else if let vc = segue.source as? PlayViewController{
             let Controller:PlayViewController = vc
