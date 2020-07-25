@@ -569,7 +569,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let frameRate = videoTrack.nominalFrameRate
         //let startframe=startPoints[vhitVideocurrent]
         let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
-        let timeRange = CMTimeRange(start: startTime, end:kCMTimePositiveInfinity)
+        let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
         //print("time",timeRange)
         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
         reader.startReading()
@@ -629,7 +629,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         //        let allR = resizeRect(allRs,viewRect:self.slowImage.frame,image: cgImage)
         let context:CIContext = CIContext.init(options: nil)
-        let up = UIImageOrientation.up//right
+        let up = UIImage.Orientation.up//right
         var sample:CMSampleBuffer!
         stopButton.isEnabled = true
         sample = readerOutput.copyNextSampleBuffer()
@@ -706,7 +706,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let osAllY:CGFloat = (allRect.height - eyeRect.height) / 2.0
         let osAllX:CGFloat = (allRect.width - eyeRect.height) / 2.0
         
-        while reader.status != AVAssetReaderStatus.reading {
+        while reader.status != AVAssetReader.Status.reading {
             sleep(UInt32(0.1))
         }
         
@@ -795,9 +795,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage,scale:1.0,orientation:up)
                                 
                                 DispatchQueue.main.async {
-                                    self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
+                                    let h2=200.0//動かないぞ？self.view.bounds.height/2
+                                    self.wakuFac.frame = CGRect(x:200, y:200, width:100, height:100)
                                     self.wakuFac.image = faceUIImage
-                                    self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
+                                    self.wakuFacb.frame = CGRect(x:300, y:200, width:100, height:100)
                                     self.wakuFacb.image = faceWithBorderUIImage
                                 }
                                 
@@ -875,7 +876,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     
                     
                     vHITcnt += 1
-                    while reader.status != AVAssetReaderStatus.reading {
+                    while reader.status != AVAssetReader.Status.reading {
                         sleep(UInt32(0.1))
                     }
                 }
@@ -920,7 +921,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let frameRate = videoTrack.nominalFrameRate
         //let startframe=startPoints[vhitVideocurrent]
         let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
-        let timeRange = CMTimeRange(start: startTime, end:kCMTimePositiveInfinity)
+        let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
         //print("time",timeRange)
         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
         reader.startReading()
@@ -950,7 +951,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         
         let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImageOrientation.up//right
+        let orientation = UIImage.Orientation.up//right
         var sample:CMSampleBuffer!
         sample = readerOutput.copyNextSampleBuffer()
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
@@ -1020,7 +1021,47 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuFacb.image=UIfacb
         
     }
-    */
+    func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
+        let fileURL = getfileURL(path: vidPath[vidCurrent])
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        var reader: AVAssetReader! = nil
+        do {
+            reader = try AVAssetReader(asset: avAsset)
+        } catch {
+            #if DEBUG
+            print("could not initialize reader.")
+            #endif
+            return UIImage(named:"led")!
+        }
+        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+            #if DEBUG
+            print("could not retrieve the video track.")
+            #endif
+            return UIImage(named:"led")!
+        }
+        
+        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+        
+        reader.add(readerOutput)
+        let frameRate = videoTrack.nominalFrameRate
+        //let startframe=startPoints[vhitVideocurrent]
+        let startTime = CMTime(value: CMTimeValue(frameNumber), timescale: CMTimeScale(frameRate))
+        let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
+        //print("time",timeRange)
+        reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
+        reader.startReading()
+        let context:CIContext = CIContext.init(options: nil)
+        let orientation = UIImage.Orientation.right
+        var sample:CMSampleBuffer!
+        sample = readerOutput.copyNextSampleBuffer()
+        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+    }
+    
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
     }
@@ -1827,8 +1868,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITEye5.count,CGFloat(vHITEye5.count)/240.0,vidDura[vidCurrent],timercnt+1)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
-            NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 13, weight: UIFont.Weight.regular)])
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 13, weight: UIFont.Weight.regular)])
         
         //イメージコンテキストからUIImageを作る
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -2058,11 +2099,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str2 = "ID:" + String(format: "%08d", idNumber) + "  " + str1[0] + ":" + str1[1]
         let str3 = "vHIT96da"
         str2.draw(at: CGPoint(x: 5, y: 180), withAttributes: [
-            NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         str3.draw(at: CGPoint(x: 428, y: 180), withAttributes: [
-            NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         
         UIColor.black.setStroke()
         var pList = Array<CGPoint>()
@@ -2106,11 +2147,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
         "\(riln)".draw(at: CGPoint(x: 3, y: 0), withAttributes: [
-            NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         "\(leln)".draw(at: CGPoint(x: 263, y: 0), withAttributes: [
-            NSAttributedStringKey.foregroundColor : UIColor.black,
-            NSAttributedStringKey.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
+            NSAttributedString.Key.foregroundColor : UIColor.black,
+            NSAttributedString.Key.font : UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFont.Weight.regular)])
         // イメージコンテキストからUIImageを作る
         let image = UIGraphicsGetImageFromCurrentImageContext()
         // イメージ処理の終了
@@ -2136,7 +2177,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let asset = AVURLAsset(url: url as URL , options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             imgGenerator.appliesPreferredTrackTransform = true
-            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil)
             let thumbnail = UIImage(cgImage: cgImage)
             appendingFlag=false
             return thumbnail
@@ -2190,7 +2231,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplication.willEnterForegroundNotification, object: nil)
         // Do any additional setup after loading the view, typically from a nib.
         //dispDoc()//ドキュメントにあるファイルをprint
         mailWidth=240*10
@@ -2228,6 +2269,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         makeBoxies()//three boxies of gyro vHIT vog
         showBoxies(f: false)//vhit_vogに応じてviewを表示
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
+        self.setNeedsStatusBarAppearanceUpdate()
+        prefersHomeIndicatorAutoHidden
+    }
+    override var prefersHomeIndicatorAutoHidden: Bool {
+         get {
+             return true
+         }
+     }
+//    override func prefersHomeIndicatorAutoHidden() -> Bool {
+//        return true
+//    }
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     func drawWakulines(width w:CGFloat,height h:CGFloat) ->UIImage{
         let size = CGSize(width:w, height:h)
@@ -2402,16 +2456,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("prepare para")
             #endif
-        }else if let vc = segue.destination as? PlayVideoViewController{
-            let Controller:PlayVideoViewController = vc
+        }else if let vc = segue.destination as? PlayViewController{
+            let Controller:PlayViewController = vc
             if vidCurrent == -1{
                 Controller.videoPath = ""
-                Controller.currPos = 0
-                Controller.videoDateNum = ""
             }else{
                 Controller.videoPath = vidPath[vidCurrent]
-                Controller.currPos = 0
-                Controller.videoDateNum = vidDate[vidCurrent]
             }
         }else if let vc = segue.destination as? ImagePickerViewController{
             let Controller:ImagePickerViewController = vc
@@ -2432,42 +2482,42 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITlineView?.isHidden = true //removeFromSuperview()
         gyrolineView?.isHidden = true //removeFromSuperview()
     }
-    func getVideoframe()->UIImage{
-        let fileURL = getfileURL(path: vidPath[vidCurrent])
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        let avAsset = AVURLAsset(url: fileURL, options: options)
-        var reader: AVAssetReader! = nil
-        do {
-            reader = try AVAssetReader(asset: avAsset)
-        } catch {
-            #if DEBUG
-            print("could not initialize reader.")
-            #endif
-            return UIImage(named:"led")!
-        }
-        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-            #if DEBUG
-            print("could not retrieve the video track.")
-            #endif
-            return UIImage(named:"led")!
-        }
-        
-        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-        reader.add(readerOutput)
-        reader.startReading()
-        while reader.status != AVAssetReaderStatus.reading {
-            sleep(UInt32(0.1))
-        }
-        let sample = readerOutput.copyNextSampleBuffer()
-        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-        let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImageOrientation.right
-        
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-    }
+//    func getVideoframe()->UIImage{
+//        let fileURL = getfileURL(path: vidPath[vidCurrent])
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        let avAsset = AVURLAsset(url: fileURL, options: options)
+//        var reader: AVAssetReader! = nil
+//        do {
+//            reader = try AVAssetReader(asset: avAsset)
+//        } catch {
+//            #if DEBUG
+//            print("could not initialize reader.")
+//            #endif
+//            return UIImage(named:"led")!
+//        }
+//        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+//            #if DEBUG
+//            print("could not retrieve the video track.")
+//            #endif
+//            return UIImage(named:"led")!
+//        }
+//        
+//        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+//        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+//        reader.add(readerOutput)
+//        reader.startReading()
+//        while reader.status != AVAssetReader.Status.reading {
+//            sleep(UInt32(0.1))
+//        }
+//        let sample = readerOutput.copyNextSampleBuffer()
+//        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+//        let context:CIContext = CIContext.init(options: nil)
+//        let orientation = UIImage.Orientation.right
+//        
+//        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+//        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+//        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
+//    }
     /*
      func resizeV2S(rect:CGRect,viewRect:CGRect,image:CGImage)->CGRect{//video2screen
      let vw = viewRect.height//iPhone画面
@@ -2573,11 +2623,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
-        }else if let vc = segue.source as? PlayVideoViewController{
-            let Controller:PlayVideoViewController = vc
+        }else if let vc = segue.source as? PlayViewController{
+            let Controller:PlayViewController = vc
             if !(vidCurrent == -1){
-                startFrame = Controller.currPos*24
-                slowImage.image = Controller.playImage.image
+                let curTime=Controller.seekBarValue
+                startFrame=Int(curTime*240.0)
+                print("startFrame",startFrame,curTime)
+                slowImage.image=getframeImage(frameNumber: startFrame)
+//                startFrame = Controller.startFrame!
+//                slowImage.image = Controller.playImage.image
                 vidImg[vidCurrent]=slowImage.image!
                 let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
                 let sec:Double = Double(secs[0])!
@@ -2585,8 +2639,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let secd2:Double = Double(Int(secd*10.0))/10.0
                 vidDura[vidCurrent]="\(secd2)" + "s"
                 //                print(posLED)
+                //            led2waku(video: vidImg[vidCurrent])
             }
-            //            led2waku(video: vidImg[vidCurrent])
+
         }else if let vc = segue.source as? RecordViewController{
             let Controller:RecordViewController = vc
             //Controller.motionManager.stopDeviceMotionUpdates()
