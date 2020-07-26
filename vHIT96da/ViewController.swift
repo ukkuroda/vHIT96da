@@ -890,7 +890,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     
-  /*  var allR:CGRect!
+    var allR:CGRect!
     
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let eyeborder:CGFloat = CGFloat(eyeBorder)
