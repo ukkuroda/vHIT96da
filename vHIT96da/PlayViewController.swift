@@ -12,6 +12,7 @@ import AVFoundation
 class PlayViewController: UIViewController {
     var currentCMTime:CMTime?
     var seekBarValue:Float=0
+//    var currentFPS:Float?
     var videoPlayer: AVPlayer!
     lazy var seekBar = UISlider()
     var startButton:UIButton!
@@ -39,7 +40,7 @@ class PlayViewController: UIViewController {
         super.viewDidLoad()
         if videoPath==""{
               return
-          }
+        }
         // Create AVPlayerItem
 //        guard let path = Bundle.main.path(forResource: "vhit20", ofType: "mov") else {
 //            fatalError("Movie file can not find.")
@@ -47,7 +48,8 @@ class PlayViewController: UIViewController {
         let fileURL = getfileURL(path: videoPath!)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
-
+//        print("fps:",avAsset.tracks.first!.nominalFrameRate)
+//        currentFPS=avAsset.tracks.first!.nominalFrameRate
         let ww=view.bounds.width
         let wh=view.bounds.height
         

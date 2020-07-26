@@ -108,8 +108,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     //
     // - Parameters:
     //   - desiredFps: 切り替えたい FPS (AVFrameRateRange.maxFrameRate が Double なので合わせる)
-    func switchFormat(desiredFps: Double) {
+    func switchFormat(desiredFps: Double)->Bool {
         // セッションが始動しているかどうか
+        var retF:Bool=false
         let isRunning = session.isRunning
         
         // セッションが始動中なら止める
@@ -141,6 +142,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 
                 // 指定のフレームレートで一番大きな解像度を得る
                 if desiredFps == range.maxFrameRate && width >= maxWidth {
+//                if (240 == range.maxFrameRate||120 == range.maxFrameRate) && width >= maxWidth {
 //                   if #available(iOS 13.0, *) {
 //                       let bini = description.mediaSubType.description
 //                       print("フォーマット情報 : \(description)",range.maxFrameRate,bini)
@@ -167,20 +169,24 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 videoDevice!.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(desiredFps))
                 videoDevice!.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(desiredFps))
                 videoDevice!.unlockForConfiguration()
-    //            print("フォーマット・フレームレートを設定 : \(desiredFps) fps・\(maxWidth) px")
+                print("フォーマット・フレームレートを設定 : \(desiredFps) fps・\(maxWidth) px")
+                retF=true
             }
             catch {
                 print("フォーマット・フレームレートが指定できなかった")
+                retF=false
             }
         }
         else {
             print("指定のフォーマットが取得できなかった")
+            retF=false
         }
         
         // セッションが始動中だったら再開する
         if isRunning {
             session.startRunning()
         }
+        return retF
     }
   
     func setMotion(){
@@ -221,8 +227,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         session.addInput(videoInput)
         // ↓ココ重要！！！！！
         // 240fps のフォーマットを探索して設定する
-        switchFormat(desiredFps: 240.0)
- 
+        if switchFormat(desiredFps: 240.0)==false{
+            switchFormat(desiredFps: 120.0)
+        }
         // ファイル出力設定
         fileOutput = AVCaptureMovieFileOutput()
         fileOutput.maxRecordedDuration = CMTimeMake(value: 3*60, timescale: 1)//最長録画時間
