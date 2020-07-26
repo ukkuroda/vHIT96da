@@ -90,7 +90,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vidDate = Array<String>()
     var vidDura = Array<String>()
     var vidDuraorg = Array<String>()
-    var vidFps:Float = 0
+//    var vidFps:Float = 0
     var vidCurrent:Int=0
     var vogImage:UIImage?
     let videoPathtext:String="videoPath.txt"
@@ -1631,6 +1631,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let fileURL = URL(fileURLWithPath: vidpath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let asset = AVURLAsset(url: fileURL, options: options)
+//        print("appendAll-fps:",asset.tracks.first!.nominalFrameRate)
         vidPath.append(path)
         appendingFlag=true
         vidImg.append(getThumbnailFrom(path: vidpath)!)// vidPath.last!)!)
@@ -1657,21 +1658,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let durSec=CMTimeGetSeconds(asset.duration)
         return durSec
     }
-    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0] as String
-        let filepath=documentsDirectory+"/"+path
-        let fileURL=URL(fileURLWithPath: filepath)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        //options.version = .original
-        let asset = AVURLAsset(url: fileURL, options: options)
-        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
-        //       let framePS=asset.tracks.first!.nominalFrameRate
-        //       let numberOfframes = durSec * framePS
-        //       print("frameNum:",durSec,framePS,numberOfframes)
-        //       print(asset.tracks.first?.nominalFrameRate as Any)
-        return asset.tracks.first!.nominalFrameRate
-    }
+//    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
+//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//        let documentsDirectory = paths[0] as String
+//        let filepath=documentsDirectory+"/"+path
+//        let fileURL=URL(fileURLWithPath: filepath)
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        //options.version = .original
+//        let asset = AVURLAsset(url: fileURL, options: options)
+//        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
+//        //       let framePS=asset.tracks.first!.nominalFrameRate
+//        //       let numberOfframes = durSec * framePS
+//        //       print("frameNum:",durSec,framePS,numberOfframes)
+//        //       print(asset.tracks.first?.nominalFrameRate as Any)
+//        return asset.tracks.first!.nominalFrameRate
+//    }
     
     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
@@ -2570,6 +2571,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //          return posLED
     //          //se x:-6 y:+14
     //      }
+    func getFPS(videoPath:String)->Float{
+        let fileURL = getfileURL(path: videoPath)
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        return avAsset.tracks.first!.nominalFrameRate
+    }
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
         //     if tempCalcflag == false{
         if let vc = segue.source as? ParametersViewController {
@@ -2627,15 +2634,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let Controller:PlayViewController = vc
             if !(vidCurrent == -1){
                 let curTime=Controller.seekBarValue
-                startFrame=Int(curTime*240.0)
-                print("startFrame",startFrame,curTime)
+                let fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
+                startFrame=Int(curTime*fps)
+//                print("startFrame:",fps,startFrame,curTime)
                 slowImage.image=getframeImage(frameNumber: startFrame)
 //                startFrame = Controller.startFrame!
 //                slowImage.image = Controller.playImage.image
                 vidImg[vidCurrent]=slowImage.image!
                 let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
                 let sec:Double = Double(secs[0])!
-                let secd:Double = sec - Double(startPoint)/240.0
+                let secd:Double = sec - Double(startPoint)/Double(fps)
                 let secd2:Double = Double(Int(secd*10.0))/10.0
                 vidDura[vidCurrent]="\(secd2)" + "s"
                 //                print(posLED)
@@ -2686,11 +2694,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
                 //                print(getFps(path: Controller.filePath!))
-                vidFps=getFps(path:Controller.filePath!)
+                //vidFps=getFps(path:Controller.filePath!)
                 
-                let framecount=Int(Float(gyro.count)*vidFps/100.0)
+                let fps=getFPS(videoPath: vidPath[vidCurrent])
+                // Controller.currentFPS
+                print("recordFPS:",fps)
+                let framecount=Int(Float(gyro.count)*fps/100.0)
                 for i in 0...framecount+10{
-                    let gn=Double(i)/Double(vidFps)//iフレーム目の秒数
+                    let gn=Double(i)/Double(fps)//iフレーム目の秒数
                     var getj:Int=0
                     for j in 0...gyro.count-1{
                         if gyroTime[j] >= gn{//secondの値が入っている。
