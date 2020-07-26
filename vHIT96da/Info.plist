@@ -41,11 +41,8 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
-		<string>telephony</string>
-		<string>front-facing-camera</string>
 		<string>video-camera</string>
 		<string>gyroscope</string>
-		<string>magnetometer</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
