@@ -511,7 +511,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //        }
     //    }
     @available(iOS 13.0, *)
-    func vHITcalc(){
+    /*
+ func vHITcalc(){
         var cvError:Int = 0
         //        var cvfacError:Int = 0
         calcFlag = true
@@ -886,9 +887,330 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 self.nonsavedFlag = true
             }
         }
+    }*/
+    func vHITcalc(){
+        var cvError:Int = 0
+        calcFlag = true
+        vHITEye.removeAll()
+        vHITEye5.removeAll()
+        vHITFace.removeAll()
+        vHITFace5.removeAll()
+        vogPos.removeAll()
+        vogPos5.removeAll()
+        vHITGyro5.removeAll()
+        KalmanInit()
+        showBoxies(f: true)
+        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
+        //vHITlinewViewだけは消しておく。その他波は１秒後には消えるので、そのまま。
+        if vHITlineView != nil{
+            vHITlineView?.removeFromSuperview()
+        }
+        readGyro(path: vidPath[vidCurrent])//gyroDataを読み込む
+        setvHITgyro5()//gyroDeltastartframe分をズラしてvHITgyro5に入れる
+        var vHITcnt:Int = 0
+        
+        timercnt = 0
+        
+        openCVstopFlag = false
+        UIApplication.shared.isIdleTimerDisabled = true
+        let eyeborder:CGFloat = CGFloat(eyeBorder)
+        //        print("eyeborder:",eyeBorder,faceF)
+        startTimer()//resizerectのチェックの時はここをコメントアウト*********************
+        //       let fileURL = URL(fileURLWithPath: vidPath[vidCurrent])
+        let fileURL = getfileURL(path: vidPath[vidCurrent])
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        calcDate = videoDate.text!
+        var reader: AVAssetReader! = nil
+        do {
+            reader = try AVAssetReader(asset: avAsset)
+        } catch {
+            #if DEBUG
+            print("could not initialize reader.")
+            #endif
+            return
+        }
+        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+            #if DEBUG
+            print("could not retrieve the video track.")
+            #endif
+            return
+        }
+        
+        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+        
+        reader.add(readerOutput)
+        let frameRate = videoTrack.nominalFrameRate
+        //let startframe=startPoints[vhitVideocurrent]
+        let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
+        let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
+        //print("time",timeRange)
+        reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
+        reader.startReading()
+        //startPoints[vhitVideocurrent] startframe 1sec=240
+        let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let fX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let fY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+        let eyeCGImage:CGImage!
+        let eyeUIImage:UIImage!
+        var eyeWithBorderCGImage:CGImage!
+        var eyeWithBorderUIImage:UIImage!
+        var faceCGImage:CGImage!
+        var faceUIImage:UIImage!
+        var faceWithBorderCGImage:CGImage!
+        var faceWithBorderUIImage:UIImage!
+         
+        let eyeRectOnScreen=CGRect(x:view.bounds.width-wakuE.origin.x-wakuE.width,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
+        
+        let eyeWithBorderRectOnScreen = CGRect(x:eyeRectOnScreen.origin.x-eyeborder,y:eyeRectOnScreen.origin.y-eyeborder/4,width:eyeRectOnScreen.size.width+2*eyeborder,height:eyeRectOnScreen.size.height+eyeborder/2)
+        let faceRectOnScreen=CGRect(x:view.bounds.width-wakuF.origin.x-wakuF.width,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
+        let faceWithBorderRectOnScreen = CGRect(x:faceRectOnScreen.origin.x-eyeborder,y:faceRectOnScreen.origin.y-eyeborder/4,width:faceRectOnScreen.size.width+2*eyeborder,height:faceRectOnScreen.size.height+eyeborder/2)
+        let context:CIContext = CIContext.init(options: nil)
+        let up = UIImage.Orientation.up//right
+        var sample:CMSampleBuffer!
+        stopButton.isEnabled = true
+        sample = readerOutput.copyNextSampleBuffer()
+        
+        let pixelBuffer:CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+        let ciImage:CIImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.up)
+        let eyeRect = resizeR2(eyeRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        let faceRect = resizeR2(faceRectOnScreen, viewRect: self.slowImage.frame, image:ciImage)
+        var faceWithBorderRect = resizeR2(faceWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        
+        let eyebR0 = eyeWithBorderRect
+        let facbR0 = faceWithBorderRect
+        
+        eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
+        faceWithBorderCGImage = context.createCGImage(ciImage, from: faceWithBorderRect)!
+        eyeCGImage = context.createCGImage(ciImage, from: eyeRect)!
+        faceCGImage = context.createCGImage(ciImage, from: faceRect)!
+        eyeUIImage = UIImage.init(cgImage: eyeCGImage, scale:1.0, orientation:up)
+        
+        eyeWithBorderUIImage=UIImage.init(cgImage:eyeWithBorderCGImage, scale:1.0, orientation:up)
+        //faceをチェックしない時もとりあえずセットしとく
+        faceUIImage = UIImage.init(cgImage:faceCGImage, scale:1.0, orientation:up)
+        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage,scale:1.0, orientation:up)
+        
+        let osEyeY:CGFloat = (eyeWithBorderRect.size.height - eyeRect.size.height) / 2.0//左右方向
+        let osEyeX:CGFloat = (eyeWithBorderRect.size.width - eyeRect.size.width) / 2.0//上下方向
+        let osFacY:CGFloat = (faceWithBorderRect.size.height - faceRect.size.height) / 2.0//左右方向
+        let osFacX:CGFloat = (faceWithBorderRect.size.width - faceRect.size.width) / 2.0//上下方向
+        
+        while reader.status != AVAssetReader.Status.reading {
+            sleep(UInt32(0.1))
+        }
+        print("zure:",osEyeX,osEyeY,osFacX,osFacY)
+        DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
+            while let sample = readerOutput.copyNextSampleBuffer() {
+                usleep(1)
+                var ex:CGFloat = 0
+                var ey:CGFloat = 0
+                var eyePos:CGFloat = 0
+                var fx:CGFloat = 0
+                var fy:CGFloat = 0
+                
+                if self.calcFlag == false {
+                    break
+                }//27secvideo ここだけをループすると->9sec
+                if cvError == -20{
+                    break
+                }
+                autoreleasepool{
+                    let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
+                    cvError -= 1
+                    if cvError < 0{
+                        let ciImage: CIImage =
+                            CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.up)
+                        self.printR(str: "eyeB:", rct: eyeWithBorderRect)
+                        print("cnt:",-cvError)
+                        
+                        eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
+                        eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage,scale:1.0,orientation:up)
+                        //画面表示はmain threadで行う
+                        DispatchQueue.main.async {
+                            self.wakuEye.frame = CGRect(x:0, y:500, width:100, height:100)
+                            self.wakuEye.image = eyeUIImage
+                            self.wakuEyeb.frame = CGRect(x:100, y:500, width:100, height:100)
+                            self.wakuEyeb.image = eyeWithBorderUIImage
+                        }
+                        let maxV=self.openCV.matching(eyeWithBorderUIImage,
+                                                      narrow: eyeUIImage,
+                                                      x: eX,
+                                                      y: eY)
+                        while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
+                            usleep(1)
+                        }
+                        if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
+                            cvError=10//10/240secはcontinue
+                            eyeWithBorderRect=eyebR0//初期位置に戻す
+                        }else{//検出できた時
+                            ey = CGFloat(eY.pointee) - osEyeY
+                            ex = CGFloat(eX.pointee) - osEyeX
+                            eyePos=eyeWithBorderRect.origin.y - eyebR0.origin.y + ey
+                            eyeWithBorderRect.origin.x += ex
+                            eyeWithBorderRect.origin.y += ey
+                            
+                            if self.faceF==1 && self.vhit_vog==true{
+                                faceWithBorderCGImage = context.createCGImage(ciImage, from: faceWithBorderRect)!
+                                faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage,scale:1.0,orientation:up)
+                                
+                                DispatchQueue.main.async {
+                                    self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
+                                    self.wakuFac.image = faceUIImage
+                                    self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
+                                    self.wakuFacb.image = faceWithBorderUIImage
+                                }
+                                
+                                let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
+                                while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
+                                    usleep(1)
+                                }
+                                if maxVf<0.7{
+                                    faceWithBorderRect=facbR0
+                                }else{
+                                    fy = CGFloat(fY.pointee) - osFacY
+                                    fx = CGFloat(fX.pointee) - osFacX
+                                    faceWithBorderRect.origin.x += fx
+                                    faceWithBorderRect.origin.y += fy
+                                }
+                            }
+                        }
+                        context.clearCaches()
+                    }
+                    
+                    if self.faceF==1{
+                        let face5=12.0*self.Kalman(value: fy,num: 0)
+                        self.vHITFace.append(face5)
+                        self.vHITFace5.append(face5)
+                        if vHITcnt > 5{
+                            self.vHITFace5[vHITcnt-2]=(self.vHITFace[vHITcnt]+self.vHITFace[vHITcnt-1]+self.vHITFace[vHITcnt-2]+self.vHITFace[vHITcnt-3]+self.vHITFace[vHITcnt-4])/5
+                        }
+                    }else{
+                        self.vHITFace.append(0)
+                        self.vHITFace5.append(0)
+                    }
+                    
+                    // eyePos, ey, fyをそれぞれ配列に追加
+                    // vogをkalmanにかけ配列に追加
+                    let eyePos5=1.0*self.Kalman(value:eyePos,num:1)
+                    self.vogPos5.append(eyePos5)
+                    self.vogPos.append(eyePos5)
+                    if vHITcnt > 5{
+                        self.vogPos5[vHITcnt-2]=(self.vogPos[vHITcnt]+self.vogPos[vHITcnt-1]+self.vogPos[vHITcnt-2]+self.vogPos[vHITcnt-3]+self.vogPos[vHITcnt-4])/5
+                    }
+                    
+                    // vHITeyeをkalmanにかけ配列に追加
+                    let eye5=12.0*self.Kalman(value: ey,num:2)//そのままではずれる
+                    //                self.printRect(r1: REyeb,r2: eyebR0)
+                    self.vHITEye5.append(eye5-self.vHITFace5.last!)
+                    self.vHITEye.append(eye5-self.vHITFace5.last!)
+                    if vHITcnt > 5{
+                        self.vHITEye5[vHITcnt-2]=(self.vHITEye[vHITcnt]+self.vHITEye[vHITcnt-1]+self.vHITEye[vHITcnt-2]+self.vHITEye[vHITcnt-3]+self.vHITEye[vHITcnt-4])/5
+                    }
+                    
+                    vHITcnt += 1
+                    while reader.status != AVAssetReader.Status.reading {
+                        sleep(UInt32(0.1))
+                    }
+                }
+            }
+            //            print("time:",CFAbsoluteTimeGetCurrent()-st)
+            self.calcFlag = false
+            if self.waveTuple.count > 0{
+                self.nonsavedFlag = true
+            }
+        }
     }
-    
-    
+    func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
+         let eyeborder:CGFloat = CGFloat(eyeBorder)
+         let fileURL = getfileURL(path: vidPath[vidCurrent])
+         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+         let avAsset = AVURLAsset(url: fileURL, options: options)
+         calcDate = videoDate.text!
+         var reader: AVAssetReader! = nil
+         do {
+             reader = try AVAssetReader(asset: avAsset)
+         } catch {
+             #if DEBUG
+             print("could not initialize reader.")
+             #endif
+             return
+         }
+         guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+             #if DEBUG
+             print("could not retrieve the video track.")
+             #endif
+             return
+         }
+         
+         let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+         
+         reader.add(readerOutput)
+         let frameRate = videoTrack.nominalFrameRate
+         //let startframe=startPoints[vhitVideocurrent]
+         let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
+         let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
+         //print("time",timeRange)
+         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
+         reader.startReading()
+         
+         let CGeye:CGImage!//eye
+         let UIeye:UIImage!
+         var CGeyeb:CGImage!
+         var UIeyeb:UIImage!
+         var CGfac:CGImage!//face
+         var UIfac:UIImage!
+         var CGfacb:CGImage!
+         var UIfacb:UIImage!
+         let eyeRs=CGRect(x:view.bounds.width-wakuE.origin.x-wakuE.width,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
+         
+         let eyebRs = CGRect(x:eyeRs.origin.x-eyeborder,y:eyeRs.origin.y-eyeborder/4,width:eyeRs.size.width+2*eyeborder,height:eyeRs.size.height+eyeborder/2)
+         let facRs=CGRect(x:view.bounds.width-wakuF.origin.x-wakuF.width,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
+          let facbRs = CGRect(x:facRs.origin.x-eyeborder,y:facRs.origin.y-eyeborder/4,width:facRs.size.width+2*eyeborder,height:facRs.size.height+eyeborder/2)
+         
+         let context:CIContext = CIContext.init(options: nil)
+         let orientation = UIImage.Orientation.up//right
+         var sample:CMSampleBuffer!
+         sample = readerOutput.copyNextSampleBuffer()
+         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+
+         var eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
+         var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
+         var facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
+         var facbR = resizeR2(facbRs, viewRect: self.slowImage.frame, image: ciImage)
+         
+         CGeyeb = context.createCGImage(ciImage, from: eyebR)!
+         CGfacb = context.createCGImage(ciImage, from: facbR)!
+         CGeye = context.createCGImage(ciImage, from: eyeR)!
+         CGfac = context.createCGImage(ciImage, from: facR)!
+         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
+         UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
+         
+         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
+         UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
+
+         var w3:CGFloat=0.0
+         let h4=view.bounds.height/2
+
+         wakuEye.frame=CGRect(x:w3,y:h4,width:eyeR.size.width*2,height:eyeR.size.height*2)
+         w3 += eyeR.size.width*2
+         wakuEyeb.frame=CGRect(x:w3,y:h4,width:eyebR.size.width*2,height:eyebR.size.height*2)
+         w3 += eyebR.size.width*2
+         wakuFac.frame=CGRect(x:w3,y:h4,width:facR.size.width*2,height:facR.size.height*2)
+         w3 += facR.size.width*2
+         wakuFacb.frame=CGRect(x:w3,y:h4,width:facbR.size.width*2,height:facbR.size.height*2)
+         wakuEye.image=UIeye
+         wakuEyeb.image=UIeyeb
+         wakuFac.image=UIfac
+         wakuFacb.image=UIfacb
+     }
+
+/*
     var allR:CGRect!
     
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
@@ -975,7 +1297,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          
          let eyebR0=eyebR
          let facbR0=facbR
-         CGall = context.createCGImage(ciImage,from:allR)//
+         CGall = context.createCGImage(ciImage,from:allR)
          CGeye = CGall.cropping(to: eyeR)
          UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
          
@@ -1020,6 +1342,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuFacb.image=UIfacb
         
     }
+ */
     func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
