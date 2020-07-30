@@ -338,6 +338,8 @@ int iii;
     *x_ret = 0;
     *y_ret = 0;
     // テンプレートマッチング
+    //cv::cvtColor(wide_mat, wide_mat, CV_BGRA2GRAY);
+    //cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
     try
     {
         cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF);//_NORMED);

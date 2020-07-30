@@ -216,7 +216,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var wave3View:UIImageView?
     //    @IBOutlet weak var wave1View: UIImageView!//debug用
     //    @IBOutlet weak var wave2View: UIImageView!//debug用
-    var wakuE = CGRect(x:300.0,y:100.0,width:5.0,height:5.0)
+    var wakuE = CGRect(x:300.0,y:100.0,width:10.0,height:10.0)
     var wakuF = CGRect(x:300.0,y:200.0,width:5.0,height:5.0)
     
     @IBOutlet weak var backImage2: UIImageView!
@@ -303,23 +303,47 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     
-    func resizeR2(_ rect:CGRect, viewRect:CGRect,image:CIImage) -> CGRect {
-        //view.boundsとimageをもらうことでその場で縦横の比率を計算してrectに適用する関数
+//    func resizeR2(_ rect:CGRect, viewRect:CGRect,image:CIImage) -> CGRect {
+//        //view.boundsとimageをもらうことでその場で縦横の比率を計算してrectに適用する関数
+//        //getRealrectの代わり
+//        //＊＊＊＊viewに対してimageは横を向いている前提。返すrectも横を向ける
+//        //viewの縦横を逆に
+//        let vw = viewRect.height
+//        let vh = viewRect.width
+//        let vy = viewRect.origin.y //because of safe area
+//        let iw = CGFloat(image.extent.width)
+//        let ih = CGFloat(image.extent.height)
+//
+//        return CGRect(x: (rect.origin.y - vy) * iw / vw,
+//                      y: (vh - rect.origin.x - rect.width) * ih / vh,
+//                      width: rect.height * iw / vw,
+//                      height: rect.width * ih / vh)
+//    }
+    func resizeR2(_ targetRect:CGRect, viewRect:CGRect, image:CIImage) -> CGRect {
+        //view.frameとtargetRectとimageをもらうことでその場で縦横の比率を計算してtargetRectのimage上の位置を返す関数
+        //view.frameとtargetRectは画面上の位置だが、返すのはimage上の位置なので、そこをうまく考慮する必要がある。
         //getRealrectの代わり
-        //＊＊＊＊viewに対してimageは横を向いている前提。返すrectも横を向ける
-        //viewの縦横を逆に
-        let vw = viewRect.height
-        let vh = viewRect.width
-        let vy = viewRect.origin.y //because of safe area
+        
+        let vw = viewRect.width
+        let vh = viewRect.height
+        
         let iw = CGFloat(image.extent.width)
         let ih = CGFloat(image.extent.height)
         
-        return CGRect(x: (rect.origin.y - vy) * iw / vw,
-                      y: (vh - rect.origin.x - rect.width) * ih / vh,
-                      width: rect.height * iw / vw,
-                      height: rect.width * ih / vh)
+        //　viewRect.originを引く事でtargetRectがview.bounds起点となる (xは0なのでやる必要はないが・・・）
+        let tx = CGFloat(targetRect.origin.x) - CGFloat(viewRect.origin.x)
+        let ty = CGFloat(targetRect.origin.y) - CGFloat(viewRect.origin.y)
+        
+        let tw = CGFloat(targetRect.width)
+        let th = CGFloat(targetRect.height)
+        
+        return CGRect(x: tx * iw / vw,
+                      y: (vh - ty - th) * ih / vh,
+                      width: tw * iw / vw,
+                      height: th * ih / vh)
     }
-    
+
+
     
     var kalVs:[[CGFloat]]=[[0.0001,0.001,0,1,2],[0.0001,0.001,3,4,5],[0.0001,0.001,6,7,8],[0.0001,0.001,10,11,12],[0.0001,0.001,13,14,15]]
     func KalmanS(Q:CGFloat,R:CGFloat,num:Int){
@@ -949,6 +973,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
         reader.startReading()
         //startPoints[vhitVideocurrent] startframe 1sec=240
+        
+        // UnsafeとMutableはまあ調べてもらうとして、eX, eY等は<Int32>が一つ格納されている場所へのポインタとして宣言される。
         let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
         let fX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
@@ -962,10 +988,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var faceWithBorderCGImage:CGImage!
         var faceWithBorderUIImage:UIImage!
          
-        let eyeRectOnScreen=CGRect(x:view.bounds.width-wakuE.origin.x-wakuE.width,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
+        let eyeRectOnScreen=CGRect(x:wakuE.origin.x, y:wakuE.origin.y, width: wakuE.width, height: wakuE.height)
+        print("eyeRectOnScreen:", eyeRectOnScreen.origin, eyeRectOnScreen.width, eyeRectOnScreen.height)
         
-        let eyeWithBorderRectOnScreen = CGRect(x:eyeRectOnScreen.origin.x-eyeborder,y:eyeRectOnScreen.origin.y-eyeborder/4,width:eyeRectOnScreen.size.width+2*eyeborder,height:eyeRectOnScreen.size.height+eyeborder/2)
-        let faceRectOnScreen=CGRect(x:view.bounds.width-wakuF.origin.x-wakuF.width,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
+        //let eyeWithBorderRectOnScreen = CGRect(x:eyeRectOnScreen.origin.x-eyeborder,y:eyeRectOnScreen.origin.y-eyeborder/4,width:eyeRectOnScreen.size.width+2*eyeborder,height:eyeRectOnScreen.size.height+eyeborder/2)
+        let eyeWithBorderRectOnScreen =
+            CGRect(x:eyeRectOnScreen.origin.x - eyeborder,
+                   y:eyeRectOnScreen.origin.y - eyeborder * 2,
+                   width:eyeRectOnScreen.size.width+eyeborder*2,
+                   height:eyeRectOnScreen.size.height+eyeborder*3)
+        print("eyeWithBorderRectOnScreen:", eyeWithBorderRectOnScreen.origin, eyeWithBorderRectOnScreen.width, eyeWithBorderRectOnScreen.height)
+        let faceRectOnScreen=CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
         let faceWithBorderRectOnScreen = CGRect(x:faceRectOnScreen.origin.x-eyeborder,y:faceRectOnScreen.origin.y-eyeborder/4,width:faceRectOnScreen.size.width+2*eyeborder,height:faceRectOnScreen.size.height+eyeborder/2)
         let context:CIContext = CIContext.init(options: nil)
         let up = UIImage.Orientation.up//right
@@ -974,69 +1007,72 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         sample = readerOutput.copyNextSampleBuffer()
         
         let pixelBuffer:CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-        let ciImage:CIImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.up)
+        let ciImage:CIImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
+        
+        
         let eyeRect = resizeR2(eyeRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        print("eyeRect:", eyeRect.origin, eyeRect.width, eyeRect.height)
         var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        print("eyeWithBorderRect:", eyeWithBorderRect.origin, eyeWithBorderRect.width, eyeWithBorderRect.height)
         let faceRect = resizeR2(faceRectOnScreen, viewRect: self.slowImage.frame, image:ciImage)
         var faceWithBorderRect = resizeR2(faceWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
         
         let eyebR0 = eyeWithBorderRect
         let facbR0 = faceWithBorderRect
         
-        eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
-        faceWithBorderCGImage = context.createCGImage(ciImage, from: faceWithBorderRect)!
+        
+
+        
         eyeCGImage = context.createCGImage(ciImage, from: eyeRect)!
-        faceCGImage = context.createCGImage(ciImage, from: faceRect)!
         eyeUIImage = UIImage.init(cgImage: eyeCGImage, scale:1.0, orientation:up)
-        
-        eyeWithBorderUIImage=UIImage.init(cgImage:eyeWithBorderCGImage, scale:1.0, orientation:up)
-        //faceをチェックしない時もとりあえずセットしとく
+        faceCGImage = context.createCGImage(ciImage, from: faceRect)!
         faceUIImage = UIImage.init(cgImage:faceCGImage, scale:1.0, orientation:up)
-        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage,scale:1.0, orientation:up)
         
-        let osEyeY:CGFloat = (eyeWithBorderRect.size.height - eyeRect.size.height) / 2.0//左右方向
+//        eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
+//        faceWithBorderCGImage = context.createCGImage(ciImage, from: faceWithBorderRect)!
+//        eyeWithBorderUIImage=UIImage.init(cgImage:eyeWithBorderCGImage, scale:1.0, orientation:up)
+//        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage,scale:1.0, orientation:up)
+        
         let osEyeX:CGFloat = (eyeWithBorderRect.size.width - eyeRect.size.width) / 2.0//上下方向
-        let osFacY:CGFloat = (faceWithBorderRect.size.height - faceRect.size.height) / 2.0//左右方向
+        let osEyeY:CGFloat = (eyeWithBorderRect.size.height - eyeRect.size.height) / 2.0//左右方向
         let osFacX:CGFloat = (faceWithBorderRect.size.width - faceRect.size.width) / 2.0//上下方向
-        
+        let osFacY:CGFloat = (faceWithBorderRect.size.height - faceRect.size.height) / 2.0//左右方向
+
         while reader.status != AVAssetReader.Status.reading {
             sleep(UInt32(0.1))
         }
 //        print("zure:",osEyeX,osEyeY,osFacX,osFacY)
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
-            while let sample = readerOutput.copyNextSampleBuffer() {
-                usleep(1)
+            while let sample = readerOutput.copyNextSampleBuffer(), self.calcFlag != false {
                 var ex:CGFloat = 0
                 var ey:CGFloat = 0
                 var eyePos:CGFloat = 0
                 var fx:CGFloat = 0
                 var fy:CGFloat = 0
                 
-                if self.calcFlag == false {
-                    break
-                }//27secvideo ここだけをループすると->9sec
-                if cvError == -4
-                {
-                    break
-                }
+//                if self.calcFlag == false {
+//                    break
+//                }//27secvideo ここだけをループすると->9sec
+
                 autoreleasepool{
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
                     cvError -= 1
                     if cvError < 0{
                         let ciImage: CIImage =
-                            CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.up)
-                        self.printR(str: "eyeB:", rct: eyeWithBorderRect)
+                            CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
+                        print("estimated:", eyeRect.origin.x - eyeWithBorderRect.origin.x, eyeRect.origin.y - eyeWithBorderRect.origin.y)
                         print("cnt:",-cvError)
                         
                         eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage,scale:1.0,orientation:up)
+
                         //画面表示はmain threadで行う
-                        DispatchQueue.main.async {
-                            self.wakuEye.frame = CGRect(x:0, y:500, width:100, height:100)
-                            self.wakuEye.image = eyeUIImage
-                            self.wakuEyeb.frame = CGRect(x:100, y:500, width:100, height:100)
-                            self.wakuEyeb.image = eyeWithBorderUIImage
-                        }
+//                        DispatchQueue.main.async {
+//                            self.wakuEye.frame = CGRect(x:0, y:500, width:100, height:100)
+//                            self.wakuEye.image = eyeUIImage
+//                            self.wakuEyeb.frame = CGRect(x:100, y:500, width:100, height:100)
+//                            self.wakuEyeb.image = eyeWithBorderUIImage
+//                        }
                         let maxV=self.openCV.matching(eyeWithBorderUIImage,
                                                       narrow: eyeUIImage,
                                                       x: eX,
@@ -1048,21 +1084,39 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             cvError=10//10/240secはcontinue
                             eyeWithBorderRect=eyebR0//初期位置に戻す
                         }else{//検出できた時
-                            ey = CGFloat(eY.pointee) - osEyeY
+                            //eXはポインタだったので、".pointee"でそのポインタの内容が取り出せる。Cでいうところの"*"
+                            //上で宣言しているとおりInt32が返ってくるのでCGFloatに変換して代入
                             ex = CGFloat(eX.pointee) - osEyeX
-                            eyePos=eyeWithBorderRect.origin.y - eyebR0.origin.y + ey
+                            ey = CGFloat(eY.pointee) - osEyeY
+                            print("eX, osEyeX, ex,eY, osEyeY, ey:",
+                                  String(format: "%d %.1f %.1f %d %.1f %.1f ",
+                                        eX.pointee, osEyeX, ex, eY.pointee, osEyeY, ey))
                             eyeWithBorderRect.origin.x += ex
                             eyeWithBorderRect.origin.y += ey
-                            print("ex,ey:",ex,ey)
+                            eyePos = eyeWithBorderRect.origin.x - eyebR0.origin.x + ex
                             if self.faceF==1 && self.vhit_vog==true{
                                 faceWithBorderCGImage = context.createCGImage(ciImage, from: faceWithBorderRect)!
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage,scale:1.0,orientation:up)
-                                
                                 DispatchQueue.main.async {
-                                    self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
-                                    self.wakuFac.image = faceUIImage
-                                    self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
-                                    self.wakuFacb.image = faceWithBorderUIImage
+                                    //self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
+                                    //self.wakuFac.image = faceUIImage
+                                    //self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
+                                    
+                                    
+                                    //self.wakuFacb.image = faceWithBorderUIImage
+                                    let y:CGFloat = 500.0
+                                    var x:CGFloat = 0.0
+                                    self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
+                                    x += eyeRect.size.width*2
+                                    self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
+                                    x += eyeWithBorderRect.size.width*2
+                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
+                                    x += faceRect.size.width*2
+                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
+                                    self.wakuEye.image=eyeUIImage
+                                    self.wakuEyeb.image=eyeWithBorderUIImage
+                                    self.wakuFac.image=faceUIImage
+                                    self.wakuFacb.image=faceWithBorderUIImage
                                 }
                                 
                                 let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
@@ -1072,8 +1126,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 if maxVf<0.7{
                                     faceWithBorderRect=facbR0
                                 }else{
-                                    fy = CGFloat(fY.pointee) - osFacY
                                     fx = CGFloat(fX.pointee) - osFacX
+                                    fy = CGFloat(fY.pointee) - osFacY
                                     faceWithBorderRect.origin.x += fx
                                     faceWithBorderRect.origin.y += fy
                                 }
@@ -1117,6 +1171,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         sleep(UInt32(0.1))
                     }
                 }
+                usleep(10000000)
+
             }
             //            print("time:",CFAbsoluteTimeGetCurrent()-st)
             self.calcFlag = false
@@ -1167,10 +1223,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          var UIfac:UIImage!
          var CGfacb:CGImage!
          var UIfacb:UIImage!
-         let eyeRs=CGRect(x:view.bounds.width-wakuE.origin.x-wakuE.width,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
+         let eyeRs=CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
          
          let eyebRs = CGRect(x:eyeRs.origin.x-eyeborder,y:eyeRs.origin.y-eyeborder/4,width:eyeRs.size.width+2*eyeborder,height:eyeRs.size.height+eyeborder/2)
-         let facRs=CGRect(x:view.bounds.width-wakuF.origin.x-wakuF.width,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
+         let facRs=CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
           let facbRs = CGRect(x:facRs.origin.x-eyeborder,y:facRs.origin.y-eyeborder/4,width:facRs.size.width+2*eyeborder,height:facRs.size.height+eyeborder/2)
          
          let context:CIContext = CIContext.init(options: nil)
@@ -1178,7 +1234,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          var sample:CMSampleBuffer!
          sample = readerOutput.copyNextSampleBuffer()
          let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+
+         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
 
          var eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
          var eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
@@ -1209,6 +1266,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          wakuEyeb.image=UIeyeb
          wakuFac.image=UIfac
          wakuFacb.image=UIfacb
+        printR(str:"--eyeRect:", rct:eyeR)
+        printR(str:"--eyeWithBorderRect:", rct:eyebR)
+        
      }
 
     func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
