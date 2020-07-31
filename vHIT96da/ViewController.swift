@@ -512,7 +512,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //    }
     @available(iOS 13.0, *)
     func vHITcalc(){
-        var cvError:Int = 0
+//        var cvError:Int = 0
         //        var cvfacError:Int = 0
         calcFlag = true
         vHITEye.removeAll()
@@ -711,14 +711,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         
         DispatchQueue.global(qos: .default).async {//resizerectのチェックの時はここをコメントアウト下がいいかな？
-            var ex:CGFloat = 0
-            var ey:CGFloat = 0
-            var eyePos:CGFloat = 0
-            var fx:CGFloat = 0
-            var fy:CGFloat = 0
-            
+            var cvError:Int = 0
             while let sample = readerOutput.copyNextSampleBuffer() {
                 usleep(1)
+                var ex:CGFloat = 0
+                 var ey:CGFloat = 0
+                 var eyePos:CGFloat = 0
+                 var fx:CGFloat = 0
+                 var fy:CGFloat = 0
+
                 if self.calcFlag == false {
                     break
                 }//27secvideo ここだけをループすると->9sec
@@ -726,32 +727,32 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
                     cvError -= 1
                     //                cvfacError -= 1
-                    if cvError < 2{
+                    if cvError < 0{
                         let ciImage: CIImage =
                             CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.up) //27secVideo ->10sec
                         allCGImage = context.createCGImage(ciImage, from: allRect)!
-                        if eyeWithBorderRect.width != allRect.width { //
+//                        if eyeWithBorderRect.width != allRect.width { //
                             eyeWithBorderCGImage = allCGImage.cropping(to: eyeWithBorderRect)!
-                        }else{
-                            print("allR:",
-                                  allRect.origin.x,
-                                  allRect.origin.y,
-                                  allRect.width,
-                                  allRect.height)
-                            eyeWithBorderCGImage =
-                                allCGImage.cropping(to:CGRect(x:0,
-                                                              y:0,
-                                                              width: allRect.width,
-                                                              height:allRect.height))
-                        }
+//                        }else{
+//                            print("allR:",
+//                                  allRect.origin.x,
+//                                  allRect.origin.y,
+//                                  allRect.width,
+//                                  allRect.height)
+//                            eyeWithBorderCGImage =
+//                                allCGImage.cropping(to:CGRect(x:0,
+//                                                              y:0,
+//                                                              width: allRect.width,
+//                                                              height:allRect.height))
+//                        }
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage,
                                                             scale:1.0,
                                                             orientation:up)
                         //画面表示はmain threadで行う
                         DispatchQueue.main.async {
-                            self.wakuEye.frame = CGRect(x:0, y:500, width:100, height:100)
+                            self.wakuEye.frame = CGRect(x:0, y:450, width:50, height:50)
                             self.wakuEye.image = eyeUIImage
-                            self.wakuEyeb.frame = CGRect(x:100, y:500, width:100, height:100)
+                            self.wakuEyeb.frame = CGRect(x:50, y:450, width:100, height:100)
                             self.wakuEyeb.image = eyeWithBorderUIImage
                         }
                         //REyebをチェックする時　ここまで
@@ -763,41 +764,39 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                             usleep(1)
                         }
-                        //                self.printR(str:"maxV",rct:REyeb)
+                        print("maxV:",maxV)
+//                                        self.printR(str:"maxV",rct:REyeb)
                         if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
                             cvError=10//10/240secはcontinue
-                            eyeWithBorderRect=allRect//初期位置に戻す
-                            eyePos = 0
+                            eyeWithBorderRect=eyebR0//allRect//初期位置に戻す
                             faceWithBorderRect=facbR0
-                            fy=0
-                            ey=0
                         }else{//検出できた時
-                            if cvError < 1 {//前回も検出出来た
+//                            if cvError < 1 {//前回も検出出来た
                                 ey = CGFloat(eY.pointee) - osEyeY
                                 ex = CGFloat(eX.pointee) - osEyeX
                                 //                            print("ok  ey,ex:",String(format: "%.2f %.2f",ey,ex))
                                 eyePos=eyeWithBorderRect.origin.y - eyebR0.origin.y + ey
                                 eyeWithBorderRect.origin.x += ex
                                 eyeWithBorderRect.origin.y += ey
-                            } else {//前回がエラー、cvError==1はエラー後最初の計算
-                                ey = CGFloat(eY.pointee) - osAllY
-                                ex = CGFloat(eX.pointee) - osAllX
-                                eyeWithBorderRect=eyebR0
-                                eyeWithBorderRect.origin.x=eyebR0.origin.x+ex
-                                eyeWithBorderRect.origin.y=eyebR0.origin.y+ey
-                                eyePos = ey//初期位置からのズレはそのまま位置のはず
-                            }
+//                            } else {//前回がエラー、cvError==1はエラー後最初の計算
+//                                ey = CGFloat(eY.pointee) - osAllY
+//                                ex = CGFloat(eX.pointee) - osAllX
+//                                eyeWithBorderRect=eyebR0
+//                                eyeWithBorderRect.origin.x=eyebR0.origin.x+ex
+//                                eyeWithBorderRect.origin.y=eyebR0.origin.y+ey
+//                                eyePos = ey//初期位置からのズレはそのまま位置のはず
+//                            }
                             
                             if self.faceF==1 && self.vhit_vog==true{
                                 faceWithBorderCGImage = allCGImage.cropping(to: faceWithBorderRect)
                                 //                            self.printR(str: "facbR:", rct: facbR)
-                                //self.printR(str: "cgall", rct: allR)
+                                self.printR(str: "faceB", rct: faceWithBorderRect)
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage,scale:1.0,orientation:up)
                                 
                                 DispatchQueue.main.async {
-                                    self.wakuFac.frame = CGRect(x:200, y:500, width:100, height:100)
+                                    self.wakuFac.frame = CGRect(x:150, y:450, width:50, height:50)
                                     self.wakuFac.image = faceUIImage
-                                    self.wakuFacb.frame = CGRect(x:300, y:500, width:100, height:100)
+                                    self.wakuFacb.frame = CGRect(x:200, y:450, width:100, height:100)
                                     self.wakuFacb.image = faceWithBorderUIImage
                                 }
                                 
@@ -808,37 +807,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 if maxVf<0.7{
                                     //cvfacError=5//最終的には、ここもcvErrorに変更
                                     faceWithBorderRect=facbR0
-                                    fy=0
                                 }else{
                                     fy = CGFloat(fY.pointee) - osFacY
                                     fx = CGFloat(fX.pointee) - osFacX
                                     faceWithBorderRect.origin.x += fx
                                     faceWithBorderRect.origin.y += fy
                                 }
-                            }else{
-                                fy=0
                             }
                         }
                         
-                        if eyeWithBorderRect.origin.x<0
-                            || eyeWithBorderRect.origin.y<0
-                            || faceWithBorderRect.origin.x<0
-                            || faceWithBorderRect.origin.y<0 {
-                            cvError=10//10/240secはcontinue
-                            eyeWithBorderRect = allRect//初期位置に戻す
-                            faceWithBorderRect = facbR0
-                            eyePos = 0
-                            fy=0
-                            ey=0
-                        }
+//                        if eyeWithBorderRect.origin.x<0
+//                            || eyeWithBorderRect.origin.y<0
+//                            || faceWithBorderRect.origin.x<0
+//                            || faceWithBorderRect.origin.y<0 {
+//                            cvError=10//10/240secはcontinue
+//                            eyeWithBorderRect = eyebR0//初期位置に戻す
+//                            faceWithBorderRect = facbR0
+//
+//                        }
                         
                         allCGImage = nil
                         context.clearCaches()
-                    }else{
-                        eyePos=0
-                        ey=0
-                        fy=0
-                    }
+                       }
                     
                     //                print("cnt err ey eyebR",vHITcnt,cvError,ey,Int(eyebR.height))
                     
