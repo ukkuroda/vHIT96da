@@ -1015,10 +1015,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if self.calcFlag == false {
                     break
                 }//27secvideo ここだけをループすると->9sec
-                if cvError == -4
-                {
-                    break
-                }
+//                if cvError == -4
+//                {
+//                    break
+//                }
                 autoreleasepool{
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
                     cvError -= 1
@@ -1044,6 +1044,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                             usleep(1)
                         }
+                        print("maxV:",maxV)
                         if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
                             cvError=10//10/240secはcontinue
                             eyeWithBorderRect=eyebR0//初期位置に戻す
