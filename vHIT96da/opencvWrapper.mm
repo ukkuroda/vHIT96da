@@ -335,8 +335,8 @@ int iii;
     cv::Mat return_mat;
     UIImageToMat(wide_img, wide_mat);
     UIImageToMat(narrow_img, narrow_mat);
-    *x_ret = 0;
-    *y_ret = 0;
+//    *x_ret = 0;
+//    *y_ret = 0;
     // テンプレートマッチング
     try
     {
@@ -354,13 +354,13 @@ int iii;
     cv::Point max_pt;
     double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-    if(maxVal>0.7){//恐らく見つかったらここ
+//    if(maxVal>0.7){//恐らく見つかったらここ
         *x_ret = max_pt.x;
         *y_ret = max_pt.y;
 //    }else{//瞬きではこちらだろう
 //        *x_ret = 0;
 //        *y_ret = 0;
-    }
+//    }
       return maxVal;
 }
 
