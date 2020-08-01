@@ -338,11 +338,11 @@ int iii;
     *x_ret = 0;
     *y_ret = 0;
     // テンプレートマッチング
-    //cv::cvtColor(wide_mat, wide_mat, CV_BGRA2GRAY);
-    //cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
+    cv::cvtColor(wide_mat, wide_mat, CV_BGRA2GRAY);
+    cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
     try
     {
-        cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF);//_NORMED);
+        cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);//_NORMED);
        // ...
     }
     catch( cv::Exception& e )
@@ -356,13 +356,13 @@ int iii;
     cv::Point max_pt;
     double maxVal;
     cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-    if(maxVal>0.7){//恐らく見つかったらここ
+//    if(maxVal>0.7){//恐らく見つかったらここ
         *x_ret = max_pt.x;
         *y_ret = max_pt.y;
 //    }else{//瞬きではこちらだろう
 //        *x_ret = 0;
 //        *y_ret = 0;
-    }
+//    }
       return maxVal;
 }
 
