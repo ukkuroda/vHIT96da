@@ -302,7 +302,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         show1()
     }
     
-    
+  /*
     func resizeR2(_ rect:CGRect, viewRect:CGRect,image:CIImage) -> CGRect {
         //view.boundsとimageをもらうことでその場で縦横の比率を計算してrectに適用する関数
         //getRealrectの代わり
@@ -319,7 +319,47 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                       width: rect.height * iw / vw,
                       height: rect.width * ih / vh)
     }
-    
+    */
+    func resizeR2(_ targetRect:CGRect, viewRect:CGRect, image:CIImage) -> CGRect {
+         //view.frameとtargetRectとimageをもらうことでその場で縦横の比率を計算してtargetRectのimage上の位置を返す関数
+         //view.frameとtargetRectは画面上の位置だが、返すのはimage上の位置なので、そこをうまく考慮する必要がある。
+         //getRealrectの代わり
+         
+         let vw = viewRect.width
+         let vh = viewRect.height
+         
+         let iw = CGFloat(image.extent.width)
+         let ih = CGFloat(image.extent.height)
+         
+         //　viewRect.originを引く事でtargetRectがview.bounds起点となる (xは0なのでやる必要はないが・・・）
+         let tx = CGFloat(targetRect.origin.x) - CGFloat(viewRect.origin.x)
+         let ty = CGFloat(targetRect.origin.y) - CGFloat(viewRect.origin.y)
+         
+         let tw = CGFloat(targetRect.width)
+         let th = CGFloat(targetRect.height)
+         
+         // ここで返されるCGRectはCIImage/CGImage上の座標なので全て整数である必要がある
+         // 端数があるまま渡すとmatchingが誤動作した
+         return CGRect(x: (tx * iw / vw).rounded(),
+                       y: ((vh - ty - th) * ih / vh).rounded(),
+                       width: (tw * iw / vw).rounded(),
+                       height: (th * ih / vh).rounded())
+     }
+     
+     
+     
+     
+     func expandRectWithBorder(rect:CGRect, border:CGFloat) -> CGRect {
+         //左右には border 、上下には border/2 を広げる
+         //この関数も上と同じようにroundした方がいいかもしれないが、
+         //現状ではscreen座標のみで使っているのでfloatのまま。
+         return CGRect(x:rect.origin.x - border,
+                       y:rect.origin.y - border / 4,
+                       width:rect.size.width + border * 2,
+                       height:rect.size.height + border / 2)
+     }
+     
+     
     
     var kalVs:[[CGFloat]]=[[0.0001,0.001,0,1,2],[0.0001,0.001,3,4,5],[0.0001,0.001,6,7,8],[0.0001,0.001,10,11,12],[0.0001,0.001,13,14,15]]
     func KalmanS(Q:CGFloat,R:CGFloat,num:Int){
@@ -652,15 +692,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
                             
                             //画面表示はmain threadで行う
-    //                        DispatchQueue.main.async {
-    //                            self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
-    //                            self.wakuEye.image=eyeUIImage
-    //                            x += eyeRect.size.width*2
-    //
-    //                            self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
-    //                            x += eyeWithBorderRect.size.width*2
-    //                            self.wakuEyeb.image=eyeWithBorderUIImage
-    //                        }
+                            DispatchQueue.main.async {
+                                self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
+                                self.wakuEye.image=eyeUIImage
+                                x += eyeRect.size.width*2
+    
+                                self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
+                                x += eyeWithBorderRect.size.width*2
+                                self.wakuEyeb.image=eyeWithBorderUIImage
+                            }
                             let maxV=self.openCV.matching(eyeWithBorderUIImage,
                                                           narrow: eyeUIImage,
                                                           x: eX,
@@ -682,13 +722,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                 if self.faceF==1 && self.vhit_vog==true{
                                     faceWithBorderCGImage = context.createCGImage(ciImage, from:faceWithBorderRect)!
                                     faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage)
-    //                                DispatchQueue.main.async {
-    //                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
-    //                                    self.wakuFac.image=faceUIImage
-    //                                    x += faceRect.size.width*2
-    //                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
-    //                                    self.wakuFacb.image=faceWithBorderUIImage
-    //                                }
+                                    DispatchQueue.main.async {
+                                        self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
+                                        self.wakuFac.image=faceUIImage
+                                        x += faceRect.size.width*2
+                                        self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
+                                        self.wakuFacb.image=faceWithBorderUIImage
+                                    }
                                     
                                     let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
                                     while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
@@ -743,7 +783,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                     }
                     //マッチングデバッグ用スリープ、デバッグが終わったら削除
-    //                usleep(500)
+                    usleep(500)
                     
                 }
                 //            print("time:",CFAbsoluteTimeGetCurrent()-st)
@@ -1891,21 +1931,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let durSec=CMTimeGetSeconds(asset.duration)
         return durSec
     }
-//    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
-//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-//        let documentsDirectory = paths[0] as String
-//        let filepath=documentsDirectory+"/"+path
-//        let fileURL=URL(fileURLWithPath: filepath)
-//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-//        //options.version = .original
-//        let asset = AVURLAsset(url: fileURL, options: options)
-//        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
-//        //       let framePS=asset.tracks.first!.nominalFrameRate
-//        //       let numberOfframes = durSec * framePS
-//        //       print("frameNum:",durSec,framePS,numberOfframes)
-//        //       print(asset.tracks.first?.nominalFrameRate as Any)
-//        return asset.tracks.first!.nominalFrameRate
-//    }
+    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as String
+        let filepath=documentsDirectory+"/"+path
+        let fileURL=URL(fileURLWithPath: filepath)
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        //options.version = .original
+        let asset = AVURLAsset(url: fileURL, options: options)
+        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
+        //       let framePS=asset.tracks.first!.nominalFrameRate
+        //       let numberOfframes = durSec * framePS
+        //       print("frameNum:",durSec,framePS,numberOfframes)
+        //       print(asset.tracks.first?.nominalFrameRate as Any)
+        return asset.tracks.first!.nominalFrameRate
+    }
     
     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
@@ -2927,9 +2967,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
                 //                print(getFps(path: Controller.filePath!))
-                //vidFps=getFps(path:Controller.filePath!)
+                let fps=getFps(path:Controller.filePath!)
                 
-                let fps=getFPS(videoPath: vidPath[vidCurrent])
+                //let fps=getFPS(videoPath: vidPath[vidCurrent])
                 // Controller.currentFPS
                 print("recordFPS:",fps)
                 let framecount=Int(Float(gyro.count)*fps/100.0)

@@ -152,7 +152,7 @@ class PlayViewController: UIViewController {
     }
     @objc func update(tm: Timer) {
         if playF==true{
-            if duration==seekBarValue{
+            if duration-0.2<seekBarValue{
                 startButton.setTitle("Play", for: UIControl.State.normal)
                 playF=false
                 videoPlayer.pause()
