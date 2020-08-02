@@ -301,25 +301,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         show1()
     }
-    
-  /*
-    func resizeR2(_ rect:CGRect, viewRect:CGRect,image:CIImage) -> CGRect {
-        //view.boundsとimageをもらうことでその場で縦横の比率を計算してrectに適用する関数
-        //getRealrectの代わり
-        //＊＊＊＊viewに対してimageは横を向いている前提。返すrectも横を向ける
-        //viewの縦横を逆に
-        let vw = viewRect.height
-        let vh = viewRect.width
-        let vy = viewRect.origin.y //because of safe area
-        let iw = CGFloat(image.extent.width)
-        let ih = CGFloat(image.extent.height)
-        
-        return CGRect(x: (rect.origin.y - vy) * iw / vw,
-                      y: (vh - rect.origin.x - rect.width) * ih / vh,
-                      width: rect.height * iw / vw,
-                      height: rect.width * ih / vh)
-    }
-    */
+
     func resizeR2(_ targetRect:CGRect, viewRect:CGRect, image:CIImage) -> CGRect {
          //view.frameとtargetRectとimageをもらうことでその場で縦横の比率を計算してtargetRectのimage上の位置を返す関数
          //view.frameとtargetRectは画面上の位置だが、返すのはimage上の位置なので、そこをうまく考慮する必要がある。
@@ -639,7 +621,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let pixelBuffer:CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
             let ciImage:CIImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
             
-            
             let eyeRect = resizeR2(eyeRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
             print("eyeRect:", eyeRect.origin, eyeRect.width, eyeRect.height)
             var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
@@ -649,9 +630,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             
             let eyebR0 = eyeWithBorderRect
             let facbR0 = faceWithBorderRect
-            
-            
-            
             
             eyeCGImage = context.createCGImage(ciImage, from: eyeRect)!
             eyeCGImage = eyeCGImage.cropping(to: CGRect(x: 0, y: 0, width: eyeCGImage.width, height: eyeCGImage.height))
@@ -686,7 +664,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         if cvError < 0{
                             let ciImage: CIImage =
                                 CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
-                            print("count:",-cvError)
+//                            print("count:",-cvError)
                             
                             eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
                             eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
@@ -748,7 +726,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                         
                         if self.faceF==1{
-                            let face5=12.0*self.Kalman(value: fy,num: 0)
+                            let face5=12.0*self.Kalman(value: fx,num: 0)
                             self.vHITFace.append(face5)
                             self.vHITFace5.append(face5)
                             if vHITcnt > 5{
@@ -769,7 +747,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                         
                         // vHITeyeをkalmanにかけ配列に追加
-                        let eye5=12.0*self.Kalman(value: ey,num:2)//そのままではずれる
+                        let eye5=12.0*self.Kalman(value: ex,num:2)//そのままではずれる
                         //                self.printRect(r1: REyeb,r2: eyebR0)
                         self.vHITEye5.append(eye5-self.vHITFace5.last!)
                         self.vHITEye.append(eye5-self.vHITFace5.last!)
@@ -783,7 +761,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                     }
                     //マッチングデバッグ用スリープ、デバッグが終わったら削除
-//                    usleep(500)
+//                    usleep(100)
                     
                 }
                 //            print("time:",CFAbsoluteTimeGetCurrent()-st)
@@ -1521,6 +1499,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let asset = AVURLAsset(url: fileURL, options: options)
         let durSec=CMTimeGetSeconds(asset.duration)
         return durSec
+    }
+    func getFPS(videoPath:String)->Float{
+        let fileURL = getfileURL(path: videoPath)
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        return avAsset.tracks.first!.nominalFrameRate
     }
     func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -2347,100 +2331,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITlineView?.isHidden = true //removeFromSuperview()
         gyrolineView?.isHidden = true //removeFromSuperview()
     }
-    func getVideoframe()->UIImage{
-        let fileURL = getfileURL(path: vidPath[vidCurrent])
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        let avAsset = AVURLAsset(url: fileURL, options: options)
-        var reader: AVAssetReader! = nil
-        do {
-            reader = try AVAssetReader(asset: avAsset)
-        } catch {
-            #if DEBUG
-            print("could not initialize reader.")
-            #endif
-            return UIImage(named:"led")!
-        }
-        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-            #if DEBUG
-            print("could not retrieve the video track.")
-            #endif
-            return UIImage(named:"led")!
-        }
-        
-        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-        reader.add(readerOutput)
-        reader.startReading()
-        while reader.status != AVAssetReader.Status.reading {
-            sleep(UInt32(0.1))
-        }
-        let sample = readerOutput.copyNextSampleBuffer()
-        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-        let context:CIContext = CIContext.init(options: nil)
-        let orientation = UIImage.Orientation.right
-        
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let cgImage:CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-        return UIImage.init(cgImage: cgImage, scale:1.0, orientation:orientation)
-    }
-    /*
-     func resizeV2S(rect:CGRect,viewRect:CGRect,image:CGImage)->CGRect{//video2screen
-     let vw = viewRect.height//iPhone画面
-     let vh = viewRect.width//画面
-     let vy = viewRect.origin.y //because of safe area
-     let iw = CGFloat(image.width)//video
-     let ih = CGFloat(image.height)//video
-     return CGRect(x: vh-rect.origin.y*vh/ih-rect.height*vh/ih,
-     y: rect.origin.x*vw/iw+vy,
-     width:rect.height*vh/ih,
-     height:rect.width*vw/iw)
-     }*/
-    /*
-     func led2waku(video:UIImage){//led光源を探して、そこに枠を設定
-     let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-     let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-     //video画像でのRECTの大きさを得る
-     let tmp=resizeR1(wakuE,viewRect:self.slowImage.frame,image:video.cgImage!)
-     //正中1/3,上部1/6-3/6から探す
-     let maxV=self.openCV.matching_gray(video, narrow: UIImage(named:"led"), x: eX, y: eY)
-     let wvideo=video.size.width//1080
-     let hvideo=video.size.height//1920
-     //縦横が逆x:eY y:eXとなる 左右1/3　上部1/6を戻す
-     let x=CGFloat(eX.pointee)+hvideo/6
-     let y=CGFloat(eY.pointee)+wvideo/3//xは左右が逆
-     wakuE=resizeV2S(rect: CGRect(x:x,y:y,width:tmp.width,height:tmp.height), viewRect: self.slowImage.frame,image:video.cgImage!)
-     dispWakus()
-     }
-     */
-    //    func searchLED_se(video:UIImage)->CGPoint{//fit for SE
-    //          let eX = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    //          let eY = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    //          let maxV=self.openCV.matching_gray(video, narrow: UIImage(named:"led"), x: eX, y: eY)
-    //          let wvideo=video.size.width//720
-    //          let hvideo=video.size.height//1280
-    //          let wview=view.frame.width//320
-    //          let hview=view.frame.height//568
-    //          let wratio=wview/wvideo
-    //          let hratio=hview/hvideo
-    //          var x=CGFloat(eY.pointee)+wvideo/3
-    //          var y=CGFloat(eX.pointee)+hvideo/6
-    //          x=x*wratio
-    //          x=view.frame.width-x-6
-    //          y=y*hratio+13.5
-    //          var posLED=CGPoint(x:x,y:y)
-    //          print(String(format: "find %.1f %.1f val=%.2f)",posLED.x,posLED.y,maxV))
-    //          printR(str: "waku",rct: wakuE)//video.size.width,video.size.height)
-    //          printR(str: "view",rct: view.frame)
-    //          print(String(format:"video %.1f %.1f",video.size.width,video.size.height))
-    //          return posLED
-    //          //se x:-6 y:+14
-    //      }
-    func getFPS(videoPath:String)->Float{
-        let fileURL = getfileURL(path: videoPath)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        let avAsset = AVURLAsset(url: fileURL, options: options)
-        return avAsset.tracks.first!.nominalFrameRate
-    }
+ 
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
         //     if tempCalcflag == false{
         if let vc = segue.source as? ParametersViewController {
@@ -2559,10 +2450,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //これをvideoのフレーム数に合わせる
                 //                print(getFps(path: Controller.filePath!))
                 let fps=getFps(path:Controller.filePath!)
-                
-                //let fps=getFPS(videoPath: vidPath[vidCurrent])
-                // Controller.currentFPS
-                print("recordFPS:",fps)
+                print("fps:",fps,getFPS(videoPath: vidPath[vidCurrent]))
+                //let fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメみたい？
+                //どちらも一緒にみえるが？
                 let framecount=Int(Float(gyro.count)*fps/100.0)
                 for i in 0...framecount+10{
                     let gn=Double(i)/Double(fps)//iフレーム目の秒数
@@ -2603,17 +2493,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         r.origin.x = stRect.origin.x + dx;
         r.origin.y = stRect.origin.y + dy;
         //r.size.width = stRect.size
-//        if r.origin.x < hani.origin.x{
-//            r.origin.x = hani.origin.x
-//        }else if r.origin.x > hani.origin.x+hani.width{
-//            r.origin.x = hani.origin.x+hani.width
-//        }
-//        if r.origin.y < hani.origin.y{
-//            r.origin.y = hani.origin.y
-//        }
-//        if r.origin.y > hani.origin.y+hani.height{
-//            r.origin.y = hani.origin.y+hani.height
-//        }
+        if r.origin.x < hani.origin.x{
+            r.origin.x = hani.origin.x
+        }else if r.origin.x > hani.origin.x+hani.width{
+            r.origin.x = hani.origin.x+hani.width
+        }
+        if r.origin.y < hani.origin.y{
+            r.origin.y = hani.origin.y
+        }
+        if r.origin.y > hani.origin.y+hani.height{
+            r.origin.y = hani.origin.y+hani.height
+        }
         return r
     }
     
@@ -2727,20 +2617,20 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }else{//枠 changed
                 if rectType > -1 {//枠の設定の場合
                     //                    let w3=view.bounds.width/3
-                    let w8=view.bounds.width/8
-                    let h8=view.bounds.height/8
+                    let ww=view.bounds.width
+                    let wh=view.bounds.height
                     if rectType == 0 {
                         if faceF==0 || vhit_vog==false{
-                            let et=CGRect(x:w8*3,y:h8,width: w8*2,height:h8*4)
+                            let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wh*5/8)
                             wakuE = moveWakus(rect:wakuE,stRect: stRect,stPo: stPo,movePo: move,hani: et)
-                        }else{
-                            let et=CGRect(x:w8*3,y:h8,width: w8*2,height:wakuF.origin.y-20-h8)
+                        }else{//vHIT && faceF==true
+                            let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wakuF.origin.y-10-wh/20)
                             wakuE = moveWakus(rect:wakuE,stRect: stRect,stPo: stPo,movePo: move,hani:et)
                         }
                     }else{
                         //let xt=wakuE.origin.x
                         //let w12=view.bounds.width/12
-                        let ft=CGRect(x:w8*3,y:wakuE.origin.y+20,width:w8*2,height:h8*5-wakuE.origin.y-20)
+                        let ft=CGRect(x:ww/10,y:wakuE.origin.y+10,width:ww*4/5,height:wh*5/8-wakuE.origin.y-10)
                         wakuF = moveWakus(rect:wakuF,stRect:stRect, stPo: stPo,movePo: move,hani:ft)
                     }
                     dispWakus()
