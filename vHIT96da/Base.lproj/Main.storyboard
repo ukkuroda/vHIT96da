@@ -359,7 +359,7 @@
                                 <rect key="frame" x="130" y="98" width="59" height="58"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="btn" translatesAutoresizingMaskIntoConstraints="NO" id="YIA-4v-A2X">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="btnblue" translatesAutoresizingMaskIntoConstraints="NO" id="YIA-4v-A2X">
                                 <rect key="frame" x="235" y="390" width="54" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -459,7 +459,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-1119.375" y="-40.140845070422536"/>
+            <point key="canvasLocation" x="-1120.2898550724638" y="-40.178571428571423"/>
         </scene>
         <!--Record View Controller-->
         <scene sceneID="Sj0-eK-p84">
@@ -814,6 +814,7 @@
     <resources>
         <image name="backvideo" width="630" height="630"/>
         <image name="btn" width="300" height="40"/>
+        <image name="btnblue" width="900" height="120"/>
         <image name="disp" width="260" height="260"/>
         <image name="help" width="260" height="260"/>
         <image name="mail" width="260" height="260"/>
