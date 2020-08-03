@@ -661,22 +661,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
                         
                         
-                        //下２行はデバッグ用
+//                        下２行はデバッグ用
 //                        faceWithBorderCGImage = context.createCGImage(ciImage, from: eyebR0)
 //                        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage)
-                        //画面表示はmain threadで行う
-//                        DispatchQueue.main.async {
-//                            self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
-//                            self.wakuEye.image=eyeUIImage
-//                            x += eyeRect.size.width*2
-//
-//                            self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
-//                            x += eyeWithBorderRect.size.width*2
-//                            self.wakuEyeb.image=eyeWithBorderUIImage
-//                            //下２行はdebug用
-////                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
-////                            self.wakuFacb.image=faceWithBorderUIImage
-//                        }
+//                        画面表示はmain threadで行う
+ /*                       DispatchQueue.main.async {
+                            self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
+                            self.wakuEye.image=eyeUIImage
+                            x += eyeRect.size.width*2
+
+                            self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
+                            x += eyeWithBorderRect.size.width*2
+                            self.wakuEyeb.image=eyeWithBorderUIImage
+                            //下２行はdebug用
+//                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
+//                            self.wakuFacb.image=faceWithBorderUIImage
+                        }*/
                         let maxV=self.openCV.matching(eyeWithBorderUIImage,
                                                       narrow: eyeUIImage,
                                                       x: eX,
@@ -698,13 +698,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             if self.faceF==1 && self.vhit_vog==true{
                                 faceWithBorderCGImage = context.createCGImage(ciImage, from:faceWithBorderRect)!
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage)
-//                                DispatchQueue.main.async {
-//                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
-//                                    self.wakuFac.image=faceUIImage
-//                                    x += faceRect.size.width*2
-//                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
-//                                    self.wakuFacb.image=faceWithBorderUIImage
-//                                }
+  /*                              DispatchQueue.main.async {
+                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
+                                    self.wakuFac.image=faceUIImage
+                                    x += faceRect.size.width*2
+                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
+                                    self.wakuFacb.image=faceWithBorderUIImage
+                                }*/
                                 
                                 let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
                                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
