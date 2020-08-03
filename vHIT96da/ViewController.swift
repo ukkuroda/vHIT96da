@@ -1601,36 +1601,30 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         eyeWaku.layer.borderColor = UIColor.green.cgColor
         eyeWaku.backgroundColor = UIColor.clear
-        eyeWaku.layer.borderWidth=1.0
+        eyeWaku.layer.borderWidth=2.0
         
-        eyeWaku.frame = CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width:wakuE.size.width,height: wakuE.size.height)
+        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
         
         faceWaku.layer.borderColor = UIColor.green.cgColor
         faceWaku.layer.borderWidth = 1.0
         faceWaku.backgroundColor = UIColor.clear
         
         curWaku.layer.borderColor = UIColor.red.cgColor
-        curWaku.layer.borderWidth = 1.0
         curWaku.backgroundColor = UIColor.clear
         if rectType==0{
+            curWaku.layer.borderWidth = 2.0
+
             curWaku.frame = CGRect(x:wakuE.origin.x-5,y:wakuE.origin.y-5,width:wakuE.size.width+10,height: wakuE.size.height+10)
         }else{
+            curWaku.layer.borderWidth = 1.0
             curWaku.frame = CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
         }
         
         if  vhit_vog==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku.frame=nullRect
         }else{
-            faceWaku.frame=CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width:wakuF.size.width,height: wakuF.size.height)
+            faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
         }
-        
-        //       printR(str: "wakuF", rct: wakuF)
-        //       printR(str: "wakuE", rct: wakuE)
-        //        if  vhit_vog==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
-        //            faceWaku.frame = nullRect
-        //        }else{
-        //            faceWaku.frame = wakuF
-        //        }
     }
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
@@ -2619,17 +2613,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     let wh=view.bounds.height
                     if rectType == 0 {
                         if faceF==0 || vhit_vog==false{//EyeRect
-                            let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wh*5/8)
+                            let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wh*3/4)
                             wakuE = moveWakus(rect:wakuE,stRect: stRect,stPo: stPo,movePo: move,hani: et)
                         }else{//vHIT && faceF==true FaceRect
-                            let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wakuF.origin.y-10-wh/20)
+                            let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wh*3/4)
                             wakuE = moveWakus(rect:wakuE,stRect: stRect,stPo: stPo,movePo: move,hani:et)
                         }
                     }else{
                         //let xt=wakuE.origin.x
                         //let w12=view.bounds.width/12
-                        let ft=CGRect(x:ww/10,y:wakuE.origin.y+10,width:ww*4/5,height:wh-wakuE.origin.y-10)
-                        wakuF = moveWakus(rect:wakuF,stRect:stRect, stPo: stPo,movePo: move,hani:ft)
+                        let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wh*3/4)
+                        wakuF = moveWakus(rect:wakuF,stRect:stRect, stPo: stPo,movePo: move,hani:et)
                     }
                     dispWakus()
                 }else{
