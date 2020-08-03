@@ -648,6 +648,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 autoreleasepool{
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
                     cvError -= 1
+                    
+//                    self.printR(str: "eyeWB:", rct: eyeWithBorderRect)
+                
                     if cvError < 0{
                         //orientation.upとrightは所要時間同じ
                         let ciImage: CIImage =
@@ -657,16 +660,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
                         
+                        
+                        //下２行はデバッグ用
+//                        faceWithBorderCGImage = context.createCGImage(ciImage, from: eyebR0)
+//                        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage)
                         //画面表示はmain threadで行う
-                        DispatchQueue.main.async {
-                            self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
-                            self.wakuEye.image=eyeUIImage
-                            x += eyeRect.size.width*2
-                            
-                            self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
-                            x += eyeWithBorderRect.size.width*2
-                            self.wakuEyeb.image=eyeWithBorderUIImage
-                        }
+//                        DispatchQueue.main.async {
+//                            self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
+//                            self.wakuEye.image=eyeUIImage
+//                            x += eyeRect.size.width*2
+//
+//                            self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
+//                            x += eyeWithBorderRect.size.width*2
+//                            self.wakuEyeb.image=eyeWithBorderUIImage
+//                            //下２行はdebug用
+////                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
+////                            self.wakuFacb.image=faceWithBorderUIImage
+//                        }
                         let maxV=self.openCV.matching(eyeWithBorderUIImage,
                                                       narrow: eyeUIImage,
                                                       x: eX,
@@ -688,13 +698,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             if self.faceF==1 && self.vhit_vog==true{
                                 faceWithBorderCGImage = context.createCGImage(ciImage, from:faceWithBorderRect)!
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage)
-                                DispatchQueue.main.async {
-                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
-                                    self.wakuFac.image=faceUIImage
-                                    x += faceRect.size.width*2
-                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
-                                    self.wakuFacb.image=faceWithBorderUIImage
-                                }
+//                                DispatchQueue.main.async {
+//                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
+//                                    self.wakuFac.image=faceUIImage
+//                                    x += faceRect.size.width*2
+//                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
+//                                    self.wakuFacb.image=faceWithBorderUIImage
+//                                }
                                 
                                 let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
                                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
@@ -714,7 +724,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     
                     if self.faceF==1{
-                        let face5=12.0*self.Kalman(value: fx,num: 0)
+                        let face5 = -12.0*self.Kalman(value: fx,num: 0)
                         self.vHITFace.append(face5)
                         self.vHITFace5.append(face5)
                         if vHITcnt > 5{
@@ -727,7 +737,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     
                     // eyePos, ey, fyをそれぞれ配列に追加
                     // vogをkalmanにかけ配列に追加
-                    let eyePos5=1.0*self.Kalman(value:eyePos,num:1)
+                    let eyePos5 = -1.0*self.Kalman(value:eyePos,num:1)
                     self.vogPos5.append(eyePos5)
                     self.vogPos.append(eyePos5)
                     if vHITcnt > 5{
@@ -748,8 +758,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         sleep(UInt32(0.1))
                     }
                 }
+//                print("ciimage:",ciImage.extent.width,ciImage.extent.height)
                 //マッチングデバッグ用スリープ、デバッグが終わったら削除
-                usleep(100)
+//                usleep(200)
             }
             //            print("time:",CFAbsoluteTimeGetCurrent()-st)
             self.calcFlag = false
@@ -2639,7 +2650,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }else{
 //                if faceF==1{
-                    dispWakuImages()
+//                    dispWakuImages()
 //                }
             }
         }

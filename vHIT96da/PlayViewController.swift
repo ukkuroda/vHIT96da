@@ -16,7 +16,8 @@ class PlayViewController: UIViewController {
     var videoPlayer: AVPlayer!
     lazy var seekBar = UISlider()
     var startButton:UIButton!
-//    var exitButton:UIButton!
+    var nextButton:UIButton!
+    var backButton:UIButton!
     var exitLabel:UILabel!
     var duration:Float=0
     var currTime:UILabel?
@@ -92,22 +93,31 @@ class PlayViewController: UIViewController {
             self.currTime!.text = String(format:"%.2f/%.2f",value,self.duration)
 //            self.currTime!.text = String(format:"%.2f",value)
         })
+        //         Create back Button
+        let bw=(ww-100)/4
+               backButton = UIButton(frame: CGRect(x: 10, y: wh-50, width: bw, height: 40))
+               backButton.layer.masksToBounds = true
+               backButton.layer.cornerRadius = 5.0
+               backButton.backgroundColor = UIColor.darkGray
+               backButton.setTitle("<", for: UIControl.State.normal)
+               backButton.addTarget(self, action: #selector(onBackButtonTapped), for: UIControl.Event.touchUpInside)
+               view.addSubview(backButton)
         // Create Movie Start Button
-        startButton = UIButton(frame: CGRect(x: ww/2-40, y: wh-50, width: 80, height: 40))
+        startButton = UIButton(frame: CGRect(x: 10+bw+10, y: wh-50, width: bw, height: 40))
         startButton.layer.masksToBounds = true
         startButton.layer.cornerRadius = 5.0
         startButton.backgroundColor = UIColor.darkGray
         startButton.setTitle("Play", for: UIControl.State.normal)
         startButton.addTarget(self, action: #selector(onStartButtonTapped), for: UIControl.Event.touchUpInside)
         view.addSubview(startButton)
-        // Create exit Button
-//        exitButton = UIButton(frame: CGRect(x: ww-90, y: wh-50, width: 80, height: 40))
-//        exitButton.layer.masksToBounds = true
-//        exitButton.layer.cornerRadius = 5.0
-//        exitButton.backgroundColor = UIColor.darkGray
-//        exitButton.setTitle("EXIT", for: UIControl.State.normal)
-//        exitButton.addTarget(self, action: #selector(onExitButtonTapped), for: UIControl.Event.touchUpInside)
-//        view.addSubview(exitButton)
+//         Create next Button
+        nextButton = UIButton(frame: CGRect(x: 10+bw+10+bw+10, y: wh-50, width: bw, height: 40))
+        nextButton.layer.masksToBounds = true
+        nextButton.layer.cornerRadius = 5.0
+        nextButton.backgroundColor = UIColor.darkGray
+        nextButton.setTitle(">", for: UIControl.State.normal)
+        nextButton.addTarget(self, action: #selector(onNextButtonTapped), for: UIControl.Event.touchUpInside)
+        view.addSubview(nextButton)
   
         exitLabel = UILabel(frame: CGRect(x: ww-90, y: wh-50, width: 80, height: 40))
         exitLabel.layer.masksToBounds = true
@@ -150,6 +160,13 @@ class PlayViewController: UIViewController {
         print(seekBarValue)
         
     }
+    @objc func onNextButtonTapped(){
+         print(seekBarValue)
+         
+     }
+    @objc func onBackButtonTapped(){
+         print(seekBarValue)
+     }
     @objc func update(tm: Timer) {
         if playF==true{
             if duration-0.2<seekBarValue{
