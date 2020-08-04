@@ -1601,30 +1601,34 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         eyeWaku.layer.borderColor = UIColor.green.cgColor
         eyeWaku.backgroundColor = UIColor.clear
-        eyeWaku.layer.borderWidth=2.0
-        
+        eyeWaku.layer.borderWidth=1.0
         eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
         
-        faceWaku.layer.borderColor = UIColor.green.cgColor
-        faceWaku.layer.borderWidth = 1.0
-        faceWaku.backgroundColor = UIColor.clear
+        wakuEye.frame=CGRect(x:wakuE.origin.x-9,y:wakuE.origin.y-9,width:wakuE.size.width+18,height: wakuE.size.height+18)
         
+//        faceWaku.layer.borderColor = UIColor.green.cgColor
+//        faceWaku.layer.borderWidth = 1.0
+//        faceWaku.backgroundColor = UIColor.clear
+//
         curWaku.layer.borderColor = UIColor.red.cgColor
         curWaku.backgroundColor = UIColor.clear
+        curWaku.layer.borderWidth = 1.0
         if rectType==0{
-            curWaku.layer.borderWidth = 2.0
-
             curWaku.frame = CGRect(x:wakuE.origin.x-5,y:wakuE.origin.y-5,width:wakuE.size.width+10,height: wakuE.size.height+10)
+//            curWaku.frame = nullRect
+//            wakuEye.frame=nullRect
         }else{
-            curWaku.layer.borderWidth = 1.0
             curWaku.frame = CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
         }
-        
         if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku.frame=nullRect
         }else{
+            faceWaku.layer.borderColor = UIColor.green.cgColor
+             faceWaku.layer.borderWidth = 1.0
+             faceWaku.backgroundColor = UIColor.clear
             faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
         }
+
     }
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
