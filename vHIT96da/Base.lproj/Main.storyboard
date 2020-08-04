@@ -662,20 +662,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NZ2-eD-yMQ">
-                                <rect key="frame" x="7" y="242" width="49" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="markdispButton:" destination="jFt-gZ-HXu" eventType="valueChanged" id="8a2-cj-sD7"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="マークの動きを表示" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5nj-Tb-e7n">
-                                <rect key="frame" x="66" y="247" width="138" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2020-07-11 Ver4.2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vrY-iE-UjZ">
                                 <rect key="frame" x="157" y="822" width="100" height="30"/>
                                 <constraints>
@@ -710,8 +696,6 @@
                         <outlet property="gyroText" destination="Atu-MZ-zqA" id="65H-wy-p1s"/>
                         <outlet property="keyDown" destination="pMb-F1-KQb" id="9ax-j5-bsU"/>
                         <outlet property="markText" destination="aD3-jN-jML" id="cLB-AB-x5I"/>
-                        <outlet property="markdispSwitch" destination="NZ2-eD-yMQ" id="bFc-iE-orX"/>
-                        <outlet property="markdispText" destination="5nj-Tb-e7n" id="98F-jV-8ov"/>
                         <outlet property="paraText1" destination="srl-OW-f1c" id="Vdz-yt-XcJ"/>
                         <outlet property="paraText2" destination="9oE-gN-h2Z" id="cr5-4C-3Jp"/>
                         <outlet property="paraText3" destination="tWF-A9-5II" id="8r4-49-JPz"/>
