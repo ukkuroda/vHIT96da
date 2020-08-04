@@ -1,40 +1,4 @@
 
-/*
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@tatsu-kuro
-ukkuroda
-/
-vHIT96da
-forked from tatsu-kuro/vHIT96da
- Watch
-0
- Star 0
- Fork 1
-Code
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
- rotation
-vHIT96da/vHIT96da/ViewController.swift
-Go to file
-
-@ukkuroda
-ukkuroda bug fixed
-…
-Latest commit 5273385 1 hour ago
- History
- 2 contributors
-@tatsu-kuro @ukkuroda
-Executable File  2886 lines (2714 sloc)  123 KB
-RawBlame
-*/
 //
 //  ViewController.swift
 //  vHIT96da
@@ -2919,17 +2883,3 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawVHITwaves()
     }
 }
-/*
-© 2020 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-*/
