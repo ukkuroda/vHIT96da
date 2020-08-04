@@ -359,11 +359,6 @@
                                 <rect key="frame" x="130" y="98" width="59" height="58"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="btnblue" translatesAutoresizingMaskIntoConstraints="NO" id="YIA-4v-A2X">
-                                <rect key="frame" x="235" y="390" width="54" height="25"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WVy-FW-eP4">
                                 <rect key="frame" x="359" y="88.5" width="40" height="45.5"/>
                                 <constraints>
@@ -417,7 +412,6 @@
                         </connections>
                     </view>
                     <connections>
-                        <outlet property="arrowImage" destination="YIA-4v-A2X" id="aB4-Z9-Hp1"/>
                         <outlet property="backVideoOutlet" destination="LZQ-Ez-rYI" id="3UD-xa-nFJ"/>
                         <outlet property="buttonsWaku" destination="UsG-5w-jrf" id="5Nv-zC-1Iy"/>
                         <outlet property="calcButton" destination="sZn-CJ-Yxe" id="hF7-9w-d0q"/>
@@ -814,7 +808,6 @@
     <resources>
         <image name="backvideo" width="630" height="630"/>
         <image name="btn" width="300" height="40"/>
-        <image name="btnblue" width="900" height="120"/>
         <image name="disp" width="260" height="260"/>
         <image name="help" width="260" height="260"/>
         <image name="mail" width="260" height="260"/>

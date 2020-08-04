@@ -94,7 +94,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vidCurrent:Int=0
     var vogImage:UIImage?
     let videoPathtext:String="videoPath.txt"
-    @IBOutlet weak var arrowImage: UIImageView!
+//    @IBOutlet weak var arrowImage: UIImageView!
     var recStart = CFAbsoluteTimeGetCurrent()
     //var recstart_1 = CFAbsoluteTimeGetCurrent()
     @IBOutlet weak var cameraButton: UIButton!
@@ -159,7 +159,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         vhit_vog=true
-        setArrow()
+        setvHIT_VOGbuttons()
         dispWakus()
         if vHITEye.count>0 && vidCurrent != -1{
             vhitCurpoint=0
@@ -175,7 +175,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         vhit_vog = false
-        setArrow()
+        setvHIT_VOGbuttons()
         dispWakus()
         if vHITEye.count>0  && vidCurrent != -1{
             vogCurpoint=0
@@ -2098,7 +2098,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vogButton.layer.cornerRadius = 10
         vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
         getUserDefaults()
-        setArrow()//vhit <-> vog
+        setvHIT_VOGbuttons()//vhit <-> vog
         
         freeCounter += 1
         camera_alert()
@@ -2151,19 +2151,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    func setArrow(){
+    func setvHIT_VOGbuttons(){
         if vhit_vog==true{
             vhitButton.backgroundColor = UIColor.systemBlue
+            vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
+            vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
+            
             vogButton.backgroundColor = UIColor.gray
-            let x=vhitButton.frame.origin.x
-            let w=vhitButton.frame.size.width
-            arrowImage.frame = CGRect(x:x+w/10,y:view.bounds.height-120,width:w*8/10,height:5)
+            vogButton.frame   = CGRect(x:0,   y: 0 ,width: 75, height: 40)
+            vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
         }else{
             vhitButton.backgroundColor = UIColor.gray
+            vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 75, height: 40)
+            vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
+            
             vogButton.backgroundColor = UIColor.systemBlue
-            let x=vogButton.frame.origin.x
-            let w=vogButton.frame.size.width
-            arrowImage.frame = CGRect(x:x+w/10,y:view.bounds.height-120,width:w*8/10,height:5)
+            vogButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
+            vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
         }
     }
     
