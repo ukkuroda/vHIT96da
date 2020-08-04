@@ -212,7 +212,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var paraButton: UIButton!
     @IBOutlet weak var eyeWaku_image: UIImageView!
     
-//    @IBOutlet weak var eyeWaku_s: UIView!
+    @IBOutlet weak var faceWaku_image: UIImageView!
+    //    @IBOutlet weak var eyeWaku_s: UIView!
 //    @IBOutlet weak var eyeWaku_image: UIView!
     @IBOutlet weak var eyeWaku: UIView!
     @IBOutlet weak var faceWaku: UIView!
@@ -1630,15 +1631,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             curWaku.frame = CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
         }
         if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
-            faceWaku.frame=nullRect
+            faceWaku_image.frame=nullRect
         }else{
-            faceWaku.layer.borderColor = UIColor.white.cgColor
-             faceWaku.layer.borderWidth = 1.0
-             faceWaku.backgroundColor = UIColor.clear
-            faceWaku.layer.cornerRadius = 3
-            faceWaku.frame=CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
+        
+//            faceWaku_image.layer.borderColor = UIColor.white.cgColor
+//             faceWaku_image.layer.borderWidth = 1.0
+//             faceWaku_image.backgroundColor = UIColor.clear
+//            faceWaku_image.layer.cornerRadius = 3
+            faceWaku_image.frame=CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
         }
         eyeWaku.frame=nullRect
+        faceWaku.frame=nullRect
         dispWakuImages()
     }
     //vHIT_eye_head
