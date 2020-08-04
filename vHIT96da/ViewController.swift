@@ -647,8 +647,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 var fy:CGFloat = 0
                 
                 //for test display
+                #if DEBUG
                 var x:CGFloat = 0.0
                 let y:CGFloat = 500.0
+                #endif
                 autoreleasepool{
                     let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample)!//27sec:10sec
                     cvError -= 1
@@ -664,12 +666,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
                         
-                        
+                        #if DEBUG
 //                        下２行はデバッグ用
-//                        faceWithBorderCGImage = context.createCGImage(ciImage, from: eyebR0)
-//                        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage)
+                        faceWithBorderCGImage = context.createCGImage(ciImage, from: eyebR0)
+                        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage)
 //                        画面表示はmain threadで行う
- /*                       DispatchQueue.main.async {
+                        DispatchQueue.main.async {
                             self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
                             self.wakuEye.image=eyeUIImage
                             x += eyeRect.size.width*2
@@ -678,9 +680,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             x += eyeWithBorderRect.size.width*2
                             self.wakuEyeb.image=eyeWithBorderUIImage
                             //下２行はdebug用
-//                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
-//                            self.wakuFacb.image=faceWithBorderUIImage
-                        }*/
+                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
+                            self.wakuFacb.image=faceWithBorderUIImage
+                        }
+                        #endif
                         let maxV=self.openCV.matching(eyeWithBorderUIImage,
                                                       narrow: eyeUIImage,
                                                       x: eX,
@@ -702,13 +705,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             if self.faceF==1 && self.isVHIT==true{
                                 faceWithBorderCGImage = context.createCGImage(ciImage, from:faceWithBorderRect)!
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage)
-  /*                              DispatchQueue.main.async {
+                                #if DEBUG
+                                DispatchQueue.main.async {
                                     self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
                                     self.wakuFac.image=faceUIImage
                                     x += faceRect.size.width*2
                                     self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
                                     self.wakuFacb.image=faceWithBorderUIImage
-                                }*/
+                                }
+                                #endif
                                 
                                 let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
                                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
@@ -847,7 +852,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          
          var w3:CGFloat=0.0
          let h4=view.bounds.height/2
-         
+        
+        wakuEye.frame=CGRect(x:10,y:35,width:eyeR.size.width*5,height:eyeR.size.height*5)
+        if rectType == 0{
+            wakuEye.image=UIeye
+        }else{
+            wakuEye.image=UIfac
+        }
+/*
          wakuEye.frame=CGRect(x:w3,y:h4,width:eyeR.size.width*2,height:eyeR.size.height*2)
          w3 += eyeR.size.width*2
          wakuEyeb.frame=CGRect(x:w3,y:h4,width:eyebR.size.width*2,height:eyebR.size.height*2)
@@ -861,7 +873,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          wakuFacb.image=UIfacb
          printR(str:"--eyeRect:", rct:eyeR)
          printR(str:"--eyeWithBorderRect:", rct:eyebR)
-         
+      */
      }
      
    
@@ -1625,6 +1637,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
              faceWaku.backgroundColor = UIColor.clear
             faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
         }
+        dispWakuImages()
     }
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
@@ -2103,7 +2116,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         freeCounter += 1
         camera_alert()
         UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-        dispWakus()
+//        dispWakus()
         setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
         showCurrent()
@@ -2112,6 +2125,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
+        dispWakus()
     }
     override var prefersHomeIndicatorAutoHidden: Bool {
          get {
@@ -2646,10 +2660,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     drawVHITwaves()
                     saveGyro(path: vidPath[vidCurrent])//末尾のgyroDeltaを書き換える
                 }
-            }else{
-//                if faceF==1{
-//                    dispWakuImages()
-//                }
             }
         }
     }
