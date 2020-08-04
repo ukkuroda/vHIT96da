@@ -210,6 +210,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var calcButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var paraButton: UIButton!
+    @IBOutlet weak var eyeWaku_image: UIImageView!
+    
+//    @IBOutlet weak var eyeWaku_s: UIView!
+//    @IBOutlet weak var eyeWaku_image: UIView!
     @IBOutlet weak var eyeWaku: UIView!
     @IBOutlet weak var faceWaku: UIView!
     @IBOutlet weak var curWaku: UIView!
@@ -1604,19 +1608,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         eyeWaku.layer.borderWidth=1.0
         eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
         
-        wakuEye.frame=CGRect(x:wakuE.origin.x-9,y:wakuE.origin.y-9,width:wakuE.size.width+18,height: wakuE.size.height+18)
-        
-//        faceWaku.layer.borderColor = UIColor.green.cgColor
-//        faceWaku.layer.borderWidth = 1.0
-//        faceWaku.backgroundColor = UIColor.clear
-//
+        eyeWaku_image.frame=CGRect(x:wakuE.origin.x-9,y:wakuE.origin.y-9,width:wakuE.size.width+18,height: wakuE.size.height+18)
         curWaku.layer.borderColor = UIColor.red.cgColor
         curWaku.backgroundColor = UIColor.clear
         curWaku.layer.borderWidth = 1.0
         if rectType==0{
             curWaku.frame = CGRect(x:wakuE.origin.x-5,y:wakuE.origin.y-5,width:wakuE.size.width+10,height: wakuE.size.height+10)
-//            curWaku.frame = nullRect
-//            wakuEye.frame=nullRect
         }else{
             curWaku.frame = CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
         }
@@ -1628,7 +1625,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
              faceWaku.backgroundColor = UIColor.clear
             faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
         }
-
     }
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
@@ -2776,4 +2772,3 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawVHITwaves()
     }
 }
-
