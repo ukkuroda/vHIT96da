@@ -83,7 +83,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     @IBOutlet weak var deleButton: UIButton!
     
     @IBOutlet weak var exitButton: UIButton!
-    var tateyokoRatio:CGFloat?
+//    var tateyokoRatio:CGFloat?
     var isVHIT:Bool?
     fileprivate let kCellReuseIdentifier = "Cell"
     fileprivate let kColumnCnt: Int = 1
@@ -92,8 +92,10 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     fileprivate var targetSize = CGSize.zero
     fileprivate var fetchResult = [PHAsset]()
     var actRow:Int = -1
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         initView()
         loadPhotos()
         setButtons()
@@ -160,11 +162,12 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     }
     
     func initView() {
-        let imgWidth = (collectionView.frame.width - (kCellSpacing * (CGFloat(kColumnCnt) - 1))) / CGFloat(kColumnCnt)
+//        let imgWidth = (collectionView.frame.width - (kCellSpacing * (CGFloat(kColumnCnt) - 1))) / CGFloat(kColumnCnt)
+        let imgWidth=view.bounds.width*0.95
         if isVHIT==true{
-            targetSize = CGSize(width: imgWidth*0.8, height: imgWidth*200*0.8/500)//vhit
+            targetSize = CGSize(width: imgWidth, height: imgWidth*200/500)//vhit
         }else{//
-            targetSize = CGSize(width: imgWidth*0.8, height: imgWidth*0.8*410/640)//VOG
+            targetSize = CGSize(width: imgWidth, height: imgWidth*410/640)//VOG
         }
         //print(imgWidth)
         let layout = UICollectionViewFlowLayout()
