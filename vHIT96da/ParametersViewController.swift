@@ -32,7 +32,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
 //        setTexts()
 //    }
     var okpMode:Int = 0
-    var facedispF:Int?
+//    var facedispF:Int?
     var faceF:Int?
     var widthRange:Int = 0
     var waveWidth:Int = 0
@@ -40,7 +40,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
 //    var gyroDelta:Int = 0
     var ratio1:Int = 0
     var ratio2:Int = 0
-    var vhit_vog:Bool?
+    var isVHIT:Bool?
     @IBOutlet weak var gyroText: UILabel!
     @IBOutlet weak var paraText1: UILabel!
     @IBOutlet weak var paraText2: UILabel!
@@ -92,7 +92,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     }
 
     @IBAction func setDefault(_ sender: Any) {
-        if vhit_vog==true{
+        if isVHIT==true{
             widthRange = 30
             waveWidth = 80
             eyeBorder=10
@@ -176,7 +176,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
 //        markSwitch.isHidden = false
 //        markdispText.isHidden = true
 //        markdispSwitch.isHidden = true
-        if vhit_vog==false{
+        if isVHIT==false{
             markText.isHidden = true
             faceFbutton.isHidden = true
 
