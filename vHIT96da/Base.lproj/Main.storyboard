@@ -350,6 +350,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jhl-W2-Rd7">
                                 <rect key="frame" x="131" y="39" width="59" height="58"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tQh-go-BDj">
                                 <rect key="frame" x="131" y="212" width="59" height="58"/>
@@ -381,6 +382,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="eye" translatesAutoresizingMaskIntoConstraints="NO" id="Alg-u1-zs9">
+                                <rect key="frame" x="15" y="61" width="32" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
@@ -419,6 +424,7 @@
                         <outlet property="curWaku" destination="bs1-ZU-zb1" id="awh-YU-WOo"/>
                         <outlet property="eraseButton" destination="WVy-FW-eP4" id="1mR-HG-0Sd"/>
                         <outlet property="eyeWaku" destination="wHm-rN-v50" id="KrA-fm-cpK"/>
+                        <outlet property="eyeWaku_image" destination="Alg-u1-zs9" id="IZe-KV-VDx"/>
                         <outlet property="faceWaku" destination="p79-Uj-48D" id="fZs-Zc-8nC"/>
                         <outlet property="freecntLabel" destination="6oH-Ur-nDk" id="EUJ-xJ-mml"/>
                         <outlet property="helpButton" destination="7OA-cL-B3S" id="YzF-8f-1r2"/>
@@ -809,6 +815,7 @@
         <image name="backvideo" width="630" height="630"/>
         <image name="btn" width="300" height="40"/>
         <image name="disp" width="260" height="260"/>
+        <image name="eye" width="212" height="212"/>
         <image name="help" width="260" height="260"/>
         <image name="mail" width="260" height="260"/>
         <image name="nextvideo" width="630" height="630"/>
