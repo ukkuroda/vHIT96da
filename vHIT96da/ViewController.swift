@@ -2310,7 +2310,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }else if let vc = segue.destination as? ImagePickerViewController{
             let Controller:ImagePickerViewController = vc
-            Controller.tateyokoRatio=mailHeight/mailWidth
+//            Controller.tateyokoRatio=mailHeight/mailWidth
             Controller.isVHIT=isVHIT
         }else if let vc = segue.destination as? HelpjViewController{
             let Controller:HelpjViewController = vc
