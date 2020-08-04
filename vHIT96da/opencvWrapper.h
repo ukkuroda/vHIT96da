@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 @interface opencvWrapper : NSObject
-@property int adaptiveThreshold0;
-@property UIImage* cvImage0;
-@property int cnt;
+//@property int adaptiveThreshold0;
+//@property UIImage* cvImage0;
+//@property int cnt;
 //(返り値の型 *)関数名:(引数の型 *)引数名;CMSampleBuffer
 //- (IplImage *)createIplImageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 //- (UIImage *)imageFromSampleBuffer:(CMSampleBuffer)sample;

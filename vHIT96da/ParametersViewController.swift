@@ -9,8 +9,8 @@
 import UIKit
 
 class ParametersViewController: UIViewController, UITextFieldDelegate {
-    @IBOutlet weak var markdispSwitch: UISwitch!
-    @IBOutlet weak var markdispText: UILabel!
+//    @IBOutlet weak var markdispSwitch: UISwitch!
+//    @IBOutlet weak var markdispText: UILabel!
     @IBOutlet weak var markText: UILabel!
     @IBOutlet weak var faceFbutton: UISwitch!
     @IBOutlet weak var exitButton: UIButton!
@@ -23,16 +23,16 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
 //        }
 //        oknButton.image=UIImage(named:"circle")
     //}
-    @IBAction func offbut(_ sender: UIButton) {
-        if okpMode==0{
-            okpMode=1
-        }else{
-            okpMode=0
-        }
-        setTexts()
-    }
+//    @IBAction func offbut(_ sender: UIButton) {
+//        if okpMode==0{
+//            okpMode=1
+//        }else{
+//            okpMode=0
+//        }
+//        setTexts()
+//    }
     var okpMode:Int = 0
-    var facedispF:Int?
+//    var facedispF:Int?
     var faceF:Int?
     var widthRange:Int = 0
     var waveWidth:Int = 0
@@ -57,13 +57,13 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var ratio1input: UITextField!
     @IBOutlet weak var ratio2input: UITextField!
     
-    @IBAction func markdispButton(_ sender: UISwitch) {
-        if sender.isOn{
-            facedispF=1
-        }else{
-            facedispF=0
-        }
-    }
+//    @IBAction func markdispButton(_ sender: UISwitch) {
+//        if sender.isOn{
+//            facedispF=1
+//        }else{
+//            facedispF=0
+//        }
+//    }
     @IBAction func faceFchan(_ sender: UISwitch) {
         if sender.isOn{
             faceF=1
@@ -99,7 +99,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             okpMode=0
             faceFbutton.isOn=false
             faceF=0
-            markdispSwitch.isOn=false
+//            markdispSwitch.isOn=false
 //            gyroDelta = 50
             ratio1 = 100
             ratio2 = 100
@@ -107,7 +107,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             eyeBorder=10
             okpMode=0
             faceFbutton.isOn=false
-            markdispSwitch.isOn=false
+//            markdispSwitch.isOn=false
             ratio1 = 100
             ratio2 = 100
         }
@@ -174,8 +174,8 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         let x2=x1+bw+5
 //        markText.isHidden = false
 //        markSwitch.isHidden = false
-        markdispText.isHidden = true
-        markdispSwitch.isHidden = true
+//        markdispText.isHidden = true
+//        markdispSwitch.isHidden = true
         if isVHIT==false{
             markText.isHidden = true
             faceFbutton.isHidden = true
