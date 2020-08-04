@@ -1615,28 +1615,30 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if faceF==0{
             rectType=0
         }
-        eyeWaku.layer.borderColor = UIColor.green.cgColor
-        eyeWaku.backgroundColor = UIColor.clear
-        eyeWaku.layer.borderWidth=1.0
-        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
-        
+//        eyeWaku.layer.borderColor = UIColor.green.cgColor
+//        eyeWaku.backgroundColor = UIColor.clear
+//        eyeWaku.layer.borderWidth=1.0
+//        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
+//
         eyeWaku_image.frame=CGRect(x:wakuE.origin.x-9,y:wakuE.origin.y-9,width:wakuE.size.width+18,height: wakuE.size.height+18)
         curWaku.layer.borderColor = UIColor.red.cgColor
         curWaku.backgroundColor = UIColor.clear
         curWaku.layer.borderWidth = 1.0
         if rectType==0{
-            curWaku.frame = CGRect(x:wakuE.origin.x-5,y:wakuE.origin.y-5,width:wakuE.size.width+10,height: wakuE.size.height+10)
+            curWaku.frame = CGRect(x:wakuE.origin.x-10,y:wakuE.origin.y-10,width:wakuE.size.width+20,height: wakuE.size.height+20)
         }else{
-            curWaku.frame = CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
+            curWaku.frame = CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
         }
         if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku.frame=nullRect
         }else{
-            faceWaku.layer.borderColor = UIColor.green.cgColor
+            faceWaku.layer.borderColor = UIColor.white.cgColor
              faceWaku.layer.borderWidth = 1.0
              faceWaku.backgroundColor = UIColor.clear
-            faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
+            faceWaku.layer.cornerRadius = 3
+            faceWaku.frame=CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
         }
+        eyeWaku.frame=nullRect
         dispWakuImages()
     }
     //vHIT_eye_head
