@@ -12,6 +12,36 @@
 #import "opencvWrapper.h"
 
 @implementation opencvWrapper
+-(double) matching:(UIImage *)wide_img narrow:(UIImage *)narrow_img x:(int *)x_ret y:(int *)y_ret
+{
+        cv::Mat wide_mat;
+        cv::Mat narrow_mat;
+        cv::Mat return_mat;
+        UIImageToMat(wide_img, wide_mat);
+        UIImageToMat(narrow_img, narrow_mat);
+
+        // テンプレートマッチング
+    //    cv::cvtColor(wide_mat, wide_mat, CV_BGRA2GRAY);
+    //    cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
+          try
+        {
+            cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);
+           // ...
+        }
+        catch( cv::Exception& e )
+        {
+          //  const char* err_msg = e.what();
+            return -2.0;
+        }
+        
+        // 最大のスコアの場所を探す
+        cv::Point max_pt;
+        double maxVal;
+        cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
+        *x_ret = max_pt.x;
+        *y_ret = max_pt.y;
+        return maxVal;//恐らく見つかった時は　0.7　より大の模様
+}
 //-(UIImage *)GrayScale:(UIImage *)image{
 /*
  -(UIImage *)GrayScale:(UIImage *)input_img vn:(NSString *)vname x:(int *)x_ret{
@@ -329,41 +359,7 @@ int iii;
     *x_ret = max_pt.x;
     *y_ret = max_pt.y;
 }*/
--(double) matching:(UIImage *)wide_img narrow:(UIImage *)narrow_img x:(int *)x_ret y:(int *)y_ret
-{
-    cv::Mat wide_mat;
-    cv::Mat narrow_mat;
-    cv::Mat return_mat;
-    UIImageToMat(wide_img, wide_mat);
-    UIImageToMat(narrow_img, narrow_mat);
-//    *x_ret = 0;
-//    *y_ret = 0;
-    // テンプレートマッチング
-    try
-    {
-        cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);
-       // ...
-    }
-    catch( cv::Exception& e )
-    {
-      //  const char* err_msg = e.what();
-       // ...
-        return -2.0;
-    }
-    
-    // 最大のスコアの場所を探す
-    cv::Point max_pt;
-    double maxVal;
-    cv::minMaxLoc(return_mat, NULL, &maxVal, NULL, &max_pt);
-//    if(maxVal>0.7){//恐らく見つかったらここ
-        *x_ret = max_pt.x;
-        *y_ret = max_pt.y;
-//    }else{//瞬きではこちらだろう
-//        *x_ret = 0;
-//        *y_ret = 0;
-//    }
-      return maxVal;
-}
+
 /*
 -(void) matching2:(UIImage *)wide_img n1:(UIImage *)narrow1_img n2:(UIImage *)narrow2_img x:(int *)eX y:(int *)eY
 {
