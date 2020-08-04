@@ -155,10 +155,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     @IBAction func vhitGo(_ sender: Any) {
-        if calcFlag == true || vhit_vog == true{
+        if calcFlag == true || isVHIT == true{
             return
         }
-        vhit_vog=true
+        isVHIT=true
         setvHIT_VOGbuttons()
         dispWakus()
         if vHITEye.count>0 && vidCurrent != -1{
@@ -171,10 +171,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     @IBAction func vogGo(_ sender: Any) {
         rectType=0
-        if calcFlag == true || vhit_vog == false{
+        if calcFlag == true || isVHIT == false{
             return
         }
-        vhit_vog = false
+        isVHIT = false
         setvHIT_VOGbuttons()
         dispWakus()
         if vHITEye.count>0  && vidCurrent != -1{
@@ -240,7 +240,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var gyroRatio:Int = 100//vhit
     var posRatio:Int = 100//vog
     var veloRatio:Int = 100//vog
-    var vhit_vog:Bool?//true-vhit false-vog
+    var isVHIT:Bool?//true-vhit false-vog
     var faceF:Int = 0
     var facedispF:Int = 0
     var okpMode:Int = 0
@@ -367,7 +367,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             timer.invalidate()
         }else{
             lastArraycount=0
-            if vhit_vog == true{
+            if isVHIT == true{
                 timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
             }else{
                 timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update_vog), userInfo: nil, repeats: true)
@@ -375,7 +375,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     func showBoxies(f:Bool){
-        if f==true && vhit_vog==false{//vog wave
+        if f==true && isVHIT==false{//vog wave
             boxF=true
             vogboxView?.isHidden = false
             voglineView?.isHidden = false
@@ -387,7 +387,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             setBacknext(f: false)
             eraseButton.isHidden=true
             //       playButton.isEnabled=false
-        }else if f==true && vhit_vog==true{//vhit wave
+        }else if f==true && isVHIT==true{//vhit wave
             boxF=true
             vogboxView?.isHidden = true
             voglineView?.isHidden = true
@@ -480,7 +480,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 title: "You are erasing vHIT Data.",
                 message: "OK ?",
                 preferredStyle: .alert)
-            if vhit_vog==false{
+            if isVHIT==false{
                 alert = UIAlertController(
                     title: "You are erasing VOG Data.",
                     message: "OK ?",
@@ -695,7 +695,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             eyeWithBorderRect.origin.x += ex
                             eyeWithBorderRect.origin.y += ey
                             eyePos = eyeWithBorderRect.origin.x - eyebR0.origin.x + ex
-                            if self.faceF==1 && self.vhit_vog==true{
+                            if self.faceF==1 && self.isVHIT==true{
                                 faceWithBorderCGImage = context.createCGImage(ciImage, from:faceWithBorderRect)!
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage)
   /*                              DispatchQueue.main.async {
@@ -1552,7 +1552,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         faceF = getUserDefault(str: "faceF", ret:0)
         okpMode = getUserDefault(str: "okpMode", ret:0)
         facedispF = getUserDefault(str: "facedispF", ret:0)
-        vhit_vog = getUserDefault(str: "vhit_vog", ret: true)
+        isVHIT = getUserDefault(str: "isVHIT", ret: true)
         //samplevideoでデフォルト値で上手く解析できるように、6s,7,8と7plus,8plus,xでデフォルト値を合わせる。
         //        let ratioW = self.view.bounds.width/375.0//6s
         //        let ratioH = self.view.bounds.height/667.0//6s
@@ -1591,7 +1591,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(Int(wakuE.size.width), forKey: "wakuE_w")
         UserDefaults.standard.set(Int(wakuF.origin.x), forKey: "wakuF_x")
         UserDefaults.standard.set(Int(wakuF.origin.y), forKey: "wakuF_y")
-        UserDefaults.standard.set(vhit_vog,forKey: "vhit_vog")
+        UserDefaults.standard.set(isVHIT,forKey: "isVHIT")
     }
     
     func dispWakus(){
@@ -1620,7 +1620,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             curWaku.frame = CGRect(x:wakuF.origin.x-5,y:wakuF.origin.y-5,width:wakuF.size.width+10,height: wakuF.size.height+10)
         }
         
-        if  vhit_vog==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
+        if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku.frame=nullRect
         }else{
             faceWaku.frame=CGRect(x:wakuF.origin.x-2,y:wakuF.origin.y-2,width:wakuF.size.width+4,height: wakuF.size.height+4)
@@ -1851,7 +1851,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if calcFlag == true{
             return
         }
-        if vhit_vog==false{
+        if isVHIT==false{
             saveResult_vog(0)
             return
         }
@@ -2108,7 +2108,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vidCurrent=vidPath.count-1//ない場合は -1
         showCurrent()
         makeBoxies()//three boxies of gyro vHIT vog
-        showBoxies(f: false)//vhit_vogに応じてviewを表示
+        showBoxies(f: false)//isVHITに応じてviewを表示
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
@@ -2152,7 +2152,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
     func setvHIT_VOGbuttons(){
-        if vhit_vog==true{
+        if isVHIT==true{
             vhitButton.backgroundColor = UIColor.systemBlue
             vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
             vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
@@ -2286,11 +2286,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //      遷移先のParametersViewControllerで宣言している値に代入して渡す
             ParametersViewController.widthRange = widthRange
             ParametersViewController.waveWidth = waveWidth
-            ParametersViewController.vhit_vog = vhit_vog
+            ParametersViewController.isVHIT = isVHIT
             ParametersViewController.eyeBorder = eyeBorder
             //            ParametersViewController.gyroDelta = gyroDelta
             ParametersViewController.faceF = faceF
-            if vhit_vog == true{
+            if isVHIT == true{
                 ParametersViewController.ratio1 = eyeRatio
                 ParametersViewController.ratio2 = gyroRatio
             }else{
@@ -2311,10 +2311,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }else if let vc = segue.destination as? ImagePickerViewController{
             let Controller:ImagePickerViewController = vc
             Controller.tateyokoRatio=mailHeight/mailWidth
-            Controller.vhit_vog=vhit_vog
+            Controller.isVHIT=isVHIT
         }else if let vc = segue.destination as? HelpjViewController{
             let Controller:HelpjViewController = vc
-            Controller.vhit_vog = vhit_vog
+            Controller.isVHIT = isVHIT
         }else{
             #if DEBUG
             print("prepare list")
@@ -2338,7 +2338,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             eyeBorder = ParametersViewController.eyeBorder
             //            gyroDelta = ParametersViewController.gyroDelta
             var chanF=false
-            if vhit_vog == true{
+            if isVHIT == true{
                 eyeRatio=ParametersViewController.ratio1
                 gyroRatio=ParametersViewController.ratio2
                 faceF=ParametersViewController.faceF!
@@ -2356,7 +2356,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             //print("gyro",gyroDelta)
             setvHITgyro5()
             if vHITEye5.count > 400{
-                if vhit_vog == true{//データがありそうな時は表示
+                if isVHIT == true{//データがありそうな時は表示
                     calcDrawVHIT()
                 }else{
                     if chanF==true{
@@ -2525,7 +2525,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if vHITboxView?.isHidden == true && vogboxView?.isHidden  == true{
                 //タップして動かすと、ここに来る
                 //                rectType = checkWaks(po: pos)//0:枠設定 -1:違う
-                if vhit_vog==false{
+                if isVHIT==false{
                     rectType=0
                 }
                 if rectType==0{
@@ -2535,11 +2535,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }
         } else if sender.state == .changed {
-            if vhit_vog == true && vHITboxView?.isHidden == false{//vhit
+            if isVHIT == true && vHITboxView?.isHidden == false{//vhit
                 let h=self.view.bounds.height
                 //let hI=Int(h)
                 //let posyI=Int(pos.y)
-                //                if vhit_vog == true{//vhit
+                //                if isVHIT == true{//vhit
                 if pos.y > h/2{//下半分の時
                     var dd=Int(10)
                     if pos.y < h/2 + h/6{//dd < 10{
@@ -2588,7 +2588,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     //                        update_gyrodelta()
                 }
                 //                }
-            }else if vhit_vog == false && vogboxView?.isHidden == false{//vog
+            }else if isVHIT == false && vogboxView?.isHidden == false{//vog
                 //                print("okpMode:",okpMode)
                 if vogPos5.count<240*10{//||okpMode==1{//240*10以下なら動けない。
                     return
@@ -2616,7 +2616,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     let ww=view.bounds.width
                     let wh=view.bounds.height
                     if rectType == 0 {
-                        if faceF==0 || vhit_vog==false{//EyeRect
+                        if faceF==0 || isVHIT==false{//EyeRect
                             let et=CGRect(x:ww/10,y:wh/20,width: ww*4/5,height:wh*3/4)
                             wakuE = moveWakus(rect:wakuE,stRect: stRect,stPo: stPo,movePo: move,hani: et)
                         }else{//vHIT && faceF==true FaceRect
@@ -2661,7 +2661,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if rectType > 1 {
                     rectType = 0
                 }
-                if vhit_vog==false || faceF==0{
+                if isVHIT==false || faceF==0{
                     rectType=0
                 }
                 dispWakus()

@@ -11,7 +11,7 @@ import UIKit
 class HelpjViewController: UIViewController, UIScrollViewDelegate   {
     @IBOutlet weak var hView:UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
-    var vhit_vog:Bool?
+    var isVHIT:Bool?
     var jap_eng:Int=0
     
     @IBOutlet weak var exitButton: UIButton!
@@ -39,7 +39,7 @@ class HelpjViewController: UIViewController, UIScrollViewDelegate   {
         langButton.layer.cornerRadius = 5
         exitButton.layer.cornerRadius = 5
         self.view.addSubview(scrollView)
-        if vhit_vog == true{
+        if isVHIT == true{
             hView.image = UIImage(named: "vhithelp")
         }else{
             hView.image = UIImage(named: "voghelp")

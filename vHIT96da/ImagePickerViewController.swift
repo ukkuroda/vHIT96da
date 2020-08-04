@@ -84,7 +84,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     
     @IBOutlet weak var exitButton: UIButton!
     var tateyokoRatio:CGFloat?
-    var vhit_vog:Bool?
+    var isVHIT:Bool?
     fileprivate let kCellReuseIdentifier = "Cell"
     fileprivate let kColumnCnt: Int = 1
     fileprivate let kCellSpacing: CGFloat = 2
@@ -161,7 +161,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     
     func initView() {
         let imgWidth = (collectionView.frame.width - (kCellSpacing * (CGFloat(kColumnCnt) - 1))) / CGFloat(kColumnCnt)
-        if vhit_vog==true{
+        if isVHIT==true{
             targetSize = CGSize(width: imgWidth, height: imgWidth*200/500)//vhit
         }else{//
             targetSize = CGSize(width: imgWidth, height: imgWidth*tateyokoRatio!)//VOG
@@ -186,7 +186,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         let assets: PHFetchResult = PHAsset.fetchAssets(with: .image, options: options)
         assets.enumerateObjects { (asset, index, stop) -> Void in
             let str = String(describing:asset)
-            if self.vhit_vog==true{
+            if self.isVHIT==true{
                 if str.contains("500x200") {//vhit
                     self.fetchResult.append(asset as PHAsset)
                 }
@@ -204,7 +204,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         //mailViewController.phi PHImageManagerMaximumSize()
         //     let toRecipients = [""]
         mailViewController.mailComposeDelegate = self
-        if vhit_vog==true{
+        if isVHIT==true{
         mailViewController.setSubject("vHIT96da")
         }else{
            mailViewController.setSubject("VOG96da")
@@ -255,7 +255,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             cell.contentView.addSubview(imageView)
-            if self.vhit_vog==true{
+            if self.isVHIT==true{
                 var falseBox = CheckBoxView(frame: CGRect(x:0, y:10, width:30, height:30), selected: false)
                 if indexPath.row == self.actRow {
                     falseBox = CheckBoxView(frame: CGRect(x:0, y:10, width:30, height:30), selected: true)
