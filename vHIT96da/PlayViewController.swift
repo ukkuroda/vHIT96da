@@ -162,6 +162,34 @@ class PlayViewController: UIViewController {
             }
         }
     }
+    @objc func onNextButtonTapped(){
+        if playF==true{
+             videoPlayer.pause()
+             startButton.setTitle("Play", for: UIControl.State.normal)
+             playF=false
+         }
+         seekBarValue=seekBar.value+0.01
+        if seekBarValue>duration-0.1{
+            seekBarValue=duration-0.1
+         }
+         let newTime = CMTime(seconds: Double(seekBarValue), preferredTimescale: 600)
+         currTime!.text = String(format:"%.2f/%.2f",seekBarValue,duration)
+         videoPlayer.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+    @objc func onBackButtonTapped(){
+        if playF==true{
+            videoPlayer.pause()
+            startButton.setTitle("Play", for: UIControl.State.normal)
+            playF=false
+        }
+        seekBarValue=seekBar.value-0.01
+        if seekBarValue<0{
+            seekBarValue=0
+        }
+        let newTime = CMTime(seconds: Double(seekBarValue), preferredTimescale: 600)
+        currTime!.text = String(format:"%.2f/%.2f",seekBarValue,duration)
+        videoPlayer.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
     @objc func onStartButtonTapped(){
         if playF==false{
             let newTime = CMTime(seconds: Double(seekBarValue), preferredTimescale: 600)
