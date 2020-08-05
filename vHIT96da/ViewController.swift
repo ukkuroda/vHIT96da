@@ -851,15 +851,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
          UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
          
-         var w3:CGFloat=0.0
-         let h4=view.bounds.height/2
-        
-        wakuEye.frame=CGRect(x:10,y:35,width:eyeR.size.width*5,height:eyeR.size.height*5)
+//         var w3:CGFloat=0.0
+//         let h4=view.bounds.height/2
+//
+//        wakuEye.frame=CGRect(x:10,y:35,width:eyeR.size.width*5,height:eyeR.size.height*5)
+
         if rectType == 0{
+            wakuEye.frame=eyeWaku_image.frame//(x) eyeR.size.width*5
+            wakuEye.frame.origin.y += 30
             wakuEye.image=UIeye
         }else{
+            wakuEye.frame=faceWaku_image.frame//(x) eyeR.size.width*5
+            wakuEye.frame.origin.y += 30
             wakuEye.image=UIfac
         }
+        wakuEye.layer.borderColor = UIColor.red.cgColor
+        wakuEye.layer.borderWidth = 1.0
+        wakuEye.backgroundColor = UIColor.clear
+        wakuEye.layer.cornerRadius = 3
+
 /*
          wakuEye.frame=CGRect(x:w3,y:h4,width:eyeR.size.width*2,height:eyeR.size.height*2)
          w3 += eyeR.size.width*2
@@ -1621,12 +1631,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        eyeWaku.layer.borderWidth=1.0
 //        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
 //
-        eyeWaku_image.frame=CGRect(x:wakuE.origin.x-9,y:wakuE.origin.y-9,width:wakuE.size.width+18,height: wakuE.size.height+18)
+        eyeWaku_image.frame=CGRect(x:wakuE.origin.x-15,y:wakuE.origin.y-15,width:wakuE.size.width+30,height: wakuE.size.height+30)
         curWaku.layer.borderColor = UIColor.red.cgColor
         curWaku.backgroundColor = UIColor.clear
         curWaku.layer.borderWidth = 1.0
         if rectType==0{
-            curWaku.frame = CGRect(x:wakuE.origin.x-10,y:wakuE.origin.y-10,width:wakuE.size.width+20,height: wakuE.size.height+20)
+            curWaku.frame = CGRect(x:wakuE.origin.x-10,y:wakuE.origin.y-15,width:wakuE.size.width+20,height: wakuE.size.height+20)
         }else{
             curWaku.frame = CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
         }
@@ -1638,10 +1648,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //             faceWaku_image.layer.borderWidth = 1.0
 //             faceWaku_image.backgroundColor = UIColor.clear
 //            faceWaku_image.layer.cornerRadius = 3
-            faceWaku_image.frame=CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
+            faceWaku_image.frame=CGRect(x:wakuF.origin.x-15,y:wakuF.origin.y-15,width:wakuF.size.width+30,height: wakuF.size.height+30)
         }
         eyeWaku.frame=nullRect
         faceWaku.frame=nullRect
+        curWaku.frame=nullRect
         dispWakuImages()
     }
     //vHIT_eye_head
