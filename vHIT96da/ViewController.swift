@@ -797,7 +797,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if vidCurrent<0 {
             return
         }
-         let eyeborder:CGFloat = CGFloat(eyeBorder)
+//         let eyeborder:CGFloat = CGFloat(eyeBorder)
          let fileURL = getfileURL(path: vidPath[vidCurrent])
          let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
          let avAsset = AVURLAsset(url: fileURL, options: options)
