@@ -612,10 +612,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let pixelBuffer:CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         let ciImage:CIImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
-        
+        let maxWidth=ciImage.extent.size.width
+        let maxHeight=ciImage.extent.size.height
+        print("cgi:",maxWidth,maxHeight)
         let eyeRect = resizeR2(eyeRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
 //        print("eyeRect:", eyeRect.origin, eyeRect.width, eyeRect.height)
         var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        let maxWidthWithBorder=maxWidth-eyeWithBorderRect.width-5
+        let maxHeightWithBorder=maxHeight-eyeWithBorderRect.height-5
 //        print("eyeWithBorderRect:", eyeWithBorderRect.origin, eyeWithBorderRect.width, eyeWithBorderRect.height)
         let faceRect = resizeR2(faceRectOnScreen, viewRect: self.slowImage.frame, image:ciImage)
         var faceWithBorderRect = resizeR2(faceWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
@@ -668,9 +672,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
                         
                         #if DEBUG
-//                        下２行はデバッグ用
-                        faceWithBorderCGImage = context.createCGImage(ciImage, from: eyebR0)
-                        faceWithBorderUIImage = UIImage.init(cgImage:faceWithBorderCGImage)
+                        self.printR(str: "ewb:",rct: eyeWithBorderRect)
 //                        画面表示はmain threadで行う
                         DispatchQueue.main.async {
                             self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
@@ -680,9 +682,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
                             x += eyeWithBorderRect.size.width*2
                             self.wakuEyeb.image=eyeWithBorderUIImage
-                            //下２行はdebug用
-                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
-                            self.wakuFacb.image=faceWithBorderUIImage
                         }
                         #endif
                         let maxV=self.openCV.matching(eyeWithBorderUIImage,
@@ -692,6 +691,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
                             usleep(1)
                         }
+                        print("maxV:",maxV)
                         if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
                             cvError=10//10/240secはcontinue
                             eyeWithBorderRect=eyebR0//初期位置に戻す
@@ -767,10 +767,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     while reader.status != AVAssetReader.Status.reading {
                         sleep(UInt32(0.1))
                     }
+                    //eyeのみでチェックしているが。。。。
+                    if eyeWithBorderRect.origin.x < 5 ||
+                        eyeWithBorderRect.origin.x > maxWidthWithBorder ||
+                        eyeWithBorderRect.origin.y < 5 ||
+                        eyeWithBorderRect.origin.y > maxHeightWithBorder
+                    {
+                        cvError = -10
+                        eyeWithBorderRect=eyebR0
+                        faceWithBorderRect=facbR0
+                    }
+
                 }
 //                print("ciimage:",ciImage.extent.width,ciImage.extent.height)
                 //マッチングデバッグ用スリープ、デバッグが終わったら削除
-//                usleep(200)
+                #if DEBUG
+                usleep(200)
+                #endif
             }
             //            print("time:",CFAbsoluteTimeGetCurrent()-st)
             self.calcFlag = false
@@ -781,6 +794,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
+        if vidCurrent<0 {
+            return
+        }
          let eyeborder:CGFloat = CGFloat(eyeBorder)
          let fileURL = getfileURL(path: vidPath[vidCurrent])
          let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
@@ -1171,6 +1187,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let point2 = CGPoint(x: px, y: py2)
                 pointList.append(point)
                 pointList2.append(point2)
+//                print("VOGdata:",px,py,py2)
             }
         }
         // 始点に移動する
@@ -1342,9 +1359,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var pointList = Array<CGPoint>()
         var pointList2 = Array<CGPoint>()
         let h=startingImage.size.height
+        let vogPos_count=vogPos.count
         let dx = 1// xの間隔
         for i in stn..<en {
-            if i < vogPos.count {
+            if i < vogPos_count - 10{
                 let px = CGFloat(dx * i)
                 let py = vogPos5[i] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = vHITEye5[i] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -2476,7 +2494,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //これをvideoのフレーム数に合わせる
                 //                print(getFps(path: Controller.filePath!))
                 let fps=getFps(path:Controller.filePath!)
-                print("fps:",fps,getFPS(videoPath: vidPath[vidCurrent]))
+//                print("fps:",fps,getFPS(videoPath: vidPath[vidCurrent]))
                 //let fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメみたい？
                 //どちらも一緒にみえるが？
                 let framecount=Int(Float(gyro.count)*fps/100.0)
