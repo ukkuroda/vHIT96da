@@ -163,7 +163,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     
     func initView() {
 //        let imgWidth = (collectionView.frame.width - (kCellSpacing * (CGFloat(kColumnCnt) - 1))) / CGFloat(kColumnCnt)
-        //表示調整
+        //表示調整を上でやっていたが、何故？
         let imgWidth=view.bounds.width*0.95
         if isVHIT==true{
             targetSize = CGSize(width: imgWidth, height: imgWidth*200/500)//vhit

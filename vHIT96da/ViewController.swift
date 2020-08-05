@@ -2427,9 +2427,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
-                //                print(getFps(path: Controller.filePath!))
 //                let fps=getFps(path:Controller.filePath!)
-//                print("fps:",fps,getFPS(videoPath: vidPath[vidCurrent]))
                 let fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメ？でもないみたい
                 //どちらも一緒にみえるが？
                 let framecount=Int(Float(gyro.count)*fps/100.0)
