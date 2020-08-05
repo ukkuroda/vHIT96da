@@ -74,7 +74,7 @@ class PlayViewController: UIViewController {
         seekBar.thumbTintColor = UIColor.black
         duration=Float(CMTimeGetSeconds(avAsset.duration))
         seekBar.maximumValue = duration//Float(CMTimeGetSeconds(avAsset.duration))
-        print(seekBar.maximumValue)
+//        print(seekBar.maximumValue)
         seekBar.addTarget(self, action: #selector(onSliderValueChange), for: UIControl.Event.valueChanged)
         view.addSubview(seekBar)
         // Processing to synchronize the seek bar with the movie.
@@ -156,9 +156,8 @@ class PlayViewController: UIViewController {
     // Start Button Tapped
     var playF:Bool=false
     
-    @objc func onExitButtonTapped(){
+    @objc func onExitButtonTapped(){//このボタンのところにsegueでunwindへ行く
         print(seekBarValue)
-        
     }
     @objc func update(tm: Timer) {
         if playF==true{
@@ -224,7 +223,7 @@ class PlayViewController: UIViewController {
         let newTime = CMTime(seconds: Double(seekBar.value), preferredTimescale: 600)
         currentCMTime=newTime
         seekBarValue=seekBar.value
-        print(seekBarValue)
+//        print(seekBarValue)
          currTime!.text = String(format:"%.2f/%.2f",seekBarValue,duration)
 //        currTime!.text = String(format:"%.2f",seekBarValue)
         videoPlayer.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)

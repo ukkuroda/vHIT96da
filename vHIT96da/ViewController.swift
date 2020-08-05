@@ -797,7 +797,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if vidCurrent<0 {
             return
         }
-//         let eyeborder:CGFloat = CGFloat(eyeBorder)
          let fileURL = getfileURL(path: vidPath[vidCurrent])
          let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
          let avAsset = AVURLAsset(url: fileURL, options: options)
@@ -832,17 +831,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          
          let CGeye:CGImage!//eye
          let UIeye:UIImage!
-//         var CGeyeb:CGImage!
-//         var UIeyeb:UIImage!
          var CGfac:CGImage!//face
          var UIfac:UIImage!
-//         var CGfacb:CGImage!
-//         var UIfacb:UIImage!
 
          let eyeRs=CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
-//         let eyebRs = expandRectWithBorder(rect: eyeRs, border: eyeborder)
          let facRs = CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
-//         let facbRs = expandRectWithBorder(rect: facRs, border: eyeborder)
          
          let context:CIContext = CIContext.init(options: nil)
          let orientation = UIImage.Orientation.up//right
@@ -853,25 +846,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
          
          let eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
-//         let eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
          let facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
-//         let facbR = resizeR2(facbRs, viewRect: self.slowImage.frame, image: ciImage)
-         
-//         CGeyeb = context.createCGImage(ciImage, from: eyebR)!
-//         CGfacb = context.createCGImage(ciImage, from: facbR)!
          CGeye = context.createCGImage(ciImage, from: eyeR)!
          CGfac = context.createCGImage(ciImage, from: facR)!
          UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-//         UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
          
          UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
-//         UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
-         
-//         var w3:CGFloat=0.0
-//         let h4=view.bounds.height/2
-//
-//        wakuEye.frame=CGRect(x:10,y:35,width:eyeR.size.width*5,height:eyeR.size.height*5)
-
         if rectType == 0{
             wakuEye.frame=eyeWaku_image.frame//(x) eyeR.size.width*5
             wakuEye.frame.origin.y += 30
@@ -885,22 +865,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuEye.layer.borderWidth = 1.0
         wakuEye.backgroundColor = UIColor.clear
         wakuEye.layer.cornerRadius = 3
-
-/*
-         wakuEye.frame=CGRect(x:w3,y:h4,width:eyeR.size.width*2,height:eyeR.size.height*2)
-         w3 += eyeR.size.width*2
-         wakuEyeb.frame=CGRect(x:w3,y:h4,width:eyebR.size.width*2,height:eyebR.size.height*2)
-         w3 += eyebR.size.width*2
-         wakuFac.frame=CGRect(x:w3,y:h4,width:facR.size.width*2,height:facR.size.height*2)
-         w3 += facR.size.width*2
-         wakuFacb.frame=CGRect(x:w3,y:h4,width:facbR.size.width*2,height:facbR.size.height*2)
-         wakuEye.image=UIeye
-         wakuEyeb.image=UIeyeb
-         wakuFac.image=UIfac
-         wakuFacb.image=UIfacb
-         printR(str:"--eyeRect:", rct:eyeR)
-         printR(str:"--eyeWithBorderRect:", rct:eyebR)
-      */
      }
      
    
@@ -1468,26 +1432,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
         //ifretStr += str[str.count-1]
-        //       print(retStr)
-        let retStr2=retStr.dropLast()
+         let retStr2=retStr.dropLast()
         return String(retStr2)
     }
     func setArrays(){
         let path = getVideofns()//videoPathtxt()
         var str = path.components(separatedBy: ",")
-        //       print("setarray:",path,str[0],"*****")
-        //      print("befor sort:",str)
         str.sort()//descend? ascend ?
-        //      print("after sort:",str)
-        //      print("array:",str.count,path,"*****end****")
-        //      return
-        vidPath.removeAll()
+         vidPath.removeAll()
         vidDate.removeAll()
         vidDuraorg.removeAll()
         vidDura.removeAll()
         vidImg.removeAll()
-        //       print("setarray:",path,str[0],"*****")
-        if str[0]==""{//"*.MOV"でstr.countは１,"*.MOV,*.MOV"で2
+         if str[0]==""{//"*.MOV"でstr.countは１,"*.MOV,*.MOV"で2
             return//""と何も無くてもstr.countは1   !!!!!
         }
         
@@ -1516,7 +1473,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let fileURL = URL(fileURLWithPath: vidpath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let asset = AVURLAsset(url: fileURL, options: options)
-//        print("appendAll-fps:",asset.tracks.first!.nominalFrameRate)
         vidPath.append(path)
         appendingFlag=true
         vidImg.append(getThumbnailFrom(path: vidpath)!)// vidPath.last!)!)
@@ -2286,14 +2242,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     gyroData.append(CGFloat(Double(str[i])!/100.0))
                     //    print(gyroData5.last)
                 }
-                //                gyroDelta=Int(str[str.count-2])!//gyroData[gyroData.count-2]/100.0)
-                //                _=Int(str[str.count-1])!//gyroData[gyroData.count-3]/100.0)
-                //let tt1=Int(gyroData[gyroData.count-1]/100.0)
-                //                print("read_gyroDelta:",gyroDelta,tt2)
-                //                if(gyroDelta>200){
-                //                    gyroDelta=200
-                //                }
-                //              gyroDelta=0
+    
             } catch {
                 print("readGyro read error")//エラー処理
                 return
@@ -2318,7 +2267,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let str2=str.dropLast()
             return String(str2)
         } catch {
-            return ""//print(error)
+            return ""
         }
     }
     override func didReceiveMemoryWarning() {
@@ -2397,11 +2346,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 posRatio=ParametersViewController.ratio1
                 veloRatio=ParametersViewController.ratio2
-                //                okpMode=ParametersViewController.okpMode
-                //                print("okpmode:",okpMode)
             }
             setUserDefaults()
-            //print("gyro",gyroDelta)
             setvHITgyro5()
             if vHITEye5.count > 400{
                 if isVHIT == true{//データがありそうな時は表示
@@ -2411,10 +2357,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         vogCurpoint=0
                         drawVogall()
                     }
-                    //                    if voglineView != nil{
-                    //                        voglineView?.removeFromSuperview()//waveを消して
-                    //                        drawVogtext()//文字を表示
-                    //                    }
                 }
             }
             dispWakus()
@@ -2423,9 +2365,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }else{
                 showBoxies(f: true)
             }
-            //            showBoxies(f: true)
-            //print(gyroDelta,startFrame)
-            
+              
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
@@ -2477,12 +2417,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //print(fps,createtime!)
                 //print("delay",delay,Controller.gyro[0]-createtime)
                 //let vidDura=getDura(path:Controller.filePath!)
-                for i in 0...Controller.gyro.count/2-2{//1.5secで0.01遅れる。SE,8のどちらも
-                    //print(String(format:"%.2f %.2f", Controller.gyro[i*2],Controller.gyro[i*2+1]))
-                    //gyroTime.append(Controller.gyro[i*2]-recEnd+vidDura)//+0.2)
-                    //録画終了の時とビデオの長さから録画開始時間を推定。（上）
-                    //録画開始時間より誤差が少ないようだ。
-                    //かと思ったが、そうでもないようだ。下は開始時を起点
+                for i in 0...Controller.gyro.count/2-4{
                     gyroTime.append(Controller.gyro[i*2]-recStart)
                     //                    d=Kalman3(measurement:Controller.gyro[i*2+1]*10)
                     d=Double(Kalman(value:CGFloat(Controller.gyro[i*2+1]*10),num:3))
