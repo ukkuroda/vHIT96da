@@ -152,6 +152,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         showCurrent()
         showBoxies(f: false)
+        dispWakuImages()
     }
     
     @IBAction func vhitGo(_ sender: Any) {
@@ -291,6 +292,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         videoDate.text=vidDate[vidCurrent]
         vduraLabel.text=vidDura[vidCurrent]
         startFrame=0
+        dispWakuImages()
     }
     @IBAction func nextVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
@@ -794,7 +796,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
-        if vidCurrent<0 {
+         if vidCurrent<0 {
             return
         }
          let fileURL = getfileURL(path: vidPath[vidCurrent])
@@ -865,9 +867,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         wakuEye.layer.borderWidth = 1.0
         wakuEye.backgroundColor = UIColor.clear
         wakuEye.layer.cornerRadius = 3
+        printR(str:"wakuE:",rct: wakuE)
      }
      
-   
     func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
@@ -916,6 +918,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         //      print("willappear")
+//        dispWakus()ここでは効かない
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
@@ -2112,10 +2115,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         showCurrent()
         makeBoxies()//three boxies of gyro vHIT vog
         showBoxies(f: false)//isVHITに応じてviewを表示
+        dispWakus()
+        dispWakuImages()
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
-        dispWakus()
+//        show1()ここも効かない
     }
     override var prefersHomeIndicatorAutoHidden: Bool {
          get {
@@ -2387,6 +2392,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 vidDura[vidCurrent]="\(secd2)" + "s"
                 //                print(posLED)
                 //            led2waku(video: vidImg[vidCurrent])
+                dispWakuImages()
             }
 
         }else if let vc = segue.source as? RecordViewController{
