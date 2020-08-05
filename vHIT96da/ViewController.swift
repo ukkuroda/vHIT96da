@@ -215,9 +215,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var faceWaku_image: UIImageView!
     //    @IBOutlet weak var eyeWaku_s: UIView!
 //    @IBOutlet weak var eyeWaku_image: UIView!
-    @IBOutlet weak var eyeWaku: UIView!
-    @IBOutlet weak var faceWaku: UIView!
-    @IBOutlet weak var curWaku: UIView!
+//    @IBOutlet weak var eyeWaku: UIView!
+//    @IBOutlet weak var faceWaku: UIView!
+//    @IBOutlet weak var curWaku: UIView!
     var wave3View:UIImageView?
     //    @IBOutlet weak var wave1View: UIImageView!//debug用
     //    @IBOutlet weak var wave2View: UIImageView!//debug用
@@ -832,17 +832,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          
          let CGeye:CGImage!//eye
          let UIeye:UIImage!
-         var CGeyeb:CGImage!
-         var UIeyeb:UIImage!
+//         var CGeyeb:CGImage!
+//         var UIeyeb:UIImage!
          var CGfac:CGImage!//face
          var UIfac:UIImage!
-         var CGfacb:CGImage!
-         var UIfacb:UIImage!
+//         var CGfacb:CGImage!
+//         var UIfacb:UIImage!
 
          let eyeRs=CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
-         let eyebRs = expandRectWithBorder(rect: eyeRs, border: eyeborder)
+//         let eyebRs = expandRectWithBorder(rect: eyeRs, border: eyeborder)
          let facRs = CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
-         let facbRs = expandRectWithBorder(rect: facRs, border: eyeborder)
+//         let facbRs = expandRectWithBorder(rect: facRs, border: eyeborder)
          
          let context:CIContext = CIContext.init(options: nil)
          let orientation = UIImage.Orientation.up//right
@@ -853,19 +853,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
          
          let eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
-         let eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
+//         let eyebR = resizeR2(eyebRs,viewRect:self.slowImage.frame,image:ciImage)
          let facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
-         let facbR = resizeR2(facbRs, viewRect: self.slowImage.frame, image: ciImage)
+//         let facbR = resizeR2(facbRs, viewRect: self.slowImage.frame, image: ciImage)
          
-         CGeyeb = context.createCGImage(ciImage, from: eyebR)!
-         CGfacb = context.createCGImage(ciImage, from: facbR)!
+//         CGeyeb = context.createCGImage(ciImage, from: eyebR)!
+//         CGfacb = context.createCGImage(ciImage, from: facbR)!
          CGeye = context.createCGImage(ciImage, from: eyeR)!
          CGfac = context.createCGImage(ciImage, from: facR)!
          UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-         UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
+//         UIeyeb=UIImage.init(cgImage: CGeyeb,scale:1.0,orientation:orientation)
          
          UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
-         UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
+//         UIfacb=UIImage.init(cgImage: CGfacb,scale:1.0,orientation:orientation)
          
 //         var w3:CGFloat=0.0
 //         let h4=view.bounds.height/2
@@ -1650,14 +1650,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
 //
         eyeWaku_image.frame=CGRect(x:wakuE.origin.x-15,y:wakuE.origin.y-15,width:wakuE.size.width+30,height: wakuE.size.height+30)
-        curWaku.layer.borderColor = UIColor.red.cgColor
-        curWaku.backgroundColor = UIColor.clear
-        curWaku.layer.borderWidth = 1.0
-        if rectType==0{
-            curWaku.frame = CGRect(x:wakuE.origin.x-10,y:wakuE.origin.y-15,width:wakuE.size.width+20,height: wakuE.size.height+20)
-        }else{
-            curWaku.frame = CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
-        }
+//        curWaku.layer.borderColor = UIColor.red.cgColor
+//        curWaku.backgroundColor = UIColor.clear
+//        curWaku.layer.borderWidth = 1.0
+//        if rectType==0{
+//            curWaku.frame = CGRect(x:wakuE.origin.x-10,y:wakuE.origin.y-15,width:wakuE.size.width+20,height: wakuE.size.height+20)
+//        }else{
+//            curWaku.frame = CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
+//        }
         if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku_image.frame=nullRect
         }else{
@@ -1668,9 +1668,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //            faceWaku_image.layer.cornerRadius = 3
             faceWaku_image.frame=CGRect(x:wakuF.origin.x-15,y:wakuF.origin.y-15,width:wakuF.size.width+30,height: wakuF.size.height+30)
         }
-        eyeWaku.frame=nullRect
-        faceWaku.frame=nullRect
-        curWaku.frame=nullRect
+//        eyeWaku.frame=nullRect
+//        faceWaku.frame=nullRect
+//        curWaku.frame=nullRect
         dispWakuImages()
     }
     //vHIT_eye_head
