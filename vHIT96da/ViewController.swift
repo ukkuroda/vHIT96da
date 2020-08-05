@@ -2417,7 +2417,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //print(fps,createtime!)
                 //print("delay",delay,Controller.gyro[0]-createtime)
                 //let vidDura=getDura(path:Controller.filePath!)
-                for i in 0...Controller.gyro.count/2-4{
+                for i in 0...Controller.gyro.count/2-4{//-2でエラーなので、-5としてみた
                     gyroTime.append(Controller.gyro[i*2]-recStart)
                     //                    d=Kalman3(measurement:Controller.gyro[i*2+1]*10)
                     d=Double(Kalman(value:CGFloat(Controller.gyro[i*2+1]*10),num:3))
@@ -2428,9 +2428,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
                 //                print(getFps(path: Controller.filePath!))
-                let fps=getFps(path:Controller.filePath!)
+//                let fps=getFps(path:Controller.filePath!)
 //                print("fps:",fps,getFPS(videoPath: vidPath[vidCurrent]))
-                //let fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメみたい？
+                let fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメ？でもないみたい
                 //どちらも一緒にみえるが？
                 let framecount=Int(Float(gyro.count)*fps/100.0)
                 for i in 0...framecount+10{
