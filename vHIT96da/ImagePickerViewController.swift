@@ -83,7 +83,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     @IBOutlet weak var deleButton: UIButton!
     
     @IBOutlet weak var exitButton: UIButton!
-//    var tateyokoRatio:CGFloat?
+
     var isVHIT:Bool?
     fileprivate let kCellReuseIdentifier = "Cell"
     fileprivate let kColumnCnt: Int = 1
@@ -163,6 +163,7 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     
     func initView() {
 //        let imgWidth = (collectionView.frame.width - (kCellSpacing * (CGFloat(kColumnCnt) - 1))) / CGFloat(kColumnCnt)
+        //表示調整
         let imgWidth=view.bounds.width*0.95
         if isVHIT==true{
             targetSize = CGSize(width: imgWidth, height: imgWidth*200/500)//vhit
