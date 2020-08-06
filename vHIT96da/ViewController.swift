@@ -851,8 +851,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //起動時表示が一巡？するまでは　slowImage.frame はちょっと違う値を示す
         let eyeR = resizeR2(wakuE, viewRect:view.frame,image:ciImage)
         let facR = resizeR2(wakuF, viewRect:view.frame, image: ciImage)
-        printR(str:"eyeOnscreen:",rct: wakuE)
-        printR(str:"eyeOnVideo:",rct: eyeR)
+//        printR(str:"eyeOnscreen:",rct: wakuE)
+//        printR(str:"eyeOnVideo:",rct: eyeR)
         CGfac = context.createCGImage(ciImage, from: facR)!
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
         CGeye = context.createCGImage(ciImage, from: eyeR)!
