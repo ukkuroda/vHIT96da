@@ -214,6 +214,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var eyeWaku_image: UIImageView!
     
     @IBOutlet weak var faceWaku_image: UIImageView!
+    
+    @IBOutlet weak var wakuS_image: UIImageView!
+    
     //    @IBOutlet weak var eyeWaku_s: UIView!
 //    @IBOutlet weak var eyeWaku_image: UIView!
 //    @IBOutlet weak var eyeWaku: UIView!
@@ -617,14 +620,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let maxWidth=ciImage.extent.size.width
         let maxHeight=ciImage.extent.size.height
 //        print("cgi:",maxWidth,maxHeight)
-        let eyeRect = resizeR2(eyeRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        let eyeRect = resizeR2(eyeRectOnScreen, viewRect:view.frame, image:ciImage)
 //        print("eyeRect:", eyeRect.origin, eyeRect.width, eyeRect.height)
-        var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:view.frame, image:ciImage)
         let maxWidthWithBorder=maxWidth-eyeWithBorderRect.width-5
         let maxHeightWithBorder=maxHeight-eyeWithBorderRect.height-5
 //        print("eyeWithBorderRect:", eyeWithBorderRect.origin, eyeWithBorderRect.width, eyeWithBorderRect.height)
-        let faceRect = resizeR2(faceRectOnScreen, viewRect: self.slowImage.frame, image:ciImage)
-        var faceWithBorderRect = resizeR2(faceWithBorderRectOnScreen, viewRect:self.slowImage.frame, image:ciImage)
+        let faceRect = resizeR2(faceRectOnScreen, viewRect: view.frame, image:ciImage)
+        var faceWithBorderRect = resizeR2(faceWithBorderRectOnScreen, viewRect:view.frame, image:ciImage)
         
         let eyebR0 = eyeWithBorderRect
         let facbR0 = faceWithBorderRect
@@ -835,10 +838,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let UIeye:UIImage!
         var CGfac:CGImage!//face
         var UIfac:UIImage!
-        
-        let eyeRs=CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
-        let facRs = CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
-        
         let context:CIContext = CIContext.init(options: nil)
         let orientation = UIImage.Orientation.up//right
         var sample:CMSampleBuffer!
@@ -847,23 +846,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
         
-        let eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
-        let facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
-        CGeye = context.createCGImage(ciImage, from: eyeR)!
+        let eyeR = resizeR2(wakuE, viewRect:view.frame,image:ciImage)
+        let facR = resizeR2(wakuF, viewRect:view.frame, image: ciImage)
+        printR(str:"eyeOnscreen:",rct: wakuE)
+        printR(str:"eyeOnVideo:",rct: eyeR)
         CGfac = context.createCGImage(ciImage, from: facR)!
-        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
-        wakuEye.frame=CGRect(x:5,y:35,width: eyeR.size.width*5,height: eyeR.size.height*5)
-        wakuEye.layer.borderColor = UIColor.green.cgColor
-        wakuEye.layer.borderWidth = 1.0
-        wakuEye.backgroundColor = UIColor.clear
-        wakuEye.layer.cornerRadius = 3
+        CGeye = context.createCGImage(ciImage, from: eyeR)!
+        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
+        wakuS_image.frame=CGRect(x:5,y:35,width: eyeR.size.width*5,height: eyeR.size.height*5)
+        wakuS_image.layer.borderColor = UIColor.green.cgColor
+        wakuS_image.layer.borderWidth = 1.0
+        wakuS_image.backgroundColor = UIColor.clear
+        wakuS_image.layer.cornerRadius = 3
         if rectType == 0{
-            wakuEye.image=UIeye
+            wakuS_image.image=UIeye
         }else{
-            wakuEye.image=UIfac
+            wakuS_image.image=UIfac
         }
-        printR(str:"wakuEye:",rct: wakuEye.frame)
+//        printR(str:"wakuEye:",rct: wakuEye.frame)
     }
      
     func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
@@ -1571,7 +1572,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
         wakuF.size.width = 5
         wakuF.size.height = 5
-        
+    
+//        printR(str:"wakuE.origin.x:",rct:wakuE)
+
+
     }
     //default値をセットするんじゃなく、defaultというものに値を設定するという意味
     func setUserDefaults(){
@@ -1599,7 +1603,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(Int(wakuF.origin.y), forKey: "wakuF_y")
 //        UserDefaults.standard.set(Int(wakuF.size.width), forKey: "wakuF_w")
 //        UserDefaults.standard.set(Int(wakuF.size.height), forKey: "wakuF_h")
-
+//        printR(str:"wakuE.origin.x:",rct:wakuE)
         UserDefaults.standard.set(isVHIT,forKey: "isVHIT")
     }
     
@@ -1608,7 +1612,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if faceF==0{
             rectType=0
         }
-        printR(str:"wakuE:",rct: wakuE)
+//        printR(str:"wakuE:",rct: wakuE)
         eyeWaku_image.frame=CGRect(x:(wakuE.origin.x)-15,y:wakuE.origin.y-15,width:(wakuE.size.width)+30,height: wakuE.size.height+30)
         if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku_image.frame=nullRect
@@ -1630,7 +1634,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             eyeWaku_image.layer.borderWidth = 0
         }
         
-        dispWakuImages()
+//        dispWakuImages()
     }
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
@@ -2121,6 +2125,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
 //        show1()ここも効かない
+//        dispWakuImages()
     }
     override var prefersHomeIndicatorAutoHidden: Bool {
          get {
@@ -2455,6 +2460,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     gyroData[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
                 }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
+                dispWakuImages()
                 //VOGの時もgyrodataを保存する。（不必要だが、考えるべきことが減りそうなので）
             }
         }else{
@@ -2614,6 +2620,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         wakuF = moveWakus(rect:wakuF,stRect:stRect, stPo: stPo,movePo: move,hani:et)
                     }
                     dispWakus()
+                    dispWakuImages()
                     setUserDefaults()
                     //ここでsave
                 }else{
@@ -2621,7 +2628,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
             }
         }else if sender.state == .ended{
-            self.slowImage.frame.origin.x = 0
+//            self.slowImage.frame.origin.x = 0
+            setUserDefaults()
             if vHITboxView?.isHidden == false{//結果が表示されている時
                 if waveTuple.count>0 {
                     for i in 0..<waveTuple.count{
@@ -2630,7 +2638,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                     }
                     drawVHITwaves()
-                    saveGyro(path: vidPath[vidCurrent])//末尾のgyroDeltaを書き換える
+//                    setUserDefaults()
+//                    print("dis:",wakuE)
+//                    saveGyro(path: vidPath[vidCurrent])//末尾のgyroDeltaを書き換える
                 }
             }
         }
@@ -2647,6 +2657,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     rectType=0
                 }
                 dispWakus()
+                dispWakuImages()
             }
             return
         }
