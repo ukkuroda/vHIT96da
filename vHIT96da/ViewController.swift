@@ -846,6 +846,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
         
+//        let eyeR = resizeR2(wakuE, viewRect:self.slowImage.frame,image:ciImage)
+//slowImage.frameを以下のように　view.frame としたところ良くなった。
+        //起動時表示が一巡？するまでは　slowImage.frame はちょっと違う値を示す
         let eyeR = resizeR2(wakuE, viewRect:view.frame,image:ciImage)
         let facR = resizeR2(wakuF, viewRect:view.frame, image: ciImage)
         printR(str:"eyeOnscreen:",rct: wakuE)
@@ -2124,8 +2127,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
-//        show1()ここも効かない
-//        dispWakuImages()
     }
     override var prefersHomeIndicatorAutoHidden: Bool {
          get {
