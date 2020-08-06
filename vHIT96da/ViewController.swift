@@ -796,79 +796,75 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
-         if vidCurrent<0 {
+        if vidCurrent<0 {
             return
         }
-         let fileURL = getfileURL(path: vidPath[vidCurrent])
-         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-         let avAsset = AVURLAsset(url: fileURL, options: options)
-         calcDate = videoDate.text!
-         var reader: AVAssetReader! = nil
-         do {
-             reader = try AVAssetReader(asset: avAsset)
-         } catch {
-             #if DEBUG
-             print("could not initialize reader.")
-             #endif
-             return
-         }
-         guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
-             #if DEBUG
-             print("could not retrieve the video track.")
-             #endif
-             return
-         }
-         
-         let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
-         
-         reader.add(readerOutput)
-         let frameRate = videoTrack.nominalFrameRate
-         //let startframe=startPoints[vhitVideocurrent]
-         let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
-         let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
-         //print("time",timeRange)
-         reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
-         reader.startReading()
-         
-         let CGeye:CGImage!//eye
-         let UIeye:UIImage!
-         var CGfac:CGImage!//face
-         var UIfac:UIImage!
-
-         let eyeRs=CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
-         let facRs = CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
-         
-         let context:CIContext = CIContext.init(options: nil)
-         let orientation = UIImage.Orientation.up//right
-         var sample:CMSampleBuffer!
-         sample = readerOutput.copyNextSampleBuffer()
-         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
-         
-         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
-         
-         let eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
-         let facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
-         CGeye = context.createCGImage(ciImage, from: eyeR)!
-         CGfac = context.createCGImage(ciImage, from: facR)!
-         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-         
-         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
-        if rectType == 0{
-            wakuEye.frame=eyeWaku_image.frame//(x) eyeR.size.width*5
-            wakuEye.frame.origin.y += 30
-            wakuEye.image=UIeye
-        }else{
-            wakuEye.frame=faceWaku_image.frame//(x) eyeR.size.width*5
-            wakuEye.frame.origin.y += 30
-            wakuEye.image=UIfac
+        let fileURL = getfileURL(path: vidPath[vidCurrent])
+        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let avAsset = AVURLAsset(url: fileURL, options: options)
+        calcDate = videoDate.text!
+        var reader: AVAssetReader! = nil
+        do {
+            reader = try AVAssetReader(asset: avAsset)
+        } catch {
+            #if DEBUG
+            print("could not initialize reader.")
+            #endif
+            return
         }
-        wakuEye.layer.borderColor = UIColor.red.cgColor
+        guard let videoTrack = avAsset.tracks(withMediaType: AVMediaType.video).last else {
+            #if DEBUG
+            print("could not retrieve the video track.")
+            #endif
+            return
+        }
+        
+        let readerOutputSettings: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String : Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
+        
+        reader.add(readerOutput)
+        let frameRate = videoTrack.nominalFrameRate
+        //let startframe=startPoints[vhitVideocurrent]
+        let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
+        let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
+        //print("time",timeRange)
+        reader.timeRange = timeRange //読み込む範囲を`timeRange`で指定
+        reader.startReading()
+        
+        let CGeye:CGImage!//eye
+        let UIeye:UIImage!
+        var CGfac:CGImage!//face
+        var UIfac:UIImage!
+        
+        let eyeRs=CGRect(x:wakuE.origin.x,y:wakuE.origin.y,width: wakuE.width,height: wakuE.height)
+        let facRs = CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
+        
+        let context:CIContext = CIContext.init(options: nil)
+        let orientation = UIImage.Orientation.up//right
+        var sample:CMSampleBuffer!
+        sample = readerOutput.copyNextSampleBuffer()
+        let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
+        
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
+        
+        let eyeR = resizeR2(eyeRs, viewRect:self.slowImage.frame,image:ciImage)
+        let facR = resizeR2(facRs, viewRect: self.slowImage.frame, image: ciImage)
+        CGeye = context.createCGImage(ciImage, from: eyeR)!
+        CGfac = context.createCGImage(ciImage, from: facR)!
+        UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
+        UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
+        wakuEye.frame=CGRect(x:5,y:35,width: eyeR.size.width*5,height: eyeR.size.height*5)
+        wakuEye.layer.borderColor = UIColor.green.cgColor
         wakuEye.layer.borderWidth = 1.0
         wakuEye.backgroundColor = UIColor.clear
         wakuEye.layer.cornerRadius = 3
-        printR(str:"wakuE:",rct: wakuE)
-     }
+        if rectType == 0{
+            wakuEye.image=UIeye
+        }else{
+            wakuEye.image=UIfac
+        }
+        printR(str:"wakuEye:",rct: wakuEye.frame)
+    }
      
     func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let fileURL = getfileURL(path: vidPath[vidCurrent])
@@ -1561,13 +1557,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        let ratioW = self.view.bounds.width/375.0//6s
         //        let ratioH = self.view.bounds.height/667.0//6s
         
-        wakuE.origin.x = CGFloat(getUserDefault(str: "wakuE_x", ret: Int(self.view.bounds.width/2)))
-        wakuE.origin.y = CGFloat(getUserDefault(str: "wakuE_y", ret: Int(self.view.bounds.height/3)))
-        
+        wakuE.origin.x = CGFloat(getUserDefault(str: "wakuE_x", ret:100))
+        wakuE.origin.y = CGFloat(getUserDefault(str: "wakuE_y", ret:100))
+//        wakuE.size.width = CGFloat(getUserDefault(str: "wakuE_w", ret:5))
+//        wakuE.size.height = CGFloat(getUserDefault(str: "wakuE_h", ret:5))
+
         wakuE.size.width = 5
         wakuE.size.height = 5
-        wakuF.origin.x = CGFloat(getUserDefault(str: "wakuF_x", ret: Int(self.view.bounds.width/2)))
-        wakuF.origin.y = CGFloat(getUserDefault(str: "wakuF_y", ret: Int(self.view.bounds.height*5/12)))
+        wakuF.origin.x = CGFloat(getUserDefault(str: "wakuF_x", ret:100))
+        wakuF.origin.y = CGFloat(getUserDefault(str: "wakuF_y", ret: 100))
+//        wakuF.size.width = CGFloat(getUserDefault(str: "wakuF_w", ret: 5))
+//        wakuF.size.height = CGFloat(getUserDefault(str: "wakuF_h", ret: 5))
+
         wakuF.size.width = 5
         wakuF.size.height = 5
         
@@ -1592,9 +1593,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         UserDefaults.standard.set(Int(wakuE.origin.x), forKey: "wakuE_x")
         UserDefaults.standard.set(Int(wakuE.origin.y), forKey: "wakuE_y")
-        UserDefaults.standard.set(Int(wakuE.size.width), forKey: "wakuE_w")
+//        UserDefaults.standard.set(Int(wakuE.size.width), forKey: "wakuE_w")
+//        UserDefaults.standard.set(Int(wakuE.size.height), forKey: "wakuE_h")
         UserDefaults.standard.set(Int(wakuF.origin.x), forKey: "wakuF_x")
         UserDefaults.standard.set(Int(wakuF.origin.y), forKey: "wakuF_y")
+//        UserDefaults.standard.set(Int(wakuF.size.width), forKey: "wakuF_w")
+//        UserDefaults.standard.set(Int(wakuF.size.height), forKey: "wakuF_h")
+
         UserDefaults.standard.set(isVHIT,forKey: "isVHIT")
     }
     
@@ -1603,33 +1608,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if faceF==0{
             rectType=0
         }
-//        eyeWaku.layer.borderColor = UIColor.green.cgColor
-//        eyeWaku.backgroundColor = UIColor.clear
-//        eyeWaku.layer.borderWidth=1.0
-//        eyeWaku.frame = CGRect(x:wakuE.origin.x-2,y:wakuE.origin.y-2,width:wakuE.size.width+4,height: wakuE.size.height+4)
-//
-        eyeWaku_image.frame=CGRect(x:wakuE.origin.x-15,y:wakuE.origin.y-15,width:wakuE.size.width+30,height: wakuE.size.height+30)
-//        curWaku.layer.borderColor = UIColor.red.cgColor
-//        curWaku.backgroundColor = UIColor.clear
-//        curWaku.layer.borderWidth = 1.0
-//        if rectType==0{
-//            curWaku.frame = CGRect(x:wakuE.origin.x-10,y:wakuE.origin.y-15,width:wakuE.size.width+20,height: wakuE.size.height+20)
-//        }else{
-//            curWaku.frame = CGRect(x:wakuF.origin.x-10,y:wakuF.origin.y-10,width:wakuF.size.width+20,height: wakuF.size.height+20)
-//        }
+        printR(str:"wakuE:",rct: wakuE)
+        eyeWaku_image.frame=CGRect(x:(wakuE.origin.x)-15,y:wakuE.origin.y-15,width:(wakuE.size.width)+30,height: wakuE.size.height+30)
         if  isVHIT==false || (faceF==0&&facedispF==0){//vHIT 表示無し、補整無し
             faceWaku_image.frame=nullRect
         }else{
-        
-//            faceWaku_image.layer.borderColor = UIColor.white.cgColor
-//             faceWaku_image.layer.borderWidth = 1.0
-//             faceWaku_image.backgroundColor = UIColor.clear
-//            faceWaku_image.layer.cornerRadius = 3
-            faceWaku_image.frame=CGRect(x:wakuF.origin.x-15,y:wakuF.origin.y-15,width:wakuF.size.width+30,height: wakuF.size.height+30)
+            faceWaku_image.frame=CGRect(x:(wakuF.origin.x)-15,y:wakuF.origin.y-15,width:wakuF.size.width+30,height: wakuF.size.height+30)
         }
-//        eyeWaku.frame=nullRect
-//        faceWaku.frame=nullRect
-//        curWaku.frame=nullRect
+ 
+        if rectType==0{
+            eyeWaku_image.layer.borderColor = UIColor.red.cgColor
+            eyeWaku_image.backgroundColor = UIColor.clear
+            eyeWaku_image.layer.borderWidth = 2.0
+            eyeWaku_image.layer.cornerRadius = 3
+            faceWaku_image.layer.borderWidth = 0
+        }else{
+            faceWaku_image.layer.borderColor = UIColor.red.cgColor
+            faceWaku_image.backgroundColor = UIColor.clear
+            faceWaku_image.layer.borderWidth = 2.0
+            faceWaku_image.layer.cornerRadius = 3
+            eyeWaku_image.layer.borderWidth = 0
+        }
+        
         dispWakuImages()
     }
     //vHIT_eye_head
@@ -2614,6 +2614,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         wakuF = moveWakus(rect:wakuF,stRect:stRect, stPo: stPo,movePo: move,hani:et)
                     }
                     dispWakus()
+                    setUserDefaults()
+                    //ここでsave
                 }else{
                     
                 }
