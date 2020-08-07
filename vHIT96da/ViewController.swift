@@ -238,11 +238,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vHITtitle:String = ""
     
     var freeCounter:Int = 0//これが実行毎に減って,0になったら起動できなくする。
-    
     var widthRange:Int = 0
-    
     var waveWidth:Int = 0
-    
     var eyeBorder:Int = 20
     //    var gyroDelta:Int = 0
     var eyeRatio:Int = 100//vhit
@@ -252,7 +249,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var isVHIT:Bool?//true-vhit false-vog
     var faceF:Int = 0
     var facedispF:Int = 0
-    var okpMode:Int = 0
+//    var fps_non_120_240:Int=2
+//    var okpMode:Int = 0
+    
     
     //解析結果保存用配列
     
@@ -1563,7 +1562,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         posRatio = getUserDefault(str: "posRatio", ret: 100)
         veloRatio = getUserDefault(str: "veloRatio", ret: 100)
         faceF = getUserDefault(str: "faceF", ret:0)
-        okpMode = getUserDefault(str: "okpMode", ret:0)
+//        fps_non_120_240 = getUserDefault(str: "fps_non_120_240", ret:0)
         facedispF = getUserDefault(str: "facedispF", ret:0)
         isVHIT = getUserDefault(str: "isVHIT", ret: true)
         //samplevideoでデフォルト値で上手く解析できるように、6s,7,8と7plus,8plus,xでデフォルト値を合わせる。
@@ -1604,7 +1603,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UserDefaults.standard.set(posRatio, forKey: "posRatio")
         UserDefaults.standard.set(veloRatio, forKey: "veloRatio")
         UserDefaults.standard.set(faceF,forKey: "faceF")
-        UserDefaults.standard.set(okpMode,forKey:"okpMode")
+//        UserDefaults.standard.set(fps_non_120_240,forKey:"fps_non_120_240")
         UserDefaults.standard.set(facedispF,forKey: "facedispF")
         
         UserDefaults.standard.set(Int(wakuE.origin.x), forKey: "wakuE_x")
@@ -2333,6 +2332,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }else if let vc = segue.destination as? HelpjViewController{
             let Controller:HelpjViewController = vc
             Controller.isVHIT = isVHIT
+//        }else if let vc = segue.destination as? RecordViewController{
+//                    let Controller:RecordViewController = vc
+//                    Controller.fps_non_120_240 = fps_non_120_240
         }else{
             #if DEBUG
             print("prepare list")
@@ -2415,6 +2417,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let Controller:RecordViewController = vc
             //Controller.motionManager.stopDeviceMotionUpdates()
             //print("recorded done")
+//            fps_non_120_240 = Controller.fps_non_120_240
             if Controller.session.isRunning{//何もせず帰ってきた時
                 Controller.session.stopRunning()
             }
@@ -2472,8 +2475,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
                 dispWakuImages()
+  
                 //VOGの時もgyrodataを保存する。（不必要だが、考えるべきことが減りそうなので）
             }
+//            UserDefaults.standard.set(fps_non_120_240,forKey:"fps_non_120_240")
         }else{
             #if DEBUG
             print("tatsuaki-unwind from list")
