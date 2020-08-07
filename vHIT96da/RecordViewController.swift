@@ -17,13 +17,17 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var session: AVCaptureSession!
     var videoDevice: AVCaptureDevice?
     var filePath:String?
-
+//
+//    var ww:CGFloat?
+//    var wh:CGFloat?
+    var fps_non_120_240:Int=2
+    var maxFps:Double=240
     var fileOutput = AVCaptureMovieFileOutput()
     var gyro = Array<Double>()
     var recStart = CFAbsoluteTimeGetCurrent()
     var recEnd=CFAbsoluteTimeGetCurrent()
     var recordButton: UIButton!
-    var ledButton: UIButton!
+    var fpsButton: UIButton!
     @IBOutlet weak var exitBut: UIButton!
     @IBOutlet weak var cameraView: UIImageView!
 
@@ -212,13 +216,92 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .black
+//        ww=view.bounds.width
+//        wh=view.bounds.height
+        checkCam()//cameraをチェックする
+        print("fps:",fps_non_120_240)
+        initSession(fps: 120.0)//プレビュー
+//        initSession(fps: 120.0)
+        setButtons()
   //      recstart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
   //      setMotion()//データが取れないこともあるので、念の為。作動中ならそのまま戻る
-        initSession()
+//        initSession()
   //      setMotion()//データが取れないこともあるので、念の為。作動中ならそのまま戻る
     }
+    @objc func onClickfpsButton(sender: UIButton) {
+        print("before:",fps_non_120_240)
+        if maxFps==240 && fps_non_120_240==2{
+            fps_non_120_240=1
+            self.recordButton.setTitle("Record(120)", for: .normal)
+        }else if maxFps==240 && fps_non_120_240==1{
+            fps_non_120_240=2
+            self.recordButton.setTitle("Record(240)", for: .normal)
+        }
+        print("after:",fps_non_120_240)
+    }
     
-    func initSession() {
+    func setButtons(){
+        // recording button
+        let ww=view.bounds.width
+        let wh=view.bounds.height
+        let bw=Int(ww/4)-10
+//        let bd=Int(ww/5/4)
+        let bh:Int=70
+        let bpos=Int(wh)-bh/2-10
+        self.recordButton = UIButton(frame: CGRect(x: 0, y: 0, width: bw*2, height:bh))
+        self.recordButton.backgroundColor = UIColor.gray
+        self.recordButton.layer.masksToBounds = true
+        if maxFps==240{
+            self.recordButton.setTitle("Record(240)", for: .normal)
+        }else if maxFps==120{
+            self.recordButton.setTitle("Record(120)", for: .normal)
+        }
+        self.recordButton.layer.cornerRadius = 10
+        self.recordButton.layer.position = CGPoint(x: Int(ww)/2, y:bpos)
+        self.recordButton.addTarget(self, action: #selector(self.onClickRecordButton(sender:)), for: .touchUpInside)
+        self.view.addSubview(recordButton)
+        // fps button
+        self.fpsButton = UIButton(frame: CGRect(x: 0, y: 0, width: bw, height: bh))
+        self.fpsButton.backgroundColor = UIColor.gray
+        self.fpsButton.layer.masksToBounds = true
+        self.fpsButton.layer.cornerRadius = 10
+        self.fpsButton.layer.position = CGPoint(x: Int(10+bw/2), y:bpos)
+        self.fpsButton.addTarget(self, action: #selector(self.onClickfpsButton(sender:)), for: .touchUpInside)
+        if maxFps==240{
+            self.fpsButton.setTitle("fps", for: .normal)
+            self.view.addSubview(fpsButton)
+        }
+        // exit button
+        exitBut.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        exitBut.backgroundColor = UIColor.gray
+        exitBut.layer.masksToBounds = true
+        exitBut.setTitle("Exit", for: .normal)
+        exitBut.layer.cornerRadius = 10
+        exitBut.layer.position = CGPoint(x: Int(Int(ww)-10-bw/2), y:bpos)
+        //self.exitButton.addTarget(self, action: #selector(self.onClickExitButton(sender:)), for: .touchUpInside)
+        //    self.view.addSubview(exitBut)
+    }
+    func checkCam(){
+        session = AVCaptureSession()
+        // 入力 : 背面カメラ
+        videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+        let videoInput = try! AVCaptureDeviceInput.init(device: videoDevice!)
+        session.addInput(videoInput)
+        // ↓ココ重要！！！！！
+        // 240fps のフォーマットを探索して設定する
+        fps_non_120_240=2
+        maxFps=240.0
+        if switchFormat(desiredFps: 240.0)==false{
+            fps_non_120_240=1
+            maxFps=120.0
+            if switchFormat(desiredFps: 120.0)==false{
+                fps_non_120_240=0
+                maxFps=0
+            }
+        }
+        
+    }
+    func initSession(fps:Double) {
         // セッション生成
         session = AVCaptureSession()
         // 入力 : 背面カメラ
@@ -227,8 +310,12 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         session.addInput(videoInput)
         // ↓ココ重要！！！！！
         // 240fps のフォーマットを探索して設定する
-        if switchFormat(desiredFps: 240.0)==false{
-            switchFormat(desiredFps: 120.0)
+//        non_120_240=2
+        if switchFormat(desiredFps: fps)==false{
+//            non_120_240=1
+//            if switchFormat(desiredFps: 120.0)==false{
+//                non_120_240=0
+//            }
         }
         // ファイル出力設定
         fileOutput = AVCaptureMovieFileOutput()
@@ -243,43 +330,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         // zooming slider
         // セッションを開始する (録画開始とは別)
         session.startRunning()
-//        let slider: UISlider = UISlider()
-//        let sliderWidth: CGFloat = self.view.bounds.width * 0.75
-//        let sliderHeight: CGFloat = 40
-//        let sliderRect: CGRect = CGRect(x: (self.view.bounds.width - sliderWidth) / 2, y: self.view.bounds.height - 150, width: sliderWidth, height: sliderHeight)
-//        slider.frame = sliderRect
-//        slider.minimumValue = 0.0
-//        slider.maximumValue = 1.0
-//        slider.value = 0.0
-//        slider.addTarget(self, action: #selector(self.onSliderChanged(sender:)), for: .valueChanged)
-//        self.view.addSubview(slider)
-        // recording button
-        self.recordButton = UIButton(frame: CGRect(x: 0, y: 0, width: 120, height: 60))
-        self.recordButton.backgroundColor = UIColor.gray
-        self.recordButton.layer.masksToBounds = true
-        self.recordButton.setTitle("Record", for: .normal)
-        self.recordButton.layer.cornerRadius = 10
-        self.recordButton.layer.position = CGPoint(x: self.view.bounds.width / 2, y:self.view.bounds.height - 55)
-        self.recordButton.addTarget(self, action: #selector(self.onClickRecordButton(sender:)), for: .touchUpInside)
-        self.view.addSubview(recordButton)
-        // LED button
-//         self.ledButton = UIButton(frame: CGRect(x: 0, y: 0, width: 70, height: 60))
-//         self.ledButton.backgroundColor = UIColor.gray
-//         self.ledButton.layer.masksToBounds = true
-//         self.ledButton.setTitle("LED", for: .normal)
-//         self.ledButton.layer.cornerRadius = 10
-//         self.ledButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 55)
-//         self.ledButton.addTarget(self, action: #selector(self.onClickLedButton(sender:)), for: .touchUpInside)
-//         self.view.addSubview(ledButton)
-        // exit button
-        exitBut.frame   = CGRect(x:0,   y: 0 ,width: 70, height: 60)
-        exitBut.backgroundColor = UIColor.gray
-        exitBut.layer.masksToBounds = true
-        exitBut.setTitle("Exit", for: .normal)
-        exitBut.layer.cornerRadius = 10
-        exitBut.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 55)
-        //self.exitButton.addTarget(self, action: #selector(self.onClickExitButton(sender:)), for: .touchUpInside)
-    //    self.view.addSubview(exitBut)
     }
  
     func defaultCamera() -> AVCaptureDevice? {
