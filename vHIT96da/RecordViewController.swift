@@ -218,9 +218,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         self.view.backgroundColor = .black
 //        ww=view.bounds.width
 //        wh=view.bounds.height
-        checkCam()//cameraをチェックする
+//        checkCam()//cameraをチェックする
+//        print("fps:",fps_non_120_240)
+        initSession(fps: 240.0)//プレビュー
         print("fps:",fps_non_120_240)
-        initSession(fps: 120.0)//プレビュー
+        
 //        initSession(fps: 120.0)
         setButtons()
   //      recstart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
@@ -229,15 +231,17 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
   //      setMotion()//データが取れないこともあるので、念の為。作動中ならそのまま戻る
     }
     @objc func onClickfpsButton(sender: UIButton) {
-        print("before:",fps_non_120_240)
+//        print("before:",fps_non_120_240)
         if maxFps==240 && fps_non_120_240==2{
             fps_non_120_240=1
             self.recordButton.setTitle("Record(120)", for: .normal)
+            initSession(fps: 120)
         }else if maxFps==240 && fps_non_120_240==1{
             fps_non_120_240=2
             self.recordButton.setTitle("Record(240)", for: .normal)
+            initSession(fps: 240)
         }
-        print("after:",fps_non_120_240)
+//        print("after:",fps_non_120_240)
     }
     
     func setButtons(){
@@ -309,13 +313,21 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         let videoInput = try! AVCaptureDeviceInput.init(device: videoDevice!)
         session.addInput(videoInput)
         // ↓ココ重要！！！！！
-        // 240fps のフォーマットを探索して設定する
-//        non_120_240=2
-        if switchFormat(desiredFps: fps)==false{
-//            non_120_240=1
-//            if switchFormat(desiredFps: 120.0)==false{
-//                non_120_240=0
-//            }
+        // 初回は、必ず240fpsで飛んでくる
+        //２回目は、120fps録画のみの機種では120で飛んでくる。
+        //２回目は、240fps録画可能の機種ではどっちか分からない。
+        if fps==240{
+            maxFps=240
+            if switchFormat(desiredFps: fps)==false{
+                maxFps=120
+                if switchFormat(desiredFps: 120.0)==false{
+                    maxFps=0
+                }
+            }
+        }else{
+            if switchFormat(desiredFps: fps)==false{
+            
+            }
         }
         // ファイル出力設定
         fileOutput = AVCaptureMovieFileOutput()
@@ -347,6 +359,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var soundIdpint:SystemSoundID = 1109//1009//7
     @objc func onClickRecordButton(sender: UIButton) {
         //        print(fileOutput.metadata!.count as Int)
+//        if fps_non_120_240==2{
+//            initSession(fps: 240.0)
+//        }else{
+//            initSession(fps: 120.0)
+//        }
         if self.fileOutput.isRecording {
             // stop recording
             if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
@@ -357,8 +374,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
  //           motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
             recordedFlag=true
             self.recordButton.backgroundColor = .gray
-            self.recordButton.setTitle("Recorded", for: .normal)
-            
+            if fps_non_120_240==2{
+                self.recordButton.setTitle("240 done", for: .normal)
+            }else{
+                self.recordButton.setTitle("120 done", for: .normal)
+            }
             self.recordButton.isEnabled=false
     
             exitBut.isUserInteractionEnabled = true
@@ -369,7 +389,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             //UIApplication.shared.isIdleTimerDisabled = false//スリープする
             if self.recordButton.backgroundColor == .red{//最大録画時間を超え止まっている時
                 self.recordButton.backgroundColor = .gray
-                self.recordButton.setTitle("Recorded", for: .normal)
+                if fps_non_120_240==2{
+                         self.recordButton.setTitle("240 done", for: .normal)
+                     }else{
+                         self.recordButton.setTitle("120 done", for: .normal)
+                     }
                 self.recordButton.isEnabled=false
                 exitBut.isUserInteractionEnabled = true
                 recordedFlag=true
@@ -396,6 +420,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             self.recordButton.backgroundColor = .red
             self.recordButton.setTitle("Stop", for: .normal)
             self.exitBut.isUserInteractionEnabled = false
+            self.fpsButton.isUserInteractionEnabled = false
         }
     }
  

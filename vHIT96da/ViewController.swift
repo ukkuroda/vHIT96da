@@ -562,6 +562,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
+        var fpsIs120:Bool=false
+//        print("fps:",getFPS(videoPath: vidPath[vidCurrent]))
+        if getFPS(videoPath: vidPath[vidCurrent])<200.0{
+            fpsIs120=true
+            print("currentFps=120")
+        }else{
+            print("currentFps=240 ")
+//            fpsIs120=false
+        }
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
         do {
@@ -2256,6 +2265,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
             } catch {
                 print("readGyro read error")//エラー処理
+                print("gyroData:",gyroData.count)
                 return
             }
             
