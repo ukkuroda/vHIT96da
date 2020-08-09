@@ -293,6 +293,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         slowImage.image = vidImg[vidCurrent]
         videoDate.text=vidDate[vidCurrent]
         vduraLabel.text=vidDura[vidCurrent]
+        vduraLabel.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
         startFrame=0
         dispWakuImages()
     }
@@ -562,13 +563,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
         var fpsIs120:Bool=false
-//        print("fps:",getFPS(videoPath: vidPath[vidCurrent]))
         if getFPS(videoPath: vidPath[vidCurrent])<200.0{
             fpsIs120=true
             print("currentFps=120")
         }else{
             print("currentFps=240 ")
-//            fpsIs120=false
         }
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
@@ -750,12 +749,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         let face5 = -12.0*self.Kalman(value: fx,num: 0)
                         self.vHITFace.append(face5)
                         self.vHITFace5.append(face5)
+//                        if fpsIs120==true{
+//                                      self.vHITFace.append(face5)
+//                                                 self.vHITFace5.append(face5)
+//
+//                        }
                         if vHITcnt > 5{
                             self.vHITFace5[vHITcnt-2]=(self.vHITFace[vHITcnt]+self.vHITFace[vHITcnt-1]+self.vHITFace[vHITcnt-2]+self.vHITFace[vHITcnt-3]+self.vHITFace[vHITcnt-4])/5
                         }
                     }else{
                         self.vHITFace.append(0)
-                        self.vHITFace5.append(0)
+                             self.vHITFace5.append(0)
+
+//                        if fpsIs120==true{
+//                        self.vHITFace.append(0)
+//                        self.vHITFace5.append(0)
+//                        }
                     }
                     
                     // eyePos, ey, fyをそれぞれ配列に追加
@@ -779,6 +788,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     vHITcnt += 1
                     while reader.status != AVAssetReader.Status.reading {
                         sleep(UInt32(0.1))
+                    }
+                    if fpsIs120==true{
+                        self.vHITFace.append(self.vHITFace5.last!)
+                        self.vHITFace5.append(self.vHITFace5.last!)
+                        self.vogPos.append(self.vogPos.last!)
+                        self.vogPos5.append(self.vogPos5.last!)
+                        self.vHITEye.append(self.vHITEye.last!)
+                        self.vHITEye5.append(self.vHITEye5.last!)
                     }
                     //eyeのみでチェックしているが。。。。
                     if eyeWithBorderRect.origin.x < 5 ||
@@ -2059,6 +2076,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         slowImage.image = vidImg[vidCurrent]
         videoDate.text = vidDate[vidCurrent]
         vduraLabel.text=vidDura[vidCurrent]
+        vduraLabel.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
+
         freecntLabel.text = "\(freeCounter)"
     }
     func camera_alert(){
@@ -2453,9 +2472,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
 //                let fps=getFps(path:Controller.filePath!)
-                let fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメ？でもないみたい
-                //どちらも一緒にみえるが？
-                let framecount=Int(Float(gyro.count)*fps/100.0)
+                var fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメ？でもないみたい
+                if fps<200.0{
+                    fps *= 2.0
+                }
+                var framecount=Int(Float(gyro.count)*fps/100.0)
                 for i in 0...framecount+10{
                     let gn=Double(i)/Double(fps)//iフレーム目の秒数
                     var getj:Int=0

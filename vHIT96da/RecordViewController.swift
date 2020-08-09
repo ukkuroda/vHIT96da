@@ -47,28 +47,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         squareLayer.lineWidth = 1.0
         // 正方形を描画
         squareLayer.path = UIBezierPath.init(rect: CGRect.init(x: 0, y: 0, width: squareFrame.size.width, height: squareFrame.size.height)).cgPath
-        //           circleLayer.path = UIBezierPath.init(ovalIn: CGRect.init(x: 0, y: 0, width: squareFrame.size.width, height: squareFrame.size.height)).cgPath
         self.view.layer.addSublayer(squareLayer)
     }
-    //    @objc func onSliderChanged(sender: UISlider) {
-    //        // zoom in / zoom out
-    //        do {
-    //            try self.videoDevice?.lockForConfiguration()
-    //
-    ////            if self.videoDevice!.isExposureModeSupported(.continuousAutoExposure) && self.videoDevice!.isExposurePointOfInterestSupported {
-    //
-    //            let shutterSpeed = CMTimeMake(1, 400)
-    //            self.videoDevice!.setExposureModeCustom(duration:shutterSpeed, iso: 800, completionHandler: nil)//上手く動かないぞ
-    //
-    //            //             self.videoDevice?.ramp(
-    //            //                 toVideoZoomFactor: (self.videoDevice?.minAvailableVideoZoomFactor)! + 0.01 * CGFloat(sender.value) * ((self.videoDevice?.maxAvailableVideoZoomFactor)! - (self.videoDevice?.minAvailableVideoZoomFactor)!),
-    //            //                 withRate: 30.0)
-    ////            }
-    //            self.videoDevice?.unlockForConfiguration()
-    //        } catch {
-    //            print("Failed to change zoom.")
-    //        }
-    //    }
+
     var tapF:Bool=false
     @IBAction func tapGes(_ sender: UITapGestureRecognizer) {
         let screenSize=cameraView.bounds.size
@@ -137,31 +118,8 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 let description = format.formatDescription as CMFormatDescription    // フォーマットの説明
                 let dimensions = CMVideoFormatDescriptionGetDimensions(description)  // 幅・高さ情報を抜き出す
                 let width = dimensions.width
-                
-                //                if #available(iOS 13.0, *) {
-                //                    let bini = description.mediaSubType.description
-                //                 //   print("フォーマット情報 : \(description)",range.maxFrameRate,bini)
-                //                } else {
-                //                    // Fallback on earlier versions
-                //                }                                         // 幅
-                // print("フォーマット情報 : \(description)",range.maxFrameRate,bini)
-                
-                // 指定のフレームレートで一番大きな解像度を得る
-                if desiredFps == range.maxFrameRate && width >= maxWidth {
-                    //                if (240 == range.maxFrameRate||120 == range.maxFrameRate) && width >= maxWidth {
-                    //                   if #available(iOS 13.0, *) {
-                    //                       let bini = description.mediaSubType.description
-                    //                       print("フォーマット情報 : \(description)",range.maxFrameRate,bini)
-                    //                    if bini.contains("420v") {
-                    //                        print("このフォーマットを候補にする")
-                    //                                           selectedFormat = format
-                    //                                           maxWidth = width
-                    //                    }
-                    //                   } else {
-                    //                       // Fallback on earlier versions
-                    //                   }
-                    //                    print("このフォーマットを候補にする")
-                    selectedFormat = format
+                 if desiredFps == range.maxFrameRate && width >= maxWidth {
+                      selectedFormat = format
                     maxWidth = width
                 }
             }
@@ -202,45 +160,29 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         //        var initf:Bool=false
         motionManager.startDeviceMotionUpdates(to: OperationQueue.current!, withHandler: { (motion, error) in
             guard let motion = motion, error == nil else { return }
-            //            if initf==false{
-            //                self.time0=CFAbsoluteTimeGetCurrent()
-            //                initf=true
-            //            }
             self.gyro.append(CFAbsoluteTimeGetCurrent())
-            //kCFAbsoluteTimeIntervalSince1970
-            //上では上手くいかない。assetのcreatetimesince1970とは比較不能？
             self.gyro.append(motion.rotationRate.y)//
-            //       print(self.fileOutput.metadata!.count as Int)
-            //       print(String(format:"%.2f", motion.rotationRate.y))
-            //        print("z: \(motion.rotationRate.z * 180 / Double.pi)")
-        })
+           })
     }
-    /*
-     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
-         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
-             return UserDefaults.standard.integer(forKey:str)
-         }else{
-             UserDefaults.standard.set(ret, forKey: str)
-             return ret
-         }
-     }
-     */
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .black
-        print("fps1:",fps_non_120_240)
+        print("maxFps,fps2:",maxFps,fps_non_120_240)
         if UserDefaults.standard.object(forKey: "maxFps") != nil{
             maxFps = Double(UserDefaults.standard.integer(forKey:"maxFps"))
             fps_non_120_240 = UserDefaults.standard.integer(forKey: "fps_non_120_240")
-            initSession(fps: maxFps)
-        }else{
+            initSession(fps: fps_non_120_240)
+          }else{
             checkinitSession()//maxFpsを設定
             UserDefaults.standard.set(Int(maxFps),forKey: "maxFps")
             UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
+            print("生まれて初めての時だけ、通るところのはず")//ここでmaxFpsを設定
         }
         setButtons()
-        print("fps2:",fps_non_120_240)
+        print("maxFps,fps2:",maxFps,fps_non_120_240)
     }
+
     @objc func onClickfps240Button(sender: UIButton) {
         if fps_non_120_240==2{
             return
@@ -249,7 +191,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             self.fps120Button.backgroundColor = UIColor.gray
             self.fps240Button.backgroundColor = UIColor.blue
             self.recordButton.setTitle("Record(240fps)", for: .normal)
-            initSession(fps: 240)
+            initSession(fps: fps_non_120_240)
             UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
         }
     }
@@ -261,7 +203,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             self.fps120Button.backgroundColor = UIColor.blue
             self.fps240Button.backgroundColor = UIColor.gray
             self.recordButton.setTitle("Record(120fps)", for: .normal)
-            initSession(fps: 120)
+            initSession(fps: fps_non_120_240)
             UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
         }
     }
@@ -325,7 +267,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         //    self.view.addSubview(exitBut)
     }
     
-    func initSession(fps:Double) {
+    func initSession(fps:Int) {
         // セッション生成
         session = AVCaptureSession()
         // 入力 : 背面カメラ
@@ -336,17 +278,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         // viewDidLoadから240fpsで飛んでくる
         //２回目は、120fps録画のみの機種では120で飛んでくる。
         //２回目は、240fps録画可能の機種ではどっちか分からない。
-        if fps==240.0{
-            maxFps=240.0
-            if switchFormat(desiredFps: fps)==false{
-                maxFps=120.0
-                if switchFormat(desiredFps: 120.0)==false{
-                    maxFps=0.0
-                }
+        if fps==2{
+            if switchFormat(desiredFps: 240)==false{
             }
         }else{
-            if switchFormat(desiredFps: fps)==false{
-                
+            if switchFormat(desiredFps: 120)==false{
             }
         }
         // ファイル出力設定
