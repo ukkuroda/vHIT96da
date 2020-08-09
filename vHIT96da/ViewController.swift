@@ -696,7 +696,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     
 //                    self.printR(str: "eyeWB:", rct: eyeWithBorderRect)
                     #if DEBUG
-                        self.printR(str: "allframe:",max:maxV,cnt:vHITcnt,rct1: eyeWithBorderRect,rct2:eyebR0)
+                        self.printR(str: "allframe:",cnt:vHITcnt,max:maxV,rct1: eyeWithBorderRect,rct2:eyebR0)
                 
                     #endif
                     if cvError < 0{
@@ -977,8 +977,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func printR(str:String,cnt:Int,rct1:CGRect,rct2:CGRect){
          print("\(str)",String(format: "%d-%.0f,%.0f %.0f,%.0f",cnt,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
      }
-    func printR(str:String,max:Double,cnt:Int,rct1:CGRect,rct2:CGRect){
-        print("\(str)",String(format: "%.2f %d-%.0f,%.0f %.0f,%.0f",max,cnt,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
+    func printR(str:String,cnt:Int,max:Double,rct1:CGRect,rct2:CGRect){
+        print("\(str)",String(format: "%d %.2f-%.0f,%.0f %.0f,%.0f",cnt,max,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
