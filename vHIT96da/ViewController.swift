@@ -290,11 +290,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         show1()
     }
     func show1(){
+        vidImg[vidCurrent]=getframeImage(frameNumber: 0)
         slowImage.image = vidImg[vidCurrent]
         videoDate.text=vidDate[vidCurrent]
         vduraLabel.text=vidDura[vidCurrent]
         vduraLabel.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
         startFrame=0
+        
         dispWakuImages()
     }
     @IBAction func nextVideo(_ sender: Any) {
@@ -2448,10 +2450,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 KalmanInit()
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
-                //                led2waku(video: vidImg[vidCurrent])
                 recStart = Controller.recStart
-                //               let recEnd=Controller.recEnd
-                //                print("gyro-count: \(Controller.gyro.count)")
                 var d:Double=0
                 gyroTime.removeAll()
                 gyro.removeAll()
@@ -2500,7 +2499,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
                 dispWakuImages()
-  
+                startFrame=0
                 //VOGの時もgyrodataを保存する。（不必要だが、考えるべきことが減りそうなので）
             }
 //            UserDefaults.standard.set(fps_non_120_240,forKey:"fps_non_120_240")
