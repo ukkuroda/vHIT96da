@@ -352,7 +352,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                        width:rect.size.width + border * 2,
                        height:rect.size.height + border / 2)
      }
-     
+     func expandRectError(rect:CGRect, border:CGFloat) -> CGRect {
+         //左右には border 、上下には border/2 を広げる
+         //この関数も上と同じようにroundした方がいいかもしれないが、
+         //現状ではscreen座標のみで使っているのでfloatのまま。
+         return CGRect(x:rect.origin.x - border,
+                       y:rect.origin.y - border ,
+                       width:rect.size.width + border * 2,
+                       height:rect.size.height + border * 2)
+     }
+
      
     
     var kalVs:[[CGFloat]]=[[0.0001,0.001,0,1,2],[0.0001,0.001,3,4,5],[0.0001,0.001,6,7,8],[0.0001,0.001,10,11,12],[0.0001,0.001,13,14,15]]
@@ -617,8 +626,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let eyeRectOnScreen=CGRect(x:wakuE.origin.x, y:wakuE.origin.y, width: wakuE.width, height: wakuE.height)
         let eyeWithBorderRectOnScreen = expandRectWithBorder(rect: eyeRectOnScreen, border: eyeborder)
+        let eyeErrorRectOnScreen = expandRectError(rect: eyeRectOnScreen, border: eyeborder*2)
         let faceRectOnScreen=CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
         let faceWithBorderRectOnScreen = expandRectWithBorder(rect: faceRectOnScreen, border: eyeborder)
+        let faceErrorRectOnScreen = expandRectError(rect: faceRectOnScreen, border: eyeborder*2)
         let context:CIContext = CIContext.init(options: nil)
         //            let up = UIImage.Orientation.right
         var sample:CMSampleBuffer!
@@ -633,6 +644,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let eyeRect = resizeR2(eyeRectOnScreen, viewRect:view.frame, image:ciImage)
 //        print("eyeRect:", eyeRect.origin, eyeRect.width, eyeRect.height)
         var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:view.frame, image:ciImage)
+        let eyeErrorRect = resizeR2(eyeErrorRectOnScreen,viewRect: view.frame,image: ciImage)
+        let faceErrorRect = resizeR2(faceErrorRectOnScreen,viewRect: view.frame,image:ciImage)
         let maxWidthWithBorder=maxWidth-eyeWithBorderRect.width-5
         let maxHeightWithBorder=maxHeight-eyeWithBorderRect.height-5
 //        print("eyeWithBorderRect:", eyeWithBorderRect.origin, eyeWithBorderRect.width, eyeWithBorderRect.height)
@@ -655,6 +668,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let osFacX:CGFloat = (faceWithBorderRect.size.width - faceRect.size.width) / 2.0//上下方向
         let osFacY:CGFloat = (faceWithBorderRect.size.height - faceRect.size.height) / 2.0//左右方向
         
+        let osEyeErrorX:CGFloat = (eyeErrorRect.size.width - eyeRect.size.width) / 2.0//上下方向
+         let osEyeErrorY:CGFloat = (eyeErrorRect.size.height - eyeRect.size.height) / 2.0//左右方向
+         let osFacErrorX:CGFloat = (faceErrorRect.size.width - faceRect.size.width) / 2.0//上下方向
+         let osFacErrorY:CGFloat = (faceErrorRect.size.height - faceRect.size.height) / 2.0//左右方向
+        
+        var maxV:Double = 0
         while reader.status != AVAssetReader.Status.reading {
             sleep(UInt32(0.1))
         }
@@ -665,7 +684,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 var eyePos:CGFloat = 0
                 var fx:CGFloat = 0
                 var fy:CGFloat = 0
-                
+               
                 //for test display
                 #if DEBUG
                 var x:CGFloat = 0.0
@@ -676,19 +695,23 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     cvError -= 1
                     
 //                    self.printR(str: "eyeWB:", rct: eyeWithBorderRect)
+                    #if DEBUG
+                        self.printR(str: "allframe:",max:maxV,cnt:vHITcnt,rct1: eyeWithBorderRect,rct2:eyebR0)
                 
+                    #endif
                     if cvError < 0{
                         //orientation.upとrightは所要時間同じ
                         let ciImage: CIImage =
                             CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
-                        
-                        
                         eyeWithBorderCGImage = context.createCGImage(ciImage, from: eyeWithBorderRect)!
                         eyeWithBorderUIImage = UIImage.init(cgImage: eyeWithBorderCGImage)
                         
                         #if DEBUG
-                        self.printR(str: "ewb:",rct: eyeWithBorderRect)
 //                        画面表示はmain threadで行う
+                        
+                        let eyeErrorCGImage = context.createCGImage(ciImage, from:eyeErrorRect)!
+                        let eyeErrorUIImage = UIImage.init(cgImage: eyeErrorCGImage)
+
                         DispatchQueue.main.async {
                             self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
                             self.wakuEye.image=eyeUIImage
@@ -697,9 +720,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             self.wakuEyeb.frame=CGRect(x:x,y:y,width:eyeWithBorderRect.size.width*2,height:eyeWithBorderRect.size.height*2)
                             x += eyeWithBorderRect.size.width*2
                             self.wakuEyeb.image=eyeWithBorderUIImage
+                            self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
+                            self.wakuFacb.image=eyeErrorUIImage
                         }
                         #endif
-                        let maxV=self.openCV.matching(eyeWithBorderUIImage,
+                        maxV=self.openCV.matching(eyeWithBorderUIImage,
                                                       narrow: eyeUIImage,
                                                       x: eX,
                                                       y: eY)
@@ -708,8 +733,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
 //                        print("maxV:",maxV)
                         if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
-                            cvError=10//10/240secはcontinue
+                            //cvError=10//10/240secはcontinue
                             eyeWithBorderRect=eyebR0//初期位置に戻す
+                            #if DEBUG
+//                            self.printR(str: "***frame:",max:maxV,cnt:vHITcnt,rct1: eyeWithBorderRect,rct2:eyebR0)
+                            print("error===========")
+                            #endif
                         }else{//検出できた時
                             //eXはポインタなので、".pointee"でそのポインタの内容が取り出せる。Cでいうところの"*"
                             //上で宣言しているとおりInt32が返ってくるのでCGFloatに変換して代入
@@ -718,18 +747,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             eyeWithBorderRect.origin.x += ex
                             eyeWithBorderRect.origin.y += ey
                             eyePos = eyeWithBorderRect.origin.x - eyebR0.origin.x + ex
+                            
+                            #if DEBUG
+//                            let eyebR0CGImage = context.createCGImage(ciImage, from:eyebR0)!
+//                            let eyebR0UIImage = UIImage.init(cgImage: eyebR0CGImage)
+//
+//                            DispatchQueue.main.async {
+//                                self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
+//                                self.wakuFacb.image=eyebR0UIImage
+//                            }
+                            #else
                             if self.faceF==1 && self.isVHIT==true{
                                 faceWithBorderCGImage = context.createCGImage(ciImage, from:faceWithBorderRect)!
                                 faceWithBorderUIImage = UIImage.init(cgImage: faceWithBorderCGImage)
-                                #if DEBUG
-                                DispatchQueue.main.async {
-                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
-                                    self.wakuFac.image=faceUIImage
-                                    x += faceRect.size.width*2
-                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
-                                    self.wakuFacb.image=faceWithBorderUIImage
-                                }
-                                #endif
+//                                #if DEBUG
+//                                DispatchQueue.main.async {
+//                                    self.wakuFac.frame=CGRect(x:x,y:y,width:faceRect.size.width*2,height:faceRect.size.height*2)
+//                                    self.wakuFac.image=faceUIImage
+//                                    x += faceRect.size.width*2
+//                                    self.wakuFacb.frame=CGRect(x:x,y:y,width:faceWithBorderRect.size.width*2,height:faceWithBorderRect.size.height*2)
+//                                    self.wakuFacb.image=faceWithBorderUIImage
+//                                }
+//                                #endif
                                 
                                 let maxVf=self.openCV.matching(faceWithBorderUIImage, narrow: faceUIImage, x: fX, y: fY)
                                 while self.openCVstopFlag == true{//vHITeyeを使用中なら待つ
@@ -744,6 +783,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                                     faceWithBorderRect.origin.y += fy
                                 }
                             }
+                            #endif
                         }
                         context.clearCaches()
                     }
@@ -752,24 +792,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         let face5 = -12.0*self.Kalman(value: fx,num: 0)
                         self.vHITFace.append(face5)
                         self.vHITFace5.append(face5)
-//                        if fpsIs120==true{
-//                                      self.vHITFace.append(face5)
-//                                                 self.vHITFace5.append(face5)
-//
-//                        }
                         if vHITcnt > 5{
                             self.vHITFace5[vHITcnt-2]=(self.vHITFace[vHITcnt]+self.vHITFace[vHITcnt-1]+self.vHITFace[vHITcnt-2]+self.vHITFace[vHITcnt-3]+self.vHITFace[vHITcnt-4])/5
                         }
                     }else{
                         self.vHITFace.append(0)
-                             self.vHITFace5.append(0)
-
-//                        if fpsIs120==true{
-//                        self.vHITFace.append(0)
-//                        self.vHITFace5.append(0)
-//                        }
+                        self.vHITFace5.append(0)
                     }
-                    
                     // eyePos, ey, fyをそれぞれ配列に追加
                     // vogをkalmanにかけ配列に追加
                     let eyePos5 = -1.0*self.Kalman(value:eyePos,num:1)
@@ -942,7 +971,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func printR(str:String,rct:CGRect){
         print("\(str)",String(format: "%.1f %.1f %.1f %.1f",rct.origin.x,rct.origin.y,rct.width,rct.height))
     }
-    
+    func printR(str:String,rct1:CGRect,rct2:CGRect){
+        print("\(str)",String(format: "%.0f,%.0f %.0f,%.0f",rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
+    }
+    func printR(str:String,cnt:Int,rct1:CGRect,rct2:CGRect){
+         print("\(str)",String(format: "%d-%.0f,%.0f %.0f,%.0f",cnt,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
+     }
+    func printR(str:String,max:Double,cnt:Int,rct1:CGRect,rct2:CGRect){
+        print("\(str)",String(format: "%.2f %d-%.0f,%.0f %.0f,%.0f",max,cnt,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         //      print("willappear")
@@ -1357,7 +1394,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let vogPos_count=vogPos.count
         let dx = 1// xの間隔
         for i in stn..<en {
-            if i < vogPos_count - 10{
+            if i < vogPos_count - 20{
                 let px = CGFloat(dx * i)
                 let py = vogPos5[i] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = vHITEye5[i] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -1684,7 +1721,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //     let height = UInt32(h)/2
         // 点の配列を作る
         for n in 1...(pointCount) {
-            if num + n < vHITEye5.count {
+            if num + n < vHITEye5.count - 4{
                 let px = dx * CGFloat(n)
                 let py0 = vHITEye5[num + n] * CGFloat(eyeRatio)/230.0 + 60.0
                 if faceF==1{
