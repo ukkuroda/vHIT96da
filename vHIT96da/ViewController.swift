@@ -517,11 +517,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func setvHITgyro5(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
         vHITGyro5.removeAll()
-        let sn=startFrame
-        //        let sn=startFrame+gyroDelta*240/1000
+        var sn=startFrame
+        if getFps(path: vidPath[vidCurrent])<200{
+            sn=startFrame*2
+        }
         if gyroData.count>10{
             for i in 0..<gyroData.count{
-                if i+sn>0 && i+sn<gyroData.count{
+                if i+sn<gyroData.count{
                     vHITGyro5.append(gyroData[i+sn])
                 }else{
                     vHITGyro5.append(0)
@@ -548,7 +550,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             vHITlineView?.removeFromSuperview()
         }
         readGyro(path: vidPath[vidCurrent])//gyroDataを読み込む
-        setvHITgyro5()//gyroDeltastartframe分をズラしてvHITgyro5に入れる
+        setvHITgyro5()//startframe分をズラしてvHITgyro5に入れる
         var vHITcnt:Int = 0
         
         timercnt = 0
@@ -590,8 +592,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let readerOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readerOutputSettings)
         
         reader.add(readerOutput)
-        let frameRate = videoTrack.nominalFrameRate
-        //let startframe=startPoints[vhitVideocurrent]
+        let frameRate = getFps(path: vidPath[vidCurrent])
         let startTime = CMTime(value: CMTimeValue(startFrame), timescale: CMTimeScale(frameRate))
         let timeRange = CMTimeRange(start: startTime, end:CMTime.positiveInfinity)
         //print("time",timeRange)
@@ -2390,7 +2391,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 veloRatio=ParametersViewController.ratio2
             }
             setUserDefaults()
-            setvHITgyro5()
+//            setvHITgyro5()//
             if vHITEye5.count > 400{
                 if isVHIT == true{//データがありそうな時は表示
                     calcDrawVHIT()
@@ -2415,9 +2416,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let Controller:PlayViewController = vc
             if !(vidCurrent == -1){
                 let curTime=Controller.seekBarValue
-                let fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
+                var fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
+//                if fps<200.0{
+//                    fps *= 2
+//                }
                 startFrame=Int(curTime*fps)
-//                print("startFrame:",fps,startFrame,curTime)
+                print("startFrame:",fps,startFrame,curTime)
                 slowImage.image=getframeImage(frameNumber: startFrame)
 //                startFrame = Controller.startFrame!
 //                slowImage.image = Controller.playImage.image
