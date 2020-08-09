@@ -13,11 +13,7 @@ import AssetsLibrary
 import Photos
 import MessageUI
 import CoreLocation
-//extension Array {
-//    subscript (safe index: Index) -> Element? {
-//        return indices.contains(index) ? self[index] : nil
-//    }
-//}
+
 extension UIImage {
     
     //    var safeCiImage: CIImage? {
