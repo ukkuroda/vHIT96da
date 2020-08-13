@@ -416,7 +416,6 @@
                         <outlet property="eraseButton" destination="WVy-FW-eP4" id="1mR-HG-0Sd"/>
                         <outlet property="eyeWaku_image" destination="3KZ-x3-xdg" id="W38-c9-yno"/>
                         <outlet property="faceWaku_image" destination="8Nc-UQ-RY5" id="c7S-Ij-XHD"/>
-                        <outlet property="freecntLabel" destination="6oH-Ur-nDk" id="EUJ-xJ-mml"/>
                         <outlet property="helpButton" destination="7OA-cL-B3S" id="YzF-8f-1r2"/>
                         <outlet property="listButton" destination="Afb-7h-V8u" id="hfI-Hx-H2E"/>
                         <outlet property="nextVideoOutlet" destination="fee-9L-VIg" id="Dl0-G1-Z6x"/>
@@ -425,9 +424,10 @@
                         <outlet property="saveButton" destination="ldV-kl-ghp" id="ocV-PC-sYh"/>
                         <outlet property="slowImage" destination="9Q7-F1-xlh" id="rqH-qI-NIk"/>
                         <outlet property="stopButton" destination="sqt-I0-fRF" id="uIR-70-WpH"/>
-                        <outlet property="vduraLabel" destination="kNK-9F-Yfp" id="ylU-ZV-m4M"/>
                         <outlet property="vhitButton" destination="XhS-eE-NWD" id="sXQ-mD-lpc"/>
                         <outlet property="videoDate" destination="0q7-O3-Ich" id="Lv3-7t-LiK"/>
+                        <outlet property="videoDuration" destination="kNK-9F-Yfp" id="ylU-ZV-m4M"/>
+                        <outlet property="videoFps" destination="6oH-Ur-nDk" id="EUJ-xJ-mml"/>
                         <outlet property="vogButton" destination="O3A-xm-U7g" id="5il-Ju-r1z"/>
                         <outlet property="wakuAll" destination="Iqh-4c-2st" id="IGY-sR-TIm"/>
                         <outlet property="wakuEye" destination="jhl-W2-Rd7" id="La3-kk-kYg"/>

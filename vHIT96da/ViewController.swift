@@ -150,6 +150,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if vidCurrent<0{
             vidCurrent=0
         }
+        startFrame=0
         showCurrent()
         showBoxies(f: false)
         dispWakuImages()
@@ -199,9 +200,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
     var openCVstopFlag:Bool = false//calcdrawVHITの時は止めないとvHITeye
     //vHITeyeがちゃんと読めない瞬間が生じるようだ
-    @IBOutlet weak var vduraLabel: UILabel!
+    @IBOutlet weak var videoDuration: UILabel!
     
-    @IBOutlet weak var freecntLabel: UILabel!
+    @IBOutlet weak var videoFps: UILabel!
     @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var helpButton: UIButton!
@@ -232,12 +233,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var slowImage: UIImageView!
     @IBOutlet weak var videoDate: UILabel!
-    var videoDuration:String = ""
     var calcDate:String = ""
     var idNumber:Int = 0
     var vHITtitle:String = ""
     
-    var freeCounter:Int = 0//これが実行毎に減って,0になったら起動できなくする。
+ //   var freeCounter:Int = 0//これが実行毎に減って,0になったら起動できなくする。
     var widthRange:Int = 0
     var waveWidth:Int = 0
     var eyeBorder:Int = 20
@@ -293,8 +293,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
         slowImage.image = vidImg[vidCurrent]
         videoDate.text=vidDate[vidCurrent]
-        vduraLabel.text=vidDura[vidCurrent]
-        vduraLabel.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
+        videoDuration.text=vidDura[vidCurrent]
+        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
         startFrame=0
         
         dispWakuImages()
@@ -1594,7 +1594,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func getUserDefaults(){
-        freeCounter = getUserDefault(str: "freeCounter", ret:0)
+///        freeCounter = getUserDefault(str: "freeCounter", ret:0)
         widthRange = getUserDefault(str: "widthRange", ret: 30)
         waveWidth = getUserDefault(str: "waveWidth", ret: 80)
         //      wavePeak = getUserDefault(str: "wavePeak", ret: 30)
@@ -1634,7 +1634,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     //default値をセットするんじゃなく、defaultというものに値を設定するという意味
     func setUserDefaults(){
-        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+//        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
         UserDefaults.standard.set(widthRange, forKey: "widthRange")
         UserDefaults.standard.set(waveWidth, forKey: "waveWidth")
         //       UserDefaults.standard.set(wavePeak, forKey: "wavePeak")
@@ -1770,7 +1770,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             drawPath1.stroke()
         }
         drawPath2.stroke()
-        //print(videoDuration)
         let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITEye5.count,CGFloat(vHITEye5.count)/240.0,vidDura[vidCurrent],timercnt+1)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 3, y: 3), withAttributes: [
@@ -2068,9 +2067,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @objc func viewWillEnterForeground(_ notification: Notification?) {
         //       print("willenter")
         if (self.isViewLoaded && (self.view.window != nil)) {
-            freeCounter += 1
-            UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-            freecntLabel.text = "\(freeCounter)"
+//            freeCounter += 1
+//            UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+//            videoFps.text = "\(freeCounter)"
         }
     }
     
@@ -2102,10 +2101,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         slowImage.image = vidImg[vidCurrent]
         videoDate.text = vidDate[vidCurrent]
-        vduraLabel.text=vidDura[vidCurrent]
-        vduraLabel.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
+        videoDuration.text=vidDura[vidCurrent]
+        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
 
-        freecntLabel.text = "\(freeCounter)"
+//        videoFps.text = "\(freeCounter)"
     }
     func camera_alert(){
         if PHPhotoLibrary.authorizationStatus() != .authorized {
@@ -2167,9 +2166,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
         
-        freeCounter += 1
+//        freeCounter += 1
         camera_alert()
-        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+//        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
 //        dispWakus()
         setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
