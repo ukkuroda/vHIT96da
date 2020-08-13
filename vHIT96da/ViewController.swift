@@ -89,7 +89,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var vidPath = Array<String>()
     var vidDate = Array<String>()
     var vidDura = Array<String>()
-    var vidDuraorg = Array<String>()
+//    var vidDuraorg = Array<String>()
 //    var vidFps:Float = 0
     var vidCurrent:Int=0
     var vogImage:UIImage?
@@ -194,7 +194,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         showBoxies(f: boxF)
     }
     
-    var startPoint:Int = 0
+//    var startPoint:Int = 0
     var startFrame:Int=0
     var calcFlag:Bool = false//calc中かどうか
     var nonsavedFlag:Bool = false //calcしてなければfalse, calcしたらtrue, saveしたらfalse
@@ -289,15 +289,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         show1()
     }
+    func showTexts(){
+        let str=vidDura[vidCurrent]
+        let str1=str.components(separatedBy: "s")
+        videoDuration.text="sec" + "\n" + str1[0]
+        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
+    }
     func show1(){
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
         slowImage.image = vidImg[vidCurrent]
         videoDate.text=vidDate[vidCurrent]
-         videoDuration.text="len" + "\n" + vidDura[vidCurrent]
-         videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
-//        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
+        showTexts()
         startFrame=0
         dispWakuImages()
+    }
+    func showCurrent(){
+        if vidImg.count==0{
+            slowImage.image=UIImage(named:"vhittop")
+            return
+        }
+        slowImage.image = vidImg[vidCurrent]
+        videoDate.text = vidDate[vidCurrent]
+        showTexts()
     }
     @IBAction func nextVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
@@ -900,7 +913,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
         CGeye = context.createCGImage(ciImage, from: eyeR)!
         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-        wakuS_image.frame=CGRect(x:5,y:35,width: eyeR.size.width*5,height: eyeR.size.height*5)
+        wakuS_image.frame=CGRect(x:5,y:39,width: eyeR.size.width*5,height: eyeR.size.height*5)
         wakuS_image.layer.borderColor = UIColor.green.cgColor
         wakuS_image.layer.borderWidth = 1.0
         wakuS_image.backgroundColor = UIColor.clear
@@ -1496,7 +1509,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         str.sort()//descend? ascend ?
          vidPath.removeAll()
         vidDate.removeAll()
-        vidDuraorg.removeAll()
+//        vidDuraorg.removeAll()
         vidDura.removeAll()
         vidImg.removeAll()
          if str[0]==""{//"*.MOV"でstr.countは１,"*.MOV,*.MOV"で2
@@ -1537,7 +1550,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let sec10 = Int(10*asset.duration.seconds)
         let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
         vidDura.append(temp)
-        vidDuraorg.append(temp)
+//        vidDuraorg.append(temp)
         let str1=path.components(separatedBy: "vHIT96da")
         let str2=str1[1].components(separatedBy: ".MOV")
         let str3=str2[0] + " (\(vidPath.count-1))"
@@ -2092,22 +2105,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     
-    func showCurrent(){
-        //        print("*******",vidPath.count,vidCurrent)
-        if vidImg.count==0{
-            //imageFront.image = UIImage(named:epImg[0])
-            slowImage.image=UIImage(named:"vhittop")
-            return
-        }
-        slowImage.image = vidImg[vidCurrent]
-        videoDate.text = vidDate[vidCurrent]
-        videoDuration.text="len" + "\n" + vidDura[vidCurrent]
-        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
-//
-        //        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
-
-//        videoFps.text = "\(freeCounter)"
-    }
+   
     func camera_alert(){
         if PHPhotoLibrary.authorizationStatus() != .authorized {
             PHPhotoLibrary.requestAuthorization { status in
@@ -2443,24 +2441,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             let Controller:PlayViewController = vc
             if !(vidCurrent == -1){
                 let curTime=Controller.seekBarValue
-                var fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
-//                if fps<200.0{
-//                    fps *= 2
-//                }
+                let fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
                 startFrame=Int(curTime*fps)
                 print("startFrame:",fps,startFrame,curTime)
+//                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
                 slowImage.image=getframeImage(frameNumber: startFrame)
-//                startFrame = Controller.startFrame!
-//                slowImage.image = Controller.playImage.image
                 vidImg[vidCurrent]=slowImage.image!
-                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
-                let sec:Double = Double(secs[0])!
-                let secd:Double = sec - Double(startPoint)/Double(fps)
-                let secd2:Double = Double(Int(secd*10.0))/10.0
-                vidDura[vidCurrent]="\(secd2)" + "s"
-                //                print(posLED)
-                //            led2waku(video: vidImg[vidCurrent])
+//                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
+//                let sec:Double = Double(secs[0])!
+//                let secd:Double = sec - Double(startPoint)/Double(fps)
+//                let secd2:Double = Double(Int(secd*10.0))/10.0
+//                vidDura[vidCurrent]="\(secd2)" + "s"
                 dispWakuImages()
+//                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
             }
 
         }else if let vc = segue.source as? RecordViewController{
