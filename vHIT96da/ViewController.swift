@@ -293,10 +293,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
         slowImage.image = vidImg[vidCurrent]
         videoDate.text=vidDate[vidCurrent]
-        videoDuration.text=vidDura[vidCurrent]
-        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
+         videoDuration.text="len" + "\n" + vidDura[vidCurrent]
+         videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
+//        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
         startFrame=0
-        
         dispWakuImages()
     }
     @IBAction func nextVideo(_ sender: Any) {
@@ -2101,8 +2101,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         slowImage.image = vidImg[vidCurrent]
         videoDate.text = vidDate[vidCurrent]
-        videoDuration.text=vidDura[vidCurrent]
-        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
+        videoDuration.text="len" + "\n" + vidDura[vidCurrent]
+        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
+//
+        //        videoDuration.text! += "\n" + String(format: "%d",Int(getFps(path: vidPath[vidCurrent])))
 
 //        videoFps.text = "\(freeCounter)"
     }
