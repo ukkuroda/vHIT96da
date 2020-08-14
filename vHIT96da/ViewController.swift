@@ -8,14 +8,13 @@
 
 import UIKit
 import AVFoundation
-//import MobileCoreServices
 import AssetsLibrary
 import Photos
 import MessageUI
 import CoreLocation
 
 extension UIImage {
-
+    
     func resize(size _size: CGSize) -> UIImage? {
         let widthRatio = _size.width / size.width
         let heightRatio = _size.height / size.height
@@ -125,7 +124,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var eyeVeloFiltered = Array<CGFloat>()//eyeVeloFiltered
     var faceVeloOrig = Array<CGFloat>()//faceVeloOrig
     var faceVeloFiltered = Array<CGFloat>()//faceVeloFiltered
-    
     var gyroFiltered = Array<CGFloat>()//gyroFiltered
     var gyroMoved = Array<CGFloat>()//gyroVeloFilterd
     
@@ -134,69 +132,69 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var eyeWs = [[Int]](repeating:[Int](repeating:0,count:125),count:80)
     var gyroWs = [[Int]](repeating:[Int](repeating:0,count:125),count:80)
     @IBAction func eraseVideo(_ sender: Any) {
-          let str=getFsindoc().components(separatedBy: ",")
-          if !str[0].contains("vHIT96da"){
-              return
-          }
-          let str1=vidPath[vidCurrent].components(separatedBy: ".MOV")
-          //str1[0]=vHIT96da*(.MOVを削ったもの)
-          let lastvidCurrent=vidCurrent
-          for i in 0..<str.count{
-              if str[i].contains(str1[0]){
-                  if removeFile(delFile: str[i])==true{
-                      print("remove completed:",str[i])
-                      eyeVeloOrig.removeAll()
-                      eyeVeloFiltered.removeAll()
-                      faceVeloOrig.removeAll()
-                      faceVeloFiltered.removeAll()
-                      eyePosOrig.removeAll()
-                      eyePosFiltered.removeAll()
-                      gyroMoved.removeAll()
-                  }
-              }
-          }
-          setArrays()//vidCurrent -> lastoneにセットされる
-          vidCurrent=lastvidCurrent-1
-          if vidCurrent<0{
-              vidCurrent=0
-          }
-          startFrame=0
-          showCurrent()
-          showBoxies(f: false)
-          dispWakuImages()
-      }
-      
-      @IBAction func vhitGo(_ sender: Any) {
-          if calcFlag == true || isVHIT == true{
-              return
-          }
-          isVHIT=true
-          setvHIT_VOGbuttons()
-          dispWakus()
-          if eyeVeloOrig.count>0 && vidCurrent != -1{
-              vhitCurpoint=0
-              drawOnewave(startcount: 0)
-              calcDrawVHIT()
-          }
-          showBoxies(f:boxF)
-      }
-      
-      @IBAction func vogGo(_ sender: Any) {
-          rectType=0
-          if calcFlag == true || isVHIT == false{
-              return
-          }
-          isVHIT = false
-          setvHIT_VOGbuttons()
-          dispWakus()
-          if eyeVeloOrig.count>0  && vidCurrent != -1{
-              vogCurpoint=0
-              drawVogall_new()
-              drawVogtext()
-          }
-          showBoxies(f: boxF)
-      }
-      
+        let str=getFsindoc().components(separatedBy: ",")
+        if !str[0].contains("vHIT96da"){
+            return
+        }
+        let str1=vidPath[vidCurrent].components(separatedBy: ".MOV")
+        //str1[0]=vHIT96da*(.MOVを削ったもの)
+        let lastvidCurrent=vidCurrent
+        for i in 0..<str.count{
+            if str[i].contains(str1[0]){
+                if removeFile(delFile: str[i])==true{
+                    print("remove completed:",str[i])
+                    eyeVeloOrig.removeAll()
+                    eyeVeloFiltered.removeAll()
+                    faceVeloOrig.removeAll()
+                    faceVeloFiltered.removeAll()
+                    eyePosOrig.removeAll()
+                    eyePosFiltered.removeAll()
+                    gyroMoved.removeAll()
+                }
+            }
+        }
+        setArrays()//vidCurrent -> lastoneにセットされる
+        vidCurrent=lastvidCurrent-1
+        if vidCurrent<0{
+            vidCurrent=0
+        }
+        startFrame=0
+        showCurrent()
+        showBoxies(f: false)
+        dispWakuImages()
+    }
+    
+    @IBAction func vhitGo(_ sender: Any) {
+        if calcFlag == true || isVHIT == true{
+            return
+        }
+        isVHIT=true
+        setvHIT_VOGbuttons()
+        dispWakus()
+        if eyeVeloOrig.count>0 && vidCurrent != -1{
+            vhitCurpoint=0
+            drawOnewave(startcount: 0)
+            calcDrawVHIT()
+        }
+        showBoxies(f:boxF)
+    }
+    
+    @IBAction func vogGo(_ sender: Any) {
+        rectType=0
+        if calcFlag == true || isVHIT == false{
+            return
+        }
+        isVHIT = false
+        setvHIT_VOGbuttons()
+        dispWakus()
+        if eyeVeloOrig.count>0  && vidCurrent != -1{
+            vogCurpoint=0
+            drawVogall_new()
+            drawVogtext()
+        }
+        showBoxies(f: boxF)
+    }
+    
     @IBAction func backVideo(_ sender: Any) {
         if vHITlineView?.isHidden == false{
             return
@@ -248,60 +246,60 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         show1()
     }
-
+    
     func resizeR2(_ targetRect:CGRect, viewRect:CGRect, image:CIImage) -> CGRect {
-         //view.frameとtargetRectとimageをもらうことでその場で縦横の比率を計算してtargetRectのimage上の位置を返す関数
-         //view.frameとtargetRectは画面上の位置だが、返すのはimage上の位置なので、そこをうまく考慮する必要がある。
-         //getRealrectの代わり
-         
-         let vw = viewRect.width
-         let vh = viewRect.height
-         
-         let iw = CGFloat(image.extent.width)
-         let ih = CGFloat(image.extent.height)
-         
-         //　viewRect.originを引く事でtargetRectがview.bounds起点となる (xは0なのでやる必要はないが・・・）
-         let tx = CGFloat(targetRect.origin.x) - CGFloat(viewRect.origin.x)
-         let ty = CGFloat(targetRect.origin.y) - CGFloat(viewRect.origin.y)
-         
-         let tw = CGFloat(targetRect.width)
-         let th = CGFloat(targetRect.height)
-         
-         // ここで返されるCGRectはCIImage/CGImage上の座標なので全て整数である必要がある
-         // 端数があるまま渡すとmatchingが誤動作した
-         return CGRect(x: (tx * iw / vw).rounded(),
-                       y: ((vh - ty - th) * ih / vh).rounded(),
-                       width: (tw * iw / vw).rounded(),
-                       height: (th * ih / vh).rounded())
-     }
-     func expandRectWithBorderWide(rect:CGRect, border:CGFloat) -> CGRect {
-             //左右には border 、上下には border/2 を広げる
-             //この関数も上と同じようにroundした方がいいかもしれないが、
-             //現状ではscreen座標のみで使っているのでfloatのまま。
-             return CGRect(x:rect.origin.x - border,
-                           y:rect.origin.y - border,
-                           width:rect.size.width + border * 2,
-                           height:rect.size.height + border * 2)
-         }
-     func expandRectWithBorder(rect:CGRect, border:CGFloat) -> CGRect {
-         //左右には border 、上下には border/2 を広げる
-         //この関数も上と同じようにroundした方がいいかもしれないが、
-         //現状ではscreen座標のみで使っているのでfloatのまま。
-         return CGRect(x:rect.origin.x - border,
-                       y:rect.origin.y - border / 4,
-                       width:rect.size.width + border * 2,
-                       height:rect.size.height + border / 2)
-     }
-     func expandRectError(rect:CGRect, border:CGFloat) -> CGRect {
-         //左右には border 、上下には border/2 を広げる
-         //この関数も上と同じようにroundした方がいいかもしれないが、
-         //現状ではscreen座標のみで使っているのでfloatのまま。
-         return CGRect(x:rect.origin.x - border,
-                       y:rect.origin.y - border ,
-                       width:rect.size.width + border * 2,
-                       height:rect.size.height + border * 2)
-     }
-
+        //view.frameとtargetRectとimageをもらうことでその場で縦横の比率を計算してtargetRectのimage上の位置を返す関数
+        //view.frameとtargetRectは画面上の位置だが、返すのはimage上の位置なので、そこをうまく考慮する必要がある。
+        //getRealrectの代わり
+        
+        let vw = viewRect.width
+        let vh = viewRect.height
+        
+        let iw = CGFloat(image.extent.width)
+        let ih = CGFloat(image.extent.height)
+        
+        //　viewRect.originを引く事でtargetRectがview.bounds起点となる (xは0なのでやる必要はないが・・・）
+        let tx = CGFloat(targetRect.origin.x) - CGFloat(viewRect.origin.x)
+        let ty = CGFloat(targetRect.origin.y) - CGFloat(viewRect.origin.y)
+        
+        let tw = CGFloat(targetRect.width)
+        let th = CGFloat(targetRect.height)
+        
+        // ここで返されるCGRectはCIImage/CGImage上の座標なので全て整数である必要がある
+        // 端数があるまま渡すとmatchingが誤動作した
+        return CGRect(x: (tx * iw / vw).rounded(),
+                      y: ((vh - ty - th) * ih / vh).rounded(),
+                      width: (tw * iw / vw).rounded(),
+                      height: (th * ih / vh).rounded())
+    }
+    func expandRectWithBorderWide(rect:CGRect, border:CGFloat) -> CGRect {
+        //左右には border 、上下には border/2 を広げる
+        //この関数も上と同じようにroundした方がいいかもしれないが、
+        //現状ではscreen座標のみで使っているのでfloatのまま。
+        return CGRect(x:rect.origin.x - border,
+                      y:rect.origin.y - border,
+                      width:rect.size.width + border * 2,
+                      height:rect.size.height + border * 2)
+    }
+    func expandRectWithBorder(rect:CGRect, border:CGFloat) -> CGRect {
+        //左右には border 、上下には border/2 を広げる
+        //この関数も上と同じようにroundした方がいいかもしれないが、
+        //現状ではscreen座標のみで使っているのでfloatのまま。
+        return CGRect(x:rect.origin.x - border,
+                      y:rect.origin.y - border / 4,
+                      width:rect.size.width + border * 2,
+                      height:rect.size.height + border / 2)
+    }
+    func expandRectError(rect:CGRect, border:CGFloat) -> CGRect {
+        //左右には border 、上下には border/2 を広げる
+        //この関数も上と同じようにroundした方がいいかもしれないが、
+        //現状ではscreen座標のみで使っているのでfloatのまま。
+        return CGRect(x:rect.origin.x - border,
+                      y:rect.origin.y - border ,
+                      width:rect.size.width + border * 2,
+                      height:rect.size.height + border * 2)
+    }
+    
     var kalVs:[[CGFloat]]=[[0.0001,0.001,0,1,2],[0.0001,0.001,3,4,5],[0.0001,0.001,6,7,8],[0.0001,0.001,10,11,12],[0.0001,0.001,13,14,15]]
     func KalmanS(Q:CGFloat,R:CGFloat,num:Int){
         kalVs[num][4] = (kalVs[num][3] + Q) / (kalVs[num][3] + Q + R);
@@ -464,7 +462,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //２：直ぐここを通る
     }
     
-    func setvHITgyro5(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
+    func moveGyroData(){//gyroDeltaとstartFrameをずらして
         gyroMoved.removeAll()
         var sn=startFrame
         if getFps(path: vidPath[vidCurrent])<200{
@@ -480,7 +478,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
     }
-  
+    
     func vHITcalc(){
         var cvError:Int = 0
         calcFlag = true
@@ -499,7 +497,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             vHITlineView?.removeFromSuperview()
         }
         readGyro(path: vidPath[vidCurrent])//gyroDataを読み込む
-        setvHITgyro5()//gyroDeltastartframe分をズラしてvHITgyro5に入れる
+        moveGyroData()//gyroDeltastartframe分をズラして
         var vHITcnt:Int = 0
         
         timercnt = 0
@@ -565,10 +563,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let eyeRectOnScreen=CGRect(x:wakuE.origin.x, y:wakuE.origin.y, width: wakuE.width, height: wakuE.height)
         let eyeWithBorderRectOnScreen = expandRectWithBorderWide(rect: eyeRectOnScreen, border: eyeborder)
-//        let eyeErrorRectOnScreen = expandRectError(rect: eyeRectOnScreen, border: eyeborder*2)
+        //        let eyeErrorRectOnScreen = expandRectError(rect: eyeRectOnScreen, border: eyeborder*2)
         let faceRectOnScreen=CGRect(x:wakuF.origin.x,y:wakuF.origin.y,width: wakuF.width,height: wakuF.height)
         let faceWithBorderRectOnScreen = expandRectWithBorderWide(rect: faceRectOnScreen, border: eyeborder)
-//        let faceErrorRectOnScreen = expandRectError(rect: faceRectOnScreen, border: eyeborder*2)
+        //        let faceErrorRectOnScreen = expandRectError(rect: faceRectOnScreen, border: eyeborder*2)
         let context:CIContext = CIContext.init(options: nil)
         //            let up = UIImage.Orientation.right
         var sample:CMSampleBuffer!
@@ -581,12 +579,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let maxHeight=ciImage.extent.size.height
         let eyeRect = resizeR2(eyeRectOnScreen, viewRect:view.frame, image:ciImage)
         var eyeWithBorderRect = resizeR2(eyeWithBorderRectOnScreen, viewRect:view.frame, image:ciImage)
-//        let eyeErrorRect = resizeR2(eyeErrorRectOnScreen,viewRect:view.frame,image:ciImage)
+        //        let eyeErrorRect = resizeR2(eyeErrorRectOnScreen,viewRect:view.frame,image:ciImage)
         let maxWidthWithBorder=maxWidth-eyeWithBorderRect.width-5
         let maxHeightWithBorder=maxHeight-eyeWithBorderRect.height-5
         let faceRect = resizeR2(faceRectOnScreen, viewRect: view.frame, image:ciImage)
         var faceWithBorderRect = resizeR2(faceWithBorderRectOnScreen, viewRect:view.frame, image:ciImage)
-//        let faceErrorRect=resizeR2(faceErrorRectOnScreen,viewRect:view.frame,image:ciImage)
+        //        let faceErrorRect=resizeR2(faceErrorRectOnScreen,viewRect:view.frame,image:ciImage)
         
         let eyebR0 = eyeWithBorderRect
         let facbR0 = faceWithBorderRect
@@ -604,10 +602,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let osFacX:CGFloat = (faceWithBorderRect.size.width - faceRect.size.width) / 2.0//上下方向
         let osFacY:CGFloat = (faceWithBorderRect.size.height - faceRect.size.height) / 2.0//左右方向
         
-//        let osEyeErrorX:CGFloat = (eyeErrorRect.size.width - eyeRect.size.width) / 2.0//上下方向
-//        let osEyeErrorY:CGFloat = (eyeErrorRect.size.height - eyeRect.size.height) / 2.0//左右方向
-//        let osFacErrorX:CGFloat = (faceErrorRect.size.width - faceRect.size.width) / 2.0//上下方向
-//        let osFacErrorY:CGFloat = (faceErrorRect.size.height - faceRect.size.height) / 2.0//左右方向
+        //        let osEyeErrorX:CGFloat = (eyeErrorRect.size.width - eyeRect.size.width) / 2.0//上下方向
+        //        let osEyeErrorY:CGFloat = (eyeErrorRect.size.height - eyeRect.size.height) / 2.0//左右方向
+        //        let osFacErrorX:CGFloat = (faceErrorRect.size.width - faceRect.size.width) / 2.0//上下方向
+        //        let osFacErrorY:CGFloat = (faceErrorRect.size.height - faceRect.size.height) / 2.0//左右方向
         var maxV:Double = 0
         var maxVf:Double = 0
         while reader.status != AVAssetReader.Status.reading {
@@ -640,9 +638,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         //                        画面表示はmain threadで行う
                         
                         let eye0CGImage = context.createCGImage(ciImage, from:eyebR0)!
-//                        let eye0CGImage = context.createCGImage(ciImage, from:eyeErrorRect)!
+                        //                        let eye0CGImage = context.createCGImage(ciImage, from:eyeErrorRect)!
                         let eye0UIImage = UIImage.init(cgImage: eye0CGImage)
-                               
+                        
                         DispatchQueue.main.async {
                             self.wakuEye.frame=CGRect(x:x,y:y,width:eyeRect.size.width*2,height:eyeRect.size.height*2)
                             self.wakuEye.image=eyeUIImage
@@ -652,7 +650,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             self.wakuEyeb.image=eyeWithBorderUIImage
                             x += eyeWithBorderRect.size.width*2
                             if self.faceF==0 || self.isVHIT==false{
-                                        self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
+                                self.wakuFacb.frame=CGRect(x:x,y:y,width:eyebR0.size.width*2,height:eyebR0.size.height*2)
                                 self.wakuFacb.image=eye0UIImage
                             }
                         }
@@ -665,7 +663,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             usleep(1)
                         }
                         
-                       if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
+                        if maxV < 0.7{//errorもここに来るぞ!!　ey=0で戻ってくる
                             cvError=5//10/240secはcontinue
                             eyeWithBorderRect=eyebR0//初期位置に戻す
                             faceWithBorderRect=facbR0
@@ -713,30 +711,20 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     
                     if self.faceF==1{
-                        let face5 = -12.0*self.Kalman(value: fx,num: 0)
-                        self.faceVeloOrig.append(face5)
-                        self.faceVeloFiltered.append(face5)
-                        if vHITcnt > 5{
-                            self.faceVeloFiltered[vHITcnt-2]=(self.faceVeloOrig[vHITcnt]+self.faceVeloOrig[vHITcnt-1]+self.faceVeloOrig[vHITcnt-2]+self.faceVeloOrig[vHITcnt-3]+self.faceVeloOrig[vHITcnt-4])/5
-                        }
+                        self.faceVeloOrig.append(fx)
+                        self.faceVeloFiltered.append(-12.0*self.Kalman(value: fx,num: 0))
                     }else{
                         self.faceVeloOrig.append(0)
                         self.faceVeloFiltered.append(0)
                     }
                     // eyePos, ey, fyをそれぞれ配列に追加
                     // vogをkalmanにかけ配列に追加
-                    let eyePos5 = -1.0*self.Kalman(value:eyePos,num:1)
-                    self.eyePosFiltered.append(eyePos5)
-                    self.eyePosOrig.append(eyePos5)
-                    if vHITcnt > 5{
-                        self.eyePosFiltered[vHITcnt-2]=(self.eyePosOrig[vHITcnt]+self.eyePosOrig[vHITcnt-1]+self.eyePosOrig[vHITcnt-2]+self.eyePosOrig[vHITcnt-3]+self.eyePosOrig[vHITcnt-4])/5
-                    }
+                    self.eyePosOrig.append(eyePos)
+                    self.eyePosFiltered.append( -1.0*self.Kalman(value:eyePos,num:1))
+
+                    self.eyeVeloOrig.append(ex)
                     let eye5 = -12.0*self.Kalman(value: ex,num:2)//そのままではずれる
                     self.eyeVeloFiltered.append(eye5-self.faceVeloFiltered.last!)
-                    self.eyeVeloOrig.append(eye5-self.faceVeloFiltered.last!)
-                    if vHITcnt > 5{
-                        self.eyeVeloFiltered[vHITcnt-2]=(self.eyeVeloOrig[vHITcnt]+self.eyeVeloOrig[vHITcnt-1]+self.eyeVeloOrig[vHITcnt-2]+self.eyeVeloOrig[vHITcnt-3]+self.eyeVeloOrig[vHITcnt-4])/5
-                    }
                     
                     vHITcnt += 1
                     while reader.status != AVAssetReader.Status.reading {
@@ -765,7 +753,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
     }
-//    func average5(
+    //    func average5(
     func fps120(is120:Bool){
         if is120==true{
             self.faceVeloOrig.append(self.faceVeloFiltered.last!)
@@ -824,13 +812,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
         
-//        let eyeR = resizeR2(wakuE, viewRect:self.slowImage.frame,image:ciImage)
-//slowImage.frameを以下のように　view.frame としたところ良くなった。
+        //        let eyeR = resizeR2(wakuE, viewRect:self.slowImage.frame,image:ciImage)
+        //slowImage.frameを以下のように　view.frame としたところ良くなった。
         //起動時表示が一巡？するまでは　slowImage.frame はちょっと違う値を示す
         let eyeR = resizeR2(wakuE, viewRect:view.frame,image:ciImage)
         let facR = resizeR2(wakuF, viewRect:view.frame, image: ciImage)
-//        printR(str:"eyeOnscreen:",rct: wakuE)
-//        printR(str:"eyeOnVideo:",rct: eyeR)
+        //        printR(str:"eyeOnscreen:",rct: wakuE)
+        //        printR(str:"eyeOnVideo:",rct: eyeR)
         CGfac = context.createCGImage(ciImage, from: facR)!
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
         CGeye = context.createCGImage(ciImage, from: eyeR)!
@@ -845,9 +833,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }else{
             wakuS_image.image=UIfac
         }
-//        printR(str:"wakuEye:",rct: wakuEye.frame)
+        //        printR(str:"wakuEye:",rct: wakuEye.frame)
     }
-     
+    
     func getframeImage(frameNumber:Int)->UIImage{//結果が表示されていない時、画面上部1/4をタップするとWaku表示
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
@@ -896,15 +884,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         print("\(str)",String(format: "%.0f,%.0f %.0f,%.0f",rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
     }
     func printR(str:String,cnt:Int,rct1:CGRect,rct2:CGRect){
-         print("\(str)",String(format: "%d-%.0f,%.0f %.0f,%.0f",cnt,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
-     }
+        print("\(str)",String(format: "%d-%.0f,%.0f %.0f,%.0f",cnt,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
+    }
     func printR(str:String,cnt:Int,max:Double,rct1:CGRect,rct2:CGRect){
         print("\(str)",String(format: "%d %.2f-%.0f,%.0f %.0f,%.0f",cnt,max,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         //      print("willappear")
-//        dispWakus()ここでは効かない
+        //        dispWakus()ここでは効かない
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
@@ -1130,7 +1118,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var pointList2 = Array<CGPoint>()
         
         let dx = 1// xの間隔
-//        print("vogPos5,vHITEye5,vHITeye",vogPos5.count,vHITEye5.count,vHITEye.count)
+        //        print("vogPos5,vHITEye5,vHITeye",vogPos5.count,vHITEye5.count,vHITEye.count)
         for n in 1..<wI {
             if startp + n < eyeVeloOrig.count-4 {//-20としてみたがエラー。関係なさそう。
                 let px = CGFloat(dx * n)
@@ -1140,7 +1128,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let point2 = CGPoint(x: px, y: py2)
                 pointList.append(point)
                 pointList2.append(point2)
-//                print("VOGdata:",px,py,py2)
+                //                print("VOGdata:",px,py,py2)
             }
         }
         // 始点に移動する
@@ -1168,7 +1156,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-  
+    
     func drawVogtext(){
         if voglineView != nil{
             voglineView?.removeFromSuperview()
@@ -1422,19 +1410,19 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
         //ifretStr += str[str.count-1]
-         let retStr2=retStr.dropLast()
+        let retStr2=retStr.dropLast()
         return String(retStr2)
     }
     func setArrays(){
         let path = getVideofns()//videoPathtxt()
         var str = path.components(separatedBy: ",")
         str.sort()//descend? ascend ?
-         vidPath.removeAll()
+        vidPath.removeAll()
         vidDate.removeAll()
-//        vidDuraorg.removeAll()
+        //        vidDuraorg.removeAll()
         vidDura.removeAll()
         vidImg.removeAll()
-         if str[0]==""{//"*.MOV"でstr.countは１,"*.MOV,*.MOV"で2
+        if str[0]==""{//"*.MOV"でstr.countは１,"*.MOV,*.MOV"で2
             return//""と何も無くてもstr.countは1   !!!!!
         }
         
@@ -1472,7 +1460,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let sec10 = Int(10*asset.duration.seconds)
         let temp = "\(sec10/10)" + "." + "\(sec10%10)" + "s"
         vidDura.append(temp)
-//        vidDuraorg.append(temp)
+        //        vidDuraorg.append(temp)
         let str1=path.components(separatedBy: "vHIT96da")
         let str2=str1[1].components(separatedBy: ".MOV")
         let str3=str2[0] + " (\(vidPath.count-1))"
@@ -1529,35 +1517,35 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func getUserDefaults(){
-
+        
         widthRange = getUserDefault(str: "widthRange", ret: 30)
         waveWidth = getUserDefault(str: "waveWidth", ret: 80)
         eyeBorder = getUserDefault(str: "eyeBorder", ret: 10)
-         eyeRatio = getUserDefault(str: "eyeRatio", ret: 100)
+        eyeRatio = getUserDefault(str: "eyeRatio", ret: 100)
         gyroRatio = getUserDefault(str: "gyroRatio", ret: 100)
         posRatio = getUserDefault(str: "posRatio", ret: 100)
         veloRatio = getUserDefault(str: "veloRatio", ret: 100)
         faceF = getUserDefault(str: "faceF", ret:0)
         isVHIT = getUserDefault(str: "isVHIT", ret: true)
-         
+        
         wakuE.origin.x = CGFloat(getUserDefault(str: "wakuE_x", ret:100))
         wakuE.origin.y = CGFloat(getUserDefault(str: "wakuE_y", ret:100))
-
+        
         wakuE.size.width = 5
         wakuE.size.height = 5
         wakuF.origin.x = CGFloat(getUserDefault(str: "wakuF_x", ret:100))
         wakuF.origin.y = CGFloat(getUserDefault(str: "wakuF_y", ret: 100))
-
+        
         wakuF.size.width = 5
         wakuF.size.height = 5
     }
     //default値をセットするんじゃなく、defaultというものに値を設定するという意味
     func setUserDefaults(){
-//        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+        //        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
         UserDefaults.standard.set(widthRange, forKey: "widthRange")
         UserDefaults.standard.set(waveWidth, forKey: "waveWidth")
-         UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
-         UserDefaults.standard.set(eyeRatio, forKey: "eyeRatio")
+        UserDefaults.standard.set(eyeBorder, forKey: "eyeBorder")
+        UserDefaults.standard.set(eyeRatio, forKey: "eyeRatio")
         UserDefaults.standard.set(gyroRatio, forKey: "gyroRatio")
         UserDefaults.standard.set(posRatio, forKey: "posRatio")
         UserDefaults.standard.set(veloRatio, forKey: "veloRatio")
@@ -1575,14 +1563,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if faceF==0{
             rectType=0
         }
-//        printR(str:"wakuE:",rct: wakuE)
+        //        printR(str:"wakuE:",rct: wakuE)
         eyeWaku_image.frame=CGRect(x:(wakuE.origin.x)-15,y:wakuE.origin.y-15,width:(wakuE.size.width)+30,height: wakuE.size.height+30)
         if  isVHIT==false || faceF==0{//vHIT 表示無し、補整無し
             faceWaku_image.frame=nullRect
         }else{
             faceWaku_image.frame=CGRect(x:(wakuF.origin.x)-15,y:wakuF.origin.y-15,width:wakuF.size.width+30,height: wakuF.size.height+30)
         }
- 
+        
         if rectType==0{
             eyeWaku_image.layer.borderColor = UIColor.red.cgColor
             eyeWaku_image.backgroundColor = UIColor.clear
@@ -1597,7 +1585,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             eyeWaku_image.layer.borderWidth = 0
         }
         
-//        dispWakuImages()
+        //        dispWakuImages()
     }
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
@@ -1975,9 +1963,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @objc func viewWillEnterForeground(_ notification: Notification?) {
         //       print("willenter")
         if (self.isViewLoaded && (self.view.window != nil)) {
-//            freeCounter += 1
-//            UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-//            videoFps.text = "\(freeCounter)"
+            //            freeCounter += 1
+            //            UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+            //            videoFps.text = "\(freeCounter)"
         }
     }
     
@@ -2000,7 +1988,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     
-   
+    
     func camera_alert(){
         if PHPhotoLibrary.authorizationStatus() != .authorized {
             PHPhotoLibrary.requestAuthorization { status in
@@ -2033,7 +2021,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-//        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplication.willEnterForegroundNotification, object: nil)
+        //        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplication.willEnterForegroundNotification, object: nil)
         // Do any additional setup after loading the view, typically from a nib.
         //dispDoc()//ドキュメントにあるファイルをprint
         mailWidth=240*10
@@ -2061,10 +2049,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
         
-//        freeCounter += 1
+        //        freeCounter += 1
         camera_alert()
-//        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-//        dispWakus()
+        //        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
+        //        dispWakus()
         setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
         showCurrent()
@@ -2077,13 +2065,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         prefersHomeIndicatorAutoHidden
     }
     override var prefersHomeIndicatorAutoHidden: Bool {
-         get {
-             return true
-         }
-     }
-//    override func prefersHomeIndicatorAutoHidden() -> Bool {
-//        return true
-//    }
+        get {
+            return true
+        }
+    }
+    //    override func prefersHomeIndicatorAutoHidden() -> Bool {
+    //        return true
+    //    }
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -2182,7 +2170,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
     }
-    //calcVHITで実行、その後setvHITgyro5()
+    //calcVHITで実行、その後moveGyroData()
     func readGyro(path:String){//gyroDataにデータを戻す
         //let text:String="test"
         let str=path.components(separatedBy: ".MOV")
@@ -2201,7 +2189,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     gyroFiltered.append(CGFloat(Double(str[i])!/100.0))
                     //    print(gyroData5.last)
                 }
-    
+                
             } catch {
                 print("readGyro read error")//エラー処理
                 print("gyroData:",gyroFiltered.count)
@@ -2267,14 +2255,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }else if let vc = segue.destination as? ImagePickerViewController{
             let Controller:ImagePickerViewController = vc
-//            Controller.tateyokoRatio=mailHeight/mailWidth
+            //            Controller.tateyokoRatio=mailHeight/mailWidth
             Controller.isVHIT=isVHIT
         }else if let vc = segue.destination as? HelpjViewController{
             let Controller:HelpjViewController = vc
             Controller.isVHIT = isVHIT
-//        }else if let vc = segue.destination as? RecordViewController{
-//                    let Controller:RecordViewController = vc
-//                    Controller.fps_non_120_240 = fps_non_120_240
+            //        }else if let vc = segue.destination as? RecordViewController{
+            //                    let Controller:RecordViewController = vc
+            //                    Controller.fps_non_120_240 = fps_non_120_240
         }else{
             #if DEBUG
             print("prepare list")
@@ -2287,7 +2275,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vHITlineView?.isHidden = true //removeFromSuperview()
         gyrolineView?.isHidden = true //removeFromSuperview()
     }
- 
+    
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
         //     if tempCalcflag == false{
         if let vc = segue.source as? ParametersViewController {
@@ -2311,7 +2299,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 veloRatio=ParametersViewController.ratio2
             }
             setUserDefaults()
-//            setvHITgyro5()//
             if eyeVeloFiltered.count > 400{
                 if isVHIT == true{//データがありそうな時は表示
                     calcDrawVHIT()
@@ -2328,7 +2315,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }else{
                 showBoxies(f: true)
             }
-              
+            
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
@@ -2339,18 +2326,18 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
                 startFrame=Int(curTime*fps)
                 print("startFrame:",fps,startFrame,curTime)
-//                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
+                //                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
                 slowImage.image=getframeImage(frameNumber: startFrame)
                 vidImg[vidCurrent]=slowImage.image!
-//                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
-//                let sec:Double = Double(secs[0])!
-//                let secd:Double = sec - Double(startPoint)/Double(fps)
-//                let secd2:Double = Double(Int(secd*10.0))/10.0
-//                vidDura[vidCurrent]="\(secd2)" + "s"
+                //                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
+                //                let sec:Double = Double(secs[0])!
+                //                let secd:Double = sec - Double(startPoint)/Double(fps)
+                //                let secd2:Double = Double(Int(secd*10.0))/10.0
+                //                vidDura[vidCurrent]="\(secd2)" + "s"
                 dispWakuImages()
-//                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
+                //                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
             }
-
+            
         }else if let vc = segue.source as? RecordViewController{
             let Controller:RecordViewController = vc
             if Controller.session.isRunning{//何もせず帰ってきた時
@@ -2378,11 +2365,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     d=Double(Kalman(value:CGFloat(Controller.gyro[i*2+1]*10),num:3))
                     //d=Controller.gyro[i*2+1]*10
                     gyro.append(-d)
-//                    gyro5.append(-d)
+                    //                    gyro5.append(-d)
                 }
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
-//                let fps=getFps(path:Controller.filePath!)
+                //                let fps=getFps(path:Controller.filePath!)
                 var fps=getFPS(videoPath: vidPath[vidCurrent])//これではダメ？でもないみたい
                 if fps<200.0{
                     fps *= 2.0
@@ -2410,7 +2397,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 startFrame=0
                 //VOGの時もgyrodataを保存する。（不必要だが、考えるべきことが減りそうなので）
             }
-//            UserDefaults.standard.set(fps_non_120_240,forKey:"fps_non_120_240")
+            //            UserDefaults.standard.set(fps_non_120_240,forKey:"fps_non_120_240")
         }else{
             #if DEBUG
             print("tatsuaki-unwind from list")
@@ -2506,26 +2493,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             drawVHITwaves()
                         }
                     }
-                }else{//上半分のとき->ズレがなくなったので何もしない
-                    //                        let dd:Int = 10
-                    //                        if Int(move.x) > lastmoveXgyro + dd{
-                    //                            gyroDelta += 4
-                    //
-                    //                        }else if Int(move.x) < lastmoveXgyro - dd{
-                    //                            gyroDelta -= 4
-                    //                        }else{
-                    //                            return
-                    //                        }
-                    //                        lastmoveXgyro=Int(move.x)
-                    //                        if gyroDelta>400{
-                    //                            gyroDelta=400
-                    //                        }else if gyroDelta < 0{
-                    //                            gyroDelta = 0
-                    //                        }
-                    //                        setvHITgyro5()
-                    //                        update_gyrodelta()
                 }
-                //                }
             }else if isVHIT == false && vogboxView?.isHidden == false{//vog
                 //                print("okpMode:",okpMode)
                 if eyePosFiltered.count<240*10{//||okpMode==1{//240*10以下なら動けない。
@@ -2570,13 +2538,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     dispWakus()
                     dispWakuImages()
                     setUserDefaults()
-                    //ここでsave
-                }else{
-                    
                 }
             }
         }else if sender.state == .ended{
-//            self.slowImage.frame.origin.x = 0
+            
             setUserDefaults()
             if vHITboxView?.isHidden == false{//結果が表示されている時
                 if waveTuple.count>0 {
@@ -2586,9 +2551,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         }
                     }
                     drawVHITwaves()
-//                    setUserDefaults()
-//                    print("dis:",wakuE)
-//                    saveGyro(path: vidPath[vidCurrent])//末尾のgyroDeltaを書き換える
                 }
             }
         }
