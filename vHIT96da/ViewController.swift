@@ -119,15 +119,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     var waveTuple = Array<(Int,Int,Int,Int)>()//rl,framenum,disp onoff,current disp onoff)
     
-    var vogPos = Array<CGFloat>()//eyePosOrig
+    var eyePosOrig = Array<CGFloat>()//eyePosOrig
     var eyePosFiltered = Array<CGFloat>()//eyePosFiltered
-    var vHITEye = Array<CGFloat>()//eyeVeloOrig
+    var eyeVeloOrig = Array<CGFloat>()//eyeVeloOrig
     var eyeVeloFiltered = Array<CGFloat>()//eyeVeloFiltered
-    var vHITFace = Array<CGFloat>()//faceVeloOrig
+    var faceVeloOrig = Array<CGFloat>()//faceVeloOrig
     var faceVeloFiltered = Array<CGFloat>()//faceVeloFiltered
     
-    var gyroData = Array<CGFloat>()
-    var vHITGyro5 = Array<CGFloat>()//gyroVeloFilterd
+    var gyroFiltered = Array<CGFloat>()//gyroFiltered
+    var gyroMoved = Array<CGFloat>()//gyroVeloFilterd
     
     var timer: Timer!
     
@@ -145,13 +145,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
               if str[i].contains(str1[0]){
                   if removeFile(delFile: str[i])==true{
                       print("remove completed:",str[i])
-                      vHITEye.removeAll()
+                      eyeVeloOrig.removeAll()
                       eyeVeloFiltered.removeAll()
-                      vHITFace.removeAll()
+                      faceVeloOrig.removeAll()
                       faceVeloFiltered.removeAll()
-                      vogPos.removeAll()
+                      eyePosOrig.removeAll()
                       eyePosFiltered.removeAll()
-                      vHITGyro5.removeAll()
+                      gyroMoved.removeAll()
                   }
               }
           }
@@ -173,7 +173,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
           isVHIT=true
           setvHIT_VOGbuttons()
           dispWakus()
-          if vHITEye.count>0 && vidCurrent != -1{
+          if eyeVeloOrig.count>0 && vidCurrent != -1{
               vhitCurpoint=0
               drawOnewave(startcount: 0)
               calcDrawVHIT()
@@ -189,7 +189,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
           isVHIT = false
           setvHIT_VOGbuttons()
           dispWakus()
-          if vHITEye.count>0  && vidCurrent != -1{
+          if eyeVeloOrig.count>0  && vidCurrent != -1{
               vogCurpoint=0
               drawVogall_new()
               drawVogtext()
@@ -465,17 +465,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func setvHITgyro5(){//gyroDeltaとstartFrameをずらしてvHITgyro5に入れる
-        vHITGyro5.removeAll()
+        gyroMoved.removeAll()
         var sn=startFrame
         if getFps(path: vidPath[vidCurrent])<200{
             sn=startFrame*2
         }
-        if gyroData.count>10{
-            for i in 0..<gyroData.count{
-                if i+sn<gyroData.count{
-                    vHITGyro5.append(gyroData[i+sn])
+        if gyroFiltered.count>10{
+            for i in 0..<gyroFiltered.count{
+                if i+sn<gyroFiltered.count{
+                    gyroMoved.append(gyroFiltered[i+sn])
                 }else{
-                    vHITGyro5.append(0)
+                    gyroMoved.append(0)
                 }
             }
         }
@@ -484,13 +484,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func vHITcalc(){
         var cvError:Int = 0
         calcFlag = true
-        vHITEye.removeAll()
+        eyeVeloOrig.removeAll()
         eyeVeloFiltered.removeAll()
-        vHITFace.removeAll()
+        faceVeloOrig.removeAll()
         faceVeloFiltered.removeAll()
-        vogPos.removeAll()
+        eyePosOrig.removeAll()
         eyePosFiltered.removeAll()
-        vHITGyro5.removeAll()
+        gyroMoved.removeAll()
         KalmanInit()
         showBoxies(f: true)
         vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
@@ -714,28 +714,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     
                     if self.faceF==1{
                         let face5 = -12.0*self.Kalman(value: fx,num: 0)
-                        self.vHITFace.append(face5)
+                        self.faceVeloOrig.append(face5)
                         self.faceVeloFiltered.append(face5)
                         if vHITcnt > 5{
-                            self.faceVeloFiltered[vHITcnt-2]=(self.vHITFace[vHITcnt]+self.vHITFace[vHITcnt-1]+self.vHITFace[vHITcnt-2]+self.vHITFace[vHITcnt-3]+self.vHITFace[vHITcnt-4])/5
+                            self.faceVeloFiltered[vHITcnt-2]=(self.faceVeloOrig[vHITcnt]+self.faceVeloOrig[vHITcnt-1]+self.faceVeloOrig[vHITcnt-2]+self.faceVeloOrig[vHITcnt-3]+self.faceVeloOrig[vHITcnt-4])/5
                         }
                     }else{
-                        self.vHITFace.append(0)
+                        self.faceVeloOrig.append(0)
                         self.faceVeloFiltered.append(0)
                     }
                     // eyePos, ey, fyをそれぞれ配列に追加
                     // vogをkalmanにかけ配列に追加
                     let eyePos5 = -1.0*self.Kalman(value:eyePos,num:1)
                     self.eyePosFiltered.append(eyePos5)
-                    self.vogPos.append(eyePos5)
+                    self.eyePosOrig.append(eyePos5)
                     if vHITcnt > 5{
-                        self.eyePosFiltered[vHITcnt-2]=(self.vogPos[vHITcnt]+self.vogPos[vHITcnt-1]+self.vogPos[vHITcnt-2]+self.vogPos[vHITcnt-3]+self.vogPos[vHITcnt-4])/5
+                        self.eyePosFiltered[vHITcnt-2]=(self.eyePosOrig[vHITcnt]+self.eyePosOrig[vHITcnt-1]+self.eyePosOrig[vHITcnt-2]+self.eyePosOrig[vHITcnt-3]+self.eyePosOrig[vHITcnt-4])/5
                     }
                     let eye5 = -12.0*self.Kalman(value: ex,num:2)//そのままではずれる
                     self.eyeVeloFiltered.append(eye5-self.faceVeloFiltered.last!)
-                    self.vHITEye.append(eye5-self.faceVeloFiltered.last!)
+                    self.eyeVeloOrig.append(eye5-self.faceVeloFiltered.last!)
                     if vHITcnt > 5{
-                        self.eyeVeloFiltered[vHITcnt-2]=(self.vHITEye[vHITcnt]+self.vHITEye[vHITcnt-1]+self.vHITEye[vHITcnt-2]+self.vHITEye[vHITcnt-3]+self.vHITEye[vHITcnt-4])/5
+                        self.eyeVeloFiltered[vHITcnt-2]=(self.eyeVeloOrig[vHITcnt]+self.eyeVeloOrig[vHITcnt-1]+self.eyeVeloOrig[vHITcnt-2]+self.eyeVeloOrig[vHITcnt-3]+self.eyeVeloOrig[vHITcnt-4])/5
                     }
                     
                     vHITcnt += 1
@@ -768,11 +768,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 //    func average5(
     func fps120(is120:Bool){
         if is120==true{
-            self.vHITFace.append(self.faceVeloFiltered.last!)
+            self.faceVeloOrig.append(self.faceVeloFiltered.last!)
             self.faceVeloFiltered.append(self.faceVeloFiltered.last!)
-            self.vogPos.append(self.vogPos.last!)
+            self.eyePosOrig.append(self.eyePosOrig.last!)
             self.eyePosFiltered.append(self.eyePosFiltered.last!)
-            self.vHITEye.append(self.vHITEye.last!)
+            self.eyeVeloOrig.append(self.eyeVeloOrig.last!)
             self.eyeVeloFiltered.append(self.eyeVeloFiltered.last!)
         }
     }
@@ -1018,7 +1018,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let dx = 1// xの間隔
         
         for i in 0..<Int(w) {
-            if i < vHITEye.count - 4{
+            if i < eyeVeloOrig.count - 4{
                 let px = CGFloat(dx * i)
                 let py = eyePosFiltered[i] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = eyeVeloFiltered[i] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -1059,7 +1059,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         // パスの初期化
         let drawPath = UIBezierPath()
-        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITEye.count,CGFloat(vHITEye.count)/240.0,vidDura[vidCurrent],timercnt+1)
+        let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",eyeVeloOrig.count,CGFloat(eyeVeloOrig.count)/240.0,vidDura[vidCurrent],timercnt+1)
         //print(timetxt)
         timetxt.draw(at: CGPoint(x: 20, y: 5), withAttributes: [
             NSAttributedString.Key.foregroundColor : UIColor.black,
@@ -1090,7 +1090,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let drawPath = UIBezierPath()
         
         if timeflag==true{
-            let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",vHITEye.count,CGFloat(vHITEye.count)/240.0,vidDura[vidCurrent],timercnt+1)
+            let timetxt:String = String(format: "%05df (%.1fs/%@) : %ds",eyeVeloOrig.count,CGFloat(eyeVeloOrig.count)/240.0,vidDura[vidCurrent],timercnt+1)
             //print(timetxt)
             timetxt.draw(at: CGPoint(x: 20, y: 5), withAttributes: [
                 NSAttributedString.Key.foregroundColor : UIColor.black,
@@ -1132,7 +1132,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let dx = 1// xの間隔
 //        print("vogPos5,vHITEye5,vHITeye",vogPos5.count,vHITEye5.count,vHITEye.count)
         for n in 1..<wI {
-            if startp + n < vHITEye.count-4 {//-20としてみたがエラー。関係なさそう。
+            if startp + n < eyeVeloOrig.count-4 {//-20としてみたがエラー。関係なさそう。
                 let px = CGFloat(dx * n)
                 let py = eyePosFiltered[startp + n] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = eyeVeloFiltered[startp + n] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -1257,14 +1257,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     var lastArraycount:Int = 0
     @objc func update_vog(tm: Timer) {
         timercnt += 1
-        if vHITEye.count < 5 {
+        if eyeVeloOrig.count < 5 {
             return
         }
         if calcFlag == false {//終わったらここ
             timer.invalidate()
             setButtons(mode: true)
             UIApplication.shared.isIdleTimerDisabled = false
-            vogImage=addwaveImage(startingImage: vogImage!, sn: lastArraycount-100, en: vHITEye.count)
+            vogImage=addwaveImage(startingImage: vogImage!, sn: lastArraycount-100, en: eyeVeloOrig.count)
             //            if vHITeye.count<240*10{
             //            vogCurpoint=0
             //            }else{
@@ -1280,10 +1280,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             #if DEBUG
             print("debug-update",timercnt)
             #endif
-            drawVog(startcount: vHITEye.count)
-            vogImage=addwaveImage(startingImage: vogImage!, sn: lastArraycount-100, en: vHITEye.count)
+            drawVog(startcount: eyeVeloOrig.count)
+            vogImage=addwaveImage(startingImage: vogImage!, sn: lastArraycount-100, en: eyeVeloOrig.count)
             //            vogCurpoint=vHITeye.count
-            lastArraycount=vHITEye.count
+            lastArraycount=eyeVeloOrig.count
         }
     }
     /*
@@ -1313,7 +1313,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var pointList = Array<CGPoint>()
         var pointList2 = Array<CGPoint>()
         let h=startingImage.size.height
-        let vogPos_count=vogPos.count
+        let vogPos_count=eyePosOrig.count
         let dx = 1// xの間隔
         for i in stn..<en {
             if i < vogPos_count - 4{
@@ -1370,8 +1370,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 self.nonsavedFlag = true
             }
         }
-        vogImage=addwaveImage(startingImage: vogImage!, sn: lastArraycount-100, en: vHITEye.count)
-        lastArraycount=vHITEye.count
+        vogImage=addwaveImage(startingImage: vogImage!, sn: lastArraycount-100, en: eyeVeloOrig.count)
+        lastArraycount=eyeVeloOrig.count
         drawRealwave()
         timercnt += 1
         #if DEBUG
@@ -1622,7 +1622,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if faceF==1{
                     py1 = faceVeloFiltered[num + n] * CGFloat(eyeRatio)/230.0 + 90.0
                 }
-                let py2 = vHITGyro5[num + n] * CGFloat(gyroRatio)/300.0 + 120.0
+                let py2 = gyroMoved[num + n] * CGFloat(gyroRatio)/300.0 + 120.0
                 let point0 = CGPoint(x: px, y: py0)
                 if faceF==1{
                     point1 = CGPoint(x: px, y: py1!)
@@ -2160,8 +2160,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str=path.components(separatedBy: ".MOV")
         let gyroPath=str[0] + "-gyro.csv"
         var text:String=""
-        for i in 0..<gyroData.count - 2{
-            text += String(Int(gyroData[i]*100.0)) + ","
+        for i in 0..<gyroFiltered.count - 2{
+            text += String(Int(gyroFiltered[i]*100.0)) + ","
             //print(Int(gyroData[i]*100))
         }
         //        text += String(0) + ","
@@ -2195,16 +2195,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             do {
                 
                 let text = try String( contentsOf: path_file_name, encoding: String.Encoding.utf8 )
-                gyroData.removeAll()
+                gyroFiltered.removeAll()
                 let str=text.components(separatedBy: ",")
                 for i in 0..<str.count-2{
-                    gyroData.append(CGFloat(Double(str[i])!/100.0))
+                    gyroFiltered.append(CGFloat(Double(str[i])!/100.0))
                     //    print(gyroData5.last)
                 }
     
             } catch {
                 print("readGyro read error")//エラー処理
-                print("gyroData:",gyroData.count)
+                print("gyroData:",gyroFiltered.count)
                 return
             }
             
@@ -2365,7 +2365,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
                 recStart = Controller.recStart
-                gyroData.removeAll()
+                gyroFiltered.removeAll()
                 tGyro.removeAll()
                 showCurrent()
                 showBoxies(f: false)
@@ -2397,13 +2397,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                             break
                         }
                     }
-                    gyroData.append(Kalman(value:CGFloat(gyro[getj]),num:4))
+                    gyroFiltered.append(Kalman(value:CGFloat(gyro[getj]),num:4))
                 }
-                for i in 0...gyroData.count-1{//tempデータに入れる
-                    tGyro.append(gyroData[i])
+                for i in 0...gyroFiltered.count-1{//tempデータに入れる
+                    tGyro.append(gyroFiltered[i])
                 }
-                for i in 4...gyroData.count-5{//平均加算hightpass
-                    gyroData[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
+                for i in 4...gyroFiltered.count-5{//平均加算hightpass
+                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
                 }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
                 dispWakuImages()
@@ -2648,8 +2648,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     func g5(st:Int)->CGFloat{
-        if st>3 && st<vHITGyro5.count-2{
-            return(vHITGyro5[st-2]+vHITGyro5[st-1]+vHITGyro5[st]+vHITGyro5[st+1]+vHITGyro5[st+2])*2.0
+        if st>3 && st<gyroMoved.count-2{
+            return(gyroMoved[st-2]+gyroMoved[st-1]+gyroMoved[st]+gyroMoved[st+1]+gyroMoved[st+2])*2.0
         }
         return 0
     }
@@ -2686,7 +2686,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 eyeWs[num][k1 - ws] = Int(eyeVeloFiltered[k1]*CGFloat(eyeRatio)/100.0)
             }
             for k2 in ws..<ws + 120{
-                gyroWs[num][k2 - ws] = Int(vHITGyro5[k2]*CGFloat(gyroRatio)/100.0)
+                gyroWs[num][k2 - ws] = Int(gyroMoved[k2]*CGFloat(gyroRatio)/100.0)
             }//ここでエラーが出るようだ？
         }
         return t
