@@ -257,19 +257,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     var waveTuple = Array<(Int,Int,Int,Int)>()//rl,framenum,disp onoff,current disp onoff)
     
-    var vogPos = Array<CGFloat>()
-    var vogPos5 = Array<CGFloat>()
-    var vHITEye = Array<CGFloat>()
-    var vHITEye5 = Array<CGFloat>()
-    var vHITFace = Array<CGFloat>()
-    var vHITFace5 = Array<CGFloat>()
+    var vogPos = Array<CGFloat>()//eyePosOrig
+    var vogPos5 = Array<CGFloat>()//eyePosFiltered
+    var vHITEye = Array<CGFloat>()//eyeVeloOrig
+    var vHITEye5 = Array<CGFloat>()//eyeVeloFiltered
+    var vHITFace = Array<CGFloat>()//faceVeloOrig
+    var vHITFace5 = Array<CGFloat>()//faceVeloFiltered
     
     var gyroData = Array<CGFloat>()
-    var vHITGyro5 = Array<CGFloat>()
+    var vHITGyro5 = Array<CGFloat>()//gyroVeloFilterd
     
-    var gyro = Array<Double>()
     var gyroTime = Array<Double>()
-    var gyro5 = Array<Double>()
     var timer: Timer!
     
     var eyeWs = [[Int]](repeating:[Int](repeating:0,count:125),count:80)
@@ -2471,8 +2469,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 recStart = Controller.recStart
                 var d:Double=0
                 gyroTime.removeAll()
-                gyro.removeAll()
-                gyro5.removeAll()
+                var gyro = Array<Double>()
+//                gyro.removeAll()
+//                gyro5.removeAll()
                 gyroData.removeAll()
                 //vHITgyro5.removeAll()
                 var tGyro = Array<CGFloat>()
@@ -2488,7 +2487,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     d=Double(Kalman(value:CGFloat(Controller.gyro[i*2+1]*10),num:3))
                     //d=Controller.gyro[i*2+1]*10
                     gyro.append(-d)
-                    gyro5.append(-d)
+//                    gyro5.append(-d)
                 }
                 //gyroは10msごとに拾ってある.合わせる
                 //これをvideoのフレーム数に合わせる
@@ -2497,7 +2496,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 if fps<200.0{
                     fps *= 2.0
                 }
-                var framecount=Int(Float(gyro.count)*fps/100.0)
+                let framecount=Int(Float(gyro.count)*fps/100.0)
                 for i in 0...framecount+10{
                     let gn=Double(i)/Double(fps)//iフレーム目の秒数
                     var getj:Int=0
