@@ -2316,7 +2316,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }else{
                 showBoxies(f: true)
             }
-            
             #if DEBUG
             print("TATSUAKI-unwind from para")
             #endif
@@ -2327,18 +2326,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 let fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
                 startFrame=Int(curTime*fps)
                 print("startFrame:",fps,startFrame,curTime)
-                //                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
+                
                 slowImage.image=getframeImage(frameNumber: startFrame)
                 vidImg[vidCurrent]=slowImage.image!
-                //                let secs = vidDuraorg[vidCurrent].components(separatedBy: "s")
-                //                let sec:Double = Double(secs[0])!
-                //                let secd:Double = sec - Double(startPoint)/Double(fps)
-                //                let secd2:Double = Double(Int(secd*10.0))/10.0
-                //                vidDura[vidCurrent]="\(secd2)" + "s"
+                boxF=false
+                showBoxies(f: false)
                 dispWakuImages()
-                //                print(vidDura[vidCurrent],vidDuraorg[vidCurrent])
             }
-            
         }else if let vc = segue.source as? RecordViewController{
             let Controller:RecordViewController = vc
             if Controller.session.isRunning{//何もせず帰ってきた時
