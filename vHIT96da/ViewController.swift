@@ -2029,32 +2029,28 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         boxHeight=view.bounds.height*18/50
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
         stopButton.isHidden = true
-        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: 120, height: 45)
+        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: 120, height: 50)
         cameraButton.backgroundColor = UIColor.gray
         cameraButton.layer.masksToBounds = true
         cameraButton.setTitle("Camera", for: .normal)
         cameraButton.layer.cornerRadius = 10
         cameraButton.layer.position = CGPoint(x: self.view.bounds.width/2, y:self.view.bounds.height - 90)
-        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
+        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 110, height: 50)
         vhitButton.backgroundColor = UIColor.systemBlue
         vhitButton.layer.masksToBounds = true
         vhitButton.setTitle("vHIT", for: .normal)
         vhitButton.layer.cornerRadius = 10
-        vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
-        vogButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
+        vhitButton.layer.position = CGPoint(x: 65, y:self.view.bounds.height - 90)
+        vogButton.frame   = CGRect(x:0,   y: 0 ,width: 110, height: 50)
         vogButton.backgroundColor = UIColor.systemBlue
         vogButton.layer.masksToBounds = true
         vogButton.setTitle("VOG", for: .normal)
         vogButton.layer.cornerRadius = 10
-        vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
+        vogButton.layer.position = CGPoint(x: self.view.bounds.width - 65, y:self.view.bounds.height - 90)
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
-        
-        //        freeCounter += 1
         camera_alert()
-        //        UserDefaults.standard.set(freeCounter, forKey: "freeCounter")
-        //        dispWakus()
-        setArrays()
+         setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
         showCurrent()
         makeBoxies()//three boxies of gyro vHIT vog
@@ -2104,22 +2100,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
     func setvHIT_VOGbuttons(){
-        if isVHIT==true{
+         if isVHIT==true{
             vhitButton.backgroundColor = UIColor.systemBlue
-            vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
-            vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
-            
             vogButton.backgroundColor = UIColor.gray
-            vogButton.frame   = CGRect(x:0,   y: 0 ,width: 75, height: 40)
-            vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
         }else{
             vhitButton.backgroundColor = UIColor.gray
-            vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 75, height: 40)
-            vhitButton.layer.position = CGPoint(x: 50, y:self.view.bounds.height - 90)
-            
             vogButton.backgroundColor = UIColor.systemBlue
-            vogButton.frame   = CGRect(x:0,   y: 0 ,width: 80, height: 45)
-            vogButton.layer.position = CGPoint(x: self.view.bounds.width - 50, y:self.view.bounds.height - 90)
         }
     }
     
