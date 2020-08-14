@@ -765,9 +765,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
     }
     func dispWakuImages(){//結果が表示されていない時、画面上部1/4をタップするとWaku表示
-        if vidCurrent<0 {
+        if vidPath.count<1 {
             return
         }
+        print(vidCurrent)
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
@@ -2347,13 +2348,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 var d:Double=0
                 var gyro = Array<Double>()
                 var gyroTime = Array<Double>()
-                var tGyro = Array<CGFloat>()
+//                var tGyro = Array<CGFloat>()
                 KalmanInit()
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
                 recStart = Controller.recStart
                 gyroFiltered.removeAll()
-                tGyro.removeAll()
+//                tGyro.removeAll()
                 showCurrent()
                 showBoxies(f: false)
                 //print(fps,createtime!)
@@ -2386,12 +2387,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     gyroFiltered.append(Kalman(value:CGFloat(gyro[getj]),num:4))
                 }
-                for i in 0...gyroFiltered.count-1{//tempデータに入れる
-                    tGyro.append(gyroFiltered[i])
-                }
-                for i in 4...gyroFiltered.count-5{//平均加算hightpass
-                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
-                }
+//                for i in 0...gyroFiltered.count-1{//tempデータに入れる
+//                    tGyro.append(gyroFiltered[i])
+//                }
+//                for i in 4...gyroFiltered.count-5{//平均加算hightpass
+//                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
+//                }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
                 dispWakuImages()
                 startFrame=0
