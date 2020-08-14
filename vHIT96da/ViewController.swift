@@ -2029,24 +2029,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         boxHeight=view.bounds.height*18/50
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
         stopButton.isHidden = true
-        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: 120, height: 50)
+        let bw=(view.bounds.width-30)/4
+        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: bw*2, height: 50)
         cameraButton.backgroundColor = UIColor.gray
         cameraButton.layer.masksToBounds = true
         cameraButton.setTitle("Camera", for: .normal)
         cameraButton.layer.cornerRadius = 10
-        cameraButton.layer.position = CGPoint(x: self.view.bounds.width/2, y:self.view.bounds.height - 90)
-        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: 110, height: 50)
+        cameraButton.layer.position = CGPoint(x: view.bounds.width/2, y:self.view.bounds.height - 90)
+        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 50)
         vhitButton.backgroundColor = UIColor.systemBlue
         vhitButton.layer.masksToBounds = true
         vhitButton.setTitle("vHIT", for: .normal)
         vhitButton.layer.cornerRadius = 10
-        vhitButton.layer.position = CGPoint(x: 65, y:self.view.bounds.height - 90)
-        vogButton.frame   = CGRect(x:0,   y: 0 ,width: 110, height: 50)
+        vhitButton.layer.position = CGPoint(x: 10+bw/2, y:view.bounds.height - 90)
+        vogButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 50)
         vogButton.backgroundColor = UIColor.systemBlue
         vogButton.layer.masksToBounds = true
         vogButton.setTitle("VOG", for: .normal)
         vogButton.layer.cornerRadius = 10
-        vogButton.layer.position = CGPoint(x: self.view.bounds.width - 65, y:self.view.bounds.height - 90)
+        vogButton.layer.position = CGPoint(x: view.bounds.width - 10 - bw/2, y:view.bounds.height - 90)
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
         camera_alert()
