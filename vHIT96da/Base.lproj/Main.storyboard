@@ -382,13 +382,23 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NjV-Ob-HQy">
-                                <rect key="frame" x="312" y="665" width="85" height="30"/>
+                                <rect key="frame" x="340" y="665" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Eye &lt;&gt; Face">
+                                <state key="normal" title="Eye">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="eyeFaceChange:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gRB-v6-KaX"/>
+                                    <action selector="wakuToEye:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gRB-v6-KaX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hru-fB-bbG">
+                                <rect key="frame" x="332" y="627" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="face">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="wakuToFace:" destination="BYZ-38-t0r" eventType="touchUpInside" id="k1L-q2-JOm"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -427,8 +437,9 @@
                         <outlet property="calcButton" destination="sZn-CJ-Yxe" id="hF7-9w-d0q"/>
                         <outlet property="cameraButton" destination="w2G-cJ-1fV" id="bJm-SI-8sf"/>
                         <outlet property="eraseButton" destination="WVy-FW-eP4" id="1mR-HG-0Sd"/>
-                        <outlet property="eyeFaceButton" destination="NjV-Ob-HQy" id="Rph-oU-hig"/>
+                        <outlet property="eyeButton" destination="NjV-Ob-HQy" id="Rph-oU-hig"/>
                         <outlet property="eyeWaku_image" destination="3KZ-x3-xdg" id="W38-c9-yno"/>
+                        <outlet property="faceButton" destination="hru-fB-bbG" id="4o4-De-TdZ"/>
                         <outlet property="faceWaku_image" destination="8Nc-UQ-RY5" id="c7S-Ij-XHD"/>
                         <outlet property="helpButton" destination="7OA-cL-B3S" id="YzF-8f-1r2"/>
                         <outlet property="listButton" destination="Afb-7h-V8u" id="hfI-Hx-H2E"/>

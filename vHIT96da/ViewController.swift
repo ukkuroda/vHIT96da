@@ -51,12 +51,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var vogButton: UIButton!
     @IBOutlet weak var vhitButton: UIButton!
     
-    @IBOutlet weak var eyeFaceButton: UIButton!
-    @IBAction func eyeFaceChange(_ sender: Any) {
-        rectType += 1
-        if rectType > 1 {
-            rectType = 0
-        }
+    @IBOutlet weak var faceButton: UIButton!
+    @IBOutlet weak var eyeButton: UIButton!
+    
+    @IBAction func wakuToFace(_ sender: Any) {
+        rectType=1
+        dispWakus()
+        dispWakuImages()
+    }
+    
+    @IBAction func wakuToEye(_ sender: Any) {
+        rectType = 0
         dispWakus()
         dispWakuImages()
     }
@@ -525,9 +530,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var fpsIs120:Bool=false
         if getFPS(videoPath: vidPath[vidCurrent])<200.0{
             fpsIs120=true
-            print("currentFps=120")
+//            print("currentFps=120")
         }else{
-            print("currentFps=240 ")
+//            print("currentFps=240 ")
         }
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
@@ -1590,24 +1595,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         
         if rectType==0{
-            eyeWaku_image.layer.borderColor = UIColor.red.cgColor
+            eyeWaku_image.layer.borderColor = UIColor.green.cgColor
             eyeWaku_image.backgroundColor = UIColor.clear
-            eyeWaku_image.layer.borderWidth = 2.0
+            eyeWaku_image.layer.borderWidth = 1.0
             eyeWaku_image.layer.cornerRadius = 3
             faceWaku_image.layer.borderWidth = 0
         }else{
-            faceWaku_image.layer.borderColor = UIColor.red.cgColor
+            faceWaku_image.layer.borderColor = UIColor.green.cgColor
             faceWaku_image.backgroundColor = UIColor.clear
-            faceWaku_image.layer.borderWidth = 2.0
+            faceWaku_image.layer.borderWidth = 1.0
             faceWaku_image.layer.cornerRadius = 3
             eyeWaku_image.layer.borderWidth = 0
         }
         if isVHIT==true&&faceF==1{
-             eyeFaceButton.isHidden=false
+            eyeButton.isHidden=false
+            faceButton.isHidden=false
          }else{
-             eyeFaceButton.isHidden=true
+            eyeButton.isHidden=true
+            faceButton.isHidden=true
          }
-
         //        dispWakuImages()
     }
     //vHIT_eye_head
@@ -2070,12 +2076,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         vogButton.setTitle("VOG", for: .normal)
         vogButton.layer.cornerRadius = 10
         vogButton.layer.position = CGPoint(x: view.bounds.width - 10 - bw/2, y:view.bounds.height - 80)
-        eyeFaceButton.frame = CGRect(x: 0, y: 0, width: bw*2, height:40)
-        eyeFaceButton.backgroundColor = UIColor.systemBlue
-        eyeFaceButton.layer.masksToBounds = true
-        eyeFaceButton.layer.cornerRadius = 10
-        eyeFaceButton.layer.position = CGPoint(x: view.bounds.width/2,y:view.bounds.height - 125)
-//        if isVHIT==true&&faceF==1{
+        eyeButton.frame = CGRect(x: 0, y: 0, width: bw, height:40)
+        eyeButton.backgroundColor = UIColor.gray
+        eyeButton.layer.borderWidth=1.0
+        eyeButton.layer.borderColor = UIColor.green.cgColor
+//        eyeButton.layer.masksToBounds = true
+        eyeButton.layer.cornerRadius = 10
+        eyeButton.layer.position = CGPoint(x: 10+bw/2,y:view.bounds.height - 125)
+        faceButton.frame = CGRect(x: 0, y: 0, width: bw, height:40)
+        faceButton.backgroundColor = UIColor.gray
+        faceButton.layer.borderColor = UIColor.green.cgColor
+        faceButton.layer.borderWidth = 1.0
+//        faceButton.layer.masksToBounds = true
+        faceButton.layer.cornerRadius = 10
+        faceButton.layer.position = CGPoint(x: view.bounds.width-10-bw/2,y:view.bounds.height - 125)
+        
+        //        if isVHIT==true&&faceF==1{
 //            eyeFaceButton.isHidden=false
 //        }else{
 //            eyeFaceButton.isHidden=true
@@ -2593,14 +2609,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 }
                 
                 drawVHITwaves()
-                return
+//                return
             }
         }
-        if vHITboxView?.isHidden == true && vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
-            if isVHIT==true && faceF==1{
-                eyeFaceChange(0)
-            }
-        }
+//        if vHITboxView?.isHidden == true && vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
+//            if isVHIT==true && faceF==1{
+//                wakuToEye(0)
+//            }
+//        }
     }
     
     func checksetPos(pos:Int,mode:Int) -> Int{
