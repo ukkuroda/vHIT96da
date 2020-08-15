@@ -224,7 +224,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str=vidDura[vidCurrent]
         let str1=str.components(separatedBy: "s")
         videoDuration.text="sec" + "\n" + str1[0]
-        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
+        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFPS(videoPath:vidPath[vidCurrent])))
     }
     func show1(){
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
@@ -476,7 +476,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func moveGyroData(){//gyroDeltaとstartFrameをずらして
         gyroMoved.removeAll()
         var sn=startFrame
-        if getFps(path: vidPath[vidCurrent])<200{
+        if getFPS(videoPath: vidPath[vidCurrent])<200{
             sn=startFrame*2
         }
         if gyroFiltered.count>10{
@@ -1327,9 +1327,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
         // 始点に移動する
-        //        context.move(to: CGPoint(x: 100, y: 100))
-        //        context.addLine(to: CGPoint(x: 200, y: 200))
-        //            context.strokePath()
         context.move(to: pointList[0])
         // 配列から始点の値を取り除く
         pointList.removeFirst()
@@ -1352,6 +1349,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
+    
     @objc func update(tm: Timer) {
         if eyeVeloFiltered.count < 5 {
             return
@@ -1382,6 +1380,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             drawOnewave(startcount: 0)
         }
     }
+    
     func update_gyrodelta() {
         if eyeVeloFiltered.count < 5 {
             return
@@ -1397,6 +1396,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawRealwave()
         calcDrawVHIT()
     }
+    
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
             return Int(field.text!)!
@@ -1404,11 +1404,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return 0
         }
     }
+    
     func addArray(path:String){
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] as String
         appendAll(doc: documentsDirectory, path: path)
     }
+    
     func getVideofns()->String{
         let str=getFsindoc().components(separatedBy: ",")
         
@@ -1425,6 +1427,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let retStr2=retStr.dropLast()
         return String(retStr2)
     }
+    
     func setArrays(){
         let path = getVideofns()//videoPathtxt()
         var str = path.components(separatedBy: ",")
@@ -1445,18 +1448,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         vidCurrent=vidPath.count-1
     }
+    
     func getfileURL(path:String)->URL{
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] as String
         let vidpath = documentsDirectory + "/" + path
         return URL(fileURLWithPath: vidpath)
     }
+    
     func getdocumentPath(path:String)->String{
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] as String
         let vidpath = documentsDirectory + "/" + path
         return vidpath
     }
+    
     var appendingFlag:Bool = false
     func appendAll(doc:String,path:String){//for で回すのでdocumentsdirはgetgetしておる
         let vidpath = doc + "/" + path
@@ -1478,38 +1484,38 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str3=str2[0] + " (\(vidPath.count-1))"
         vidDate.append(str3)
     }
-    func getDura(path:String)->Double{//最新のビデオのデータを得る.recordから飛んでくる。
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0] as String
-        let filepath=documentsDirectory+"/"+path
-        let fileURL=URL(fileURLWithPath: filepath)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        //options.version = .original
-        let asset = AVURLAsset(url: fileURL, options: options)
-        let durSec=CMTimeGetSeconds(asset.duration)
-        return durSec
-    }
+//    func getDura(path:String)->Double{//最新のビデオのデータを得る.recordから飛んでくる。
+//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//        let documentsDirectory = paths[0] as String
+//        let filepath=documentsDirectory+"/"+path
+//        let fileURL=URL(fileURLWithPath: filepath)
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        //options.version = .original
+//        let asset = AVURLAsset(url: fileURL, options: options)
+//        let durSec=CMTimeGetSeconds(asset.duration)
+//        return durSec
+//    }
     func getFPS(videoPath:String)->Float{
         let fileURL = getfileURL(path: videoPath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
         return avAsset.tracks.first!.nominalFrameRate
     }
-    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0] as String
-        let filepath=documentsDirectory+"/"+path
-        let fileURL=URL(fileURLWithPath: filepath)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        //options.version = .original
-        let asset = AVURLAsset(url: fileURL, options: options)
-        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
-        //       let framePS=asset.tracks.first!.nominalFrameRate
-        //       let numberOfframes = durSec * framePS
-        //       print("frameNum:",durSec,framePS,numberOfframes)
-        //       print(asset.tracks.first?.nominalFrameRate as Any)
-        return asset.tracks.first!.nominalFrameRate
-    }
+//    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
+//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//        let documentsDirectory = paths[0] as String
+//        let filepath=documentsDirectory+"/"+path
+//        let fileURL=URL(fileURLWithPath: filepath)
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        //options.version = .original
+//        let asset = AVURLAsset(url: fileURL, options: options)
+//        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
+//        //       let framePS=asset.tracks.first!.nominalFrameRate
+//        //       let numberOfframes = durSec * framePS
+//        //       print("frameNum:",durSec,framePS,numberOfframes)
+//        //       print(asset.tracks.first?.nominalFrameRate as Any)
+//        return asset.tracks.first!.nominalFrameRate
+//    }
     
     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
@@ -2158,11 +2164,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return false
     }
-    //panGestureのendedとunwind(record)の２箇所で実行
-    //    let str=Controller.filePath!.components(separatedBy: ".MOV")
-    //    let filename=str[0] + "-gyro.csv"
-    //    print("gyroPath:",filename)
-    //    saveGyro(pathGyro:filename)/
+ 
     func saveGyro(path:String) {//gyroData(GFloat)を100倍してcsvとして保存
         let str=path.components(separatedBy: ".MOV")
         let gyroPath=str[0] + "-gyro.csv"
