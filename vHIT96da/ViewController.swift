@@ -51,6 +51,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var vogButton: UIButton!
     @IBOutlet weak var vhitButton: UIButton!
     
+    @IBOutlet weak var eyeFaceButton: UIButton!
+    @IBAction func eyeFaceChange(_ sender: Any) {
+        rectType += 1
+        if rectType > 1 {
+            rectType = 0
+        }
+        dispWakus()
+        dispWakuImages()
+    }
+    
+//    var eyeFaceButton: UIButton!
     @IBOutlet weak var wakuAll: UIImageView!
     
     @IBOutlet weak var wakuEye: UIImageView!
@@ -1585,7 +1596,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             faceWaku_image.layer.cornerRadius = 3
             eyeWaku_image.layer.borderWidth = 0
         }
-        
+        if isVHIT==true&&faceF==1{
+             eyeFaceButton.isHidden=false
+         }else{
+             eyeFaceButton.isHidden=true
+         }
+
         //        dispWakuImages()
     }
     //vHIT_eye_head
@@ -2030,24 +2046,35 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
         stopButton.isHidden = true
         let bw=(view.bounds.width-30)/4
-        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: bw*2, height: 50)
+        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: bw*2, height: 40)
         cameraButton.backgroundColor = UIColor.gray
         cameraButton.layer.masksToBounds = true
         cameraButton.setTitle("Camera", for: .normal)
         cameraButton.layer.cornerRadius = 10
-        cameraButton.layer.position = CGPoint(x: view.bounds.width/2, y:self.view.bounds.height - 90)
-        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 50)
+        cameraButton.layer.position = CGPoint(x: view.bounds.width/2, y:self.view.bounds.height - 80)
+        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 40)
         vhitButton.backgroundColor = UIColor.systemBlue
         vhitButton.layer.masksToBounds = true
         vhitButton.setTitle("vHIT", for: .normal)
         vhitButton.layer.cornerRadius = 10
-        vhitButton.layer.position = CGPoint(x: 10+bw/2, y:view.bounds.height - 90)
-        vogButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 50)
+        vhitButton.layer.position = CGPoint(x: 10+bw/2, y:view.bounds.height - 80)
+        vogButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 40)
         vogButton.backgroundColor = UIColor.systemBlue
         vogButton.layer.masksToBounds = true
         vogButton.setTitle("VOG", for: .normal)
         vogButton.layer.cornerRadius = 10
-        vogButton.layer.position = CGPoint(x: view.bounds.width - 10 - bw/2, y:view.bounds.height - 90)
+        vogButton.layer.position = CGPoint(x: view.bounds.width - 10 - bw/2, y:view.bounds.height - 80)
+        eyeFaceButton.frame = CGRect(x: 0, y: 0, width: bw*2, height:40)
+        eyeFaceButton.backgroundColor = UIColor.systemBlue
+        eyeFaceButton.layer.masksToBounds = true
+        eyeFaceButton.layer.cornerRadius = 10
+        eyeFaceButton.layer.position = CGPoint(x: view.bounds.width/2,y:view.bounds.height - 125)
+//        if isVHIT==true&&faceF==1{
+//            eyeFaceButton.isHidden=false
+//        }else{
+//            eyeFaceButton.isHidden=true
+//        }
+
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
         camera_alert()
@@ -2062,6 +2089,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
     }
+    @objc func onEyeFaceButton(sender: UIButton) {
+        showWave(0)
+    }
+    
     override var prefersHomeIndicatorAutoHidden: Bool {
         get {
             return true
@@ -2543,6 +2574,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if calcFlag == true {
             return
         }
+//        if sender.location(in: self.view).y>view.bounds.height*2/3{
+//            showWave(0)
+//            return
+//        }
         if vHITboxView?.isHidden==false && waveTuple.count>0{
             if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
             //上に中央vHITwaveをタップで表示させるタップ範囲を設定
@@ -2561,32 +2596,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         if vHITboxView?.isHidden == true && vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
             if isVHIT==true && faceF==1{
-                if sender.location(in: self.view).y < view.bounds.height/2{
-                    rectType += 1
-                    if rectType > 1 {
-                        rectType = 0
-                    }
-                    dispWakus()
-                    dispWakuImages()
-                    return
-                }
+                eyeFaceChange(0)
             }
         }
-        showWave(0)
-//        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
-//            if waveTuple.count > 0{
-//                let temp = checksetPos(pos:lastVhitpoint + Int(sender.location(in: self.view).x),mode: 2)
-//                if temp >= 0{
-//                    if waveTuple[temp].2 == 1{
-//                        waveTuple[temp].2 = 0
-//                    }else{
-//                        waveTuple[temp].2 = 1
-//                    }
-//                }
-//            }
-//            drawVHITwaves()
-//        }
-//     print("tapframe-after")
     }
     
     func checksetPos(pos:Int,mode:Int) -> Int{
