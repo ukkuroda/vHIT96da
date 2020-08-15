@@ -721,7 +721,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     // vogをkalmanにかけ配列に追加
                     self.eyePosOrig.append(eyePos)
                     self.eyePosFiltered.append( -1.0*self.Kalman(value:eyePos,num:1))
-
+                    
                     self.eyeVeloOrig.append(ex)
                     let eye5 = -12.0*self.Kalman(value: ex,num:2)//そのままではずれる
                     self.eyeVeloFiltered.append(eye5-self.faceVeloFiltered.last!)
@@ -768,7 +768,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if vidPath.count<1 {
             return
         }
-        print(vidCurrent)
+        //        print(vidCurrent)
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
@@ -2051,7 +2051,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
         camera_alert()
-         setArrays()
+        setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
         showCurrent()
         makeBoxies()//three boxies of gyro vHIT vog
@@ -2101,7 +2101,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         return image!
     }
     func setvHIT_VOGbuttons(){
-         if isVHIT==true{
+        if isVHIT==true{
             vhitButton.backgroundColor = UIColor.systemBlue
             vogButton.backgroundColor = UIColor.gray
         }else{
@@ -2329,13 +2329,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 var d:Double=0
                 var gyro = Array<Double>()
                 var gyroTime = Array<Double>()
-//                var tGyro = Array<CGFloat>()
+                //                var tGyro = Array<CGFloat>()
                 KalmanInit()
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
                 recStart = Controller.recStart
                 gyroFiltered.removeAll()
-//                tGyro.removeAll()
+                //                tGyro.removeAll()
                 showCurrent()
                 showBoxies(f: false)
                 //print(fps,createtime!)
@@ -2368,12 +2368,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     gyroFiltered.append(Kalman(value:CGFloat(gyro[getj]),num:4))
                 }
-//                for i in 0...gyroFiltered.count-1{//tempデータに入れる
-//                    tGyro.append(gyroFiltered[i])
-//                }
-//                for i in 4...gyroFiltered.count-5{//平均加算hightpass
-//                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
-//                }
+                //                for i in 0...gyroFiltered.count-1{//tempデータに入れる
+                //                    tGyro.append(gyroFiltered[i])
+                //                }
+                //                for i in 4...gyroFiltered.count-5{//平均加算hightpass
+                //                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
+                //                }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
                 dispWakuImages()
                 startFrame=0
@@ -2539,22 +2539,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
-        if calcFlag == true || vHITboxView?.isHidden == true || waveTuple.count == 0{
-            if vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
-                rectType += 1
-                if rectType > 1 {
-                    rectType = 0
-                }
-                if isVHIT==false || faceF==0{
-                    rectType=0
-                }
-                dispWakus()
-                dispWakuImages()
-            }
+//        print("tapFrame****before")
+        if calcFlag == true {
             return
         }
-        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
-            if waveTuple.count > 0{
+        if vHITboxView?.isHidden==false && waveTuple.count>0{
+            if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
+            //上に中央vHITwaveをタップで表示させるタップ範囲を設定
                 let temp = checksetPos(pos:lastVhitpoint + Int(sender.location(in: self.view).x),mode: 2)
                 if temp >= 0{
                     if waveTuple[temp].2 == 1{
@@ -2563,9 +2554,39 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         waveTuple[temp].2 = 1
                     }
                 }
+                
+                drawVHITwaves()
+                return
             }
-            drawVHITwaves()
         }
+        if vHITboxView?.isHidden == true && vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
+            if isVHIT==true && faceF==1{
+                if sender.location(in: self.view).y < view.bounds.height/2{
+                    rectType += 1
+                    if rectType > 1 {
+                        rectType = 0
+                    }
+                    dispWakus()
+                    dispWakuImages()
+                    return
+                }
+            }
+        }
+        showWave(0)
+//        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
+//            if waveTuple.count > 0{
+//                let temp = checksetPos(pos:lastVhitpoint + Int(sender.location(in: self.view).x),mode: 2)
+//                if temp >= 0{
+//                    if waveTuple[temp].2 == 1{
+//                        waveTuple[temp].2 = 0
+//                    }else{
+//                        waveTuple[temp].2 = 1
+//                    }
+//                }
+//            }
+//            drawVHITwaves()
+//        }
+//     print("tapframe-after")
     }
     
     func checksetPos(pos:Int,mode:Int) -> Int{
@@ -2597,8 +2618,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return 0
     }
+    
     func upDownp(i:Int)->Int{
-        
         let naf:Int=waveWidth*240/1000
         let raf:Int=Int(Float(widthRange)*240.0/1000.0)
         let sl:CGFloat=10//slope:傾き
