@@ -186,7 +186,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         isVHIT=true
         setButtons(mode: true)
-//        setvHIT_VOGbuttons()
         dispWakus()
         if eyeVeloOrig.count>0 && vidCurrent != -1{
             vhitCurpoint=0
@@ -202,7 +201,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         isVHIT = false
-//        setvHIT_VOGbuttons()
         setButtons(mode: true)
         dispWakus()
         if eyeVeloOrig.count>0  && vidCurrent != -1{
@@ -2085,7 +2083,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         setButtons_first()
         setButtons(mode: true)
         stopButton.isHidden = true
-//        setvHIT_VOGbuttons()//vhit <-> vog
         camera_alert()
         setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
@@ -2186,15 +2183,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-//    func setvHIT_VOGbuttons(){
-//        if isVHIT==true{
-//            vhitButton.backgroundColor = UIColor.systemBlue
-//            vogButton.backgroundColor = UIColor.gray
-//        }else{
-//            vhitButton.backgroundColor = UIColor.gray
-//            vogButton.backgroundColor = UIColor.systemBlue
-//        }
-//    }
     
     func removeFile(delFile:String)->Bool{
         if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
