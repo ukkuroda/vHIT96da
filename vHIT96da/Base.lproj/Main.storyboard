@@ -47,14 +47,15 @@
                                     <action selector="deleOne:" destination="dfx-rB-Lsf" eventType="touchUpInside" id="Nb8-Ib-p33"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MNc-mq-rZI">
-                                <rect key="frame" x="187" y="812.5" width="40" height="39.5"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MNc-mq-rZI">
+                                <rect key="frame" x="187" y="812" width="40" height="40"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="13G-Z3-FmF"/>
                                     <constraint firstAttribute="height" constant="40" id="DgM-UO-fQn"/>
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" backgroundImage="paperplane.fill" catalog="system"/>
+                                <state key="normal" image="paperplane" catalog="system"/>
                                 <connections>
                                     <action selector="mailOne:" destination="dfx-rB-Lsf" eventType="touchUpInside" id="hHb-8h-XJC"/>
                                 </connections>
@@ -252,7 +253,7 @@
                                 <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" image="h.circle" catalog="system"/>
+                                <state key="normal" image="questionmark.circle" catalog="system"/>
                                 <connections>
                                     <segue destination="jcX-Lf-HTi" kind="show" id="yrV-wM-iGp"/>
                                 </connections>
@@ -844,10 +845,10 @@
         <image name="eye" width="212" height="212"/>
         <image name="face" width="212" height="212"/>
         <image name="gear" catalog="system" width="128" height="119"/>
-        <image name="h.circle" catalog="system" width="128" height="121"/>
         <image name="largecircle.fill.circle" catalog="system" width="128" height="121"/>
-        <image name="paperplane.fill" catalog="system" width="128" height="121"/>
+        <image name="paperplane" catalog="system" width="128" height="121"/>
         <image name="play.circle" catalog="system" width="128" height="121"/>
+        <image name="questionmark.circle" catalog="system" width="128" height="121"/>
         <image name="trash.circle" catalog="system" width="128" height="121"/>
         <image name="trash.fill" catalog="system" width="121" height="128"/>
         <image name="tray.and.arrow.down.fill" catalog="system" width="128" height="114"/>
