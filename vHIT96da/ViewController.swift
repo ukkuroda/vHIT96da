@@ -185,7 +185,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         isVHIT=true
-        setvHIT_VOGbuttons()
+        setButtons(mode: true)
+//        setvHIT_VOGbuttons()
         dispWakus()
         if eyeVeloOrig.count>0 && vidCurrent != -1{
             vhitCurpoint=0
@@ -201,7 +202,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         isVHIT = false
-        setvHIT_VOGbuttons()
+//        setvHIT_VOGbuttons()
+        setButtons(mode: true)
         dispWakus()
         if eyeVeloOrig.count>0  && vidCurrent != -1{
             vogCurpoint=0
@@ -425,7 +427,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = true
             helpButton.isEnabled = true
             playButton.isEnabled = true
-            cameraButton.isUserInteractionEnabled = true
+            faceButton.isEnabled = true
+            eyeButton.isEnabled = true
+            vogButton.isEnabled = true
+            vhitButton.isEnabled = true
+            cameraButton.isEnabled = true
+            if isVHIT==true{
+                vhitButton.backgroundColor=UIColor.blue
+                vogButton.backgroundColor=UIColor.darkGray
+            }else{
+                vhitButton.backgroundColor=UIColor.darkGray
+                 vogButton.backgroundColor=UIColor.blue
+            }
+            cameraButton.backgroundColor=UIColor.orange
+            eyeButton.backgroundColor=UIColor.darkGray
+            faceButton.backgroundColor=UIColor.darkGray
         }else{
             calcButton.isHidden = true
             stopButton.isHidden = false
@@ -436,7 +452,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = false
             helpButton.isEnabled = false
             playButton.isEnabled = false
-            cameraButton.isUserInteractionEnabled = false
+            faceButton.isEnabled = false
+            eyeButton.isEnabled = false
+            vogButton.isEnabled = false
+            vhitButton.isEnabled = false
+            cameraButton.isEnabled = false
+            vhitButton.backgroundColor=UIColor.gray
+            cameraButton.backgroundColor=UIColor.gray
+            vogButton.backgroundColor=UIColor.gray
+            eyeButton.backgroundColor=UIColor.gray
+            faceButton.backgroundColor=UIColor.gray
         }
     }
     @IBAction func vHITcalc(_ sender: Any) {
@@ -2056,10 +2081,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         mailWidth=240*10
         boxHeight=view.bounds.height*18/50
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
-        setButtons_first()
-        stopButton.isHidden = true
         getUserDefaults()
-        setvHIT_VOGbuttons()//vhit <-> vog
+        setButtons_first()
+        setButtons(mode: true)
+        stopButton.isHidden = true
+//        setvHIT_VOGbuttons()//vhit <-> vog
         camera_alert()
         setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
@@ -2082,12 +2108,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let bh2=bh1-5-bh
         backVideoOutlet.layer.cornerRadius = 5
         nextVideoOutlet.layer.cornerRadius = 5
-        setButtonProperty(button:cameraButton,bw:bw*2,bh:bh,cx:ww/2,cy:bh1,bc:UIColor.orange)
-        setButtonProperty(button:vhitButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh1,bc:UIColor.blue)
-        setButtonProperty(button:vogButton,bw:bw,bh:bh,cx:ww - 10 - bw/2,cy:bh1,bc:UIColor.systemBlue)
+        setButtonProperty(button:cameraButton,bw:bw*2,bh:bh,cx:ww/2,cy:bh1)
+        setButtonProperty(button:vhitButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh1)
+        setButtonProperty(button:vogButton,bw:bw,bh:bh,cx:ww - 10 - bw/2,cy:bh1)
         
-        setButtonProperty(button:eyeButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh2,bc:UIColor.gray)
-        setButtonProperty(button:faceButton,bw:bw,bh:bh,cx:ww-10-bw/2,cy:bh2,bc:UIColor.gray)
+        setButtonProperty(button:eyeButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh2)
+        setButtonProperty(button:faceButton,bw:bw,bh:bh,cx:ww-10-bw/2,cy:bh2)
 
         bw=bh//bhは冒頭で決めている。上２段のボタンの高さと同じ。
         let bwd=bw+distance
@@ -2095,8 +2121,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         setButtonProperty(button:listButton,bw:bw,bh:bh,cx:10+bw/2+bwd*0,cy:bh0)
         setButtonProperty(button:saveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*1,cy:bh0)
         setButtonProperty(button:waveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*2,cy:bh0)
-        setButtonProperty(button:calcButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0,bc:UIColor.blue)
-        setButtonProperty(button:stopButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0,bc:UIColor.blue)
+        setButtonProperty(button:calcButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0)
+        calcButton.backgroundColor=UIColor.blue
+        setButtonProperty(button:stopButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0)
+        stopButton.backgroundColor=UIColor.blue
         setButtonProperty(button:playButton,bw:bw,bh:bh,cx:10+bw/2+bwd*4,cy:bh0)
         setButtonProperty(button:paraButton,bw:bw,bh:bh,cx:10+bw/2+bwd*5,cy:bh0)
         setButtonProperty(button:helpButton,bw:bw,bh:bh,cx:10+bw/2+bwd*6,cy:bh0)
@@ -2108,14 +2136,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         button.layer.position=CGPoint(x:cx,y:cy)
         button.layer.cornerRadius = 5
     }
-    func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat,bc:UIColor){
-        button.frame = CGRect(x:0,   y: 0 ,width: bw, height: bh)
-        button.layer.borderColor = UIColor.green.cgColor
-        button.backgroundColor = bc
-        button.layer.borderWidth = 1.0
-        button.layer.position=CGPoint(x:cx,y:cy)
-        button.layer.cornerRadius = 5
-    }
+//    func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat,bc:UIColor){
+//        button.frame = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+//        button.layer.borderColor = UIColor.green.cgColor
+//        button.backgroundColor = bc
+//        button.layer.borderWidth = 1.0
+//        button.layer.position=CGPoint(x:cx,y:cy)
+//        button.layer.cornerRadius = 5
+//    }
     @objc func onEyeFaceButton(sender: UIButton) {
         showWave(0)
     }
@@ -2158,15 +2186,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    func setvHIT_VOGbuttons(){
-        if isVHIT==true{
-            vhitButton.backgroundColor = UIColor.systemBlue
-            vogButton.backgroundColor = UIColor.gray
-        }else{
-            vhitButton.backgroundColor = UIColor.gray
-            vogButton.backgroundColor = UIColor.systemBlue
-        }
-    }
+//    func setvHIT_VOGbuttons(){
+//        if isVHIT==true{
+//            vhitButton.backgroundColor = UIColor.systemBlue
+//            vogButton.backgroundColor = UIColor.gray
+//        }else{
+//            vhitButton.backgroundColor = UIColor.gray
+//            vogButton.backgroundColor = UIColor.systemBlue
+//        }
+//    }
     
     func removeFile(delFile:String)->Bool{
         if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
