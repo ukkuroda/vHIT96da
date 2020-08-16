@@ -458,6 +458,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             vhitButton.backgroundColor=UIColor.gray
             cameraButton.backgroundColor=UIColor.gray
             vogButton.backgroundColor=UIColor.gray
+            if isVHIT==true{
+                vhitButton.backgroundColor=UIColor.systemBlue
+            }else{
+                vogButton.backgroundColor=UIColor.systemBlue
+            }
+            
             eyeButton.backgroundColor=UIColor.gray
             faceButton.backgroundColor=UIColor.gray
         }
