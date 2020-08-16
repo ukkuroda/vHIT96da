@@ -94,7 +94,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //vHITeyeがちゃんと読めない瞬間が生じるようだ
     @IBOutlet weak var videoDuration: UILabel!
     @IBOutlet weak var videoFps: UILabel!
-    @IBOutlet weak var buttonsWaku: UIStackView!
+//    @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var helpButton: UIButton!
     @IBOutlet weak var waveButton: UIButton!
@@ -2056,47 +2056,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         mailWidth=240*10
         boxHeight=view.bounds.height*18/50
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
+        setButtons_first()
         stopButton.isHidden = true
-        let bw=(view.bounds.width-30)/4
-        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: bw*2, height: 40)
-        cameraButton.backgroundColor = UIColor.gray
-        cameraButton.layer.masksToBounds = true
-        cameraButton.setTitle("Camera", for: .normal)
-        cameraButton.layer.cornerRadius = 10
-        cameraButton.layer.position = CGPoint(x: view.bounds.width/2, y:self.view.bounds.height - 80)
-        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 40)
-        vhitButton.backgroundColor = UIColor.systemBlue
-        vhitButton.layer.masksToBounds = true
-        vhitButton.setTitle("vHIT", for: .normal)
-        vhitButton.layer.cornerRadius = 10
-        vhitButton.layer.position = CGPoint(x: 10+bw/2, y:view.bounds.height - 80)
-        vogButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 40)
-        vogButton.backgroundColor = UIColor.systemBlue
-        vogButton.layer.masksToBounds = true
-        vogButton.setTitle("VOG", for: .normal)
-        vogButton.layer.cornerRadius = 10
-        vogButton.layer.position = CGPoint(x: view.bounds.width - 10 - bw/2, y:view.bounds.height - 80)
-        eyeButton.frame = CGRect(x: 0, y: 0, width: bw, height:40)
-        eyeButton.backgroundColor = UIColor.gray
-        eyeButton.layer.borderWidth=1.0
-        eyeButton.layer.borderColor = UIColor.green.cgColor
-//        eyeButton.layer.masksToBounds = true
-        eyeButton.layer.cornerRadius = 10
-        eyeButton.layer.position = CGPoint(x: 10+bw/2,y:view.bounds.height - 125)
-        faceButton.frame = CGRect(x: 0, y: 0, width: bw, height:40)
-        faceButton.backgroundColor = UIColor.gray
-        faceButton.layer.borderColor = UIColor.green.cgColor
-        faceButton.layer.borderWidth = 1.0
-//        faceButton.layer.masksToBounds = true
-        faceButton.layer.cornerRadius = 10
-        faceButton.layer.position = CGPoint(x: view.bounds.width-10-bw/2,y:view.bounds.height - 125)
-        
-        //        if isVHIT==true&&faceF==1{
-//            eyeFaceButton.isHidden=false
-//        }else{
-//            eyeFaceButton.isHidden=true
-//        }
-
         getUserDefaults()
         setvHIT_VOGbuttons()//vhit <-> vog
         camera_alert()
@@ -2111,6 +2072,81 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
     }
+    func setButtons_first(){
+        let ww=view.bounds.width
+        let wh=view.bounds.height
+        var bw=(ww-30)/4
+        var bh:CGFloat=(ww-20-6*2)/7//最下段のボタンの高さ、幅と同じ
+        let bh1=wh-10-bh-5-bh/2
+        let bh2=bh1-5-bh
+        eraseButton.layer.cornerRadius = 5
+        listButton.layer.cornerRadius = 5
+        saveButton.layer.cornerRadius = 5
+        calcButton.layer.cornerRadius = 5
+        stopButton.layer.cornerRadius = 5
+        playButton.layer.cornerRadius = 5
+        paraButton.layer.cornerRadius = 5
+        helpButton.layer.cornerRadius = 5
+        waveButton.layer.cornerRadius = 5
+        backVideoOutlet.layer.cornerRadius = 25
+        nextVideoOutlet.layer.cornerRadius = 25
+
+        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: bw*2, height: bh)
+        cameraButton.backgroundColor = UIColor.gray
+        cameraButton.layer.masksToBounds = true
+        cameraButton.setTitle("Camera", for: .normal)
+        cameraButton.layer.cornerRadius = 5
+        cameraButton.layer.position = CGPoint(x: ww/2, y:bh1)
+        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        vhitButton.backgroundColor = UIColor.systemBlue
+        vhitButton.layer.masksToBounds = true
+        vhitButton.setTitle("vHIT", for: .normal)
+        vhitButton.layer.cornerRadius = 5
+        vhitButton.layer.position = CGPoint(x: 10+bw/2, y:bh1)
+        vogButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        vogButton.backgroundColor = UIColor.systemBlue
+        vogButton.layer.masksToBounds = true
+        vogButton.setTitle("VOG", for: .normal)
+        vogButton.layer.cornerRadius = 5
+        vogButton.layer.position = CGPoint(x:ww - 10 - bw/2, y:bh1)
+        eyeButton.frame = CGRect(x: 0, y: 0, width: bw, height:bh)
+        eyeButton.backgroundColor = UIColor.gray
+        eyeButton.layer.borderWidth=1.0
+        eyeButton.layer.borderColor = UIColor.green.cgColor
+        //        eyeButton.layer.masksToBounds = true
+        eyeButton.layer.cornerRadius = 5
+        eyeButton.layer.position = CGPoint(x: 10+bw/2,y:bh2)
+        faceButton.frame = CGRect(x: 0, y: 0, width: bw, height:bh)
+        faceButton.backgroundColor = UIColor.gray
+        faceButton.layer.borderColor = UIColor.green.cgColor
+        faceButton.layer.borderWidth = 1.0
+        //        faceButton.layer.masksToBounds = true
+        faceButton.layer.cornerRadius = 5
+        faceButton.layer.position = CGPoint(x: ww-10-bw/2,y:bh2)
+        bw=(ww-20-6*2)/7
+        bh=bw
+        let bwd=bw+2
+        let bh0=wh-10-bw/2
+
+        listButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        saveButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        waveButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        calcButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        stopButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        playButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        paraButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        helpButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        listButton.layer.position=CGPoint(x:10+bw/2+bwd*0,y:bh0)
+        saveButton.layer.position=CGPoint(x:10+bw/2+bwd*1,y:bh0)
+        waveButton.layer.position=CGPoint(x:10+bw/2+bwd*2,y:bh0)
+        calcButton.layer.position=CGPoint(x:10+bw/2+bwd*3,y:bh0)
+        stopButton.layer.position=CGPoint(x:10+bw/2+bwd*3,y:bh0)
+        playButton.layer.position=CGPoint(x:10+bw/2+bwd*4,y:bh0)
+        paraButton.layer.position=CGPoint(x:10+bw/2+bwd*5,y:bh0)
+        helpButton.layer.position=CGPoint(x:10+bw/2+bwd*6,y:bh0)
+
+    }
+    
     @objc func onEyeFaceButton(sender: UIButton) {
         showWave(0)
     }
