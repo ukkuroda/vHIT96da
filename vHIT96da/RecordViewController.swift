@@ -28,8 +28,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var recStart = CFAbsoluteTimeGetCurrent()
     var recEnd=CFAbsoluteTimeGetCurrent()
 //    var recordButton: UIButton!
-    var fps240Button: UIButton!
-    var fps120Button: UIButton!
+    @IBOutlet weak var fps240Button: UIButton!
+    
+    @IBOutlet weak var fps120Button: UIButton!
     @IBOutlet weak var stopButton: UIButton!
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var exitBut: UIButton!
@@ -191,26 +192,26 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         print("maxFps,fps2:",maxFps,fps_non_120_240)
     }
 
-    @objc func onClickfps240Button(sender: UIButton) {
+    @IBAction func onfps240Button(sender:Any) {
         if fps_non_120_240==2{
             return
         }else{
             fps_non_120_240=2
             self.fps120Button.backgroundColor = UIColor.gray
             self.fps240Button.backgroundColor = UIColor.blue
-//            self.recordButton.setTitle("Record(240fps)", for: .normal)
+
             initSession(fps: fps_non_120_240)
             UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
         }
     }
-    @objc func onClickfps120Button(sender: UIButton) {
+    @IBAction func onfps120Button(sender: Any) {
         if fps_non_120_240==1{
             return
         }else{
             fps_non_120_240=1
             self.fps120Button.backgroundColor = UIColor.blue
             self.fps240Button.backgroundColor = UIColor.gray
-//            self.recordButton.setTitle("Record(120fps)", for: .normal)
+
             initSession(fps: fps_non_120_240)
             UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
         }
@@ -223,33 +224,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         //        let bd=Int(ww/5/4)
         let bh:Int=60
         let bpos=Int(wh)-bh/2-10
-//        recordButton = UIButton(frame: CGRect(x: 0, y: 0, width: bw, height:bh))
-//        recordButton.backgroundColor = UIColor.gray
-//        recordButton.layer.masksToBounds = true
-            // fps240 button
-            self.fps240Button = UIButton(frame: CGRect(x: 0, y: 0, width: bw, height: bh))
-            self.fps240Button.layer.masksToBounds = true
-            self.fps240Button.layer.cornerRadius = 5
-            self.fps240Button.layer.position = CGPoint(x: Int(10+bw/2), y:bpos-bh-10)
-            self.fps240Button.addTarget(self, action: #selector(self.onClickfps240Button(sender:)), for: .touchUpInside)
-            self.fps240Button.setTitle("240fps", for: .normal)
-        fps240Button.layer.borderColor = UIColor.green.cgColor
-         fps240Button.layer.borderWidth = 1.0
 
-            self.view.addSubview(fps240Button)
-            self.fps120Button = UIButton(frame: CGRect(x: 0, y: 0, width: bw, height: bh))
-            self.fps120Button.setTitle("120fps", for: .normal)
-            
-            fps120Button.layer.borderColor = UIColor.green.cgColor
-            fps120Button.layer.borderWidth = 1.0
- //           setButtonProperty(button: fps120Button, bw: CGFloat(bw), bh: CGFloat(bh), cx: CGFloat(bw)/2+10, cy: CGFloat(bpos))
-            self.fps120Button.layer.masksToBounds = true
-            self.fps120Button.layer.cornerRadius = 5
-            self.fps120Button.layer.position = CGPoint(x: bw/2+10, y:bpos)//CGPoint(x:Int(Int(ww)-10-bw/2), y:bpos-bh-10)
-            self.fps120Button.addTarget(self, action: #selector(self.onClickfps120Button(sender:)), for: .touchUpInside)
-            self.fps120Button.setTitle("120fps", for: .normal)
-            self.view.addSubview(fps120Button)
-            if fps_non_120_240==2{
+        setButtonProperty(button: fps240Button, bw: CGFloat(bw), bh: CGFloat(bh), cx:CGFloat(10+bw)/2 , cy: CGFloat(bpos-10-bh))
+        setButtonProperty(button: fps120Button, bw: CGFloat(bw), bh: CGFloat(bh), cx:CGFloat(10+bw)/2 , cy: CGFloat(bpos))
+
+        if fps_non_120_240==2{
                 self.fps120Button.backgroundColor = UIColor.gray
                 self.fps240Button.backgroundColor = UIColor.blue
             }else{
@@ -266,7 +245,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         stopButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos)
         startButton.isHidden=false
         stopButton.isHidden=true
-        exitBut.setTitle("Exit", for: .normal)
         setButtonProperty(button: exitBut, bw: CGFloat(bw), bh: CGFloat(bh), cx: CGFloat(Int(Int(ww)-10-bw/2)), cy:CGFloat(bpos))
     }
     func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat){
@@ -361,19 +339,10 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                     AudioServicesPlaySystemSound(soundIdstop)
                 }
                 fileOutput.stopRecording()
-                //           motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
-                recordedFlag=true
-    //            startButton.isHidden=true
-                stopButton.isEnabled=false
+                  recordedFlag=true
+                 stopButton.isEnabled=false
                 stopButton.tintColor = .gray
-//                self.recordButton.backgroundColor = .gray
-//                if fps_non_120_240==2{
-//    //                self.recordButton.setTitle("240 done", for: .normal)
-//                }else{
-//    //                self.recordButton.setTitle("120 done", for: .normal)
-//                }
-//    //            self.recordButton.isEnabled=false
-                
+
                 exitBut.isUserInteractionEnabled = true
                 
             } else {
@@ -381,19 +350,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 startButton.isHidden=true
                 stopButton.isHidden=false
                 UIApplication.shared.isIdleTimerDisabled = true//スリープしない
-                //UIApplication.shared.isIdleTimerDisabled = false//スリープする
-    //            if self.recordButton.backgroundColor == .red{//最大録画時間を超え止まっている時
-    //                self.recordButton.backgroundColor = .gray
-    //                if fps_non_120_240==2{
-    //                    self.recordButton.setTitle("240 done", for: .normal)
-    //                }else{
-    //                    self.recordButton.setTitle("120 done", for: .normal)
-    //                }
-    //                self.recordButton.isEnabled=false
-    //                exitBut.isUserInteractionEnabled = true
-    //                recordedFlag=true
-    //                return
-    //            }
                 if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
                     AudioServicesCreateSystemSoundID(soundUrl, &soundIdstart)
                     AudioServicesPlaySystemSound(soundIdstart)
@@ -421,6 +377,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 }
             }
         }
+    func setButtons(type:Bool){
+        
+    }
     
 //    @objc func onClickRecordButton(sender: UIButton) {
 //          if self.fileOutput.isRecording {

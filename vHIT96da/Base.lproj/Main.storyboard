@@ -555,6 +555,30 @@
                                     <action selector="startRecord:" destination="eZj-22-ehM" eventType="touchUpInside" id="JuQ-Pd-Fs9"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JIC-Av-JhT">
+                                <rect key="frame" x="230" y="268" width="61" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="120fps">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="onfps120ButtonWithSender:" destination="eZj-22-ehM" eventType="touchUpInside" id="WZN-FS-5FD"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iC2-bZ-his">
+                                <rect key="frame" x="230" y="328" width="64" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="240fps">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="onfps240Button:" destination="eZj-22-ehM" eventType="touchUpInside" id="Td3-PJ-Rou"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <gestureRecognizers/>
@@ -567,6 +591,8 @@
                     <connections>
                         <outlet property="cameraView" destination="9sR-p0-hC8" id="uLr-D8-lcZ"/>
                         <outlet property="exitBut" destination="NG3-VA-Sxk" id="VBu-CG-sZA"/>
+                        <outlet property="fps120Button" destination="JIC-Av-JhT" id="uJe-i9-bVo"/>
+                        <outlet property="fps240Button" destination="iC2-bZ-his" id="5Nr-9W-9R5"/>
                         <outlet property="startButton" destination="efm-48-AwK" id="1RH-Om-UOn"/>
                         <outlet property="stopButton" destination="gM3-vl-q8n" id="MPj-2W-Ee3"/>
                     </connections>
