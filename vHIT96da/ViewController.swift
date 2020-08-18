@@ -51,6 +51,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var vogButton: UIButton!
     @IBOutlet weak var vhitButton: UIButton!
     
+    @IBOutlet weak var faceButton: UIButton!
+    @IBOutlet weak var eyeButton: UIButton!
+    
+    @IBAction func wakuToFace(_ sender: Any) {
+        rectType=1
+        dispWakus()
+        dispWakuImages()
+    }
+    
+    @IBAction func wakuToEye(_ sender: Any) {
+        rectType = 0
+        dispWakus()
+        dispWakuImages()
+    }
+    
+//    var eyeFaceButton: UIButton!
     @IBOutlet weak var wakuAll: UIImageView!
     
     @IBOutlet weak var wakuEye: UIImageView!
@@ -78,7 +94,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     //vHITeyeがちゃんと読めない瞬間が生じるようだ
     @IBOutlet weak var videoDuration: UILabel!
     @IBOutlet weak var videoFps: UILabel!
-    @IBOutlet weak var buttonsWaku: UIStackView!
+//    @IBOutlet weak var buttonsWaku: UIStackView!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var helpButton: UIButton!
     @IBOutlet weak var waveButton: UIButton!
@@ -169,7 +185,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         isVHIT=true
-        setvHIT_VOGbuttons()
+        setButtons(mode: true)
         dispWakus()
         if eyeVeloOrig.count>0 && vidCurrent != -1{
             vhitCurpoint=0
@@ -185,7 +201,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return
         }
         isVHIT = false
-        setvHIT_VOGbuttons()
+        setButtons(mode: true)
         dispWakus()
         if eyeVeloOrig.count>0  && vidCurrent != -1{
             vogCurpoint=0
@@ -213,7 +229,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str=vidDura[vidCurrent]
         let str1=str.components(separatedBy: "s")
         videoDuration.text="sec" + "\n" + str1[0]
-        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFps(path:vidPath[vidCurrent])))
+        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFPS(videoPath:vidPath[vidCurrent])))
     }
     func show1(){
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
@@ -409,7 +425,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = true
             helpButton.isEnabled = true
             playButton.isEnabled = true
-            cameraButton.isUserInteractionEnabled = true
+            faceButton.isEnabled = true
+            eyeButton.isEnabled = true
+            vogButton.isEnabled = true
+            vhitButton.isEnabled = true
+            cameraButton.isEnabled = true
+            if isVHIT==true{
+                vhitButton.backgroundColor=UIColor.blue
+                vogButton.backgroundColor=UIColor.darkGray
+            }else{
+                vhitButton.backgroundColor=UIColor.darkGray
+                 vogButton.backgroundColor=UIColor.blue
+            }
+            cameraButton.backgroundColor=UIColor.orange
+            eyeButton.backgroundColor=UIColor.darkGray
+            faceButton.backgroundColor=UIColor.darkGray
         }else{
             calcButton.isHidden = true
             stopButton.isHidden = false
@@ -420,7 +450,22 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             waveButton.isEnabled = false
             helpButton.isEnabled = false
             playButton.isEnabled = false
-            cameraButton.isUserInteractionEnabled = false
+            faceButton.isEnabled = false
+            eyeButton.isEnabled = false
+            vogButton.isEnabled = false
+            vhitButton.isEnabled = false
+            cameraButton.isEnabled = false
+            vhitButton.backgroundColor=UIColor.gray
+            cameraButton.backgroundColor=UIColor.gray
+            vogButton.backgroundColor=UIColor.gray
+            if isVHIT==true{
+                vhitButton.backgroundColor=UIColor.systemBlue
+            }else{
+                vogButton.backgroundColor=UIColor.systemBlue
+            }
+            
+            eyeButton.backgroundColor=UIColor.gray
+            faceButton.backgroundColor=UIColor.gray
         }
     }
     @IBAction func vHITcalc(_ sender: Any) {
@@ -465,7 +510,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func moveGyroData(){//gyroDeltaとstartFrameをずらして
         gyroMoved.removeAll()
         var sn=startFrame
-        if getFps(path: vidPath[vidCurrent])<200{
+        if getFPS(videoPath: vidPath[vidCurrent])<200{
             sn=startFrame*2
         }
         if gyroFiltered.count>10{
@@ -514,9 +559,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         var fpsIs120:Bool=false
         if getFPS(videoPath: vidPath[vidCurrent])<200.0{
             fpsIs120=true
-            print("currentFps=120")
+//            print("currentFps=120")
         }else{
-            print("currentFps=240 ")
+//            print("currentFps=240 ")
         }
         calcDate = videoDate.text!
         var reader: AVAssetReader! = nil
@@ -721,7 +766,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     // vogをkalmanにかけ配列に追加
                     self.eyePosOrig.append(eyePos)
                     self.eyePosFiltered.append( -1.0*self.Kalman(value:eyePos,num:1))
-
+                    
                     self.eyeVeloOrig.append(ex)
                     let eye5 = -12.0*self.Kalman(value: ex,num:2)//そのままではずれる
                     self.eyeVeloFiltered.append(eye5-self.faceVeloFiltered.last!)
@@ -768,7 +813,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         if vidPath.count<1 {
             return
         }
-        print(vidCurrent)
+        //        print(vidCurrent)
         let fileURL = getfileURL(path: vidPath[vidCurrent])
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
@@ -1316,9 +1361,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             }
         }
         // 始点に移動する
-        //        context.move(to: CGPoint(x: 100, y: 100))
-        //        context.addLine(to: CGPoint(x: 200, y: 200))
-        //            context.strokePath()
         context.move(to: pointList[0])
         // 配列から始点の値を取り除く
         pointList.removeFirst()
@@ -1341,6 +1383,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
+    
     @objc func update(tm: Timer) {
         if eyeVeloFiltered.count < 5 {
             return
@@ -1371,6 +1414,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             drawOnewave(startcount: 0)
         }
     }
+    
     func update_gyrodelta() {
         if eyeVeloFiltered.count < 5 {
             return
@@ -1386,6 +1430,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawRealwave()
         calcDrawVHIT()
     }
+    
     func Field2value(field:UITextField) -> Int {
         if field.text?.count != 0 {
             return Int(field.text!)!
@@ -1393,11 +1438,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             return 0
         }
     }
+    
     func addArray(path:String){
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] as String
         appendAll(doc: documentsDirectory, path: path)
     }
+    
     func getVideofns()->String{
         let str=getFsindoc().components(separatedBy: ",")
         
@@ -1414,6 +1461,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let retStr2=retStr.dropLast()
         return String(retStr2)
     }
+    
     func setArrays(){
         let path = getVideofns()//videoPathtxt()
         var str = path.components(separatedBy: ",")
@@ -1434,18 +1482,21 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         vidCurrent=vidPath.count-1
     }
+    
     func getfileURL(path:String)->URL{
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] as String
         let vidpath = documentsDirectory + "/" + path
         return URL(fileURLWithPath: vidpath)
     }
+    
     func getdocumentPath(path:String)->String{
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] as String
         let vidpath = documentsDirectory + "/" + path
         return vidpath
     }
+    
     var appendingFlag:Bool = false
     func appendAll(doc:String,path:String){//for で回すのでdocumentsdirはgetgetしておる
         let vidpath = doc + "/" + path
@@ -1467,38 +1518,38 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str3=str2[0] + " (\(vidPath.count-1))"
         vidDate.append(str3)
     }
-    func getDura(path:String)->Double{//最新のビデオのデータを得る.recordから飛んでくる。
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0] as String
-        let filepath=documentsDirectory+"/"+path
-        let fileURL=URL(fileURLWithPath: filepath)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        //options.version = .original
-        let asset = AVURLAsset(url: fileURL, options: options)
-        let durSec=CMTimeGetSeconds(asset.duration)
-        return durSec
-    }
+//    func getDura(path:String)->Double{//最新のビデオのデータを得る.recordから飛んでくる。
+//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//        let documentsDirectory = paths[0] as String
+//        let filepath=documentsDirectory+"/"+path
+//        let fileURL=URL(fileURLWithPath: filepath)
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        //options.version = .original
+//        let asset = AVURLAsset(url: fileURL, options: options)
+//        let durSec=CMTimeGetSeconds(asset.duration)
+//        return durSec
+//    }
     func getFPS(videoPath:String)->Float{
         let fileURL = getfileURL(path: videoPath)
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
         let avAsset = AVURLAsset(url: fileURL, options: options)
         return avAsset.tracks.first!.nominalFrameRate
     }
-    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0] as String
-        let filepath=documentsDirectory+"/"+path
-        let fileURL=URL(fileURLWithPath: filepath)
-        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        //options.version = .original
-        let asset = AVURLAsset(url: fileURL, options: options)
-        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
-        //       let framePS=asset.tracks.first!.nominalFrameRate
-        //       let numberOfframes = durSec * framePS
-        //       print("frameNum:",durSec,framePS,numberOfframes)
-        //       print(asset.tracks.first?.nominalFrameRate as Any)
-        return asset.tracks.first!.nominalFrameRate
-    }
+//    func getFps(path:String)->Float{//最新のビデオのデータを得る.recordから飛んでくる。
+//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//        let documentsDirectory = paths[0] as String
+//        let filepath=documentsDirectory+"/"+path
+//        let fileURL=URL(fileURLWithPath: filepath)
+//        let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+//        //options.version = .original
+//        let asset = AVURLAsset(url: fileURL, options: options)
+//        //       let durSec=Float(CMTimeGetSeconds(asset.duration))
+//        //       let framePS=asset.tracks.first!.nominalFrameRate
+//        //       let numberOfframes = durSec * framePS
+//        //       print("frameNum:",durSec,framePS,numberOfframes)
+//        //       print(asset.tracks.first?.nominalFrameRate as Any)
+//        return asset.tracks.first!.nominalFrameRate
+//    }
     
     func getUserDefault(str:String,ret:Int) -> Int{//getUserDefault_one
         if (UserDefaults.standard.object(forKey: str) != nil){//keyが設定してなければretをセット
@@ -1573,19 +1624,25 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         
         if rectType==0{
-            eyeWaku_image.layer.borderColor = UIColor.red.cgColor
+            eyeWaku_image.layer.borderColor = UIColor.green.cgColor
             eyeWaku_image.backgroundColor = UIColor.clear
-            eyeWaku_image.layer.borderWidth = 2.0
+            eyeWaku_image.layer.borderWidth = 1.0
             eyeWaku_image.layer.cornerRadius = 3
             faceWaku_image.layer.borderWidth = 0
         }else{
-            faceWaku_image.layer.borderColor = UIColor.red.cgColor
+            faceWaku_image.layer.borderColor = UIColor.green.cgColor
             faceWaku_image.backgroundColor = UIColor.clear
-            faceWaku_image.layer.borderWidth = 2.0
+            faceWaku_image.layer.borderWidth = 1.0
             faceWaku_image.layer.cornerRadius = 3
             eyeWaku_image.layer.borderWidth = 0
         }
-        
+        if isVHIT==true&&faceF==1{
+            eyeButton.isHidden=false
+            faceButton.isHidden=false
+         }else{
+            eyeButton.isHidden=true
+            faceButton.isHidden=true
+         }
         //        dispWakuImages()
     }
     //vHIT_eye_head
@@ -2028,30 +2085,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         mailWidth=240*10
         boxHeight=view.bounds.height*18/50
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
-        stopButton.isHidden = true
-        let bw=(view.bounds.width-30)/4
-        cameraButton.frame   = CGRect(x:0,   y: 0 ,width: bw*2, height: 50)
-        cameraButton.backgroundColor = UIColor.gray
-        cameraButton.layer.masksToBounds = true
-        cameraButton.setTitle("Camera", for: .normal)
-        cameraButton.layer.cornerRadius = 10
-        cameraButton.layer.position = CGPoint(x: view.bounds.width/2, y:self.view.bounds.height - 90)
-        vhitButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 50)
-        vhitButton.backgroundColor = UIColor.systemBlue
-        vhitButton.layer.masksToBounds = true
-        vhitButton.setTitle("vHIT", for: .normal)
-        vhitButton.layer.cornerRadius = 10
-        vhitButton.layer.position = CGPoint(x: 10+bw/2, y:view.bounds.height - 90)
-        vogButton.frame   = CGRect(x:0,   y: 0 ,width: bw, height: 50)
-        vogButton.backgroundColor = UIColor.systemBlue
-        vogButton.layer.masksToBounds = true
-        vogButton.setTitle("VOG", for: .normal)
-        vogButton.layer.cornerRadius = 10
-        vogButton.layer.position = CGPoint(x: view.bounds.width - 10 - bw/2, y:view.bounds.height - 90)
         getUserDefaults()
-        setvHIT_VOGbuttons()//vhit <-> vog
+        setButtons_first()
+        setButtons(mode: true)
+        stopButton.isHidden = true
         camera_alert()
-         setArrays()
+        setArrays()
         vidCurrent=vidPath.count-1//ない場合は -1
         showCurrent()
         makeBoxies()//three boxies of gyro vHIT vog
@@ -2062,6 +2101,56 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         self.setNeedsStatusBarAppearanceUpdate()
         prefersHomeIndicatorAutoHidden
     }
+    func setButtons_first(){
+        let ww=view.bounds.width
+        let wh=view.bounds.height
+        var bw=(ww-30)/4//vhit,camera,vogのボタンの幅
+        let distance:CGFloat=4//最下段のボタンとボタンの距離
+        let bh:CGFloat=(ww-20-6*distance)/7//最下段のボタンの高さ、幅と同じ
+        let bh1=wh-10-bh-5-bh/2
+        let bh2=bh1-5-bh
+        backVideoOutlet.layer.cornerRadius = 5
+        nextVideoOutlet.layer.cornerRadius = 5
+        setButtonProperty(button:cameraButton,bw:bw*2,bh:bh,cx:ww/2,cy:bh1)
+        setButtonProperty(button:vhitButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh1)
+        setButtonProperty(button:vogButton,bw:bw,bh:bh,cx:ww - 10 - bw/2,cy:bh1)
+        
+        setButtonProperty(button:eyeButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh2)
+        setButtonProperty(button:faceButton,bw:bw,bh:bh,cx:ww-10-bw/2,cy:bh2)
+
+        bw=bh//bhは冒頭で決めている。上２段のボタンの高さと同じ。
+        let bwd=bw+distance
+        let bh0=wh-10-bw/2
+        setButtonProperty(button:listButton,bw:bw,bh:bh,cx:10+bw/2+bwd*0,cy:bh0)
+        setButtonProperty(button:saveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*1,cy:bh0)
+        setButtonProperty(button:waveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*2,cy:bh0)
+        setButtonProperty(button:calcButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0)
+        calcButton.backgroundColor=UIColor.blue
+        setButtonProperty(button:stopButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0)
+        stopButton.backgroundColor=UIColor.blue
+        setButtonProperty(button:playButton,bw:bw,bh:bh,cx:10+bw/2+bwd*4,cy:bh0)
+        setButtonProperty(button:paraButton,bw:bw,bh:bh,cx:10+bw/2+bwd*5,cy:bh0)
+        setButtonProperty(button:helpButton,bw:bw,bh:bh,cx:10+bw/2+bwd*6,cy:bh0)
+    }
+    func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat){
+        button.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+        button.layer.borderColor = UIColor.green.cgColor
+        button.layer.borderWidth = 1.0
+        button.layer.position=CGPoint(x:cx,y:cy)
+        button.layer.cornerRadius = 5
+    }
+//    func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat,bc:UIColor){
+//        button.frame = CGRect(x:0,   y: 0 ,width: bw, height: bh)
+//        button.layer.borderColor = UIColor.green.cgColor
+//        button.backgroundColor = bc
+//        button.layer.borderWidth = 1.0
+//        button.layer.position=CGPoint(x:cx,y:cy)
+//        button.layer.cornerRadius = 5
+//    }
+    @objc func onEyeFaceButton(sender: UIButton) {
+        showWave(0)
+    }
+    
     override var prefersHomeIndicatorAutoHidden: Bool {
         get {
             return true
@@ -2100,15 +2189,6 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIGraphicsEndImageContext()
         return image!
     }
-    func setvHIT_VOGbuttons(){
-         if isVHIT==true{
-            vhitButton.backgroundColor = UIColor.systemBlue
-            vogButton.backgroundColor = UIColor.gray
-        }else{
-            vhitButton.backgroundColor = UIColor.gray
-            vogButton.backgroundColor = UIColor.systemBlue
-        }
-    }
     
     func removeFile(delFile:String)->Bool{
         if let dir = FileManager.default.urls( for: .documentDirectory, in: .userDomainMask ).first {
@@ -2127,11 +2207,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return false
     }
-    //panGestureのendedとunwind(record)の２箇所で実行
-    //    let str=Controller.filePath!.components(separatedBy: ".MOV")
-    //    let filename=str[0] + "-gyro.csv"
-    //    print("gyroPath:",filename)
-    //    saveGyro(pathGyro:filename)/
+ 
     func saveGyro(path:String) {//gyroData(GFloat)を100倍してcsvとして保存
         let str=path.components(separatedBy: ".MOV")
         let gyroPath=str[0] + "-gyro.csv"
@@ -2329,13 +2405,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 var d:Double=0
                 var gyro = Array<Double>()
                 var gyroTime = Array<Double>()
-//                var tGyro = Array<CGFloat>()
+                //                var tGyro = Array<CGFloat>()
                 KalmanInit()
                 addArray(path:Controller.filePath!)//ここでvidImg[]登録
                 vidCurrent=vidPath.count-1
                 recStart = Controller.recStart
                 gyroFiltered.removeAll()
-//                tGyro.removeAll()
+                //                tGyro.removeAll()
                 showCurrent()
                 showBoxies(f: false)
                 //print(fps,createtime!)
@@ -2368,12 +2444,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                     }
                     gyroFiltered.append(Kalman(value:CGFloat(gyro[getj]),num:4))
                 }
-//                for i in 0...gyroFiltered.count-1{//tempデータに入れる
-//                    tGyro.append(gyroFiltered[i])
-//                }
-//                for i in 4...gyroFiltered.count-5{//平均加算hightpass
-//                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
-//                }
+                //                for i in 0...gyroFiltered.count-1{//tempデータに入れる
+                //                    tGyro.append(gyroFiltered[i])
+                //                }
+                //                for i in 4...gyroFiltered.count-5{//平均加算hightpass
+                //                    gyroFiltered[i-2]=(tGyro[i]+tGyro[i-1]+tGyro[i-2]+tGyro[i-3]+tGyro[i-4])/5
+                //                }
                 saveGyro(path:Controller.filePath!)// str[0])//videoと同じ名前で保存
                 dispWakuImages()
                 startFrame=0
@@ -2539,22 +2615,17 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     }
     
     @IBAction func tapFrame(_ sender: UITapGestureRecognizer) {
-        if calcFlag == true || vHITboxView?.isHidden == true || waveTuple.count == 0{
-            if vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
-                rectType += 1
-                if rectType > 1 {
-                    rectType = 0
-                }
-                if isVHIT==false || faceF==0{
-                    rectType=0
-                }
-                dispWakus()
-                dispWakuImages()
-            }
+//        print("tapFrame****before")
+        if calcFlag == true {
             return
         }
-        if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
-            if waveTuple.count > 0{
+//        if sender.location(in: self.view).y>view.bounds.height*2/3{
+//            showWave(0)
+//            return
+//        }
+        if vHITboxView?.isHidden==false && waveTuple.count>0{
+            if sender.location(in: self.view).y > self.view.bounds.width/5 + 160{
+            //上に中央vHITwaveをタップで表示させるタップ範囲を設定
                 let temp = checksetPos(pos:lastVhitpoint + Int(sender.location(in: self.view).x),mode: 2)
                 if temp >= 0{
                     if waveTuple[temp].2 == 1{
@@ -2563,9 +2634,16 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                         waveTuple[temp].2 = 1
                     }
                 }
+                
+                drawVHITwaves()
+//                return
             }
-            drawVHITwaves()
         }
+//        if vHITboxView?.isHidden == true && vogboxView?.isHidden == true && gyroboxView?.isHidden == true{
+//            if isVHIT==true && faceF==1{
+//                wakuToEye(0)
+//            }
+//        }
     }
     
     func checksetPos(pos:Int,mode:Int) -> Int{
@@ -2597,8 +2675,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         }
         return 0
     }
+    
     func upDownp(i:Int)->Int{
-        
         let naf:Int=waveWidth*240/1000
         let raf:Int=Int(Float(widthRange)*240.0/1000.0)
         let sl:CGFloat=10//slope:傾き
