@@ -532,7 +532,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <segue destination="6Lu-RF-ASw" kind="unwind" unwindAction="unwind:" id="7Dp-85-dVc"/>
+                                    <segue destination="6Lu-RF-ASw" kind="unwind" identifier="fromRecordToMain" unwindAction="unwind:" id="7Dp-85-dVc"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gM3-vl-q8n">

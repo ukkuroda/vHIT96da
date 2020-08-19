@@ -17,6 +17,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var session: AVCaptureSession!
     var videoDevice: AVCaptureDevice?
     var filePath:String?
+    var timer:Timer?
     //
     //    var ww:CGFloat?
     //    var wh:CGFloat?
@@ -26,7 +27,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var fileOutput = AVCaptureMovieFileOutput()
     var gyro = Array<Double>()
     var recStart = CFAbsoluteTimeGetCurrent()
-    var recEnd=CFAbsoluteTimeGetCurrent()
+//    var recEnd=CFAbsoluteTimeGetCurrent()
 //    var recordButton: UIButton!
     @IBOutlet weak var fps240Button: UIButton!
     
@@ -241,10 +242,11 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         //startButton
         startButton.frame=CGRect(x:0,y:0,width:bh,height:bh)
         startButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos)
-        stopButton.frame=CGRect(x:0,y:0,width:bh,height:bh)
-        stopButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos)
+        stopButton.frame=CGRect(x:0,y:0,width:bh*2,height:bh*2)
+        stopButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos-bh/2)
         startButton.isHidden=false
         stopButton.isHidden=true
+        stopButton.tintColor=UIColor.orange
         setButtonProperty(button: exitBut, bw: CGFloat(bw), bh: CGFloat(bh), cx: CGFloat(Int(Int(ww)-10-bw/2)), cy:CGFloat(bpos))
     }
     func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat){
@@ -331,6 +333,25 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var soundIdstop:SystemSoundID = 1118
     var soundIdpint:SystemSoundID = 1109//1009//7
     
+    /*
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+     }
+     // Start Button Tapped
+     var playF:Bool=false
+     
+     @objc func onExitButtonTapped(){//このボタンのところにsegueでunwindへ行く
+         print(seekBarValue)
+     }*/
+    var counter:Int=0
+    @objc func update(tm: Timer) {
+        counter += 1
+        if counter%2==0{
+            stopButton.tintColor=UIColor.orange
+        }else{
+            stopButton.tintColor=UIColor.red
+        }
+    }
+    
     func onClickRecordButton() {
               if self.fileOutput.isRecording {
                 // stop recording
@@ -340,14 +361,22 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 }
                 fileOutput.stopRecording()
                 recordedFlag=true
-                stopButton.isEnabled=false
-                stopButton.tintColor = .gray
-                exitBut.backgroundColor=UIColor.darkGray
-                exitBut.isUserInteractionEnabled = true
+//                stopButton.isEnabled=false
+//                stopButton.tintColor = .gray
+//                exitBut.backgroundColor=UIColor.darkGray
+//                exitBut.isUserInteractionEnabled = true
+                if timer?.isValid == true {
+                    timer!.invalidate()
+                }
+                performSegue(withIdentifier: "fromRecordToMain", sender: self)
             } else {
                 //start recording
                 startButton.isHidden=true
                 stopButton.isHidden=false
+                exitBut.isHidden=true
+                fps240Button.isHidden=true
+                fps120Button.isHidden=true
+                timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
                 UIApplication.shared.isIdleTimerDisabled = true//スリープしない
                 if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
                     AudioServicesCreateSystemSoundID(soundUrl, &soundIdstart)
@@ -369,19 +398,19 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 //          recstart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
 //                self.recordButton.backgroundColor = .red
 //                self.recordButton.setTitle("Stop", for: .normal)
-                self.exitBut.isUserInteractionEnabled = false
-                exitBut.backgroundColor=UIColor.gray
-//                if maxFps==240.0{
-                    self.fps240Button.isUserInteractionEnabled = false
-//                    self.fps120Button.isUserInteractionEnabled = false
+//                self.exitBut.isUserInteractionEnabled = false
+//                exitBut.backgroundColor=UIColor.gray
+////                if maxFps==240.0{
+//                    self.fps240Button.isUserInteractionEnabled = false
+////                    self.fps120Button.isUserInteractionEnabled = false
+////                }
+//                if fps_non_120_240==2{
+//                    fps240Button.backgroundColor=UIColor.systemBlue
+//                    fps120Button.backgroundColor=UIColor.gray
+//                }else{
+//                    fps120Button.backgroundColor=UIColor.systemBlue
+//                    fps240Button.backgroundColor=UIColor.gray
 //                }
-                if fps_non_120_240==2{
-                    fps240Button.backgroundColor=UIColor.systemBlue
-                    fps120Button.backgroundColor=UIColor.gray
-                }else{
-                    fps120Button.backgroundColor=UIColor.systemBlue
-                    fps240Button.backgroundColor=UIColor.gray
-                }
             }
         }
 //    func setButtons(type:Bool){
@@ -458,7 +487,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 //    }
 //
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        recEnd=CFAbsoluteTimeGetCurrent()//あまり良くないようだ。
+//        recEnd=CFAbsoluteTimeGetCurrent()//あまり良くないようだ。
         print("終了ボタン、最大を超えた時もここを通る")
         //fileOutput.stopRecording()
         motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
