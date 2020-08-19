@@ -238,6 +238,8 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             }
         if maxFps==120{
             fps240Button.isHidden=true
+            fps120Button.backgroundColor=UIColor.gray
+            fps120Button.isEnabled=false
         }
         //startButton
         startButton.frame=CGRect(x:0,y:0,width:bh,height:bh)

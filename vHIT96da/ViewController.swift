@@ -1162,11 +1162,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawPath.removeAllPoints()
         var pointList = Array<CGPoint>()
         var pointList2 = Array<CGPoint>()
-        
+        let eyeVeloFilteredCnt=eyeVeloFiltered.count - 4
         let dx = 1// xの間隔
         //        print("vogPos5,vHITEye5,vHITeye",vogPos5.count,vHITEye5.count,vHITEye.count)
         for n in 1..<wI {
-            if startp + n < eyeVeloOrig.count-4 {//-20としてみたがエラー。関係なさそう。
+            if startp + n < eyeVeloFilteredCnt {//-20としてみたがエラー。関係なさそう。
                 let px = CGFloat(dx * n)
                 let py = eyePosFiltered[startp + n] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = eyeVeloFiltered[startp + n] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -1661,8 +1661,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // yの振幅
         //     let height = UInt32(h)/2
         // 点の配列を作る
+//        print(gyroMoved.count)
+        let eyeVeloFilteredCnt=eyeVeloFiltered.count - 4
+        let gyroMovedCnt=gyroMoved.count - 4
         for n in 1...(pointCount) {
-            if num + n < eyeVeloFiltered.count - 4{
+            if num + n < eyeVeloFilteredCnt && num + n < gyroMovedCnt {
                 let px = dx * CGFloat(n)
                 let py0 = eyeVeloFiltered[num + n] * CGFloat(eyeRatio)/230.0 + 60.0
                 if faceF==1{
