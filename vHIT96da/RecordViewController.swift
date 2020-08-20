@@ -199,7 +199,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
              fps_non_120_240=1
              self.fps120Button.backgroundColor = UIColor.blue
              self.fps240Button.backgroundColor = UIColor.darkGray
-
              initSession(fps: fps_non_120_240)
              UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
          }
