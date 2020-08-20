@@ -1350,7 +1350,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let vogPos_count=eyePosOrig.count
         let dx = 1// xの間隔
         for i in stn..<en {
-            if i < vogPos_count - 4{
+            if i < vogPos_count{
                 let px = CGFloat(dx * i)
                 let py = eyePosFiltered[i] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = eyeVeloFiltered[i] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
