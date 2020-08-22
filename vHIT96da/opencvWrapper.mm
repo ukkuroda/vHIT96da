@@ -21,8 +21,8 @@
         UIImageToMat(narrow_img, narrow_mat);
 
         // テンプレートマッチング
-        cv::cvtColor(wide_mat, wide_mat, CV_BGRA2GRAY);
-        cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
+//        cv::cvtColor(wide_mat, wide_mat, CV_BGRA2GRAY);
+//        cv::cvtColor(narrow_mat,narrow_mat,CV_BGR2GRAY);
           try
         {
             cv::matchTemplate(wide_mat, narrow_mat, return_mat, CV_TM_CCOEFF_NORMED);

@@ -226,10 +226,12 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         show1()
     }
     func showTexts(){
-        let str=vidDura[vidCurrent]
+        var str=vidDura[vidCurrent]
         let str1=str.components(separatedBy: "s")
-        videoDuration.text="sec" + "\n" + str1[0]
-        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFPS(videoPath:vidPath[vidCurrent])))
+//        videoDuration.text="sec" + "\n" + str1[0]
+//        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFPS(videoPath:vidPath[vidCurrent])))
+        videoFps.text=str1[0] + "sec/" + String(format: "%dfps",Int(getFPS(videoPath:vidPath[vidCurrent])))
+
     }
     func show1(){
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
