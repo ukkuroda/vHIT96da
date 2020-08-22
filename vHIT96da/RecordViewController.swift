@@ -29,6 +29,9 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var recStart = CFAbsoluteTimeGetCurrent()
 //    var recEnd=CFAbsoluteTimeGetCurrent()
 //    var recordButton: UIButton!
+//    var currTime:UILabel?
+    @IBOutlet weak var currentTime: UILabel!
+    
     @IBOutlet weak var fps240Button: UIButton!
     
     @IBOutlet weak var fps120Button: UIButton!
@@ -225,6 +228,20 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         let bh:Int=60
         let bpos=Int(wh)-bh/2-10
 
+//        currTime = UILabel(frame:CGRect(x:ww-150,y:wh-140,width:140,height:30))
+//        currTime?.backgroundColor = UIColor.white
+//        currTime?.layer.masksToBounds = true
+//        currTime?.layer.cornerRadius = 5
+//        currTime?.textColor = UIColor.black
+//        currTime?.textAlignment = .center
+//        currTime!.text = String(format:"%.2f/%.2f",0.0,duration)
+//        view.addSubview(currTime!)
+        currentTime.frame   = CGRect(x:0,   y: 0 ,width: Int(Double(bw)*1.5), height: bh/2)
+        currentTime.layer.position=CGPoint(x:Int(ww)/2,y:Int(wh)-Int(Double(bh)*2.5))
+        currentTime.isHidden=true
+        currentTime.layer.masksToBounds = true
+        currentTime.layer.cornerRadius = 5
+        
         setButtonProperty(button: fps240Button, bw: CGFloat(bw), bh: CGFloat(bh), cx:CGFloat(10+bw)/2 , cy: CGFloat(bpos-10-bh))
         setButtonProperty(button: fps120Button, bw: CGFloat(bw), bh: CGFloat(bh), cx:CGFloat(10+bw)/2 , cy: CGFloat(bpos))
 
@@ -346,6 +363,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var counter:Int=0
     @objc func update(tm: Timer) {
         counter += 1
+        currentTime.text=String(format:"%02d",counter/60) + ":" + String(format: "%02d",counter%60)
         if counter%2==0{
             stopButton.tintColor=UIColor.orange
         }else{
@@ -374,6 +392,8 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 //start recording
                 startButton.isHidden=true
                 stopButton.isHidden=false
+                currentTime.isHidden=false
+
                 exitBut.isHidden=true
                 fps240Button.isHidden=true
                 fps120Button.isHidden=true

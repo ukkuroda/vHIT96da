@@ -579,6 +579,15 @@
                                     <action selector="onClick240fps:" destination="eZj-22-ehM" eventType="touchUpInside" id="CpG-pp-uGn"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.40000000000000002" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Oa-WH-xL2">
+                                <rect key="frame" x="113" y="336" width="83" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <gestureRecognizers/>
@@ -590,6 +599,7 @@
                     <navigationItem key="navigationItem" id="P43-38-M0S"/>
                     <connections>
                         <outlet property="cameraView" destination="9sR-p0-hC8" id="uLr-D8-lcZ"/>
+                        <outlet property="currentTime" destination="6Oa-WH-xL2" id="Tds-3J-cr1"/>
                         <outlet property="exitBut" destination="NG3-VA-Sxk" id="VBu-CG-sZA"/>
                         <outlet property="fps120Button" destination="JIC-Av-JhT" id="uJe-i9-bVo"/>
                         <outlet property="fps240Button" destination="iC2-bZ-his" id="5Nr-9W-9R5"/>
