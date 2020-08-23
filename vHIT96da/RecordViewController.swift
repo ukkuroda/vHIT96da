@@ -294,7 +294,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         }
         // ファイル出力設定
         fileOutput = AVCaptureMovieFileOutput()
-        fileOutput.maxRecordedDuration = CMTimeMake(value: 3*60, timescale: 1)//最長録画時間
+        fileOutput.maxRecordedDuration = CMTimeMake(value:5*60, timescale: 1)//最長録画時間
         session.addOutput(fileOutput)
         
         let videoLayer : AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -326,7 +326,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         }
         // ファイル出力設定
         fileOutput = AVCaptureMovieFileOutput()
-        fileOutput.maxRecordedDuration = CMTimeMake(value: 3*60, timescale: 1)//最長録画時間
+        fileOutput.maxRecordedDuration = CMTimeMake(value: 5*60, timescale: 1)//最長録画時間
         session.addOutput(fileOutput)
         
         let videoLayer : AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -351,15 +351,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var soundIdstop:SystemSoundID = 1118
     var soundIdpint:SystemSoundID = 1109//1009//7
     
-    /*
-        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
-     }
-     // Start Button Tapped
-     var playF:Bool=false
-     
-     @objc func onExitButtonTapped(){//このボタンのところにsegueでunwindへ行く
-         print(seekBarValue)
-     }*/
     var counter:Int=0
     @objc func update(tm: Timer) {
         counter += 1
@@ -374,20 +365,17 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     func onClickRecordButton() {
               if self.fileOutput.isRecording {
                 // stop recording
-                if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
-                    AudioServicesCreateSystemSoundID(soundUrl, &soundIdstop)
-                    AudioServicesPlaySystemSound(soundIdstop)
-                }
+//                if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
+//                    AudioServicesCreateSystemSoundID(soundUrl, &soundIdstop)
+//                    AudioServicesPlaySystemSound(soundIdstop)
+//                }
+                print("ストップボタンを押した。")
                 fileOutput.stopRecording()
-                recordedFlag=true
-//                stopButton.isEnabled=false
-//                stopButton.tintColor = .gray
-//                exitBut.backgroundColor=UIColor.darkGray
-//                exitBut.isUserInteractionEnabled = true
-                if timer?.isValid == true {
-                    timer!.invalidate()
-                }
-                performSegue(withIdentifier: "fromRecordToMain", sender: self)
+//                recordedFlag=true
+//                if timer?.isValid == true {
+//                    timer!.invalidate()
+//                }
+//                performSegue(withIdentifier: "fromRecordToMain", sender: self)
             } else {
                 //start recording
                 startButton.isHidden=true
@@ -416,103 +404,22 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
                 print("録画開始 : \(filePath!)")
                 fileOutput.startRecording(to: fileURL as URL, recordingDelegate: self)
-                //          recstart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
-//                self.recordButton.backgroundColor = .red
-//                self.recordButton.setTitle("Stop", for: .normal)
-//                self.exitBut.isUserInteractionEnabled = false
-//                exitBut.backgroundColor=UIColor.gray
-////                if maxFps==240.0{
-//                    self.fps240Button.isUserInteractionEnabled = false
-////                    self.fps120Button.isUserInteractionEnabled = false
-////                }
-//                if fps_non_120_240==2{
-//                    fps240Button.backgroundColor=UIColor.systemBlue
-//                    fps120Button.backgroundColor=UIColor.gray
-//                }else{
-//                    fps120Button.backgroundColor=UIColor.systemBlue
-//                    fps240Button.backgroundColor=UIColor.gray
-//                }
             }
         }
-//    func setButtons(type:Bool){
-//
-//    }
-    
-//    @objc func onClickRecordButton(sender: UIButton) {
-//          if self.fileOutput.isRecording {
-//            // stop recording
-//            if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
-//                AudioServicesCreateSystemSoundID(soundUrl, &soundIdstop)
-//                AudioServicesPlaySystemSound(soundIdstop)
-//            }
-//            fileOutput.stopRecording()
-//            //           motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
-//            recordedFlag=true
-////            startButton.isHidden=true
-//            stopButton.isEnabled=false
-//            stopButton.tintColor = .gray
-//            self.recordButton.backgroundColor = .gray
-//            if fps_non_120_240==2{
-////                self.recordButton.setTitle("240 done", for: .normal)
-//            }else{
-////                self.recordButton.setTitle("120 done", for: .normal)
-//            }
-////            self.recordButton.isEnabled=false
-//
-//            exitBut.isUserInteractionEnabled = true
-//
-//        } else {
-//            //start recording
-//            startButton.isHidden=true
-//            stopButton.isHidden=false
-//            UIApplication.shared.isIdleTimerDisabled = true//スリープしない
-//            //UIApplication.shared.isIdleTimerDisabled = false//スリープする
-////            if self.recordButton.backgroundColor == .red{//最大録画時間を超え止まっている時
-////                self.recordButton.backgroundColor = .gray
-////                if fps_non_120_240==2{
-////                    self.recordButton.setTitle("240 done", for: .normal)
-////                }else{
-////                    self.recordButton.setTitle("120 done", for: .normal)
-////                }
-////                self.recordButton.isEnabled=false
-////                exitBut.isUserInteractionEnabled = true
-////                recordedFlag=true
-////                return
-////            }
-//            if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
-//                AudioServicesCreateSystemSoundID(soundUrl, &soundIdstart)
-//                AudioServicesPlaySystemSound(soundIdstart)
-//            }
-//
-//            let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-//            let documentsDirectory = paths[0] as String
-//            // 現在時刻をファイル名に付与することでファイル重複を防ぐ : "myvideo-20190101125900.mp4" な形式になる
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy-MM-dd_HH:mm:ss"
-//            filePath = "vHIT96da\(formatter.string(from: Date())).MOV"
-//            let filefullPath="\(documentsDirectory)/" + filePath!
-//            let fileURL = NSURL(fileURLWithPath: filefullPath)
-//            setMotion()//作動中ならそのまま戻る
-//            recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
-//            print("録画開始 : \(filePath!)")
-//            fileOutput.startRecording(to: fileURL as URL, recordingDelegate: self)
-//            //          recstart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
-//            self.recordButton.backgroundColor = .red
-//            self.recordButton.setTitle("Stop", for: .normal)
-//            self.exitBut.isUserInteractionEnabled = false
-//            if maxFps==240.0{
-//                self.fps240Button.isUserInteractionEnabled = false
-//                self.fps120Button.isUserInteractionEnabled = false
-//            }
-//        }
-//    }
-//
+
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-//        recEnd=CFAbsoluteTimeGetCurrent()//あまり良くないようだ。
+        if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
+             AudioServicesCreateSystemSoundID(soundUrl, &soundIdstop)
+             AudioServicesPlaySystemSound(soundIdstop)
+         }
         print("終了ボタン、最大を超えた時もここを通る")
-        //fileOutput.stopRecording()
         motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
-        //recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
+
+         recordedFlag=true
+         if timer?.isValid == true {
+             timer!.invalidate()
+         }
+         performSegue(withIdentifier: "fromRecordToMain", sender: self)
     }
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection]) {
         recStart=CFAbsoluteTimeGetCurrent()
