@@ -226,11 +226,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         show1()
     }
     func showTexts(){
-        var str=vidDura[vidCurrent]
+        let str=vidDura[vidCurrent]
         let str1=str.components(separatedBy: "s")
-//        videoDuration.text="sec" + "\n" + str1[0]
-//        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFPS(videoPath:vidPath[vidCurrent])))
-        videoFps.text=str1[0] + "sec/" + String(format: "%dfps",Int(getFPS(videoPath:vidPath[vidCurrent])))
+        let roundFps:Int = Int(round(getFPS(videoPath:vidPath[vidCurrent])))
+        videoFps.text=str1[0] + "sec/" + String(format: "%dfps",roundFps)
 
     }
     func show1(){
@@ -871,7 +870,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
         CGeye = context.createCGImage(ciImage, from: eyeR)!
         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-        wakuS_image.frame=CGRect(x:5,y:39,width: eyeR.size.width*5,height: eyeR.size.height*5)
+        wakuS_image.frame=CGRect(x:5,y:50,width: eyeR.size.width*5,height: eyeR.size.height*5)
         wakuS_image.layer.borderColor = UIColor.green.cgColor
         wakuS_image.layer.borderWidth = 1.0
         wakuS_image.backgroundColor = UIColor.clear
