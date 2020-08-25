@@ -228,8 +228,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func showTexts(){
         let str=vidDura[vidCurrent]
         let str1=str.components(separatedBy: "s")
-        videoDuration.text="sec" + "\n" + str1[0]
-        videoFps.text="fps" + "\n" + String(format: "%d",Int(getFPS(videoPath:vidPath[vidCurrent])))
+        let roundFps:Int = Int(round(getFPS(videoPath:vidPath[vidCurrent])))
+        videoFps.text=str1[0] + "sec/" + String(format: "%dfps",roundFps)
+
     }
     func show1(){
         vidImg[vidCurrent]=getframeImage(frameNumber: 0)
@@ -869,7 +870,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
         CGeye = context.createCGImage(ciImage, from: eyeR)!
         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-        wakuS_image.frame=CGRect(x:5,y:39,width: eyeR.size.width*5,height: eyeR.size.height*5)
+        wakuS_image.frame=CGRect(x:5,y:50,width: eyeR.size.width*5,height: eyeR.size.height*5)
         wakuS_image.layer.borderColor = UIColor.green.cgColor
         wakuS_image.layer.borderWidth = 1.0
         wakuS_image.backgroundColor = UIColor.clear
@@ -1162,11 +1163,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         drawPath.removeAllPoints()
         var pointList = Array<CGPoint>()
         var pointList2 = Array<CGPoint>()
-        
+        let eyeVeloFilteredCnt=eyeVeloFiltered.count
         let dx = 1// xの間隔
         //        print("vogPos5,vHITEye5,vHITeye",vogPos5.count,vHITEye5.count,vHITEye.count)
         for n in 1..<wI {
-            if startp + n < eyeVeloOrig.count-4 {//-20としてみたがエラー。関係なさそう。
+            if startp + n < eyeVeloFilteredCnt {//-20としてみたがエラー。関係なさそう。
                 let px = CGFloat(dx * n)
                 let py = eyePosFiltered[startp + n] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = eyeVeloFiltered[startp + n] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -1350,7 +1351,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let vogPos_count=eyePosOrig.count
         let dx = 1// xの間隔
         for i in stn..<en {
-            if i < vogPos_count - 4{
+            if i < vogPos_count{
                 let px = CGFloat(dx * i)
                 let py = eyePosFiltered[i] * CGFloat(posRatio)/20.0 + (h-240)/4 + 120
                 let py2 = eyeVeloFiltered[i] * CGFloat(veloRatio)/10.0 + (h-240)*3/4 + 120
@@ -1661,8 +1662,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         // yの振幅
         //     let height = UInt32(h)/2
         // 点の配列を作る
+//        print(gyroMoved.count)
+        let eyeVeloFilteredCnt=eyeVeloFiltered.count
+        let gyroMovedCnt=gyroMoved.count
         for n in 1...(pointCount) {
-            if num + n < eyeVeloFiltered.count - 4{
+            if num + n < eyeVeloFilteredCnt && num + n < gyroMovedCnt {
                 let px = dx * CGFloat(n)
                 let py0 = eyeVeloFiltered[num + n] * CGFloat(eyeRatio)/230.0 + 60.0
                 if faceF==1{
@@ -2342,6 +2346,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
         //     if tempCalcflag == false{
+   
         if let vc = segue.source as? ParametersViewController {
             let ParametersViewController:ParametersViewController = vc
             // segueから遷移先のResultViewControllerを取得する
