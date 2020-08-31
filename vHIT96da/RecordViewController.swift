@@ -401,7 +401,6 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 let filefullPath="\(documentsDirectory)/" + filePath!
                 let fileURL = NSURL(fileURLWithPath: filefullPath)
                 setMotion()//作動中ならそのまま戻る
-                recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
                 print("録画開始 : \(filePath!)")
                 fileOutput.startRecording(to: fileURL as URL, recordingDelegate: self)
             }
@@ -409,22 +408,21 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
-             AudioServicesCreateSystemSoundID(soundUrl, &soundIdstop)
-             AudioServicesPlaySystemSound(soundIdstop)
-         }
+            AudioServicesCreateSystemSoundID(soundUrl, &soundIdstop)
+            AudioServicesPlaySystemSound(soundIdstop)
+        }
         print("終了ボタン、最大を超えた時もここを通る")
         motionManager.stopDeviceMotionUpdates()//ここで止めたが良さそう。
-
-         recordedFlag=true
-         if timer?.isValid == true {
-             timer!.invalidate()
-         }
-         performSegue(withIdentifier: "fromRecordToMain", sender: self)
+        
+        recordedFlag=true
+        if timer?.isValid == true {
+            timer!.invalidate()
+        }
+        performSegue(withIdentifier: "fromRecordToMain", sender: self)
     }
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection]) {
         recStart=CFAbsoluteTimeGetCurrent()
         print("録画開始")
         //fileOutput.stopRecording()
-        //recStart = CFAbsoluteTimeGetCurrent()//何処が良いのか?
-    }
+     }
 }
