@@ -163,13 +163,18 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     }
     func setTexts(){
         let ww:CGFloat=view.bounds.width
-//        let wh:CGFloat=view.bounds.height
+        let wh:CGFloat=view.bounds.height
+//        print("windowHeight",wh)//8:667 x:812 se:568
         let bw:CGFloat=45
         let bh:CGFloat=25
         let bh1=bh+7
+  
         let tw:CGFloat=ww-bw-10
 //        let vhit_h:CGFloat=ww/4
-        let by:CGFloat=20//vhit_h+20
+        var by:CGFloat=20//vhit_h+20
+        if wh>666{//iPhone8の縦以上の大きさの場合
+              by=60
+        }
         let x1:CGFloat=3
         let x2=x1+bw+5
 //        markText.isHidden = false
