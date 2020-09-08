@@ -54,6 +54,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     @IBOutlet weak var faceButton: UIButton!
     @IBOutlet weak var eyeButton: UIButton!
     
+    @IBOutlet weak var damyBottom: UILabel!
     @IBAction func wakuToFace(_ sender: Any) {
         rectType=1
         dispWakus()
@@ -870,7 +871,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         UIfac = UIImage.init(cgImage: CGfac, scale:1.0, orientation:orientation)
         CGeye = context.createCGImage(ciImage, from: eyeR)!
         UIeye = UIImage.init(cgImage: CGeye, scale:1.0, orientation:orientation)
-        wakuS_image.frame=CGRect(x:5,y:50,width: eyeR.size.width*5,height: eyeR.size.height*5)
+        let wakuY=videoFps.frame.origin.y+videoFps.frame.size.height+5
+//        print(videoFps.frame,wakuY)
+        wakuS_image.frame=CGRect(x:5,y:wakuY,width: eyeR.size.width*5,height: eyeR.size.height*5)
         wakuS_image.layer.borderColor = UIColor.green.cgColor
         wakuS_image.layer.borderWidth = 1.0
         wakuS_image.backgroundColor = UIColor.clear
@@ -936,9 +939,15 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     func printR(str:String,cnt:Int,max:Double,rct1:CGRect,rct2:CGRect){
         print("\(str)",String(format: "%d %.2f-%.0f,%.0f %.0f,%.0f",cnt,max,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
     }
+    override func viewDidAppear(_ animated: Bool) {
+        dispWakus()
+        dispWakuImages()
+        setButtons_first()
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         //      print("willappear")
+       // dispWakuImages()ここでは効かない
         //        dispWakus()ここでは効かない
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -2090,7 +2099,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         boxHeight=view.bounds.height*18/50
         mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
         getUserDefaults()
-        setButtons_first()
+//        setButtons_first()
         setButtons(mode: true)
         stopButton.isHidden = true
         camera_alert()
@@ -2099,20 +2108,24 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         showCurrent()
         makeBoxies()//three boxies of gyro vHIT vog
         showBoxies(f: false)//isVHITに応じてviewを表示
-        dispWakus()
-        dispWakuImages()
+//        dispWakus()
         //        vogImage = drawWakulines(width:mailWidth*18,height:mailHeight)//枠だけ
         self.setNeedsStatusBarAppearanceUpdate()
-        prefersHomeIndicatorAutoHidden
+//        prefersHomeIndicatorAutoHidden
+//        dispWakuImages()
+        
     }
     func setButtons_first(){
         let ww=view.bounds.width
         let wh=view.bounds.height
         var bw=(ww-30)/4//vhit,camera,vogのボタンの幅
         let distance:CGFloat=4//最下段のボタンとボタンの距離
+        let bottomY=damyBottom.frame.minY
+//        print("bottomY",bottomY)
         let bh:CGFloat=(ww-20-6*distance)/7//最下段のボタンの高さ、幅と同じ
-        let bh1=wh-10-bh-5-bh/2
-        let bh2=bh1-5-bh
+        let bh1=bottomY-5-bh/2-bh//wh-10-bh-5-bh/2
+//        print("bottom",damyBottom.frame)
+        let bh2=bottomY-10-bh/2-2*bh//bh1-5-bh
         backVideoOutlet.layer.cornerRadius = 5
         nextVideoOutlet.layer.cornerRadius = 5
         setButtonProperty(button:cameraButton,bw:bw*2,bh:bh,cx:ww/2,cy:bh1)
@@ -2124,7 +2137,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
 
         bw=bh//bhは冒頭で決めている。上２段のボタンの高さと同じ。
         let bwd=bw+distance
-        let bh0=wh-10-bw/2
+        let bh0=bottomY-bh/2//wh-10-bw/2
         setButtonProperty(button:listButton,bw:bw,bh:bh,cx:10+bw/2+bwd*0,cy:bh0)
         setButtonProperty(button:saveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*1,cy:bh0)
         setButtonProperty(button:waveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*2,cy:bh0)
