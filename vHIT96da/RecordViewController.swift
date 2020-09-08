@@ -43,6 +43,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         onClickRecordButton()
     }
     
+    @IBOutlet weak var damyBottom: UILabel!
     @IBAction func stopRecord(_ sender: Any) {
         onClickRecordButton()
     }
@@ -192,8 +193,18 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             UserDefaults.standard.set(fps_non_120_240,forKey: "fps_non_120_240")
             print("生まれて初めての時だけ、通るところのはず")//ここでmaxFpsを設定
         }
-        setButtons(type: true)
+//        setButtons(type: true)
+        startButton.isHidden=true
+        stopButton.isHidden=true
+        currentTime.isHidden=true
+        
+        fps240Button.isHidden=true
+        fps120Button.isHidden=true
+        
         print("maxFps,fps2:",maxFps,fps_non_120_240)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        setButtons(type: true)
     }
     @IBAction func onClick120fps(_ sender: Any) {
         if fps_non_120_240==1{
@@ -221,21 +232,14 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     
     func setButtons(type:Bool){
         // recording button
+        
         let ww=view.bounds.width
-        let wh=view.bounds.height
+        let wh=damyBottom.frame.maxY// view.bounds.height
         let bw=Int(ww/4)-8
         //        let bd=Int(ww/5/4)
         let bh:Int=60
         let bpos=Int(wh)-bh/2-10
 
-//        currTime = UILabel(frame:CGRect(x:ww-150,y:wh-140,width:140,height:30))
-//        currTime?.backgroundColor = UIColor.white
-//        currTime?.layer.masksToBounds = true
-//        currTime?.layer.cornerRadius = 5
-//        currTime?.textColor = UIColor.black
-//        currTime?.textAlignment = .center
-//        currTime!.text = String(format:"%.2f/%.2f",0.0,duration)
-//        view.addSubview(currTime!)
         currentTime.frame   = CGRect(x:0,   y: 0 ,width: Int(Double(bw)*1.5), height: bh/2)
         currentTime.layer.position=CGPoint(x:Int(ww)/2,y:Int(wh)-Int(Double(bh)*2.5))
         currentTime.isHidden=true
@@ -253,9 +257,13 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 self.fps240Button.backgroundColor = UIColor.darkGray
             }
         if maxFps==120{
-            fps240Button.isHidden=true
+//            fps240Button.isHidden=true
             fps120Button.backgroundColor=UIColor.gray
             fps120Button.isEnabled=false
+        }else{
+            fps240Button.isHidden=false
+//            fps120Button.isEnabled=false
+            fps120Button.isHidden=false
         }
         //startButton
         startButton.frame=CGRect(x:0,y:0,width:bh,height:bh)

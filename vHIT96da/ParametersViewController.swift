@@ -17,6 +17,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var defaultButton: UIButton!
     
+    @IBOutlet weak var damyTop: UILabel!
     //@IBAction func onBut(_ sender: UIButton) {
 //        if okpMode==0{
 //
@@ -162,6 +163,7 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         }
     }
     func setTexts(){
+        let topY:CGFloat=0//damyTop.frame.maxY
         let ww:CGFloat=view.bounds.width
         let wh:CGFloat=view.bounds.height
 //        print("windowHeight",wh)//8:667 x:812 se:568
@@ -200,28 +202,28 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
             gyroText.isHidden = true
             paraText2.text = "VOG 波形表示高さの調整"
             paraText6.text="角膜上反射光源の移動（検出）幅"
-            paraText2.frame   = CGRect(x:x2,   y: bh1*1.5 ,width: tw, height: bh)
-            paraText3.frame   = CGRect(x:x2,   y: bh1*3 ,width: tw, height: bh)
-            paraText4.frame   = CGRect(x:x2,   y: bh1*4 ,width: tw, height: bh)
-            paraText6.frame   = CGRect(x:x2,   y: bh1*5 ,width: tw, height: bh)
-            ratio1input.frame = CGRect(x:x1,y: bh1*3 ,width: bw, height: bh)
-            ratio2input.frame = CGRect(x:x1,y: bh1*4 ,width: bw, height: bh)
-            eyeBinput.frame = CGRect(x:x1,y: bh1*5 ,width: bw, height: bh)
+            paraText2.frame   = CGRect(x:x2,   y: topY+bh1*1.5 ,width: tw, height: bh)
+            paraText3.frame   = CGRect(x:x2,   y: topY+bh1*3 ,width: tw, height: bh)
+            paraText4.frame   = CGRect(x:x2,   y: topY+bh1*4 ,width: tw, height: bh)
+            paraText6.frame   = CGRect(x:x2,   y: topY+bh1*5 ,width: tw, height: bh)
+            ratio1input.frame = CGRect(x:x1,y: topY+bh1*3 ,width: bw, height: bh)
+            ratio2input.frame = CGRect(x:x1,y: topY+bh1*4 ,width: bw, height: bh)
+            eyeBinput.frame = CGRect(x:x1,y: topY+bh1*5 ,width: bw, height: bh)
         }else{
-            paraText1.frame = CGRect(x:x2,   y: by ,width: tw, height: bh)
-            paraText2.frame = CGRect(x:x2,   y: by+bh1 ,width: tw, height: bh)
-            paraText3.frame = CGRect(x:x2,   y: by+bh1*2 ,width: tw, height: bh)
-            paraText4.frame = CGRect(x:x2,   y: by+bh1*3 ,width: tw, height: bh)
-            paraText6.frame = CGRect(x:x2,   y: by+bh1*4 ,width: tw, height: bh)
-            markText.frame  = CGRect(x:x2+4, y: by+bh1*5+3,width:tw,height:bh)
-            vhitpng.frame   = CGRect(x:0,    y: by+bh1*6+10 ,width: ww, height: ww*9/32)
-            gyroText.frame = CGRect(x:5,     y: by+bh1*6+25+ww/5,width:ww-10,height:bh*4)
-            waveWidthinput.frame = CGRect(x:x1,y: by,width: bw, height: bh)
-            widthRangeinput.frame = CGRect(x:x1,y:by+bh1 ,width: bw, height: bh)
-            ratio1input.frame = CGRect(x:x1,y: by+bh1*2 ,width: bw, height: bh)
-            ratio2input.frame = CGRect(x:x1,y: by+bh1*3 ,width: bw, height: bh)
-            eyeBinput.frame = CGRect(x:x1,y: by+bh1*4 ,width: bw, height: bh)
-            faceFbutton.frame =  CGRect(x:x1,y: by+bh1*5 ,width: bw, height: bh)
+            paraText1.frame = CGRect(x:x2,   y: topY+by ,width: tw, height: bh)
+            paraText2.frame = CGRect(x:x2,   y: topY+by+bh1 ,width: tw, height: bh)
+            paraText3.frame = CGRect(x:x2,   y: topY+by+bh1*2 ,width: tw, height: bh)
+            paraText4.frame = CGRect(x:x2,   y: topY+by+bh1*3 ,width: tw, height: bh)
+            paraText6.frame = CGRect(x:x2,   y: topY+by+bh1*4 ,width: tw, height: bh)
+            markText.frame  = CGRect(x:x2+4, y: topY+by+bh1*5+3,width:tw,height:bh)
+            vhitpng.frame   = CGRect(x:0,    y: topY+by+bh1*6+10 ,width: ww, height: ww*9/32)
+            gyroText.frame = CGRect(x:5,     y: topY+by+bh1*6+25+ww/5,width:ww-10,height:bh*4)
+            waveWidthinput.frame = CGRect(x:x1,y: topY+by,width: bw, height: bh)
+            widthRangeinput.frame = CGRect(x:x1,y:topY+by+bh1 ,width: bw, height: bh)
+            ratio1input.frame = CGRect(x:x1,y: topY+by+bh1*2 ,width: bw, height: bh)
+            ratio2input.frame = CGRect(x:x1,y: topY+by+bh1*3 ,width: bw, height: bh)
+            eyeBinput.frame = CGRect(x:x1,y: topY+by+bh1*4 ,width: bw, height: bh)
+            faceFbutton.frame =  CGRect(x:x1,y: topY+by+bh1*5 ,width: bw, height: bh)
         }
     }
     override func viewDidLoad() {
@@ -246,6 +248,9 @@ class ParametersViewController: UIViewController, UITextFieldDelegate {
         defaultButton.layer.cornerRadius = 5
         exitButton.layer.cornerRadius = 5
         keyDown.isHidden = true
+    }
+    override func viewDidAppear(_ animated: Bool) {
+//        setTexts()
     }
     func setKeydown(){
         //se:640(568) 6s:750(667) 7plus:1080(736) x:1125(812)
