@@ -77,6 +77,9 @@ class PlayViewController: UIViewController {
         setButtons()
     }
     @objc func onExitButtonTapped(){//このボタンのところにsegueでunwindへ行く
+        if seekBarValue>duration-0.5{
+            seekBarValue=duration-0.5//これがないとフレームが読めないことがある。
+        }
         self.performSegue(withIdentifier: "mainFromPlay", sender: self)
     }
     

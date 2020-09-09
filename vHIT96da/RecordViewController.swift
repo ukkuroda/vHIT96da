@@ -260,6 +260,7 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 //            fps240Button.isHidden=true
             fps120Button.backgroundColor=UIColor.gray
             fps120Button.isEnabled=false
+            fps120Button.isHidden=false
         }else{
             fps240Button.isHidden=false
 //            fps120Button.isEnabled=false
