@@ -1528,7 +1528,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str2=str1[1].components(separatedBy: ".MOV")
         let str3=str2[0] + " (\(vidPath.count-1))"
         vidDate.append(str3)
-        print("date",path,str3)
+//        print("date",path,str3)
     }
 //    func getDura(path:String)->Double{//最新のビデオのデータを得る.recordから飛んでくる。
 //        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -2097,11 +2097,14 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplication.willEnterForegroundNotification, object: nil)
         // Do any additional setup after loading the view, typically from a nib.
         //dispDoc()//ドキュメントにあるファイルをprint
-        mailWidth=2400//240*10
-        boxHeight=view.bounds.height*18/50
-        mailHeight=1600//240*10*2/3//0.36*view.bounds.height/view.bounds.width
         //機種にょって異なるVOG結果サイズだったのを2400*1600に統一した
-        //vHIT結果サイズは500*200
+        mailWidth=2400//240*10
+        mailHeight=1600//240*10*2/3//0.36*view.bounds.height/view.bounds.width
+        boxHeight=view.bounds.width*16/24//VOG
+        //         print("height:",view.bounds.height)
+        //iPhone11:896 iPodTouch:568 se:568
+//        boxHeight=568*18/50//view.bounds.height*18/50
+         //vHIT結果サイズは500*200
         getUserDefaults()
 //        setButtons_first()
         setButtons(mode: true)
@@ -2298,8 +2301,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 str += files[i] + ","
             }
             let str2=str.dropLast()
-            print("before",str)
-            print("after",str2)
+//            print("before",str)
+//            print("after",str2)
             return String(str2)
         } catch {
             return ""
