@@ -975,19 +975,20 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
     
     func makeBoxies(){
         if gyroboxView == nil {//vHITboxView vogboxView
-            var boxImage = makeBox(width: view.bounds.width, height: view.bounds.width*200/500)
+            let vw=view.bounds.width
+            var boxImage = makeBox(width: vw, height: vw*200/500)
             vHITboxView = UIImageView(image: boxImage)
-            vHITboxView?.center = CGPoint(x:view.bounds.width/2,y:160)// view.center
+            vHITboxView?.center = CGPoint(x:vw/2,y:160)// view.center
             view.addSubview(vHITboxView!)
-            boxImage = makeBox(width: self.view.bounds.width, height: 180)
+            boxImage = makeBox(width: vw, height: 180)
             gyroboxView = UIImageView(image: boxImage)
-            gyroboxView?.center = CGPoint(x:view.bounds.width/2,y:340)
+            gyroboxView?.center = CGPoint(x:vw/2,y:340)
             view.addSubview(gyroboxView!)
             
-            boxImage = makeBox(width: view.bounds.width, height:boxHeight)
+            boxImage = makeBox(width: vw, height:boxHeight)
             vogboxView = UIImageView(image: boxImage)
             box1ys=view.bounds.height/2
-            vogboxView?.center = CGPoint(x:view.bounds.width/2,y:box1ys)
+            vogboxView?.center = CGPoint(x:vw/2,y:box1ys)
             view.addSubview(vogboxView!)
         }
     }
@@ -1527,6 +1528,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let str2=str1[1].components(separatedBy: ".MOV")
         let str3=str2[0] + " (\(vidPath.count-1))"
         vidDate.append(str3)
+        print("date",path,str3)
     }
 //    func getDura(path:String)->Double{//最新のビデオのデータを得る.recordから飛んでくる。
 //        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -2095,9 +2097,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.viewWillEnterForeground(_:)), name: NSNotification.Name.UIApplication.willEnterForegroundNotification, object: nil)
         // Do any additional setup after loading the view, typically from a nib.
         //dispDoc()//ドキュメントにあるファイルをprint
-        mailWidth=240*10
+        mailWidth=2400//240*10
         boxHeight=view.bounds.height*18/50
-        mailHeight=240*10*0.36*view.bounds.height/view.bounds.width
+        mailHeight=1600//240*10*2/3//0.36*view.bounds.height/view.bounds.width
+        //機種にょって異なるVOG結果サイズだったのを2400*1600に統一した
+        //vHIT結果サイズは500*200
         getUserDefaults()
 //        setButtons_first()
         setButtons(mode: true)
@@ -2294,6 +2298,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
                 str += files[i] + ","
             }
             let str2=str.dropLast()
+            print("before",str)
+            print("after",str2)
             return String(str2)
         } catch {
             return ""
