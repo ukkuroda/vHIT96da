@@ -110,10 +110,11 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
     @IBAction func mailOne(_ sender: Any) {
         let photoAsset = fetchResult[actRow]
         imageManager.requestImage(for: photoAsset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: nil) { (image, info) -> Void in
-            //let imageView = UIImageView(image: image)
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd_HH:mm:ss"
             let str="\(formatter.string(from: Date())).jpg"
+//            print(image?.imageAsset as Any)
+//            print(image?.size.width)
 //            let str = String(describing:photoAsset)
 //            let str1 = str.components(separatedBy: " ")
 //            let str2 = str1[6].components(separatedBy: "=")//creationdate=2018-03-02
@@ -121,7 +122,19 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
 //            let str4 = str1[7].components(separatedBy: ":")//23:50:28
 //            let str5 = str3[0]+str3[1]+str3[2]+"-"+str4[0]+str4[1]+str4[2]+".jpg"
 //            print("image-width",image?.size.width)
-            if((image!.size.width)<400.0){
+        
+//            do {
+//                try! image!.size.width<400.0 {
+//
+//                }
+//            } catch {
+//                return// エラー処理
+//            }
+//
+            if image?.imageAsset == nil{//icloudの写真はnil
+                return
+            }
+            if image!.size.width<400.0 {
                 //ios13.2でここを２回通るようになった。なぜか縮小サイズで通る？そのときは無視。
                 return
             }
@@ -186,7 +199,11 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         collectionView.collectionViewLayout = layout
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: kCellReuseIdentifier)
     }
-    
+    /*
+     PHAssetCollectionSubtypeAlbumMyPhotoStream(PHAssetCollectionTypeAlbumと一緒に) - フォトストリームのアルバムを取得します。
+
+     PHAssetCollectionSubtypeSmartAlbumUserLibrary (PHAssetCollectionTypeSmartAlbum)
+     */
     func loadPhotos() {
         let options = PHFetchOptions()
         options.sortDescriptors = [
@@ -195,9 +212,11 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         //fetchResult = PHAsset.fetchAssets(with: .image, options: options)
         fetchResult = []
         // 画像をすべて取得
+        
         let assets: PHFetchResult = PHAsset.fetchAssets(with: .image, options: options)
         assets.enumerateObjects { (asset, index, stop) -> Void in
             let str = String(describing:asset)
+//            print ("asset",str)
             if self.isVHIT==true{
                 if str.contains("500x200") {//vhit
 //                    print("500x200",str)
@@ -206,7 +225,8 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
             }else{//vog
                 if str.contains("2400x1600")//vog
                 {
-//                    print("2400x",str)
+//                    print("2400x1600:",asset as PHAsset)
+//                    print("2400x1600:",asset)
                     self.fetchResult.append(asset as PHAsset)
                 }
             }
@@ -219,9 +239,9 @@ class ImagePickerViewController: UIViewController, MFMailComposeViewControllerDe
         //     let toRecipients = [""]
         mailViewController.mailComposeDelegate = self
         if isVHIT==true{
-        mailViewController.setSubject("vHIT96da")
+        mailViewController.setSubject("vHIT")
         }else{
-           mailViewController.setSubject("VOG96da")
+           mailViewController.setSubject("VOG")
         }//        mailViewController.setMessageBody("By vHIT96da", isHTML: false)
         let imageDataq = videoView.jpegData(compressionQuality: 1.0)
         mailViewController.addAttachmentData(imageDataq!, mimeType: "image/jpg", fileName: imageName)
