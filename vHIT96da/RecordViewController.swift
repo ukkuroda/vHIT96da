@@ -267,10 +267,10 @@ class RecordViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             fps120Button.isHidden=false
         }
         //startButton
-        startButton.frame=CGRect(x:0,y:0,width:bh,height:bh)
-        startButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos)
+        startButton.frame=CGRect(x:0,y:0,width:bh*2,height:bh*2)
+        startButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos-bh/3)
         stopButton.frame=CGRect(x:0,y:0,width:bh*2,height:bh*2)
-        stopButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos-bh/2)
+        stopButton.layer.position = CGPoint(x:Int(ww)/2,y:bpos-bh/3)
         startButton.isHidden=false
         stopButton.isHidden=true
         stopButton.tintColor=UIColor.orange
