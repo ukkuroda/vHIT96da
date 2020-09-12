@@ -2414,9 +2414,11 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             if !(vidCurrent == -1){
                 let curTime=Controller.seekBarValue
                 let fps=getFPS(videoPath: vidPath[vidCurrent])// Controller.currentFPS
-                startFrame=Int(curTime*fps)
-                print("startFrame:",fps,startFrame,curTime)
-                
+                print("seek,fps:",Controller.seekBarValue,fps)
+//                startFrame=Int(round(curTime*fps))//四捨五入したもの
+                startFrame=Int(curTime*fps)//四捨五入してない、こちらが近そう
+
+//                print("round",Int(round(curTime*fps)),Int(curTime*fps),curTime*fps)
                 slowImage.image=getframeImage(frameNumber: startFrame)
                 vidImg[vidCurrent]=slowImage.image!
                 boxF=false
