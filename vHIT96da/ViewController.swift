@@ -269,6 +269,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         //view.frameとtargetRectとimageをもらうことでその場で縦横の比率を計算してtargetRectのimage上の位置を返す関数
         //view.frameとtargetRectは画面上の位置だが、返すのはimage上の位置なので、そこをうまく考慮する必要がある。
         //getRealrectの代わり
+        print("targetRect", targetRect)
+        print("viewRect", viewRect)
         
         let vw = viewRect.width
         let vh = viewRect.height
@@ -277,8 +279,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let ih = CGFloat(image.extent.height)
         
         //　viewRect.originを引く事でtargetRectがview.bounds起点となる (xは0なのでやる必要はないが・・・）
-        let tx = CGFloat(targetRect.origin.x) - CGFloat(viewRect.origin.x)
-        let ty = CGFloat(targetRect.origin.y) - CGFloat(viewRect.origin.y)
+        let tx = CGFloat(targetRect.origin.x)// - CGFloat(viewRect.origin.x)
+        let ty = CGFloat(targetRect.origin.y)// - CGFloat(viewRect.origin.y)
         
         let tw = CGFloat(targetRect.width)
         let th = CGFloat(targetRect.height)
@@ -859,7 +861,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sample!)!
         
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(CGImagePropertyOrientation.right)
-        
+
         //        let eyeR = resizeR2(wakuE, viewRect:self.slowImage.frame,image:ciImage)
         //slowImage.frameを以下のように　view.frame としたところ良くなった。
         //起動時表示が一巡？するまでは　slowImage.frame はちょっと違う値を示す
@@ -940,9 +942,10 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         print("\(str)",String(format: "%d %.2f-%.0f,%.0f %.0f,%.0f",cnt,max,rct1.origin.x,rct1.origin.y,rct2.origin.x,rct2.origin.y))
     }
     override func viewDidAppear(_ animated: Bool) {
+        setButtons_first()
         dispWakus()
         dispWakuImages()
-        setButtons_first()
+
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -1628,11 +1631,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             rectType=0
         }
         //        printR(str:"wakuE:",rct: wakuE)
-        eyeWaku_image.frame=CGRect(x:(wakuE.origin.x)-15,y:wakuE.origin.y-15,width:(wakuE.size.width)+30,height: wakuE.size.height+30)
-        if  isVHIT==false || faceF==0{//vHIT 表示無し、補整無し
-            faceWaku_image.frame=nullRect
+        eyeWaku_image.frame = CGRect(x:(wakuE.origin.x)-15,y:wakuE.origin.y-15,
+                                     width:(wakuE.size.width)+30,height: wakuE.size.height+30)
+        if isVHIT==false || faceF==0 {//vHIT 表示無し、補整無し
+            faceWaku_image.frame = nullRect
         }else{
-            faceWaku_image.frame=CGRect(x:(wakuF.origin.x)-15,y:wakuF.origin.y-15,width:wakuF.size.width+30,height: wakuF.size.height+30)
+            faceWaku_image.frame = CGRect(x:(wakuF.origin.x)-15,y:wakuF.origin.y-15,
+                                          width:wakuF.size.width+30,height: wakuF.size.height+30)
         }
         
         if rectType==0{
@@ -1648,7 +1653,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
             faceWaku_image.layer.cornerRadius = 3
             eyeWaku_image.layer.borderWidth = 0
         }
-        if isVHIT==true&&faceF==1{
+        if isVHIT==true && faceF==1 {
             eyeButton.isHidden=false
             faceButton.isHidden=false
          }else{
@@ -1657,6 +1662,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
          }
         //        dispWakuImages()
     }
+    
     //vHIT_eye_head
     func drawLine(num:Int, width w:CGFloat,height h:CGFloat) -> UIImage {
         let size = CGSize(width:w, height:h)
@@ -2123,39 +2129,79 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate{
         
     }
     func setButtons_first(){
-        let ww=view.bounds.width
-        let wh=view.bounds.height
-        var bw=(ww-30)/4//vhit,camera,vogのボタンの幅
-        let distance:CGFloat=4//最下段のボタンとボタンの距離
-        let bottomY=damyBottom.frame.minY
-//        print("bottomY",bottomY)
-        let bh:CGFloat=(ww-20-6*distance)/7//最下段のボタンの高さ、幅と同じ
-        let bh1=bottomY-5-bh/2-bh//wh-10-bh-5-bh/2
-//        print("bottom",damyBottom.frame)
-        let bh2=bottomY-10-bh/2-2*bh//bh1-5-bh
+        print("bounds", view.bounds)
+        print("safe", view.safeAreaInsets)
+        //viewの外周をセーフエリア内に収める
+        view.frame = CGRect(x: 0, y: view.safeAreaInsets.top, width: view.bounds.width, height: view.bounds.height - view.safeAreaInsets.top - view.safeAreaInsets.bottom )
+        print("bounds_new", view.bounds)
+        
+        //viewの外周を取得
+        let view_width=view.bounds.width
+        let view_hight=view.bounds.height
+        let distance:CGFloat = 4 //最下段のボタンとボタンの距離
+        let button_border:CGFloat = 10 //ボタンと外周との距離
+        let button_hight:CGFloat = (view_width-button_border*2-6*distance)/7 //ボタンの高さ3段とも同じ
+
+        let large_button_width = (view_width-button_border*2 - distance * 2)/4 //vhit,camera,vogのボタンの幅
+        let small_button_width = button_hight //bhは冒頭で決めている。上２段のボタンの高さと同じ。
+
         backVideoOutlet.layer.cornerRadius = 5
         nextVideoOutlet.layer.cornerRadius = 5
-        setButtonProperty(button:cameraButton,bw:bw*2,bh:bh,cx:ww/2,cy:bh1)
-        setButtonProperty(button:vhitButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh1)
-        setButtonProperty(button:vogButton,bw:bw,bh:bh,cx:ww - 10 - bw/2,cy:bh1)
-        
-        setButtonProperty(button:eyeButton,bw:bw,bh:bh,cx:10+bw/2,cy:bh2)
-        setButtonProperty(button:faceButton,bw:bw,bh:bh,cx:ww-10-bw/2,cy:bh2)
 
-        bw=bh//bhは冒頭で決めている。上２段のボタンの高さと同じ。
-        let bwd=bw+distance
-        let bh0=bottomY-bh/2//wh-10-bw/2
-        setButtonProperty(button:listButton,bw:bw,bh:bh,cx:10+bw/2+bwd*0,cy:bh0)
-        setButtonProperty(button:saveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*1,cy:bh0)
-        setButtonProperty(button:waveButton,bw:bw,bh:bh,cx:10+bw/2+bwd*2,cy:bh0)
-        setButtonProperty(button:calcButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0)
+        let button_y2 = view_hight-button_border-distance*2-button_hight/2-2*button_hight //bh1-5-bh//上段ボタンのY位置
+
+        
+        setButtonProperty(button:eyeButton,
+                          bw:large_button_width,bh:button_hight,
+                          cx:button_border+large_button_width/2,cy:button_y2)
+        setButtonProperty(button:faceButton,
+                          bw:large_button_width,bh:button_hight,
+                          cx:view_width-button_border-large_button_width/2,cy:button_y2)
+
+        
+        let button_y1 = view_hight-button_border - distance-button_hight/2-button_hight //wh-10-bh-5-bh/2//中段ボタンのY位置
+        setButtonProperty(button:cameraButton,
+                          bw:large_button_width*2,bh:button_hight,
+                          cx:view_width/2,cy:button_y1)
+        setButtonProperty(button:vhitButton,
+                          bw:large_button_width,bh:button_hight,
+                          cx:button_border+large_button_width/2, cy:button_y1)
+        setButtonProperty(button:vogButton,
+                          bw:large_button_width,bh:button_hight,
+                          cx:view_width - button_border - large_button_width/2,cy:button_y1)
+        
+
+        let bwd = small_button_width+distance
+        let button_y0 = view_hight-button_border-button_hight/2//wh-10-bw/2 //最下段ボタンのY位置
+        setButtonProperty(button:listButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*0,cy:button_y0)
+        setButtonProperty(button:saveButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*1,cy:button_y0)
+        setButtonProperty(button:waveButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*2,cy:button_y0)
+        setButtonProperty(button:calcButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*3,cy:button_y0)
         calcButton.backgroundColor=UIColor.blue
-        setButtonProperty(button:stopButton,bw:bw,bh:bh,cx:10+bw/2+bwd*3,cy:bh0)
+        setButtonProperty(button:stopButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*3,cy:button_y0)
         stopButton.backgroundColor=UIColor.blue
-        setButtonProperty(button:playButton,bw:bw,bh:bh,cx:10+bw/2+bwd*4,cy:bh0)
-        setButtonProperty(button:paraButton,bw:bw,bh:bh,cx:10+bw/2+bwd*5,cy:bh0)
-        setButtonProperty(button:helpButton,bw:bw,bh:bh,cx:10+bw/2+bwd*6,cy:bh0)
+        setButtonProperty(button:playButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*4,cy:button_y0)
+        setButtonProperty(button:paraButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*5,cy:button_y0)
+        setButtonProperty(button:helpButton,
+                          bw:small_button_width,bh:button_hight,
+                          cx:button_border+small_button_width/2+bwd*6,cy:button_y0)
     }
+    
+    
     func setButtonProperty(button:UIButton,bw:CGFloat,bh:CGFloat,cx:CGFloat,cy:CGFloat){
         button.frame   = CGRect(x:0,   y: 0 ,width: bw, height: bh)
         button.layer.borderColor = UIColor.green.cgColor
