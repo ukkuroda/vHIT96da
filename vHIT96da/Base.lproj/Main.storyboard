@@ -462,8 +462,6 @@
                             <constraint firstAttribute="trailing" secondItem="9Q7-F1-xlh" secondAttribute="trailing" id="507-Y2-orE"/>
                             <constraint firstItem="6oH-Ur-nDk" firstAttribute="top" secondItem="0q7-O3-Ich" secondAttribute="bottom" id="5cp-XU-Cr2"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="A0b-xi-20m"/>
-                            <constraint firstItem="uIe-Wh-aZk" firstAttribute="trailing" secondItem="jL1-T4-URC" secondAttribute="trailing" id="AHv-77-Yxx"/>
-                            <constraint firstItem="jL1-T4-URC" firstAttribute="bottom" secondItem="uIe-Wh-aZk" secondAttribute="bottom" id="B6C-OM-KBz"/>
                             <constraint firstItem="uIe-Wh-aZk" firstAttribute="trailing" secondItem="fee-9L-VIg" secondAttribute="trailing" constant="5" id="CMO-Vn-FNt"/>
                             <constraint firstItem="LZQ-Ez-rYI" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="CRr-oI-MBz"/>
                             <constraint firstItem="uIe-Wh-aZk" firstAttribute="trailing" secondItem="0q7-O3-Ich" secondAttribute="trailing" id="Ghd-6I-3P1"/>
@@ -474,7 +472,6 @@
                             <constraint firstItem="fee-9L-VIg" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="bF3-q0-2lB"/>
                             <constraint firstItem="uIe-Wh-aZk" firstAttribute="trailing" secondItem="WVy-FW-eP4" secondAttribute="trailing" constant="5" id="chY-Oy-YRC"/>
                             <constraint firstItem="9Q7-F1-xlh" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="jP4-Wz-Ohg"/>
-                            <constraint firstItem="jL1-T4-URC" firstAttribute="leading" secondItem="uIe-Wh-aZk" secondAttribute="leading" id="jaB-cr-2Db"/>
                             <constraint firstItem="0q7-O3-Ich" firstAttribute="leading" secondItem="uIe-Wh-aZk" secondAttribute="leading" id="z7J-NG-hcc"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="uIe-Wh-aZk"/>
@@ -486,7 +483,6 @@
                         <outlet property="backVideoOutlet" destination="LZQ-Ez-rYI" id="3UD-xa-nFJ"/>
                         <outlet property="calcButton" destination="sZn-CJ-Yxe" id="hF7-9w-d0q"/>
                         <outlet property="cameraButton" destination="w2G-cJ-1fV" id="bJm-SI-8sf"/>
-                        <outlet property="damyBottom" destination="jL1-T4-URC" id="KLc-ZX-cis"/>
                         <outlet property="eraseButton" destination="WVy-FW-eP4" id="1mR-HG-0Sd"/>
                         <outlet property="eyeButton" destination="NjV-Ob-HQy" id="Rph-oU-hig"/>
                         <outlet property="eyeWaku_image" destination="3KZ-x3-xdg" id="W38-c9-yno"/>
